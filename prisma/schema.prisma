@@ -122,6 +122,12 @@ model Competition {
   type      CompetitionType @default(WORLD_CUP)
   /// 赛季标识，如 "2026", "2024-25"
   season    String
+  /// 赛事所属国家/地区，用于后台筛选与运营展示
+  country   String?
+  /// 城市场景标签，如 "New York", "Shanghai"，用于本地化运营
+  cityTag   String?
+  /// 后台上下架状态：ACTIVE / DRAFT / ARCHIVED
+  status    String          @default("ACTIVE")
   startDate DateTime?
   endDate   DateTime?
   /// 外部数据源 ID（如 football-data.org 的 competition id）
@@ -132,6 +138,7 @@ model Competition {
   matches Match[]
 
   @@index([type, season])
+  @@index([status, startDate])
 }
 
 /// 球队
@@ -464,3 +471,41 @@ model Order {
   @@index([status, createdAt])
   @@index([externalOrderId])
 }
+
+// ─────────────────────────────────────────────────────────────────────────────
+// T1-06: Admin User / Audit Log
+// ─────────────────────────────────────────────────────────────────────────────
+
+/// 后台管理员身份快照。阶段 1 暂不强制接入完整 RBAC，但所有后台写操作都会归因到该表。
+model AdminUser {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  name      String
+  status    String   @default("ACTIVE")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  auditLogs AdminAuditLog[]
+
+  @@index([status, createdAt])
+}
+
+/// 后台审计日志。记录赛事、比赛导入等关键写操作的前后快照，满足阶段 1 可追踪要求。
+model AdminAuditLog {
+  id          String     @id @default(cuid())
+  adminUserId String?
+  adminUser   AdminUser? @relation(fields: [adminUserId], references: [id])
+  action      String
+  targetType  String
+  targetId    String?
+  beforeJson  Json?
+  afterJson   Json?
+  ipAddress   String?
+  userAgent   String?
+  createdAt   DateTime   @default(now())
+
+  @@index([adminUserId, createdAt])
+  @@index([targetType, targetId, createdAt])
+  @@index([action, createdAt])
+}
+

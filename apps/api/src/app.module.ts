@@ -18,6 +18,7 @@ import { AllExceptionsFilter } from './common/all-exceptions.filter.js';
 import { RequestIdMiddleware } from './common/request-id.middleware.js';
 import { ResponseInterceptor } from './common/response.interceptor.js';
 import { loadConfig } from './config/configuration.js';
+import { AdminModule } from './modules/admin/admin.module.js';
 import { AuthModule } from './modules/auth/auth.module.js';
 import { EntitlementsModule } from './modules/entitlements/entitlements.module.js';
 import { HealthModule } from './modules/health/health.module.js';
@@ -26,6 +27,7 @@ import { PaymentsModule } from './modules/payments/payments.module.js';
 import { PredictionsModule } from './modules/predictions/predictions.module.js';
 import { ReviewsModule } from './modules/reviews/reviews.module.js';
 import { ShareModule } from './modules/share/share.module.js';
+import { PrismaModule } from './prisma/prisma.module.js';
 
 @Module({
   imports: [
@@ -40,7 +42,9 @@ import { ShareModule } from './modules/share/share.module.js';
         limit: 120,
       },
     ]),
+    PrismaModule,
     HealthModule,
+    AdminModule,
     AuthModule,
     MatchesModule,
     PredictionsModule,
