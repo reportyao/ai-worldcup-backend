@@ -30,6 +30,7 @@ import { PredictionsModule } from './modules/predictions/predictions.module.js';
 import { ReviewsModule } from './modules/reviews/reviews.module.js';
 import { ConsensusModule } from './modules/consensus/consensus.module.js';
 import { ScorecardModule } from './modules/scorecard/scorecard.module.js';
+import { InvitationsModule } from './modules/invitations/invitations.module.js';
 import { ShareModule } from './modules/share/share.module.js';
 import { PrismaModule } from './prisma/prisma.module.js';
 
@@ -58,6 +59,7 @@ import { PrismaModule } from './prisma/prisma.module.js';
     ConsensusModule,
     ScorecardModule,
     EntitlementsModule,
+    InvitationsModule,
     PaymentsModule,
     ShareModule,
   ],

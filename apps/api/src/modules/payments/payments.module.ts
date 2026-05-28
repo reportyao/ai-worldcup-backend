@@ -1,7 +1,19 @@
 import { Module } from '@nestjs/common';
 
+import { AuthModule } from '../auth/auth.module.js';
+import { EntitlementsModule } from '../entitlements/entitlements.module.js';
+
+import { PaymentsController } from './payments.controller.js';
+import { PaymentsService } from './payments.service.js';
+
 /**
- * 阶段 0 占位模块：阶段 1 接入微信支付 V3，国际版 Stripe 接口预留。
+ * T5-04/T5-05: 支付模块。
+ * 提供微信支付 V3 下单、回调处理、会员发放功能。
  */
-@Module({})
+@Module({
+  imports: [AuthModule, EntitlementsModule],
+  controllers: [PaymentsController],
+  providers: [PaymentsService],
+  exports: [PaymentsService],
+})
 export class PaymentsModule {}

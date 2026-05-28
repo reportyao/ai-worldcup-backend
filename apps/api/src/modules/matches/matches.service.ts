@@ -5,6 +5,7 @@ import type { Match, UserPrediction } from '@prisma/client';
 import { PrismaService } from '../../prisma/prisma.service.js';
 import { AuthService } from '../auth/auth.service.js';
 import type { RequestMeta } from '../auth/auth.service.js';
+import { AccessService } from '../entitlements/access.service.js';
 
 import type { MatchListQueryDto, UserPredictionSubmitDto } from './matches.schemas.js';
 
@@ -13,6 +14,7 @@ export class MatchesService {
   constructor(
     @Inject(PrismaService) private readonly prisma: PrismaService,
     @Inject(AuthService) private readonly authService: AuthService,
+    private readonly accessService: AccessService,
   ) {}
 
   async listMatches(query: MatchListQueryDto) {
@@ -91,11 +93,7 @@ export class MatchesService {
           status: match.status,
         },
         tabs: ['overview', 'models', 'my_prediction', 'review'],
-        access: {
-          canViewBasic: true,
-          canViewFullModels: false,
-          reason: 'phase_2_basic_skeleton',
-        },
+        access: await this.buildAccessPayload(viewer.userId, viewer.guestId),
         consensus: this.buildConsensus(match.predictionTasks),
         modelAnalyses: match.predictionTasks.flatMap((task) =>
           task.predictions.map((prediction) => ({
@@ -344,6 +342,17 @@ export class MatchesService {
       goalsMax: prediction.goalsMax,
       submittedAt: prediction.submittedAt.toISOString(),
       updatedAt: prediction.updatedAt.toISOString(),
+    };
+  }
+
+  private async buildAccessPayload(userId?: string, guestId?: string) {
+    const decision = await this.accessService.checkAccess(userId, guestId);
+    return {
+      canViewBasic: true,
+      canViewFullModels: decision.canViewFullModels,
+      reason: decision.reason,
+      unlockHint: decision.unlockHint,
+      snapshot: decision.snapshot,
     };
   }
 }
