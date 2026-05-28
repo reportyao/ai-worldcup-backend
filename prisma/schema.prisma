@@ -1,15 +1,20 @@
-// AI Worldcup Prediction Platform - Phase 0 minimal schema.
-// 仅放最少占位模型，确保 prisma generate 可执行；详细业务模型在阶段1完善。
+// AI Worldcup Prediction Platform - Phase 1 Schema
+// T1-01: Competition, Team, Match
+// T1-02: AiModel, PredictionTask, ModelPrediction
 
 generator client {
   provider = "prisma-client-js"
 }
 
 datasource db {
-  provider = "postgresql"
-  url      = env("DATABASE_URL")
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
   directUrl = env("DIRECT_URL")
 }
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Enums
+// ─────────────────────────────────────────────────────────────────────────────
 
 enum Locale {
   zh_CN
@@ -23,26 +28,249 @@ enum CompetitionType {
   OTHER
 }
 
+enum MatchStatus {
+  SCHEDULED
+  LIVE
+  FINISHED
+  POSTPONED
+  CANCELED
+}
+
+enum PredictionVersion {
+  T_MINUS_24H
+  T_MINUS_2H
+}
+
+enum PredictionTaskStatus {
+  PENDING
+  RUNNING
+  PARTIAL_SUCCESS
+  SUCCEEDED
+  FAILED
+  REVIEWED
+  PUBLISHED
+}
+
+enum PredictionTrigger {
+  CRON
+  MANUAL
+}
+
+enum ConsensusLevel {
+  HIGH
+  MIXED
+  STRONG_DIVERGENCE
+}
+
+enum ModelPersona {
+  STEADY
+  ATTACKING
+  UPSET_HUNTER
+  DATA_DRIVEN
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// T1-01: Competition / Team / Match
+// ─────────────────────────────────────────────────────────────────────────────
+
+/// 赛事（世界杯、洲际杯、联赛等）
 model Competition {
   id        String          @id @default(cuid())
+  /// 唯一标识码，如 "WC-2026", "EURO-2024"
   code      String          @unique
   name      String
   type      CompetitionType @default(WORLD_CUP)
+  /// 赛季标识，如 "2026", "2024-25"
   season    String
   startDate DateTime?
   endDate   DateTime?
+  /// 外部数据源 ID（如 football-data.org 的 competition id）
+  externalId String?       @unique
   createdAt DateTime        @default(now())
   updatedAt DateTime        @updatedAt
+
+  matches Match[]
+
+  @@index([type, season])
 }
 
+/// 球队
+model Team {
+  id           String   @id @default(cuid())
+  /// 唯一标识码，如 "BRA", "GER", "JPN"
+  code         String   @unique
+  /// 球队全名（英文）
+  name         String
+  /// 球队简称（用于 UI 展示）
+  shortName    String?
+  /// 国旗 emoji 或 ISO 3166-1 alpha-2 国家代码
+  countryCode  String?
+  /// 球队徽章 URL
+  crestUrl     String?
+  /// 外部数据源 ID
+  externalId   String?  @unique
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  homeMatches Match[] @relation("HomeTeam")
+  awayMatches Match[] @relation("AwayTeam")
+
+  @@index([code])
+}
+
+/// 比赛
+model Match {
+  id            String      @id @default(cuid())
+  /// 所属赛事
+  competitionId String
+  competition   Competition @relation(fields: [competitionId], references: [id])
+  /// 主队
+  homeTeamId    String
+  homeTeam      Team        @relation("HomeTeam", fields: [homeTeamId], references: [id])
+  /// 客队
+  awayTeamId    String
+  awayTeam      Team        @relation("AwayTeam", fields: [awayTeamId], references: [id])
+  /// 开球时间 (UTC)
+  kickoffAt     DateTime
+  /// 比赛状态
+  status        MatchStatus @default(SCHEDULED)
+  /// 比赛日（用于按天查询，格式 "2026-06-14"）
+  matchday      String?
+  /// 小组/轮次信息，如 "Group A", "Round of 16"
+  stage         String?
+  /// 主队进球数（比赛结束后填充）
+  homeScore     Int?
+  /// 客队进球数（比赛结束后填充）
+  awayScore     Int?
+  /// 外部数据源 ID
+  externalId    String?     @unique
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
+
+  predictionTasks PredictionTask[]
+
+  @@unique([competitionId, homeTeamId, awayTeamId, kickoffAt])
+  @@index([competitionId, kickoffAt])
+  @@index([status, kickoffAt])
+  @@index([matchday])
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// T1-02: AiModel / PredictionTask / ModelPrediction
+// ─────────────────────────────────────────────────────────────────────────────
+
+/// AI 模型注册表
+model AiModel {
+  id           String       @id @default(cuid())
+  /// 模型唯一标识，如 "gpt-4.1-mini", "gemini-2.5-flash"
+  modelId      String       @unique
+  /// 面向用户的展示名称
+  displayName  String
+  /// 模型人设/风格
+  persona      ModelPersona @default(STEADY)
+  /// 模型提供商，如 "openai", "google", "anthropic"
+  provider     String
+  /// 是否启用（可动态开关模型）
+  isActive     Boolean      @default(true)
+  /// 模型描述
+  description  String?
+  /// 模型配置 JSON（temperature, maxTokens 等）
+  config       Json?
+  createdAt    DateTime     @default(now())
+  updatedAt    DateTime     @updatedAt
+
+  predictions ModelPrediction[]
+
+  @@index([isActive, persona])
+}
+
+/// 预测任务（一场比赛的一个时间版本对应一个 Task）
+model PredictionTask {
+  id          String               @id @default(cuid())
+  /// 关联比赛
+  matchId     String
+  match       Match                @relation(fields: [matchId], references: [id])
+  /// 预测版本：T-24h 或 T-2h
+  version     PredictionVersion
+  /// 任务状态
+  status      PredictionTaskStatus @default(PENDING)
+  /// 触发方式
+  trigger     PredictionTrigger    @default(CRON)
+  /// 参与本次预测的模型数量
+  modelCount  Int                  @default(0)
+  /// 成功完成的模型数量
+  successCount Int                 @default(0)
+  /// 失败的模型数量
+  failureCount Int                 @default(0)
+  /// 共识等级（所有模型预测完成后计算）
+  consensusLevel ConsensusLevel?
+  /// 共识摘要 JSON
+  consensusSummary Json?
+  /// 发布时间（REVIEWED -> PUBLISHED 时设置）
+  publishedAt DateTime?
+  /// 任务错误信息
+  errorMessage String?
+  createdAt   DateTime             @default(now())
+  updatedAt   DateTime             @updatedAt
+
+  predictions ModelPrediction[]
+
+  /// 同一场比赛同一版本只能有一个任务
+  @@unique([matchId, version])
+  @@index([status, createdAt])
+  @@index([matchId, version, status])
+}
+
+/// 单个模型对单场比赛的预测结果
+model ModelPrediction {
+  id               String         @id @default(cuid())
+  /// 关联预测任务
+  predictionTaskId String
+  predictionTask   PredictionTask @relation(fields: [predictionTaskId], references: [id], onDelete: Cascade)
+  /// 关联 AI 模型
+  aiModelId        String
+  aiModel          AiModel        @relation(fields: [aiModelId], references: [id])
+  /// 结构化预测输出 JSON（符合 StructuredPredictionSchema）
+  structuredOutput Json
+  /// AI 原始输出文本（用于调试和审计）
+  rawOutput        String?
+  /// 使用的 Prompt 模板版本
+  promptVersion    String?
+  /// 使用的 Prompt 完整内容快照
+  promptSnapshot   String?
+  /// 模型调用耗时（毫秒）
+  latencyMs        Int?
+  /// 输入 token 数
+  inputTokens      Int?
+  /// 输出 token 数
+  outputTokens     Int?
+  /// 是否成功
+  isSuccess        Boolean        @default(true)
+  /// 错误信息（如果失败）
+  errorMessage     String?
+  /// 生成时间
+  generatedAt      DateTime       @default(now())
+  createdAt        DateTime       @default(now())
+  updatedAt        DateTime       @updatedAt
+
+  /// 同一任务中同一模型只能有一条预测
+  @@unique([predictionTaskId, aiModelId])
+  @@index([predictionTaskId, isSuccess])
+  @@index([aiModelId, generatedAt])
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// User (Phase 0 existing)
+// ─────────────────────────────────────────────────────────────────────────────
+
 model User {
-  id          String   @id @default(cuid())
-  // 微信小程序登录后填充
-  wechatOpenId String? @unique
-  unionId     String?  @unique
-  nickname    String?
-  avatarUrl   String?
-  locale      Locale   @default(zh_CN)
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  id           String   @id @default(cuid())
+  /// 微信小程序登录后填充
+  wechatOpenId String?  @unique
+  unionId      String?  @unique
+  nickname     String?
+  avatarUrl    String?
+  locale       Locale   @default(zh_CN)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
 }

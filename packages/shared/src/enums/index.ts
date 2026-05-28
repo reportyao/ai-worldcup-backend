@@ -16,6 +16,21 @@ export const CompetitionType = {
 } as const;
 export type CompetitionType = (typeof CompetitionType)[keyof typeof CompetitionType];
 
+export const MatchStatus = {
+  SCHEDULED: 'SCHEDULED',
+  LIVE: 'LIVE',
+  FINISHED: 'FINISHED',
+  POSTPONED: 'POSTPONED',
+  CANCELED: 'CANCELED',
+} as const;
+export type MatchStatus = (typeof MatchStatus)[keyof typeof MatchStatus];
+
+export const PredictionTrigger = {
+  CRON: 'CRON',
+  MANUAL: 'MANUAL',
+} as const;
+export type PredictionTrigger = (typeof PredictionTrigger)[keyof typeof PredictionTrigger];
+
 export const PredictionVersion = {
   T_MINUS_24H: 'T_MINUS_24H',
   T_MINUS_2H: 'T_MINUS_2H',

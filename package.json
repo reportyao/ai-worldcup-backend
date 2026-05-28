@@ -19,6 +19,7 @@
     "prisma:generate": "prisma generate --schema prisma/schema.prisma",
     "prisma:migrate:dev": "prisma migrate dev --schema prisma/schema.prisma",
     "prisma:migrate:deploy": "prisma migrate deploy --schema prisma/schema.prisma",
+    "db:seed": "npx tsx prisma/seed.ts",
     "prepare": "echo 'skip husky in phase0'"
   },
   "devDependencies": {
@@ -30,8 +31,12 @@
     "eslint-plugin-import": "^2.29.1",
     "prettier": "^3.3.2",
     "prisma": "^5.16.1",
+    "tsx": "^4.16.2",
     "typescript": "^5.5.3",
     "vitest": "^1.6.0"
+  },
+  "prisma": {
+    "seed": "npx tsx prisma/seed.ts"
   },
   "dependencies": {
     "@prisma/client": "5.22.0"

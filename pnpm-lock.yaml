@@ -36,6 +36,9 @@ importers:
       prisma:
         specifier: ^5.16.1
         version: 5.22.0
+      tsx:
+        specifier: ^4.16.2
+        version: 4.22.3
       typescript:
         specifier: ^5.5.3
         version: 5.9.3

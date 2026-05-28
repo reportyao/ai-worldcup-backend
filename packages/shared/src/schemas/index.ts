@@ -1,13 +1,16 @@
 import { z } from 'zod';
 
 import {
+  CompetitionType,
   ConsensusLevel,
   EntitlementSource,
   Locale,
+  MatchStatus,
   ModelPersona,
   OrderStatus,
   PaymentChannel,
   PredictionTaskStatus,
+  PredictionTrigger,
   PredictionVersion,
 } from '../enums/index.js';
 
@@ -114,11 +117,101 @@ export const PredictionTaskSchema = z.object({
   matchId: z.string(),
   version: z.nativeEnum(PredictionVersion),
   status: z.nativeEnum(PredictionTaskStatus),
+  trigger: z.nativeEnum(PredictionTrigger),
+  modelCount: z.number().int().min(0),
+  successCount: z.number().int().min(0),
+  failureCount: z.number().int().min(0),
+  consensusLevel: z.nativeEnum(ConsensusLevel).nullable(),
+  publishedAt: z.string().nullable().optional(),
   createdAt: z.string(),
   updatedAt: z.string(),
-  publishedAt: z.string().nullable().optional(),
 });
 export type PredictionTask = z.infer<typeof PredictionTaskSchema>;
+
+/**
+ * 比赛列表查询参数
+ */
+export const MatchListQuerySchema = z.object({
+  competitionId: z.string().optional(),
+  matchday: z.string().optional(),
+  status: z.nativeEnum(MatchStatus).optional(),
+  page: z.coerce.number().int().min(1).default(1),
+  pageSize: z.coerce.number().int().min(1).max(50).default(20),
+});
+export type MatchListQuery = z.infer<typeof MatchListQuerySchema>;
+
+/**
+ * 球队 Schema
+ */
+export const TeamSchema = z.object({
+  id: z.string(),
+  code: z.string(),
+  name: z.string(),
+  shortName: z.string().nullable(),
+  countryCode: z.string().nullable(),
+  crestUrl: z.string().nullable(),
+});
+export type Team = z.infer<typeof TeamSchema>;
+
+/**
+ * 比赛摘要 Schema
+ */
+export const MatchSummarySchema = z.object({
+  id: z.string(),
+  competitionId: z.string(),
+  homeTeam: TeamSchema,
+  awayTeam: TeamSchema,
+  kickoffAt: z.string(),
+  status: z.nativeEnum(MatchStatus),
+  matchday: z.string().nullable(),
+  stage: z.string().nullable(),
+  homeScore: z.number().int().nullable(),
+  awayScore: z.number().int().nullable(),
+});
+export type MatchSummaryType = z.infer<typeof MatchSummarySchema>;
+
+/**
+ * 赛事 Schema
+ */
+export const CompetitionSchema = z.object({
+  id: z.string(),
+  code: z.string(),
+  name: z.string(),
+  type: z.nativeEnum(CompetitionType),
+  season: z.string(),
+  startDate: z.string().nullable(),
+  endDate: z.string().nullable(),
+});
+export type Competition = z.infer<typeof CompetitionSchema>;
+
+/**
+ * AI 模型 Schema
+ */
+export const AiModelSchema = z.object({
+  id: z.string(),
+  modelId: z.string(),
+  displayName: z.string(),
+  persona: z.nativeEnum(ModelPersona),
+  provider: z.string(),
+  isActive: z.boolean(),
+  description: z.string().nullable(),
+});
+export type AiModel = z.infer<typeof AiModelSchema>;
+
+/**
+ * 模型预测结果 Schema
+ */
+export const ModelPredictionSchema = z.object({
+  id: z.string(),
+  predictionTaskId: z.string(),
+  aiModelId: z.string(),
+  aiModel: AiModelSchema,
+  structuredOutput: StructuredPredictionSchema,
+  isSuccess: z.boolean(),
+  latencyMs: z.number().int().nullable(),
+  generatedAt: z.string(),
+});
+export type ModelPredictionType = z.infer<typeof ModelPredictionSchema>;
 
 export const EntitlementSnapshotSchema = z.object({
   freeDailyRemaining: z.number().int().min(0),
