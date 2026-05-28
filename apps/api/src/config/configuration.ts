@@ -21,6 +21,17 @@ const EnvSchema = z.object({
   JWT_SECRET: z.string().min(8).default('dev_jwt_secret_change_me_in_prod'),
   JWT_ACCESS_TTL: z.string().default('2h'),
   JWT_REFRESH_TTL: z.string().default('30d'),
+
+  AI_GATEWAY_BASE_URL: z.string().url().optional(),
+  AI_GATEWAY_TIMEOUT_MS: z.coerce.number().int().min(1_000).max(120_000).default(30_000),
+  AI_OPENAI_API_KEY: z.string().min(1).optional(),
+  AI_OPENAI_BASE_URL: z.string().url().optional(),
+  AI_GOOGLE_API_KEY: z.string().min(1).optional(),
+  AI_GOOGLE_BASE_URL: z.string().url().optional(),
+  AI_ANTHROPIC_API_KEY: z.string().min(1).optional(),
+  AI_ANTHROPIC_BASE_URL: z.string().url().optional(),
+  AI_ALLOW_MOCK: z.coerce.boolean().default(false),
+  PREDICTION_SCHEDULER_WINDOW_MINUTES: z.coerce.number().int().min(1).max(120).default(10),
 });
 
 export type AppConfig = z.infer<typeof EnvSchema>;

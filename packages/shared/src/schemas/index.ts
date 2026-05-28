@@ -197,7 +197,9 @@ export const AiModelSchema = z.object({
   persona: z.nativeEnum(ModelPersona),
   provider: z.string(),
   isActive: z.boolean(),
+  sortOrder: z.number().int().optional(),
   description: z.string().nullable(),
+  config: z.record(z.unknown()).nullable().optional(),
 });
 export type AiModel = z.infer<typeof AiModelSchema>;
 

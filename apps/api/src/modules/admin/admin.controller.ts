@@ -14,6 +14,10 @@ import type { Request } from 'express';
 import { ZodValidationPipe } from '../../common/zod-validation.pipe.js';
 
 import {
+  AdminAiModelCreateSchema,
+  AdminAiModelListQuerySchema,
+  AdminAiModelReorderSchema,
+  AdminAiModelUpdateSchema,
   AdminAuditLogListQuerySchema,
   AdminCompetitionCreateSchema,
   AdminCompetitionListQuerySchema,
@@ -22,7 +26,14 @@ import {
   AdminMatchImportSchema,
   AdminMatchListQuerySchema,
   AdminMatchUpdateSchema,
+  AdminPredictionRerunSchema,
+  AdminPredictionTaskQuerySchema,
+  AdminPredictionTriggerSchema,
   AdminTeamListQuerySchema,
+  type AdminAiModelCreateDto,
+  type AdminAiModelListQuery,
+  type AdminAiModelReorderDto,
+  type AdminAiModelUpdateDto,
   type AdminAuditLogListQuery,
   type AdminCompetitionCreateDto,
   type AdminCompetitionListQuery,
@@ -31,6 +42,9 @@ import {
   type AdminMatchImportDto,
   type AdminMatchListQuery,
   type AdminMatchUpdateDto,
+  type AdminPredictionRerunDto,
+  type AdminPredictionTaskQuery,
+  type AdminPredictionTriggerDto,
 } from './admin.schemas.js';
 import type { AdminService } from './admin.service.js';
 
@@ -120,6 +134,88 @@ export class AdminController {
     @Body(new ZodValidationPipe(AdminMatchImportSchema)) dto: AdminMatchImportDto,
   ) {
     return this.adminService.importMatches(dto, this.adminService.getRequestMeta(req));
+  }
+
+
+  @Get('ai-models')
+  listAiModels(
+    @Query(new ZodValidationPipe(AdminAiModelListQuerySchema)) query: AdminAiModelListQuery,
+  ) {
+    return this.adminService.listAiModels(query);
+  }
+
+  @Post('ai-models')
+  createAiModel(
+    @Req() req: Request,
+    @Body(new ZodValidationPipe(AdminAiModelCreateSchema)) dto: AdminAiModelCreateDto,
+  ) {
+    return this.adminService.createAiModel(dto, this.adminService.getRequestMeta(req));
+  }
+
+  @Post('ai-models/reorder')
+  reorderAiModels(
+    @Req() req: Request,
+    @Body(new ZodValidationPipe(AdminAiModelReorderSchema)) dto: AdminAiModelReorderDto,
+  ) {
+    return this.adminService.reorderAiModels(dto, this.adminService.getRequestMeta(req));
+  }
+
+  @Get('ai-models/:id')
+  getAiModel(@Param('id') id: string) {
+    return this.adminService.getAiModel(id);
+  }
+
+  @Patch('ai-models/:id')
+  updateAiModel(
+    @Param('id') id: string,
+    @Req() req: Request,
+    @Body(new ZodValidationPipe(AdminAiModelUpdateSchema)) dto: AdminAiModelUpdateDto,
+  ) {
+    return this.adminService.updateAiModel(id, dto, this.adminService.getRequestMeta(req));
+  }
+
+  @Delete('ai-models/:id')
+  deleteAiModel(@Param('id') id: string, @Req() req: Request) {
+    return this.adminService.deleteAiModel(id, this.adminService.getRequestMeta(req));
+  }
+
+  @Get('prediction-tasks')
+  listPredictionTasks(
+    @Query(new ZodValidationPipe(AdminPredictionTaskQuerySchema)) query: AdminPredictionTaskQuery,
+  ) {
+    return this.adminService.listPredictionTasks(query);
+  }
+
+  @Post('prediction-tasks/trigger')
+  triggerPrediction(
+    @Req() req: Request,
+    @Body(new ZodValidationPipe(AdminPredictionTriggerSchema)) dto: AdminPredictionTriggerDto,
+  ) {
+    return this.adminService.triggerPrediction(dto, this.adminService.getRequestMeta(req));
+  }
+
+  @Post('prediction-tasks/scheduler-scan')
+  enqueuePredictionSchedulerScan(@Req() req: Request) {
+    return this.adminService.enqueuePredictionSchedulerScan(this.adminService.getRequestMeta(req));
+  }
+
+  @Get('prediction-tasks/:id')
+  getPredictionTask(@Param('id') id: string) {
+    return this.adminService.getPredictionTask(id);
+  }
+
+  @Post('prediction-tasks/:id/publish')
+  publishPredictionTask(@Param('id') id: string, @Req() req: Request) {
+    return this.adminService.publishPredictionTask(id, this.adminService.getRequestMeta(req));
+  }
+
+  @Post('prediction-tasks/:id/rerun')
+  rerunPredictionTask(
+    @Param('id') id: string,
+    @Req() req: Request,
+    @Body(new ZodValidationPipe(AdminPredictionRerunSchema)) dto: AdminPredictionRerunDto,
+  ) {
+    return this.adminService.rerunPredictionTask(id, dto, this.adminService.getRequestMeta(req));
   }
 
   @Get('audit-logs')

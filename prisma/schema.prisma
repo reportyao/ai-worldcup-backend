@@ -226,6 +226,8 @@ model AiModel {
   provider     String
   /// 是否启用（可动态开关模型）
   isActive     Boolean      @default(true)
+  /// 后台排序值，数值越小越优先调用
+  sortOrder    Int          @default(100)
   /// 模型描述
   description  String?
   /// 模型配置 JSON（temperature, maxTokens 等）
@@ -235,6 +237,7 @@ model AiModel {
 
   predictions ModelPrediction[]
 
+  @@index([isActive, sortOrder])
   @@index([isActive, persona])
 }
 

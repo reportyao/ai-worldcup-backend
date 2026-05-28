@@ -1,4 +1,4 @@
-import { Worker } from 'bullmq';
+import { Queue, Worker } from 'bullmq';
 import { Redis } from 'ioredis';
 
 import { processDataSync } from './jobs/data-sync.job.js';
@@ -20,6 +20,27 @@ function createConnection(): Redis {
 }
 
 const workers: Worker[] = [];
+const queues: Queue[] = [];
+
+async function registerPredictionScheduler(): Promise<void> {
+  const queue = new Queue(QueueName.PredictionGenerator, { connection: createConnection() });
+  queues.push(queue);
+  await queue.add(
+    'schedule-due-predictions',
+    {
+      mode: 'SCHEDULE_DUE',
+      windowMinutes: Number(process.env.PREDICTION_SCHEDULER_WINDOW_MINUTES ?? 10),
+    },
+    {
+      repeat: { pattern: process.env.PREDICTION_SCHEDULER_CRON ?? '*/5 * * * *' },
+      jobId: 'prediction-scheduler-repeat',
+      attempts: 1,
+      removeOnComplete: 50,
+      removeOnFail: 100,
+    },
+  );
+  logger.info({ queue: QueueName.PredictionGenerator }, 'prediction scheduler registered');
+}
 
 function registerWorker(
   name: QueueName,
@@ -46,6 +67,7 @@ function registerWorker(
 async function main(): Promise<void> {
   logger.info({ redisUrl }, 'starting AI Worldcup worker');
 
+  await registerPredictionScheduler();
   registerWorker(QueueName.PredictionGenerator, processPredictionGenerator);
   registerWorker(QueueName.DataSync, processDataSync);
   // PostMatchReview 占位，阶段 1 实现具体 processor 后再接入
@@ -57,6 +79,7 @@ async function main(): Promise<void> {
   const shutdown = async (signal: NodeJS.Signals): Promise<void> => {
     logger.info({ signal }, 'shutting down workers');
     await Promise.all(workers.map((w) => w.close()));
+    await Promise.all(queues.map((q) => q.close()));
     process.exit(0);
   };
   process.on('SIGINT', shutdown);

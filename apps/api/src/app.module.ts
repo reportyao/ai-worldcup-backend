@@ -19,11 +19,13 @@ import { RequestIdMiddleware } from './common/request-id.middleware.js';
 import { ResponseInterceptor } from './common/response.interceptor.js';
 import { loadConfig } from './config/configuration.js';
 import { AdminModule } from './modules/admin/admin.module.js';
+import { AiGatewayModule } from './modules/ai-gateway/ai-gateway.module.js';
 import { AuthModule } from './modules/auth/auth.module.js';
 import { EntitlementsModule } from './modules/entitlements/entitlements.module.js';
 import { HealthModule } from './modules/health/health.module.js';
 import { MatchesModule } from './modules/matches/matches.module.js';
 import { PaymentsModule } from './modules/payments/payments.module.js';
+import { PredictionPipelineModule } from './modules/prediction-pipeline/prediction-pipeline.module.js';
 import { PredictionsModule } from './modules/predictions/predictions.module.js';
 import { ReviewsModule } from './modules/reviews/reviews.module.js';
 import { ShareModule } from './modules/share/share.module.js';
@@ -43,6 +45,8 @@ import { PrismaModule } from './prisma/prisma.module.js';
       },
     ]),
     PrismaModule,
+    AiGatewayModule,
+    PredictionPipelineModule,
     HealthModule,
     AdminModule,
     AuthModule,

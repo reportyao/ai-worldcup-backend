@@ -1,4 +1,3 @@
-import { DomainError, ErrorCode } from '@ai-worldcup/shared';
 import {
   BadRequestException,
   Injectable,
@@ -6,16 +5,27 @@ import {
 } from '@nestjs/common';
 import type {
   CompetitionType,
-  MatchStatus} from '@prisma/client';
+  MatchStatus,
+} from '@prisma/client';
 import {
+  ModelPersona,
+  PredictionTaskStatus,
+  PredictionTrigger,
+  PredictionVersion,
   Prisma,
 } from '@prisma/client';
+import { DomainError, ErrorCode } from '@ai-worldcup/shared';
 import type { Request } from 'express';
 import { read, utils } from 'xlsx';
 
-import type { PrismaService } from '../../prisma/prisma.service.js';
+import { PrismaService } from '../../prisma/prisma.service.js';
+import { PredictionPipelineService } from '../prediction-pipeline/prediction-pipeline.service.js';
 
 import type {
+  AdminAiModelCreateDto,
+  AdminAiModelListQuery,
+  AdminAiModelReorderDto,
+  AdminAiModelUpdateDto,
   AdminAuditLogListQuery,
   AdminCompetitionCreateDto,
   AdminCompetitionListQuery,
@@ -24,6 +34,9 @@ import type {
   AdminMatchImportDto,
   AdminMatchListQuery,
   AdminMatchUpdateDto,
+  AdminPredictionRerunDto,
+  AdminPredictionTaskQuery,
+  AdminPredictionTriggerDto,
 } from './admin.schemas.js';
 
 interface RequestMeta {
@@ -48,7 +61,10 @@ const MATCH_INCLUDE = {
 
 @Injectable()
 export class AdminService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly predictionPipeline: PredictionPipelineService,
+  ) {}
 
   getRequestMeta(req: Request): RequestMeta {
     const headerEmail = req.header('x-admin-email')?.trim();
@@ -384,6 +400,213 @@ export class AdminService {
       summary,
     );
     return summary;
+  }
+
+
+  async listAiModels(query: AdminAiModelListQuery) {
+    const where: Prisma.AiModelWhereInput = {
+      ...(query.provider ? { provider: query.provider } : {}),
+      ...(query.isActive !== undefined ? { isActive: query.isActive } : {}),
+      ...(query.keyword
+        ? {
+            OR: [
+              { modelId: { contains: query.keyword, mode: 'insensitive' } },
+              { displayName: { contains: query.keyword, mode: 'insensitive' } },
+              { provider: { contains: query.keyword, mode: 'insensitive' } },
+              { description: { contains: query.keyword, mode: 'insensitive' } },
+            ],
+          }
+        : {}),
+    };
+    const [items, total] = await this.prisma.$transaction([
+      this.prisma.aiModel.findMany({
+        where,
+        orderBy: [{ sortOrder: 'asc' }, { createdAt: 'asc' }],
+        skip: (query.page - 1) * query.pageSize,
+        take: query.pageSize,
+      }),
+      this.prisma.aiModel.count({ where }),
+    ]);
+    return { items, total, page: query.page, pageSize: query.pageSize };
+  }
+
+  async getAiModel(id: string) {
+    const model = await this.prisma.aiModel.findUnique({ where: { id } });
+    if (!model) throw new NotFoundException('AI model not found');
+    return model;
+  }
+
+  async createAiModel(dto: AdminAiModelCreateDto, meta: RequestMeta) {
+    const created = await this.prisma.aiModel.create({
+      data: {
+        modelId: dto.modelId,
+        displayName: dto.displayName,
+        provider: dto.provider,
+        persona: dto.persona as ModelPersona,
+        isActive: dto.isActive,
+        sortOrder: dto.sortOrder,
+        description: dto.description ?? null,
+        config: this.toPrismaJson(dto.config ?? null),
+      },
+    });
+    await this.writeAudit(meta, 'AI_MODEL_CREATE', 'AiModel', created.id, null, created);
+    return created;
+  }
+
+  async updateAiModel(id: string, dto: AdminAiModelUpdateDto, meta: RequestMeta) {
+    const before = await this.prisma.aiModel.findUnique({ where: { id } });
+    if (!before) throw new NotFoundException('AI model not found');
+    const data: Prisma.AiModelUpdateInput = {};
+    if (dto.modelId !== undefined) data.modelId = dto.modelId;
+    if (dto.displayName !== undefined) data.displayName = dto.displayName;
+    if (dto.provider !== undefined) data.provider = dto.provider;
+    if (dto.persona !== undefined) data.persona = dto.persona as ModelPersona;
+    if (dto.isActive !== undefined) data.isActive = dto.isActive;
+    if (dto.sortOrder !== undefined) data.sortOrder = dto.sortOrder;
+    if (dto.description !== undefined) data.description = dto.description;
+    if (dto.config !== undefined) data.config = this.toPrismaJson(dto.config ?? null);
+    const updated = await this.prisma.aiModel.update({ where: { id }, data });
+    await this.writeAudit(meta, 'AI_MODEL_UPDATE', 'AiModel', id, before, updated);
+    return updated;
+  }
+
+  async deleteAiModel(id: string, meta: RequestMeta) {
+    const before = await this.prisma.aiModel.findUnique({
+      where: { id },
+      include: { _count: { select: { predictions: true } } },
+    });
+    if (!before) throw new NotFoundException('AI model not found');
+    if (before._count.predictions > 0) {
+      const updated = await this.prisma.aiModel.update({ where: { id }, data: { isActive: false } });
+      await this.writeAudit(meta, 'AI_MODEL_DISABLE', 'AiModel', id, before, updated);
+      return { deleted: false, disabled: true, item: updated };
+    }
+    await this.prisma.aiModel.delete({ where: { id } });
+    await this.writeAudit(meta, 'AI_MODEL_DELETE', 'AiModel', id, before, null);
+    return { deleted: true, disabled: false };
+  }
+
+  async reorderAiModels(dto: AdminAiModelReorderDto, meta: RequestMeta) {
+    const ids = dto.items.map((item) => item.id);
+    const before = await this.prisma.aiModel.findMany({ where: { id: { in: ids } } });
+    if (before.length !== ids.length) throw new BadRequestException('Some AI models do not exist');
+    await this.prisma.$transaction(
+      dto.items.map((item) =>
+        this.prisma.aiModel.update({ where: { id: item.id }, data: { sortOrder: item.sortOrder } }),
+      ),
+    );
+    const after = await this.prisma.aiModel.findMany({
+      where: { id: { in: ids } },
+      orderBy: [{ sortOrder: 'asc' }, { createdAt: 'asc' }],
+    });
+    await this.writeAudit(meta, 'AI_MODEL_REORDER', 'AiModel', null, before, after);
+    return { items: after };
+  }
+
+  async listPredictionTasks(query: AdminPredictionTaskQuery) {
+    const where: Prisma.PredictionTaskWhereInput = {
+      ...(query.matchId ? { matchId: query.matchId } : {}),
+      ...(query.version ? { version: query.version as PredictionVersion } : {}),
+      ...(query.status ? { status: query.status as PredictionTaskStatus } : {}),
+      ...(query.trigger ? { trigger: query.trigger as PredictionTrigger } : {}),
+    };
+    const [items, total] = await this.prisma.$transaction([
+      this.prisma.predictionTask.findMany({
+        where,
+        include: {
+          match: { include: { competition: true, homeTeam: true, awayTeam: true } },
+          predictions: { include: { aiModel: true }, orderBy: { generatedAt: 'desc' } },
+        },
+        orderBy: { updatedAt: 'desc' },
+        skip: (query.page - 1) * query.pageSize,
+        take: query.pageSize,
+      }),
+      this.prisma.predictionTask.count({ where }),
+    ]);
+    return { items, total, page: query.page, pageSize: query.pageSize };
+  }
+
+  async getPredictionTask(id: string) {
+    const task = await this.prisma.predictionTask.findUnique({
+      where: { id },
+      include: {
+        match: { include: { competition: true, homeTeam: true, awayTeam: true } },
+        predictions: { include: { aiModel: true }, orderBy: { generatedAt: 'desc' } },
+      },
+    });
+    if (!task) throw new NotFoundException('Prediction task not found');
+    return task;
+  }
+
+  async triggerPrediction(dto: AdminPredictionTriggerDto, meta: RequestMeta) {
+    const result = await this.predictionPipeline.enqueuePrediction({
+      matchId: dto.matchId,
+      version: dto.version as PredictionVersion,
+      trigger: PredictionTrigger.MANUAL,
+      rerun: dto.rerun,
+    });
+    await this.writeAudit(meta, dto.rerun ? 'PREDICTION_RERUN' : 'PREDICTION_TRIGGER', 'PredictionTask', result.task.id, null, {
+      taskId: result.task.id,
+      jobId: result.jobId,
+      matchId: dto.matchId,
+      version: dto.version,
+      rerun: dto.rerun,
+    });
+    return result;
+  }
+
+  async publishPredictionTask(id: string, meta: RequestMeta) {
+    const before = await this.prisma.predictionTask.findUnique({ where: { id } });
+    if (!before) throw new NotFoundException('Prediction task not found');
+    const publishableStatuses: PredictionTaskStatus[] = [
+      PredictionTaskStatus.SUCCEEDED,
+      PredictionTaskStatus.PARTIAL_SUCCESS,
+      PredictionTaskStatus.REVIEWED,
+    ];
+    if (!publishableStatuses.includes(before.status)) {
+      throw new DomainError(ErrorCode.AI_TASK_INVALID_STATUS, 'Only succeeded or reviewed prediction tasks can be published', {
+        currentStatus: before.status,
+      });
+    }
+    if (before.successCount <= 0) {
+      throw new DomainError(ErrorCode.AI_CONTENT_BLOCKED, 'Prediction task has no safe successful model output to publish');
+    }
+    const reviewed =
+      before.status === PredictionTaskStatus.REVIEWED
+        ? before
+        : await this.prisma.predictionTask.update({ where: { id }, data: { status: PredictionTaskStatus.REVIEWED } });
+    const published = await this.prisma.predictionTask.update({
+      where: { id },
+      data: { status: PredictionTaskStatus.PUBLISHED, publishedAt: new Date() },
+    });
+    await this.writeAudit(meta, 'PREDICTION_PUBLISH', 'PredictionTask', id, before, { reviewed, published });
+    return published;
+  }
+
+  async rerunPredictionTask(id: string, dto: AdminPredictionRerunDto, meta: RequestMeta) {
+    const task = await this.prisma.predictionTask.findUnique({ where: { id } });
+    if (!task) throw new NotFoundException('Prediction task not found');
+    if (task.status === PredictionTaskStatus.RUNNING) {
+      throw new DomainError(ErrorCode.AI_TASK_ALREADY_RUNNING, 'Prediction task is already running');
+    }
+    const result = await this.predictionPipeline.enqueuePrediction({
+      matchId: task.matchId,
+      version: task.version,
+      trigger: PredictionTrigger.MANUAL,
+      rerun: true,
+    });
+    await this.writeAudit(meta, 'PREDICTION_RERUN', 'PredictionTask', id, task, {
+      taskId: result.task.id,
+      jobId: result.jobId,
+      reason: dto.reason ?? null,
+    });
+    return result;
+  }
+
+  async enqueuePredictionSchedulerScan(meta: RequestMeta) {
+    const result = await this.predictionPipeline.enqueueSchedulerScan();
+    await this.writeAudit(meta, 'PREDICTION_SCHEDULER_SCAN', 'PredictionTask', null, null, result);
+    return result;
   }
 
   async listAuditLogs(query: AdminAuditLogListQuery) {

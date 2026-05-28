@@ -138,3 +138,61 @@ export const AdminAuditLogListQuerySchema = PaginationQuerySchema.extend({
 export type AdminAuditLogListQuery = z.infer<
   typeof AdminAuditLogListQuerySchema
 >;
+
+export const AdminAiModelListQuerySchema = PaginationQuerySchema.extend({
+  keyword: z.string().trim().optional(),
+  provider: z.string().trim().optional(),
+  isActive: z.coerce.boolean().optional(),
+});
+export type AdminAiModelListQuery = z.infer<typeof AdminAiModelListQuerySchema>;
+
+const AiModelConfigSchema = z.record(z.unknown()).optional().nullable();
+
+export const AdminAiModelCreateSchema = z.object({
+  modelId: z.string().trim().min(2).max(120),
+  displayName: z.string().trim().min(1).max(120),
+  provider: z.enum(['openai', 'google', 'anthropic', 'mock']).or(z.string().trim().min(2).max(40)),
+  persona: z.enum(['STEADY', 'ATTACKING', 'UPSET_HUNTER', 'DATA_DRIVEN']).default('STEADY'),
+  isActive: z.coerce.boolean().default(true),
+  sortOrder: z.coerce.number().int().min(0).max(10_000).default(100),
+  description: optionalTrimmedString,
+  config: AiModelConfigSchema,
+});
+export type AdminAiModelCreateDto = z.infer<typeof AdminAiModelCreateSchema>;
+
+export const AdminAiModelUpdateSchema = AdminAiModelCreateSchema.partial();
+export type AdminAiModelUpdateDto = z.infer<typeof AdminAiModelUpdateSchema>;
+
+export const AdminAiModelReorderSchema = z.object({
+  items: z
+    .array(
+      z.object({
+        id: z.string().min(1),
+        sortOrder: z.coerce.number().int().min(0).max(10_000),
+      }),
+    )
+    .min(1),
+});
+export type AdminAiModelReorderDto = z.infer<typeof AdminAiModelReorderSchema>;
+
+export const AdminPredictionTaskQuerySchema = PaginationQuerySchema.extend({
+  matchId: z.string().trim().optional(),
+  version: z.enum(['T_MINUS_24H', 'T_MINUS_2H']).optional(),
+  status: z
+    .enum(['PENDING', 'RUNNING', 'PARTIAL_SUCCESS', 'SUCCEEDED', 'FAILED', 'REVIEWED', 'PUBLISHED'])
+    .optional(),
+  trigger: z.enum(['CRON', 'MANUAL']).optional(),
+});
+export type AdminPredictionTaskQuery = z.infer<typeof AdminPredictionTaskQuerySchema>;
+
+export const AdminPredictionTriggerSchema = z.object({
+  matchId: z.string().min(1),
+  version: z.enum(['T_MINUS_24H', 'T_MINUS_2H']),
+  rerun: z.coerce.boolean().default(false),
+});
+export type AdminPredictionTriggerDto = z.infer<typeof AdminPredictionTriggerSchema>;
+
+export const AdminPredictionRerunSchema = z.object({
+  reason: optionalTrimmedString,
+});
+export type AdminPredictionRerunDto = z.infer<typeof AdminPredictionRerunSchema>;
