@@ -7,7 +7,7 @@ describe('PredictionGeneratorPayloadSchema', () => {
   it('parses a valid payload with default trigger', () => {
     const parsed = PredictionGeneratorPayloadSchema.parse({
       matchId: 'm-1',
-      version: PredictionVersion.PRE_24H,
+      version: PredictionVersion.T_MINUS_24H,
     });
     expect(parsed.trigger).toBe('CRON');
   });

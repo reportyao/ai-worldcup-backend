@@ -1,7 +1,8 @@
-import {
+import type {
   MiddlewareConsumer,
+  NestModule} from '@nestjs/common';
+import {
   Module,
-  NestModule,
   ValidationPipe,
 } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';

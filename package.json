@@ -32,5 +32,8 @@
     "prisma": "^5.16.1",
     "typescript": "^5.5.3",
     "vitest": "^1.6.0"
+  },
+  "dependencies": {
+    "@prisma/client": "5.22.0"
   }
 }

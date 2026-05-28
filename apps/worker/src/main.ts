@@ -1,5 +1,5 @@
 import { Worker } from 'bullmq';
-import IORedis from 'ioredis';
+import { Redis } from 'ioredis';
 
 import { processDataSync } from './jobs/data-sync.job.js';
 import { processPredictionGenerator } from './jobs/prediction-generator.job.js';
@@ -11,8 +11,8 @@ const redisUrl = process.env.REDIS_URL ?? 'redis://localhost:6379/0';
 /**
  * BullMQ 要求 connection 设置 maxRetriesPerRequest=null，否则关停时会抛错。
  */
-function createConnection(): IORedis {
-  return new IORedis(redisUrl, {
+function createConnection(): Redis {
+  return new Redis(redisUrl, {
     maxRetriesPerRequest: null,
     enableReadyCheck: true,
     lazyConnect: false,

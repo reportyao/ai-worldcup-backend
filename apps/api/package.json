@@ -22,7 +22,7 @@
     "@nestjs/throttler": "^6.0.0",
     "@prisma/client": "^5.16.1",
     "bullmq": "^5.10.4",
-    "ioredis": "^5.4.1",
+    "ioredis": "5.10.1",
     "nestjs-pino": "^4.1.0",
     "pino": "^9.2.0",
     "pino-http": "^10.1.0",
