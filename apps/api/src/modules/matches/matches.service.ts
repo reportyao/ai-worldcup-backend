@@ -62,9 +62,10 @@ export class MatchesService {
             predictions: {
               include: { aiModel: true },
               where: { isSuccess: true },
-              orderBy: { generatedAt: 'desc' },
+              orderBy: { createdAt: 'desc' },
             },
           },
+          where: { status: { in: ['PUBLISHED', 'REVIEWED', 'SUCCEEDED'] } },
           orderBy: [{ version: 'desc' }, { updatedAt: 'desc' }],
         },
       },
@@ -107,7 +108,7 @@ export class MatchesService {
               provider: prediction.aiModel.provider,
             },
             structuredOutput: prediction.structuredOutput,
-            generatedAt: prediction.generatedAt.toISOString(),
+            generatedAt: prediction.createdAt.toISOString(),
           })),
         ),
         review: {
@@ -202,13 +203,8 @@ export class MatchesService {
     };
   }
 
-  private buildConsensus(tasks: Array<{ status: PredictionTaskStatus; consensusLevel: string | null; consensusSummary: unknown; successCount: number; modelCount: number }>) {
-    const publishableStatuses: PredictionTaskStatus[] = [
-      PredictionTaskStatus.PUBLISHED,
-      PredictionTaskStatus.REVIEWED,
-      PredictionTaskStatus.SUCCEEDED,
-    ];
-    const published = tasks.find((task) => publishableStatuses.includes(task.status));
+  private buildConsensus(tasks: Array<{ status: string; consensusLevel: string | null; consensusSummary: unknown; predictions: Array<{ isSuccess: boolean }> }>) {
+    const published = tasks[0];
     if (!published) {
       return {
         status: 'generating',
@@ -220,12 +216,15 @@ export class MatchesService {
       };
     }
 
+    const successCount = published.predictions.filter((p) => p.isSuccess).length;
+    const modelCount = published.predictions.length;
+
     return {
       status: 'published',
       title: this.extractConsensusHint(published.consensusSummary) ?? 'AI 共识已发布',
       highlight: this.extractConsensusHighlight(published.consensusSummary),
-      modelCount: published.modelCount,
-      successCount: published.successCount,
+      modelCount,
+      successCount,
       level: published.consensusLevel,
     };
   }

@@ -253,9 +253,9 @@ async function generatePrediction(payload: z.infer<typeof DirectPredictionPayloa
       successCount: 0,
       failureCount: 0,
       consensusLevel: null,
-      consensusSummary: null,
+      consensusSummary: undefined,
       errorMessage: null,
-      publishedAt: null,
+      publishedAt: undefined,
     },
     update: {
       trigger: payload.trigger,
@@ -264,7 +264,7 @@ async function generatePrediction(payload: z.infer<typeof DirectPredictionPayloa
       successCount: 0,
       failureCount: 0,
       consensusLevel: null,
-      consensusSummary: null,
+      consensusSummary: undefined,
       errorMessage: null,
       publishedAt: payload.rerun ? null : undefined,
     },
@@ -308,7 +308,7 @@ async function generatePrediction(payload: z.infer<typeof DirectPredictionPayloa
       successCount,
       failureCount,
       consensusLevel: consensus?.level ?? null,
-      consensusSummary: consensus,
+      consensusSummary: consensus ?? undefined,
       errorMessage,
     },
   });
@@ -334,5 +334,6 @@ export async function processPredictionGenerator(job: Job<unknown>): Promise<Pre
   if ('mode' in payload && payload.mode === 'SCHEDULE_DUE') {
     return scheduleDuePredictions(payload.windowMinutes);
   }
-  return generatePrediction(payload);
+  const directPayload = payload as z.infer<typeof DirectPredictionPayloadSchema>;
+  return generatePrediction(directPayload);
 }
