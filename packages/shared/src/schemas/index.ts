@@ -4,10 +4,13 @@ import {
   CompetitionType,
   ConsensusLevel,
   EntitlementSource,
+  EntitlementStatus,
+  InvitationStatus,
   Locale,
   MatchStatus,
   ModelPersona,
   OrderStatus,
+  PassTier,
   PaymentChannel,
   PredictionTaskStatus,
   PredictionTrigger,
@@ -213,16 +216,98 @@ export const ModelPredictionSchema = z.object({
 });
 export type ModelPredictionType = z.infer<typeof ModelPredictionSchema>;
 
+// ─── T1-03: User / Guest / Invitation / Entitlement / Order ─────────────────
+
+/**
+ * 用户资料 Schema
+ */
+export const UserProfileSchema = z.object({
+  id: z.string(),
+  nickname: z.string().nullable(),
+  avatarUrl: z.string().nullable(),
+  locale: z.nativeEnum(Locale),
+  timezone: z.string(),
+  isPassActive: z.boolean(),
+  passExpiresAt: z.string().nullable(),
+  passTier: z.nativeEnum(PassTier).nullable(),
+  createdAt: z.string(),
+});
+export type UserProfileType = z.infer<typeof UserProfileSchema>;
+
+/**
+ * 游客资料 Schema
+ */
+export const GuestProfileSchema = z.object({
+  id: z.string(),
+  fingerprint: z.string(),
+  locale: z.nativeEnum(Locale),
+  freeUsedToday: z.number().int().min(0),
+  freeResetDate: z.string().nullable(),
+  createdAt: z.string(),
+});
+export type GuestProfileType = z.infer<typeof GuestProfileSchema>;
+
+/**
+ * 游客注册/识别请求
+ */
+export const GuestIdentifySchema = z.object({
+  fingerprint: z.string().min(8).max(128),
+  userAgent: z.string().optional(),
+  locale: z.nativeEnum(Locale).optional(),
+});
+export type GuestIdentify = z.infer<typeof GuestIdentifySchema>;
+
+/**
+ * 邀请记录 Schema
+ */
+export const InvitationSchema = z.object({
+  id: z.string(),
+  inviterId: z.string(),
+  code: z.string(),
+  inviteeId: z.string().nullable(),
+  status: z.nativeEnum(InvitationStatus),
+  expiresAt: z.string(),
+  acceptedAt: z.string().nullable(),
+  rewardGranted: z.boolean(),
+  createdAt: z.string(),
+});
+export type InvitationType = z.infer<typeof InvitationSchema>;
+
+/**
+ * 权益记录 Schema
+ */
+export const EntitlementSchema = z.object({
+  id: z.string(),
+  userId: z.string().nullable(),
+  guestId: z.string().nullable(),
+  source: z.nativeEnum(EntitlementSource),
+  status: z.nativeEnum(EntitlementStatus),
+  validFrom: z.string(),
+  validUntil: z.string(),
+  usedCount: z.number().int().min(0),
+  maxCount: z.number().int().min(0),
+  orderId: z.string().nullable(),
+  invitationId: z.string().nullable(),
+  description: z.string().nullable(),
+  createdAt: z.string(),
+});
+export type EntitlementType = z.infer<typeof EntitlementSchema>;
+
+/**
+ * 权益快照（用于前端展示当前可用权益）
+ */
 export const EntitlementSnapshotSchema = z.object({
   freeDailyRemaining: z.number().int().min(0),
-  inviteRewardRemainingToday: z.number().int().min(0),
-  inviteRewardEarnedToday: z.number().int().min(0),
-  passActiveUntil: z.string().nullable(),
-  source: z.nativeEnum(EntitlementSource),
-  locale: z.nativeEnum(Locale),
+  inviteRewardRemaining: z.number().int().min(0),
+  isPassActive: z.boolean(),
+  passExpiresAt: z.string().nullable(),
+  passTier: z.nativeEnum(PassTier).nullable(),
 });
-export type EntitlementSnapshot = z.infer<typeof EntitlementSnapshotSchema>;
+export type EntitlementSnapshotType = z.infer<typeof EntitlementSnapshotSchema>;
 
+/**
+ * 订单 Schema
+ */
 export const OrderSchema = z.object({
   id: z.string(),
   userId: z.string(),
@@ -230,7 +315,19 @@ export const OrderSchema = z.object({
   amountCents: z.number().int().nonnegative(),
   currency: z.string().length(3),
   status: z.nativeEnum(OrderStatus),
-  createdAt: z.string(),
+  passTier: z.nativeEnum(PassTier).nullable(),
+  passDays: z.number().int().nullable(),
   paidAt: z.string().nullable(),
+  createdAt: z.string(),
 });
 export type Order = z.infer<typeof OrderSchema>;
+
+/**
+ * 创建订单请求
+ */
+export const CreateOrderSchema = z.object({
+  channel: z.nativeEnum(PaymentChannel),
+  passTier: z.nativeEnum(PassTier),
+  currency: z.string().length(3).default('USD'),
+});
+export type CreateOrder = z.infer<typeof CreateOrderSchema>;

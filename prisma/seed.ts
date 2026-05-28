@@ -226,6 +226,133 @@ async function main() {
   }
   console.log(`  ✓ PredictionTasks: ${matches.length} T-24h tasks created`);
 
+  // ─── T1-03: Guest / User / Invitation / Entitlement ─────────────────────────
+
+  // Create a sample guest
+  const guest = await prisma.guest.upsert({
+    where: { fingerprint: 'demo-fingerprint-abc123' },
+    update: {},
+    create: {
+      fingerprint: 'demo-fingerprint-abc123',
+      userAgent: 'Mozilla/5.0 (iPhone; CPU iPhone OS 17_0 like Mac OS X)',
+      ipAddress: '203.0.113.1',
+      locale: 'en',
+      freeUsedToday: 0,
+      freeResetDate: '2026-06-11',
+    },
+  });
+  console.log(`  ✓ Guest: ${guest.id} (fingerprint: ${guest.fingerprint})`);
+
+  // Create a sample registered user (upgraded from guest)
+  const user = await prisma.user.upsert({
+    where: { wechatOpenId: 'demo-openid-001' },
+    update: {},
+    create: {
+      wechatOpenId: 'demo-openid-001',
+      unionId: 'demo-unionid-001',
+      nickname: '球迷小王',
+      avatarUrl: null,
+      locale: 'zh_CN',
+      timezone: 'Asia/Shanghai',
+      isPassActive: false,
+      guestId: guest.id,
+    },
+  });
+  console.log(`  ✓ User: ${user.id} (${user.nickname})`);
+
+  // Create a second user for invitation demo
+  const user2 = await prisma.user.upsert({
+    where: { wechatOpenId: 'demo-openid-002' },
+    update: {},
+    create: {
+      wechatOpenId: 'demo-openid-002',
+      nickname: 'Football Fan',
+      locale: 'en',
+      timezone: 'America/New_York',
+      isPassActive: false,
+    },
+  });
+  console.log(`  ✓ User: ${user2.id} (${user2.nickname})`);
+
+  // Create an invitation from user1 to user2
+  const invitation = await prisma.invitation.upsert({
+    where: { code: 'INVITE-DEMO-001' },
+    update: {},
+    create: {
+      inviterId: user.id,
+      code: 'INVITE-DEMO-001',
+      inviteeId: user2.id,
+      status: 'ACCEPTED',
+      expiresAt: new Date('2026-07-19T00:00:00Z'),
+      acceptedAt: new Date('2026-06-10T10:00:00Z'),
+      rewardGranted: true,
+    },
+  });
+  console.log(`  ✓ Invitation: ${invitation.code} (${invitation.status})`);
+
+  // Create free daily entitlements for both users
+  const today = new Date();
+  const endOfDay = new Date(today);
+  endOfDay.setHours(23, 59, 59, 999);
+
+  await prisma.entitlement.create({
+    data: {
+      userId: user.id,
+      source: 'FREE_DAILY',
+      status: 'ACTIVE',
+      validFrom: today,
+      validUntil: endOfDay,
+      usedCount: 0,
+      maxCount: 3, // 每天免费查看 3 场
+      description: '每日免费权益 - 查看3场AI预测',
+    },
+  });
+
+  await prisma.entitlement.create({
+    data: {
+      userId: user2.id,
+      source: 'FREE_DAILY',
+      status: 'ACTIVE',
+      validFrom: today,
+      validUntil: endOfDay,
+      usedCount: 0,
+      maxCount: 3,
+      description: '每日免费权益 - 查看3场AI预测',
+    },
+  });
+
+  // Create invite reward entitlement for user1 (earned by inviting user2)
+  const rewardExpiry = new Date('2026-07-19T00:00:00Z');
+  await prisma.entitlement.create({
+    data: {
+      userId: user.id,
+      source: 'INVITE_REWARD',
+      status: 'ACTIVE',
+      validFrom: new Date('2026-06-10T10:00:00Z'),
+      validUntil: rewardExpiry,
+      usedCount: 0,
+      maxCount: 5, // 邀请奖励 5 次额外查看
+      invitationId: invitation.id,
+      description: '邀请好友奖励 - 额外5次AI预测查看',
+    },
+  });
+
+  // Create a guest entitlement (free daily for guest)
+  await prisma.entitlement.create({
+    data: {
+      guestId: guest.id,
+      source: 'FREE_DAILY',
+      status: 'ACTIVE',
+      validFrom: today,
+      validUntil: endOfDay,
+      usedCount: 0,
+      maxCount: 1, // 游客每天只能免费查看 1 场
+      description: '游客每日免费权益 - 查看1场AI预测',
+    },
+  });
+
+  console.log('  ✓ Entitlements: 4 created (2 free daily + 1 invite reward + 1 guest)');
+
   console.log('\n✅ Seed complete!');
 }
 

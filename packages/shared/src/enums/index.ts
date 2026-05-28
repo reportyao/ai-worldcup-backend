@@ -64,6 +64,28 @@ export const EntitlementSource = {
 } as const;
 export type EntitlementSource = (typeof EntitlementSource)[keyof typeof EntitlementSource];
 
+export const EntitlementStatus = {
+  ACTIVE: 'ACTIVE',
+  CONSUMED: 'CONSUMED',
+  EXPIRED: 'EXPIRED',
+  REVOKED: 'REVOKED',
+} as const;
+export type EntitlementStatus = (typeof EntitlementStatus)[keyof typeof EntitlementStatus];
+
+export const InvitationStatus = {
+  PENDING: 'PENDING',
+  ACCEPTED: 'ACCEPTED',
+  EXPIRED: 'EXPIRED',
+} as const;
+export type InvitationStatus = (typeof InvitationStatus)[keyof typeof InvitationStatus];
+
+export const PassTier = {
+  TIER_1: 'TIER_1',
+  TIER_2: 'TIER_2',
+  TIER_3: 'TIER_3',
+} as const;
+export type PassTier = (typeof PassTier)[keyof typeof PassTier];
+
 export const PaymentChannel = {
   WECHAT_PAY: 'WECHAT_PAY',
   STRIPE: 'STRIPE',
@@ -86,3 +108,12 @@ export const ModelPersona = {
   DATA_DRIVEN: 'DATA_DRIVEN',
 } as const;
 export type ModelPersona = (typeof ModelPersona)[keyof typeof ModelPersona];
+
+/**
+ * 定价层级对应的价格（美分）
+ */
+export const PassTierPriceCents: Record<string, number> = {
+  TIER_1: 999,  // $9.99
+  TIER_2: 499,  // $4.99
+  TIER_3: 299,  // $2.99
+} as const;

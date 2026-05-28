@@ -1,9 +1,15 @@
 import type {
   CompetitionType,
   ConsensusLevel,
+  EntitlementSource,
+  EntitlementStatus,
+  InvitationStatus,
   Locale,
   MatchStatus,
   ModelPersona,
+  OrderStatus,
+  PassTier,
+  PaymentChannel,
   PredictionTaskStatus,
   PredictionTrigger,
   PredictionVersion,
@@ -110,4 +116,76 @@ export interface ModelPredictionSummary {
 export interface PredictionTaskDetail extends PredictionTaskSummary {
   predictions: ModelPredictionSummary[];
   consensusSummary: unknown | null;
+}
+
+// ─── T1-03: User / Guest / Invitation / Entitlement / Order ─────────────────
+
+export interface UserProfile {
+  id: string;
+  nickname: string | null;
+  avatarUrl: string | null;
+  locale: Locale;
+  timezone: string;
+  isPassActive: boolean;
+  passExpiresAt: string | null;
+  passTier: PassTier | null;
+  createdAt: string;
+}
+
+export interface GuestProfile {
+  id: string;
+  fingerprint: string;
+  locale: Locale;
+  freeUsedToday: number;
+  freeResetDate: string | null;
+  createdAt: string;
+}
+
+export interface InvitationSummary {
+  id: string;
+  inviterId: string;
+  code: string;
+  inviteeId: string | null;
+  status: InvitationStatus;
+  expiresAt: string;
+  acceptedAt: string | null;
+  rewardGranted: boolean;
+  createdAt: string;
+}
+
+export interface EntitlementSummary {
+  id: string;
+  userId: string | null;
+  guestId: string | null;
+  source: EntitlementSource;
+  status: EntitlementStatus;
+  validFrom: string;
+  validUntil: string;
+  usedCount: number;
+  maxCount: number;
+  orderId: string | null;
+  invitationId: string | null;
+  description: string | null;
+  createdAt: string;
+}
+
+export interface EntitlementSnapshot {
+  freeDailyRemaining: number;
+  inviteRewardRemaining: number;
+  isPassActive: boolean;
+  passExpiresAt: string | null;
+  passTier: PassTier | null;
+}
+
+export interface OrderSummary {
+  id: string;
+  userId: string;
+  channel: PaymentChannel;
+  amountCents: number;
+  currency: string;
+  status: OrderStatus;
+  passTier: PassTier | null;
+  passDays: number | null;
+  paidAt: string | null;
+  createdAt: string;
 }

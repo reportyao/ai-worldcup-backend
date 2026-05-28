@@ -22,6 +22,24 @@ CREATE TYPE "ConsensusLevel" AS ENUM ('HIGH', 'MIXED', 'STRONG_DIVERGENCE');
 -- CreateEnum
 CREATE TYPE "ModelPersona" AS ENUM ('STEADY', 'ATTACKING', 'UPSET_HUNTER', 'DATA_DRIVEN');
 
+-- CreateEnum
+CREATE TYPE "EntitlementSource" AS ENUM ('FREE_DAILY', 'INVITE_REWARD', 'PASS_SUBSCRIPTION', 'ADMIN_GRANT');
+
+-- CreateEnum
+CREATE TYPE "EntitlementStatus" AS ENUM ('ACTIVE', 'CONSUMED', 'EXPIRED', 'REVOKED');
+
+-- CreateEnum
+CREATE TYPE "InvitationStatus" AS ENUM ('PENDING', 'ACCEPTED', 'EXPIRED');
+
+-- CreateEnum
+CREATE TYPE "PaymentChannel" AS ENUM ('WECHAT_PAY', 'STRIPE');
+
+-- CreateEnum
+CREATE TYPE "OrderStatus" AS ENUM ('CREATED', 'PAID', 'CANCELED', 'REFUNDED', 'FAILED');
+
+-- CreateEnum
+CREATE TYPE "PassTier" AS ENUM ('TIER_1', 'TIER_2', 'TIER_3');
+
 -- CreateTable
 CREATE TABLE "Competition" (
     "id" TEXT NOT NULL,
@@ -137,10 +155,88 @@ CREATE TABLE "User" (
     "nickname" TEXT,
     "avatarUrl" TEXT,
     "locale" "Locale" NOT NULL DEFAULT 'zh_CN',
+    "timezone" TEXT NOT NULL DEFAULT 'UTC',
+    "isPassActive" BOOLEAN NOT NULL DEFAULT false,
+    "passExpiresAt" TIMESTAMP(3),
+    "passTier" "PassTier",
+    "guestId" TEXT,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
 
     CONSTRAINT "User_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "Guest" (
+    "id" TEXT NOT NULL,
+    "fingerprint" TEXT NOT NULL,
+    "userAgent" TEXT,
+    "ipAddress" TEXT,
+    "locale" "Locale" NOT NULL DEFAULT 'en',
+    "freeUsedToday" INTEGER NOT NULL DEFAULT 0,
+    "freeResetDate" TEXT,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) NOT NULL,
+
+    CONSTRAINT "Guest_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "Invitation" (
+    "id" TEXT NOT NULL,
+    "inviterId" TEXT NOT NULL,
+    "code" TEXT NOT NULL,
+    "inviteeId" TEXT,
+    "status" "InvitationStatus" NOT NULL DEFAULT 'PENDING',
+    "expiresAt" TIMESTAMP(3) NOT NULL,
+    "acceptedAt" TIMESTAMP(3),
+    "rewardGranted" BOOLEAN NOT NULL DEFAULT false,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) NOT NULL,
+
+    CONSTRAINT "Invitation_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "Entitlement" (
+    "id" TEXT NOT NULL,
+    "userId" TEXT,
+    "guestId" TEXT,
+    "source" "EntitlementSource" NOT NULL,
+    "status" "EntitlementStatus" NOT NULL DEFAULT 'ACTIVE',
+    "validFrom" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "validUntil" TIMESTAMP(3) NOT NULL,
+    "usedCount" INTEGER NOT NULL DEFAULT 0,
+    "maxCount" INTEGER NOT NULL DEFAULT 1,
+    "orderId" TEXT,
+    "invitationId" TEXT,
+    "description" TEXT,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) NOT NULL,
+
+    CONSTRAINT "Entitlement_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "Order" (
+    "id" TEXT NOT NULL,
+    "userId" TEXT NOT NULL,
+    "channel" "PaymentChannel" NOT NULL,
+    "amountCents" INTEGER NOT NULL,
+    "currency" VARCHAR(3) NOT NULL,
+    "status" "OrderStatus" NOT NULL DEFAULT 'CREATED',
+    "passTier" "PassTier",
+    "passDays" INTEGER,
+    "externalOrderId" TEXT,
+    "paidAt" TIMESTAMP(3),
+    "canceledAt" TIMESTAMP(3),
+    "refundedAt" TIMESTAMP(3),
+    "failureReason" TEXT,
+    "metadata" JSONB,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) NOT NULL,
+
+    CONSTRAINT "Order_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateIndex
@@ -206,6 +302,60 @@ CREATE UNIQUE INDEX "User_wechatOpenId_key" ON "User"("wechatOpenId");
 -- CreateIndex
 CREATE UNIQUE INDEX "User_unionId_key" ON "User"("unionId");
 
+-- CreateIndex
+CREATE UNIQUE INDEX "User_guestId_key" ON "User"("guestId");
+
+-- CreateIndex
+CREATE INDEX "User_isPassActive_idx" ON "User"("isPassActive");
+
+-- CreateIndex
+CREATE INDEX "User_createdAt_idx" ON "User"("createdAt");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "Guest_fingerprint_key" ON "Guest"("fingerprint");
+
+-- CreateIndex
+CREATE INDEX "Guest_fingerprint_idx" ON "Guest"("fingerprint");
+
+-- CreateIndex
+CREATE INDEX "Guest_createdAt_idx" ON "Guest"("createdAt");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "Invitation_code_key" ON "Invitation"("code");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "Invitation_inviteeId_key" ON "Invitation"("inviteeId");
+
+-- CreateIndex
+CREATE INDEX "Invitation_inviterId_status_idx" ON "Invitation"("inviterId", "status");
+
+-- CreateIndex
+CREATE INDEX "Invitation_code_idx" ON "Invitation"("code");
+
+-- CreateIndex
+CREATE INDEX "Invitation_expiresAt_status_idx" ON "Invitation"("expiresAt", "status");
+
+-- CreateIndex
+CREATE INDEX "Entitlement_userId_source_status_idx" ON "Entitlement"("userId", "source", "status");
+
+-- CreateIndex
+CREATE INDEX "Entitlement_guestId_source_status_idx" ON "Entitlement"("guestId", "source", "status");
+
+-- CreateIndex
+CREATE INDEX "Entitlement_validUntil_status_idx" ON "Entitlement"("validUntil", "status");
+
+-- CreateIndex
+CREATE INDEX "Entitlement_orderId_idx" ON "Entitlement"("orderId");
+
+-- CreateIndex
+CREATE INDEX "Order_userId_status_idx" ON "Order"("userId", "status");
+
+-- CreateIndex
+CREATE INDEX "Order_status_createdAt_idx" ON "Order"("status", "createdAt");
+
+-- CreateIndex
+CREATE INDEX "Order_externalOrderId_idx" ON "Order"("externalOrderId");
+
 -- AddForeignKey
 ALTER TABLE "Match" ADD CONSTRAINT "Match_competitionId_fkey" FOREIGN KEY ("competitionId") REFERENCES "Competition"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
@@ -223,4 +373,25 @@ ALTER TABLE "ModelPrediction" ADD CONSTRAINT "ModelPrediction_predictionTaskId_f
 
 -- AddForeignKey
 ALTER TABLE "ModelPrediction" ADD CONSTRAINT "ModelPrediction_aiModelId_fkey" FOREIGN KEY ("aiModelId") REFERENCES "AiModel"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "User" ADD CONSTRAINT "User_guestId_fkey" FOREIGN KEY ("guestId") REFERENCES "Guest"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "Invitation" ADD CONSTRAINT "Invitation_inviterId_fkey" FOREIGN KEY ("inviterId") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "Invitation" ADD CONSTRAINT "Invitation_inviteeId_fkey" FOREIGN KEY ("inviteeId") REFERENCES "User"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "Entitlement" ADD CONSTRAINT "Entitlement_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "Entitlement" ADD CONSTRAINT "Entitlement_guestId_fkey" FOREIGN KEY ("guestId") REFERENCES "Guest"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "Entitlement" ADD CONSTRAINT "Entitlement_orderId_fkey" FOREIGN KEY ("orderId") REFERENCES "Order"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "Order" ADD CONSTRAINT "Order_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 

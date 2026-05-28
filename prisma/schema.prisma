@@ -1,6 +1,7 @@
 // AI Worldcup Prediction Platform - Phase 1 Schema
 // T1-01: Competition, Team, Match
 // T1-02: AiModel, PredictionTask, ModelPrediction
+// T1-03: User, Guest, Invitation, Entitlement, Order
 
 generator client {
   provider = "prisma-client-js"
@@ -67,6 +68,45 @@ enum ModelPersona {
   ATTACKING
   UPSET_HUNTER
   DATA_DRIVEN
+}
+
+enum EntitlementSource {
+  FREE_DAILY
+  INVITE_REWARD
+  PASS_SUBSCRIPTION
+  ADMIN_GRANT
+}
+
+enum EntitlementStatus {
+  ACTIVE
+  CONSUMED
+  EXPIRED
+  REVOKED
+}
+
+enum InvitationStatus {
+  PENDING
+  ACCEPTED
+  EXPIRED
+}
+
+enum PaymentChannel {
+  WECHAT_PAY
+  STRIPE
+}
+
+enum OrderStatus {
+  CREATED
+  PAID
+  CANCELED
+  REFUNDED
+  FAILED
+}
+
+enum PassTier {
+  TIER_1
+  TIER_2
+  TIER_3
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -260,9 +300,10 @@ model ModelPrediction {
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
-// User (Phase 0 existing)
+// T1-03: User / Guest / Invitation / Entitlement / Order
 // ─────────────────────────────────────────────────────────────────────────────
 
+/// 注册用户（通过微信/第三方登录后创建）
 model User {
   id           String   @id @default(cuid())
   /// 微信小程序登录后填充
@@ -271,6 +312,155 @@ model User {
   nickname     String?
   avatarUrl    String?
   locale       Locale   @default(zh_CN)
+  /// 用户时区，如 "Asia/Shanghai"
+  timezone     String   @default("UTC")
+  /// 是否为付费会员
+  isPassActive Boolean  @default(false)
+  /// 会员到期时间
+  passExpiresAt DateTime?
+  /// 会员等级
+  passTier     PassTier?
+  /// 从哪个游客升级而来
+  guestId      String?  @unique
+  guest        Guest?   @relation(fields: [guestId], references: [id])
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
+
+  entitlements    Entitlement[]
+  orders          Order[]
+  sentInvitations Invitation[] @relation("Inviter")
+  receivedInvitation Invitation? @relation("Invitee")
+
+  @@index([isPassActive])
+  @@index([createdAt])
+}
+
+/// 游客（未登录用户，通过设备指纹标识）
+model Guest {
+  id             String   @id @default(cuid())
+  /// 设备指纹（浏览器 fingerprint）
+  fingerprint    String   @unique
+  /// 用户代理
+  userAgent      String?
+  /// IP 地址（首次访问时记录）
+  ipAddress      String?
+  /// 语言偏好
+  locale         Locale   @default(en)
+  /// 今日已使用的免费次数
+  freeUsedToday  Int      @default(0)
+  /// 今日免费次数重置日期（格式 "2026-06-14"）
+  freeResetDate  String?
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  /// 游客升级为注册用户后的关联
+  user           User?
+  entitlements   Entitlement[]
+
+  @@index([fingerprint])
+  @@index([createdAt])
+}
+
+/// 邀请记录
+model Invitation {
+  id           String           @id @default(cuid())
+  /// 邀请人
+  inviterId    String
+  inviter      User             @relation("Inviter", fields: [inviterId], references: [id])
+  /// 邀请码（唯一，用于分享链接）
+  code         String           @unique
+  /// 被邀请人（接受邀请后填充）
+  inviteeId    String?          @unique
+  invitee      User?            @relation("Invitee", fields: [inviteeId], references: [id])
+  /// 邀请状态
+  status       InvitationStatus @default(PENDING)
+  /// 邀请过期时间
+  expiresAt    DateTime
+  /// 接受时间
+  acceptedAt   DateTime?
+  /// 邀请奖励是否已发放
+  rewardGranted Boolean         @default(false)
+  createdAt    DateTime         @default(now())
+  updatedAt    DateTime         @updatedAt
+
+  @@index([inviterId, status])
+  @@index([code])
+  @@index([expiresAt, status])
+}
+
+/// 权益记录（每条记录代表一次可用的付费/免费权益）
+model Entitlement {
+  id            String            @id @default(cuid())
+  /// 关联注册用户（二选一）
+  userId        String?
+  user          User?             @relation(fields: [userId], references: [id])
+  /// 关联游客（二选一）
+  guestId       String?
+  guest         Guest?            @relation(fields: [guestId], references: [id])
+  /// 权益来源
+  source        EntitlementSource
+  /// 权益状态
+  status        EntitlementStatus @default(ACTIVE)
+  /// 权益生效日期
+  validFrom     DateTime          @default(now())
+  /// 权益过期日期
+  validUntil    DateTime
+  /// 已消费次数（对于按次计费的权益）
+  usedCount     Int               @default(0)
+  /// 最大可用次数（0 表示无限制，如订阅型）
+  maxCount      Int               @default(1)
+  /// 关联的订单 ID（如果是付费获得的）
+  orderId       String?
+  order         Order?            @relation(fields: [orderId], references: [id])
+  /// 关联的邀请 ID（如果是邀请奖励）
+  invitationId  String?
+  /// 权益描述
+  description   String?
+  createdAt     DateTime          @default(now())
+  updatedAt     DateTime          @updatedAt
+
+  @@index([userId, source, status])
+  @@index([guestId, source, status])
+  @@index([validUntil, status])
+  @@index([orderId])
+}
+
+/// 订单（付费购买 World Cup Pass 等）
+model Order {
+  id              String         @id @default(cuid())
+  /// 关联用户
+  userId          String
+  user            User           @relation(fields: [userId], references: [id])
+  /// 支付渠道
+  channel         PaymentChannel
+  /// 金额（分/cents）
+  amountCents     Int
+  /// 货币代码（ISO 4217，如 "USD", "CNY"）
+  currency        String         @db.VarChar(3)
+  /// 订单状态
+  status          OrderStatus    @default(CREATED)
+  /// 会员等级
+  passTier        PassTier?
+  /// 会员有效天数
+  passDays        Int?
+  /// 第三方支付流水号
+  externalOrderId String?
+  /// 支付时间
+  paidAt          DateTime?
+  /// 取消时间
+  canceledAt      DateTime?
+  /// 退款时间
+  refundedAt      DateTime?
+  /// 失败原因
+  failureReason   String?
+  /// 订单元数据 JSON（优惠码、折扣信息等）
+  metadata        Json?
+  createdAt       DateTime       @default(now())
+  updatedAt       DateTime       @updatedAt
+
+  entitlements Entitlement[]
+
+  @@index([userId, status])
+  @@index([status, createdAt])
+  @@index([externalOrderId])
 }
