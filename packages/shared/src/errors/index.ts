@@ -1,0 +1,40 @@
+/**
+ * 标准错误码集中定义，前后端共享。
+ * 命名规则：{Domain}_{Reason}，全大写下划线分隔。
+ */
+export const ErrorCode = {
+  AUTH_REQUIRED: 'AUTH_REQUIRED',
+  AUTH_INVALID_TOKEN: 'AUTH_INVALID_TOKEN',
+  AUTH_WECHAT_LOGIN_FAILED: 'AUTH_WECHAT_LOGIN_FAILED',
+
+  RATE_LIMITED: 'RATE_LIMITED',
+  VALIDATION_FAILED: 'VALIDATION_FAILED',
+  RESOURCE_NOT_FOUND: 'RESOURCE_NOT_FOUND',
+
+  ENTITLEMENT_QUOTA_EXCEEDED: 'ENTITLEMENT_QUOTA_EXCEEDED',
+  ENTITLEMENT_PASS_REQUIRED: 'ENTITLEMENT_PASS_REQUIRED',
+  INVITE_LIMIT_REACHED: 'INVITE_LIMIT_REACHED',
+
+  PAYMENT_CHANNEL_UNSUPPORTED: 'PAYMENT_CHANNEL_UNSUPPORTED',
+  PAYMENT_VERIFY_FAILED: 'PAYMENT_VERIFY_FAILED',
+
+  AI_GATEWAY_TIMEOUT: 'AI_GATEWAY_TIMEOUT',
+  AI_GATEWAY_INVALID_OUTPUT: 'AI_GATEWAY_INVALID_OUTPUT',
+
+  DATA_PROVIDER_UNAVAILABLE: 'DATA_PROVIDER_UNAVAILABLE',
+
+  INTERNAL_ERROR: 'INTERNAL_ERROR',
+} as const;
+
+export type ErrorCode = (typeof ErrorCode)[keyof typeof ErrorCode];
+
+export class DomainError extends Error {
+  constructor(
+    public readonly code: ErrorCode,
+    message: string,
+    public readonly details?: unknown,
+  ) {
+    super(message);
+    this.name = 'DomainError';
+  }
+}

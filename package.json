@@ -1,0 +1,36 @@
+{
+  "name": "ai-worldcup-backend",
+  "private": true,
+  "version": "0.0.0",
+  "description": "AI Worldcup Prediction Platform - Backend monorepo (API, Worker, Shared types).",
+  "packageManager": "pnpm@9.7.0",
+  "engines": {
+    "node": ">=20.10.0"
+  },
+  "scripts": {
+    "build": "pnpm -r --filter \"./packages/*\" run build && pnpm -r --filter \"./apps/*\" run build",
+    "dev:api": "pnpm --filter @ai-worldcup/api run dev",
+    "dev:worker": "pnpm --filter @ai-worldcup/worker run dev",
+    "lint": "eslint \"{apps,packages}/**/src/**/*.{ts,tsx}\"",
+    "lint:fix": "eslint \"{apps,packages}/**/src/**/*.{ts,tsx}\" --fix",
+    "format": "prettier --write \"{apps,packages}/**/*.{ts,tsx,json,md}\"",
+    "typecheck": "pnpm -r run typecheck",
+    "test": "pnpm -r run test",
+    "prisma:generate": "prisma generate --schema prisma/schema.prisma",
+    "prisma:migrate:dev": "prisma migrate dev --schema prisma/schema.prisma",
+    "prisma:migrate:deploy": "prisma migrate deploy --schema prisma/schema.prisma",
+    "prepare": "echo 'skip husky in phase0'"
+  },
+  "devDependencies": {
+    "@types/node": "^20.12.12",
+    "@typescript-eslint/eslint-plugin": "^7.13.0",
+    "@typescript-eslint/parser": "^7.13.0",
+    "eslint": "^8.57.0",
+    "eslint-config-prettier": "^9.1.0",
+    "eslint-plugin-import": "^2.29.1",
+    "prettier": "^3.3.2",
+    "prisma": "^5.16.1",
+    "typescript": "^5.5.3",
+    "vitest": "^1.6.0"
+  }
+}
