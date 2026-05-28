@@ -37,6 +37,12 @@ enum MatchStatus {
   CANCELED
 }
 
+enum UserPredictionResult {
+  HOME_WIN
+  DRAW
+  AWAY_WIN
+}
+
 enum PredictionVersion {
   T_MINUS_24H
   T_MINUS_2H
@@ -195,6 +201,7 @@ model Match {
   updatedAt     DateTime    @updatedAt
 
   predictionTasks PredictionTask[]
+  userPredictions UserPrediction[]
 
   @@unique([competitionId, homeTeamId, awayTeamId, kickoffAt])
   @@index([competitionId, kickoffAt])
@@ -337,6 +344,7 @@ model User {
   orders          Order[]
   sentInvitations Invitation[] @relation("Inviter")
   receivedInvitation Invitation? @relation("Invitee")
+  userPredictions UserPrediction[]
 
   @@index([isPassActive])
   @@index([createdAt])
@@ -363,9 +371,37 @@ model Guest {
   /// 游客升级为注册用户后的关联
   user           User?
   entitlements   Entitlement[]
+  userPredictions UserPrediction[]
 
   @@index([fingerprint])
   @@index([createdAt])
+}
+
+/// 用户或游客对单场比赛提交的预测。游客登录后会合并到用户维度，保留原提交时间用于战绩统计。
+model UserPrediction {
+  id              String               @id @default(cuid())
+  matchId         String
+  match           Match                @relation(fields: [matchId], references: [id], onDelete: Cascade)
+  userId          String?
+  user            User?                @relation(fields: [userId], references: [id])
+  guestId         String?
+  guest           Guest?               @relation(fields: [guestId], references: [id])
+  prediction      UserPredictionResult
+  homeScore       Int
+  awayScore       Int
+  goalsMin        Int?
+  goalsMax        Int?
+  clientRequestId String?
+  ipAddress       String?
+  userAgent       String?
+  submittedAt     DateTime             @default(now())
+  updatedAt       DateTime             @updatedAt
+
+  @@unique([matchId, userId])
+  @@unique([matchId, guestId])
+  @@index([matchId, submittedAt])
+  @@index([userId, submittedAt])
+  @@index([guestId, submittedAt])
 }
 
 /// 邀请记录
