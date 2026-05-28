@@ -2,12 +2,6 @@
 
 AI 世界杯预测产品的后端 monorepo，包含 NestJS HTTP API、BullMQ Worker 与跨端共享类型 (`@ai-worldcup/shared`)。本仓为阶段 0 工程骨架，仅提供最小可启动能力，业务逻辑将在阶段 1 起逐步落地。
 
-> ⚠️ **CI 启用**：受沙盒 GitHub App token 权限限制，CI workflow 模板放在 `ci/ci.yml.template`。请克隆后将其复制到 `.github/workflows/ci.yml` 并手动 push 一次以激活：
->
-> ```bash
-> mkdir -p .github/workflows && cp ci/ci.yml.template .github/workflows/ci.yml && git add .github && git commit -m "ci: enable workflow" && git push
-> ```
-
 ## 技术栈
 
 - 运行时：Node.js >=20.10，TypeScript 5.5，pnpm 9.7 workspace
