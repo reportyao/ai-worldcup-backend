@@ -28,6 +28,8 @@ import { PaymentsModule } from './modules/payments/payments.module.js';
 import { PredictionPipelineModule } from './modules/prediction-pipeline/prediction-pipeline.module.js';
 import { PredictionsModule } from './modules/predictions/predictions.module.js';
 import { ReviewsModule } from './modules/reviews/reviews.module.js';
+import { ConsensusModule } from './modules/consensus/consensus.module.js';
+import { ScorecardModule } from './modules/scorecard/scorecard.module.js';
 import { ShareModule } from './modules/share/share.module.js';
 import { PrismaModule } from './prisma/prisma.module.js';
 
@@ -53,6 +55,8 @@ import { PrismaModule } from './prisma/prisma.module.js';
     MatchesModule,
     PredictionsModule,
     ReviewsModule,
+    ConsensusModule,
+    ScorecardModule,
     EntitlementsModule,
     PaymentsModule,
     ShareModule,

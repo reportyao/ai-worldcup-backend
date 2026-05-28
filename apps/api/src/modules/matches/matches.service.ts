@@ -111,10 +111,7 @@ export class MatchesService {
             generatedAt: prediction.createdAt.toISOString(),
           })),
         ),
-        review: {
-          status: match.status === MatchStatus.FINISHED ? 'pending_generation' : 'waiting_for_result',
-          message: match.status === MatchStatus.FINISHED ? '赛果确认后将生成复盘。' : '比赛结束后开放复盘。',
-        },
+        review: await this.buildReviewPayload(matchId, match.status),
       },
       userPrediction: userPrediction ? this.toUserPrediction(userPrediction) : null,
     };
@@ -236,6 +233,87 @@ export class MatchesService {
       title: closed ? '预测已记录，等待复盘统计' : '预测已提交',
       message: `你的胜平负与比分 ${scoreText} 已保存，登录后会保留这次游客预测。`,
       submittedBeforeKickoff: new Date() < match.kickoffAt,
+    };
+  }
+
+  private async buildReviewPayload(matchId: string, matchStatus: MatchStatus) {
+    if (matchStatus !== MatchStatus.FINISHED) {
+      return {
+        status: 'waiting_for_result',
+        message: '比赛结束后开放复盘。',
+        reviews: [],
+        summary: null,
+      };
+    }
+
+    const reviews = await this.prisma.modelReview.findMany({
+      where: { matchId },
+      include: { aiModel: true },
+      orderBy: { createdAt: 'asc' },
+    });
+
+    if (reviews.length === 0) {
+      return {
+        status: 'pending_generation',
+        message: '赛果已确认，复盘生成中...',
+        reviews: [],
+        summary: null,
+      };
+    }
+
+    const publishedReviews = reviews.filter((r) => r.status === 'PUBLISHED');
+    const allPublished = publishedReviews.length === reviews.length;
+    const hasGenerating = reviews.some((r) => r.status === 'GENERATING');
+
+    let status: string;
+    if (allPublished) {
+      status = 'published';
+    } else if (hasGenerating) {
+      status = 'generating';
+    } else if (publishedReviews.length > 0) {
+      status = 'partial';
+    } else {
+      status = 'pending_generation';
+    }
+
+    // 计算平均评分
+    const grades = publishedReviews
+      .map((r) => (r.structuredOutput as Record<string, unknown>)?.grade as string)
+      .filter(Boolean);
+    const gradeValues: Record<string, number> = { A: 5, B: 4, C: 3, D: 2, F: 1 };
+    let averageGrade: string | null = null;
+    if (grades.length > 0) {
+      const avg = grades.reduce((sum, g) => sum + (gradeValues[g] ?? 0), 0) / grades.length;
+      if (avg >= 4.5) averageGrade = 'A';
+      else if (avg >= 3.5) averageGrade = 'B';
+      else if (avg >= 2.5) averageGrade = 'C';
+      else if (avg >= 1.5) averageGrade = 'D';
+      else averageGrade = 'F';
+    }
+
+    return {
+      status,
+      message: allPublished ? '复盘已发布' : hasGenerating ? '复盘生成中...' : '部分复盘已发布',
+      reviews: reviews.map((r) => ({
+        id: r.id,
+        aiModelId: r.aiModelId,
+        model: {
+          id: r.aiModel.id,
+          displayName: r.aiModel.displayName,
+          persona: r.aiModel.persona,
+          provider: r.aiModel.provider,
+        },
+        status: r.status,
+        structuredOutput: r.structuredOutput,
+        accuracyJson: r.accuracyJson,
+        grade: (r.structuredOutput as Record<string, unknown>)?.grade ?? null,
+        publishedAt: r.publishedAt?.toISOString() ?? null,
+      })),
+      summary: {
+        totalModels: reviews.length,
+        publishedCount: publishedReviews.length,
+        averageGrade,
+      },
     };
   }
 

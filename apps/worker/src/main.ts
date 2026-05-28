@@ -1,8 +1,11 @@
 import { Queue, Worker } from 'bullmq';
 import { Redis } from 'ioredis';
 
+import { processConsensusCalculator } from './jobs/consensus-calculator.job.js';
 import { processDataSync } from './jobs/data-sync.job.js';
 import { processPredictionGenerator } from './jobs/prediction-generator.job.js';
+import { processReviewGenerator } from './jobs/review-generator.job.js';
+import { processScorecardUpdate } from './jobs/scorecard-update.job.js';
 import { logger } from './logger.js';
 import { QueueName } from './queues.js';
 
@@ -70,11 +73,9 @@ async function main(): Promise<void> {
   await registerPredictionScheduler();
   registerWorker(QueueName.PredictionGenerator, processPredictionGenerator);
   registerWorker(QueueName.DataSync, processDataSync);
-  // PostMatchReview 占位，阶段 1 实现具体 processor 后再接入
-  registerWorker(QueueName.PostMatchReview, async (job) => {
-    logger.info({ jobId: job.id }, 'post-match-review placeholder');
-    return { ok: true };
-  });
+  registerWorker(QueueName.PostMatchReview, processReviewGenerator);
+  registerWorker(QueueName.ConsensusCalculator, processConsensusCalculator);
+  registerWorker(QueueName.ScorecardUpdate, processScorecardUpdate);
 
   const shutdown = async (signal: NodeJS.Signals): Promise<void> => {
     logger.info({ signal }, 'shutting down workers');

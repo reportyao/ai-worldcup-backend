@@ -202,6 +202,7 @@ model Match {
 
   predictionTasks PredictionTask[]
   userPredictions UserPrediction[]
+  modelReviews    ModelReview[]
 
   @@unique([competitionId, homeTeamId, awayTeamId, kickoffAt])
   @@index([competitionId, kickoffAt])
@@ -236,6 +237,8 @@ model AiModel {
   updatedAt    DateTime     @updatedAt
 
   predictions ModelPrediction[]
+  reviews      ModelReview[]
+  scorecards   ModelScorecard[]
 
   @@index([isActive, sortOrder])
   @@index([isActive, persona])
@@ -270,7 +273,8 @@ model PredictionTask {
   createdAt   DateTime             @default(now())
   updatedAt   DateTime             @updatedAt
 
-  predictions ModelPrediction[]
+  predictions  ModelPrediction[]
+  modelReviews ModelReview[]
 
   /// 同一场比赛同一版本只能有一个任务
   @@unique([matchId, version])
@@ -509,6 +513,66 @@ model Order {
   @@index([userId, status])
   @@index([status, createdAt])
   @@index([externalOrderId])
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// T4: Post-Match Review / Model Scorecard
+// ─────────────────────────────────────────────────────────────────────────────
+
+enum ReviewStatus {
+  PENDING
+  GENERATING
+  PUBLISHED
+  FAILED
+}
+
+/// 单模型赛后复盘
+model ModelReview {
+  id               String       @id @default(cuid())
+  matchId          String
+  match            Match        @relation(fields: [matchId], references: [id], onDelete: Cascade)
+  aiModelId        String
+  aiModel          AiModel      @relation(fields: [aiModelId], references: [id])
+  predictionTaskId String?
+  predictionTask   PredictionTask? @relation(fields: [predictionTaskId], references: [id], onDelete: SetNull)
+  status           ReviewStatus @default(PENDING)
+  /// 结构化复盘输出 JSON
+  structuredOutput Json?
+  /// 准确性评估 JSON
+  accuracyJson     Json?
+  rawOutput        String?
+  errorMessage     String?
+  publishedAt      DateTime?
+  createdAt        DateTime     @default(now())
+  updatedAt        DateTime     @updatedAt
+
+  @@unique([matchId, aiModelId])
+  @@index([matchId, status])
+  @@index([aiModelId, createdAt])
+}
+
+/// 模型战绩聚合
+model ModelScorecard {
+  id                 String   @id @default(cuid())
+  aiModelId          String
+  aiModel            AiModel  @relation(fields: [aiModelId], references: [id], onDelete: Cascade)
+  /// 'OVERALL' | 'COMPETITION' | 'RECENT_10'
+  scopeType          String   @default("OVERALL")
+  /// null for OVERALL/RECENT_10, competitionId for COMPETITION
+  scopeId            String?
+  totalMatches       Int      @default(0)
+  winDrawLossCorrect Int      @default(0)
+  scoreExact         Int      @default(0)
+  goalRangeHit       Int      @default(0)
+  winRate            Float    @default(0)
+  /// 近10场结果序列，如 "WWLWDWWLWW"
+  recentForm         String?
+  lastMatchId        String?
+  updatedAt          DateTime @updatedAt
+  createdAt          DateTime @default(now())
+
+  @@unique([aiModelId, scopeType, scopeId])
+  @@index([aiModelId, scopeType])
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
