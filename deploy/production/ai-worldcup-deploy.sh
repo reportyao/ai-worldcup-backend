@@ -77,7 +77,7 @@ prepare_backend_env() {
     cat > "$env_file" <<ENVEOF
 NODE_ENV=production
 API_PORT=$API_PORT
-DATABASE_URL=postgresql://ai_worldcup:ai_worldcup_password@127.0.0.1:5432/ai_worldcup?schema=public
+DATABASE_URL=postgresql://postgres:postgres@127.0.0.1:5432/ai_worldcup?schema=public
 REDIS_URL=redis://127.0.0.1:6379
 JWT_SECRET=change-this-jwt-secret-before-public-launch
 WECHAT_APP_ID=
