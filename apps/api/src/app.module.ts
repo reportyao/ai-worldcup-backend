@@ -32,6 +32,7 @@ import { ConsensusModule } from './modules/consensus/consensus.module.js';
 import { ScorecardModule } from './modules/scorecard/scorecard.module.js';
 import { InvitationsModule } from './modules/invitations/invitations.module.js';
 import { ShareModule } from './modules/share/share.module.js';
+import { TranslationModule } from './modules/translation/translation.module.js';
 import { PrismaModule } from './prisma/prisma.module.js';
 
 @Module({
@@ -62,6 +63,7 @@ import { PrismaModule } from './prisma/prisma.module.js';
     InvitationsModule,
     PaymentsModule,
     ShareModule,
+    TranslationModule,
   ],
   providers: [
     { provide: APP_GUARD, useClass: ThrottlerGuard },

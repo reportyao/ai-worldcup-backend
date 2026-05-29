@@ -6,6 +6,7 @@ import { processDataSync } from './jobs/data-sync.job.js';
 import { processPredictionGenerator } from './jobs/prediction-generator.job.js';
 import { processReviewGenerator } from './jobs/review-generator.job.js';
 import { processScorecardUpdate } from './jobs/scorecard-update.job.js';
+import { processTranslation } from './jobs/translation.job.js';
 import { logger } from './logger.js';
 import { QueueName } from './queues.js';
 
@@ -76,6 +77,7 @@ async function main(): Promise<void> {
   registerWorker(QueueName.PostMatchReview, processReviewGenerator);
   registerWorker(QueueName.ConsensusCalculator, processConsensusCalculator);
   registerWorker(QueueName.ScorecardUpdate, processScorecardUpdate);
+  registerWorker(QueueName.Translation, processTranslation);
 
   const shutdown = async (signal: NodeJS.Signals): Promise<void> => {
     logger.info({ signal }, 'shutting down workers');

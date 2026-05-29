@@ -203,6 +203,7 @@ model Match {
   predictionTasks PredictionTask[]
   userPredictions UserPrediction[]
   modelReviews    ModelReview[]
+  shareTracks     ShareTrack[]
 
   @@unique([competitionId, homeTeamId, awayTeamId, kickoffAt])
   @@index([competitionId, kickoffAt])
@@ -352,6 +353,9 @@ model User {
   sentInvitations Invitation[] @relation("Inviter")
   receivedInvitation Invitation? @relation("Invitee")
   userPredictions UserPrediction[]
+  shareTracks     ShareTrack[]
+  shareAttributions ShareAttribution[] @relation("AttributedUser")
+  inviterAttributions ShareAttribution[] @relation("Inviter_Attribution")
 
   @@index([isPassActive])
   @@index([createdAt])
@@ -379,6 +383,7 @@ model Guest {
   user           User?
   entitlements   Entitlement[]
   userPredictions UserPrediction[]
+  shareTracks    ShareTrack[]
 
   @@index([fingerprint])
   @@index([createdAt])
@@ -612,3 +617,96 @@ model AdminAuditLog {
   @@index([action, createdAt])
 }
 
+// ─────────────────────────────────────────────────────────────────────────────
+// T6: Share Attribution & i18n Content Translation
+// ─────────────────────────────────────────────────────────────────────────────
+
+/// 分享追踪：记录每次分享行为（小程序码、链接分享等）
+model ShareTrack {
+  id           String   @id @default(cuid())
+  userId       String?
+  user         User?    @relation(fields: [userId], references: [id])
+  guestId      String?
+  guest        Guest?   @relation(fields: [guestId], references: [id])
+  matchId      String?
+  match        Match?   @relation(fields: [matchId], references: [id])
+  /// 分享渠道：WECHAT_MINIPROGRAM | WECHAT_MOMENTS | H5_LINK | COPY_LINK
+  channel      String   @default("WECHAT_MINIPROGRAM")
+  /// 模板类型：PREDICTION | ROAST | REVIEW | LEADERBOARD
+  templateType String   @default("PREDICTION")
+  /// 关联邀请码
+  inviteCode   String?
+  /// 小程序码 scene 值（用于归因）
+  sceneValue   String?  @unique
+  /// 分享链接
+  shareUrl     String?
+  /// 小程序码图片 URL
+  qrcodeUrl    String?
+  /// 浏览次数
+  viewCount    Int      @default(0)
+  /// 绑定次数（通过此分享注册的用户数）
+  bindCount    Int      @default(0)
+  /// 额外元数据
+  metadata     Json?
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  attributions ShareAttribution[]
+
+  @@index([userId, createdAt])
+  @@index([matchId])
+  @@index([inviteCode])
+  @@index([sceneValue])
+}
+
+/// 分享归因绑定：新用户通过分享链接注册后的归因记录
+model ShareAttribution {
+  id            String     @id @default(cuid())
+  shareTrackId  String
+  shareTrack    ShareTrack @relation(fields: [shareTrackId], references: [id])
+  /// 新注册用户
+  newUserId     String     @unique
+  newUser       User       @relation("AttributedUser", fields: [newUserId], references: [id])
+  /// 邀请人
+  inviterUserId String?
+  inviterUser   User?      @relation("Inviter_Attribution", fields: [inviterUserId], references: [id])
+  inviteCode    String?
+  sceneValue    String?
+  channel       String     @default("WECHAT_MINIPROGRAM")
+  registeredAt  DateTime   @default(now())
+  rewardGranted Boolean    @default(false)
+  createdAt     DateTime   @default(now())
+
+  @@index([shareTrackId])
+  @@index([inviterUserId])
+}
+
+/// AI 内容翻译表：存储预测、复盘等内容的多语言翻译版本
+model ContentTranslation {
+  id             String    @id @default(cuid())
+  /// 来源类型：PREDICTION_TASK | MODEL_REVIEW | CONSENSUS_SUMMARY
+  sourceType     String
+  /// 来源 ID
+  sourceId       String
+  /// 目标语言
+  locale         String    @default("en")
+  /// 翻译后的结构化 JSON
+  structuredJson Json?
+  /// 翻译后的原始文本
+  rawText        String?
+  /// 翻译状态：PENDING | TRANSLATING | COMPLETED | FAILED
+  status         String    @default("PENDING")
+  /// 翻译提供者
+  provider       String?
+  /// 错误信息
+  errorMessage   String?
+  /// 审核状态：AUTO | HUMAN_REVIEWED | REJECTED
+  reviewStatus   String    @default("AUTO")
+  publishedAt    DateTime?
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+
+  @@unique([sourceType, sourceId, locale])
+  @@index([status])
+  @@index([sourceType, sourceId])
+}

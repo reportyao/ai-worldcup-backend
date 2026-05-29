@@ -7,6 +7,7 @@ export const QueueName = {
   PostMatchReview: 'post-match-review',
   ConsensusCalculator: 'consensus-calculator',
   ScorecardUpdate: 'scorecard-update',
+  Translation: 'translation',
 } as const;
 
 export type QueueName = (typeof QueueName)[keyof typeof QueueName];
