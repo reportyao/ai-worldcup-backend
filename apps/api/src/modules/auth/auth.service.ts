@@ -22,6 +22,10 @@ interface WechatSession {
 export interface RequestMeta {
   ipAddress?: string;
   userAgent?: string;
+  /** 分享归因 scene，用于后续将登录用户与分享链路绑定。 */
+  shareScene?: string;
+  /** 邀请码，用于后续将登录用户与邀请链路绑定。 */
+  inviteCode?: string;
 }
 
 @Injectable()

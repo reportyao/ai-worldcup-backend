@@ -1,5 +1,7 @@
 import { Injectable, Logger, NotFoundException } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
+import { Prisma } from '@prisma/client';
+
 import { PrismaService } from '../../prisma/prisma.service.js';
 
 /**
@@ -113,7 +115,7 @@ export class TranslationService {
       await this.prisma.contentTranslation.update({
         where: { id: translationId },
         data: {
-          structuredJson: translatedContent,
+          structuredJson: translatedContent as Prisma.InputJsonValue,
           status: 'COMPLETED',
           provider: 'ai-gateway',
           publishedAt: new Date(),
