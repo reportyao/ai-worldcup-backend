@@ -71,7 +71,7 @@ export class PredictionPipelineService implements OnModuleDestroy {
         attempts: 1,
         removeOnComplete: 200,
         removeOnFail: 500,
-        jobId: `prediction:${options.matchId}:${options.version}:${Date.now()}`,
+        jobId: `prediction_${options.matchId}_${options.version}_${Date.now()}`,
       },
     );
 
@@ -89,7 +89,7 @@ export class PredictionPipelineService implements OnModuleDestroy {
         attempts: 1,
         removeOnComplete: 50,
         removeOnFail: 100,
-        jobId: `prediction-scheduler:${Date.now()}`,
+        jobId: `prediction-scheduler_${Date.now()}`,
       },
     );
     return { jobId: job.id };

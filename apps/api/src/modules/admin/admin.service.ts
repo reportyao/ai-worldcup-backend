@@ -67,8 +67,15 @@ export class AdminService {
   ) {}
 
   getRequestMeta(req: Request): RequestMeta {
-    const headerEmail = req.header('x-admin-email')?.trim();
-    const headerName = req.header('x-admin-name')?.trim();
+    const rawEmail = req.header('x-admin-email')?.trim();
+    const rawName = req.header('x-admin-name')?.trim();
+    // 前端使用 encodeURIComponent 编码以支持中文，这里做对应解码
+    const safeDecodeHeader = (val: string | undefined): string | undefined => {
+      if (!val || val.length === 0) return undefined;
+      try { return decodeURIComponent(val); } catch { return val; }
+    };
+    const headerEmail = safeDecodeHeader(rawEmail);
+    const headerName = safeDecodeHeader(rawName);
     return {
       adminEmail: headerEmail && headerEmail.length > 0 ? headerEmail : 'phase1-admin@local',
       adminName: headerName && headerName.length > 0 ? headerName : 'Phase 1 Admin',
