@@ -21,7 +21,8 @@ ensure_command() {
 }
 
 ensure_base_dirs() {
-  mkdir -p /home/ubuntu/apps "$DEPLOY_DIR" "$LOG_DIR" "$WEB_ROOT"
+  mkdir -p /home/ubuntu/apps "$DEPLOY_DIR" "$LOG_DIR"
+  sudo mkdir -p "$WEB_ROOT"
   sudo chown -R ubuntu:ubuntu /home/ubuntu/apps "$DEPLOY_DIR" "$LOG_DIR"
 }
 
