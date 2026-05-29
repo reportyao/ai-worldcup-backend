@@ -11,24 +11,41 @@ concurrency:
 
 jobs:
   deploy:
-    runs-on: [self-hosted, linux, x64, worldcup-backend]
-    timeout-minutes: 40
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
     steps:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Sync source to production directory
+      - name: Prepare SSH
         shell: bash
         run: |
           set -euo pipefail
-          mkdir -p /home/ubuntu/apps/ai-worldcup-backend
+          mkdir -p ~/.ssh
+          cat > ~/.ssh/worldcup_deploy_key <<'KEYEOF'
+          ${{ secrets.SSH_PRIVATE_KEY }}
+          KEYEOF
+          sed -i 's/^          //' ~/.ssh/worldcup_deploy_key
+          chmod 600 ~/.ssh/worldcup_deploy_key
+          ssh-keyscan -p "${{ secrets.SSH_PORT }}" -H "${{ secrets.SSH_HOST }}" >> ~/.ssh/known_hosts
+
+      - name: Sync source to server
+        shell: bash
+        run: |
+          set -euo pipefail
+          ssh -i ~/.ssh/worldcup_deploy_key -p "${{ secrets.SSH_PORT }}" "${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}" "mkdir -p /home/ubuntu/apps/ai-worldcup-backend"
           rsync -az --delete \
             --exclude '.git' \
             --exclude 'node_modules' \
             --exclude '.env' \
             --exclude 'dist' \
-            ./ /home/ubuntu/apps/ai-worldcup-backend/
+            --exclude 'coverage' \
+            --exclude '.turbo' \
+            -e "ssh -i ~/.ssh/worldcup_deploy_key -p ${{ secrets.SSH_PORT }}" \
+            ./ "${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:/home/ubuntu/apps/ai-worldcup-backend/"
 
-      - name: Deploy backend on server
+      - name: Run deployment on server
         shell: bash
-        run: bash /home/ubuntu/apps/ai-worldcup-backend/deploy/production/deploy-backend.sh
+        run: |
+          set -euo pipefail
+          ssh -i ~/.ssh/worldcup_deploy_key -p "${{ secrets.SSH_PORT }}" "${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}" "bash /home/ubuntu/apps/ai-worldcup-backend/deploy/production/deploy-backend.sh"
