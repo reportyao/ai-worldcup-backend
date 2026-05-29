@@ -11,7 +11,7 @@ cd /home/ubuntu/apps/ai-worldcup-backend
 bash deploy/production/ai-worldcup-deploy.sh
 ```
 
-脚本会自动拉取前后端 `main` 分支、安装依赖、执行 Prisma 迁移、构建后端 API/Worker、构建前端、发布静态文件、启动 PM2 进程并配置 Nginx。由于前端仓库是私有仓库，服务器应在 `/home/ubuntu/.ssh` 中配置只读部署密钥；脚本默认通过 `git@github.com:reportyao/ai-worldcup-frontend.git` 拉取前端代码，并自动把 GitHub SSH 访问切换到 443 端口以提升云服务器出网兼容性。
+脚本会自动拉取前后端 `main` 分支、安装依赖、执行 Prisma 迁移、构建后端 API/Worker、构建前端、发布静态文件、启动 PM2 进程并配置 Nginx。服务器应在 `/home/ubuntu/.ssh` 中配置两个只读部署密钥：`ai_worldcup_backend_deploy` 对应后端仓库，`ai_worldcup_deploy` 对应前端私有仓库；脚本默认通过 `git@github-backend:reportyao/ai-worldcup-backend.git` 与 `git@github-frontend:reportyao/ai-worldcup-frontend.git` 拉取代码，并自动把 GitHub SSH 访问切换到 443 端口以提升云服务器出网兼容性。
 
 ## GitHub 自动部署
 

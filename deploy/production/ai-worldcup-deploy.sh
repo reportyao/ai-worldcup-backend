@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 set -Eeuo pipefail
 
-BACKEND_REPO_URL="${BACKEND_REPO_URL:-https://github.com/reportyao/ai-worldcup-backend.git}"
-FRONTEND_REPO_URL="${FRONTEND_REPO_URL:-git@github.com:reportyao/ai-worldcup-frontend.git}"
+BACKEND_REPO_URL="${BACKEND_REPO_URL:-git@github-backend:reportyao/ai-worldcup-backend.git}"
+FRONTEND_REPO_URL="${FRONTEND_REPO_URL:-git@github-frontend:reportyao/ai-worldcup-frontend.git}"
 BACKEND_DIR="${BACKEND_DIR:-/home/ubuntu/apps/ai-worldcup-backend}"
 FRONTEND_DIR="${FRONTEND_DIR:-/home/ubuntu/apps/ai-worldcup-frontend}"
 DEPLOY_DIR="${DEPLOY_DIR:-/home/ubuntu/deploy}"
@@ -30,12 +30,22 @@ ensure_runtime() {
   mkdir -p /home/ubuntu/.ssh
   ssh-keyscan -p 443 ssh.github.com >> /home/ubuntu/.ssh/known_hosts 2>/dev/null || true
   ssh-keyscan github.com >> /home/ubuntu/.ssh/known_hosts 2>/dev/null || true
-  if [ ! -f /home/ubuntu/.ssh/config ]; then
-    cat > /home/ubuntu/.ssh/config <<'SSHCONF'
-Host github.com
+  if ! grep -q 'Host github-backend' /home/ubuntu/.ssh/config 2>/dev/null; then
+    cat >> /home/ubuntu/.ssh/config <<'SSHCONF'
+Host github-backend
   HostName ssh.github.com
   Port 443
   User git
+  IdentityFile ~/.ssh/ai_worldcup_backend_deploy
+  IdentitiesOnly yes
+  StrictHostKeyChecking accept-new
+
+Host github-frontend
+  HostName ssh.github.com
+  Port 443
+  User git
+  IdentityFile ~/.ssh/ai_worldcup_deploy
+  IdentitiesOnly yes
   StrictHostKeyChecking accept-new
 SSHCONF
     chmod 600 /home/ubuntu/.ssh/config
