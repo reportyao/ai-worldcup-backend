@@ -9,7 +9,7 @@ import {
   WechatLoginSchema,
   type WechatLoginDto,
 } from './auth.schemas.js';
-import type { AuthService } from './auth.service.js';
+import { AuthService } from './auth.service.js';
 
 @Controller('auth')
 export class AuthController {

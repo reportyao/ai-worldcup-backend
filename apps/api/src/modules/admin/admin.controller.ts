@@ -54,7 +54,7 @@ import {
   type AdminPromptTemplateUpdateDto,
   type AdminModelPredictionUpdateDto,
 } from './admin.schemas.js';
-import type { AdminService } from './admin.service.js';
+import { AdminService } from './admin.service.js';
 
 @Controller('admin')
 export class AdminController {

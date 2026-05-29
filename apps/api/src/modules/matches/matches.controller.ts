@@ -2,7 +2,7 @@ import { Body, Controller, Get, Headers, Param, Post, Query, Req } from '@nestjs
 import type { Request } from 'express';
 
 import { ZodValidationPipe } from '../../common/zod-validation.pipe.js';
-import type { AuthService } from '../auth/auth.service.js';
+import { AuthService } from '../auth/auth.service.js';
 
 import {
   MatchListQuerySchema,
@@ -10,7 +10,7 @@ import {
   UserPredictionSubmitSchema,
   type UserPredictionSubmitDto,
 } from './matches.schemas.js';
-import type { MatchesService } from './matches.service.js';
+import { MatchesService } from './matches.service.js';
 
 @Controller('matches')
 export class MatchesController {
