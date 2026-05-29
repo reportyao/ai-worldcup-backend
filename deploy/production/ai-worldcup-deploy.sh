@@ -120,7 +120,17 @@ ENVEOF
 start_infra() {
   cd "$BACKEND_DIR"
   if [ -f docker-compose.yml ]; then
-    run docker_compose up -d postgres redis
+    docker rm ai-worldcup-postgres ai-worldcup-redis >/dev/null 2>&1 || true
+    log "+ docker_compose up -d postgres redis"
+    if docker_compose up -d postgres redis; then
+      return
+    fi
+    if sudo ss -ltn | grep -q ':5432 ' && sudo ss -ltn | grep -q ':6379 '; then
+      log "WARN: PostgreSQL/Redis ports are already occupied; reusing existing local services and continuing."
+      return
+    fi
+    log "ERROR: failed to start PostgreSQL/Redis and required ports are not available."
+    exit 1
   fi
 }
 
