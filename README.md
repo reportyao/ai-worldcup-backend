@@ -82,3 +82,11 @@
 ## 贡献
 
 欢迎提交 Pull Request 或报告 Bug。请确保您的代码符合项目规范并包含相应的测试。
+
+## 自动部署到生产服务器
+
+本仓库已配置 `.github/workflows/deploy.yml`。当代码推送到 `main` 分支时，GitHub Actions 会调度服务器上的自托管 Runner（标签：`worldcup-backend`），在服务器本机完成源码同步与后端部署。
+
+部署流程会将当前仓库内容同步到 `/home/ubuntu/apps/ai-worldcup-backend`，随后执行 `deploy/production/deploy-backend.sh`。脚本会安装依赖、生成 Prisma Client、执行数据库迁移、构建后端应用，并通过 PM2 重载 `ai-worldcup-api` 与 `ai-worldcup-worker`。生产环境变量保存在服务器端 `/home/ubuntu/apps/ai-worldcup-backend/.env`，自动同步时会被排除，不会被仓库内容覆盖。
+
+该自动部署方案不依赖 GitHub Secrets 中保存服务器私钥；服务器通过已安装的自托管 Runner 主动接收 GitHub Actions 任务。若更换服务器，需要重新注册对应仓库的 Runner 并保留 `self-hosted`、`linux`、`x64`、`worldcup-backend` 标签。

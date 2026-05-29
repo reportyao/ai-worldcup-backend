@@ -1,0 +1,34 @@
+name: Deploy Backend
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+concurrency:
+  group: deploy-backend-production
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: [self-hosted, linux, x64, worldcup-backend]
+    timeout-minutes: 40
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Sync source to production directory
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p /home/ubuntu/apps/ai-worldcup-backend
+          rsync -az --delete \
+            --exclude '.git' \
+            --exclude 'node_modules' \
+            --exclude '.env' \
+            --exclude 'dist' \
+            ./ /home/ubuntu/apps/ai-worldcup-backend/
+
+      - name: Deploy backend on server
+        shell: bash
+        run: bash /home/ubuntu/apps/ai-worldcup-backend/deploy/production/deploy-backend.sh
