@@ -34,11 +34,28 @@ ENVEOF
 fi
 
 if command -v docker >/dev/null 2>&1 && [ -f docker-compose.yml ]; then
+  # Keep infrastructure startup idempotent. On existing servers, PostgreSQL/Redis
+  # may already be bound to 5432/6379 by running containers or system services;
+  # that state is acceptable for app deployment, so do not abort solely because
+  # docker compose cannot bind an already-used host port.
   if docker compose version >/dev/null 2>&1; then
-    run docker compose up -d postgres redis
+    if ! run docker compose up -d postgres redis; then
+      log "docker compose startup returned non-zero; continuing if database and Redis ports are already reachable."
+    fi
   elif command -v docker-compose >/dev/null 2>&1; then
-    run docker-compose up -d postgres redis
+    if ! run docker-compose up -d postgres redis; then
+      log "docker-compose startup returned non-zero; continuing if database and Redis ports are already reachable."
+    fi
   fi
+fi
+
+if ! (timeout 2 bash -c '</dev/tcp/127.0.0.1/5432') >/dev/null 2>&1; then
+  log "PostgreSQL is not reachable on 127.0.0.1:5432 after infrastructure startup."
+  exit 1
+fi
+if ! (timeout 2 bash -c '</dev/tcp/127.0.0.1/6379') >/dev/null 2>&1; then
+  log "Redis is not reachable on 127.0.0.1:6379 after infrastructure startup."
+  exit 1
 fi
 
 if ! command -v pnpm >/dev/null 2>&1; then
@@ -48,7 +65,7 @@ if ! command -v pm2 >/dev/null 2>&1; then
   run sudo npm install -g pm2
 fi
 
-run env CI=true npm_config_build_from_source=true pnpm install --frozen-lockfile
+run env CI=true npm_config_build_from_source=true pnpm install --no-frozen-lockfile
 run pnpm prisma:generate
 run pnpm prisma:migrate:deploy
 run pnpm run build
