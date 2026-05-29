@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Req } from '@nestjs/common';
+import { Body, Controller, Get, Post, Query, Req } from '@nestjs/common';
 import type { Request } from 'express';
 
 import { AuthService } from '../auth/auth.service.js';
@@ -37,7 +37,7 @@ export class EntitlementsController {
    * 检查当前用户/游客是否有权查看完整模型分析
    */
   @Get('check-access')
-  async checkAccess(@Req() req: Request) {
+  async checkAccess(@Req() req: Request, @Query('matchId') matchId?: string) {
     const accessToken = this.authService.extractBearerToken(
       req.headers.authorization,
     );
@@ -47,6 +47,7 @@ export class EntitlementsController {
     const decision = await this.accessService.checkAccess(
       viewer.userId,
       viewer.guestId,
+      matchId,
     );
 
     return decision;
@@ -57,7 +58,7 @@ export class EntitlementsController {
    * 消费一次权益（查看模型分析时调用）
    */
   @Post('consume')
-  async consume(@Req() req: Request) {
+  async consume(@Req() req: Request, @Body() body: { matchId?: string }) {
     const accessToken = this.authService.extractBearerToken(
       req.headers.authorization,
     );
@@ -67,6 +68,7 @@ export class EntitlementsController {
     const consumed = await this.accessService.consumeOne(
       viewer.userId,
       viewer.guestId,
+      body?.matchId,
     );
 
     if (!consumed) {

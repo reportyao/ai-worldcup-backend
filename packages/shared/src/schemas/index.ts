@@ -39,11 +39,32 @@ export const ApiResponseSchema = <T extends z.ZodTypeAny>(data: T) =>
  * 比赛级结构化预测 schema —— 单个模型输出。
  * 所有 AI 模型必须返回该结构，前台据此渲染各模型对比和综合视图。
  */
+const DimensionTextSchema = z.string().min(1).max(1000);
+
+export const AnalysisDimensionsSchema = z.object({
+  recentForm: DimensionTextSchema,
+  injuriesSuspensions: DimensionTextSchema,
+  motivation: DimensionTextSchema,
+  schedule: DimensionTextSchema,
+  homeAway: DimensionTextSchema,
+  tacticalMatchup: DimensionTextSchema,
+  headToHead: DimensionTextSchema,
+  marketExpectation: DimensionTextSchema,
+});
+
+export const InformationQualitySchema = z.object({
+  completeness: z.enum(['HIGH', 'MEDIUM', 'LOW']).default('MEDIUM'),
+  uncertainty: z.string().min(1).max(1000),
+  missingSignals: z.array(z.string()).max(8).default([]),
+});
+
 export const StructuredPredictionSchema = z.object({
   modelId: z.string(),
   modelDisplayName: z.string(),
   modelPersona: z.nativeEnum(ModelPersona).optional(),
   matchNature: z.string().min(1),
+  matchNatureAssessment: z.string().min(1).optional(),
+  dimensionAnalysis: AnalysisDimensionsSchema.optional(),
   strengths: z.object({
     home: z.array(z.string()).max(8),
     away: z.array(z.string()).max(8),
@@ -63,6 +84,8 @@ export const StructuredPredictionSchema = z.object({
       away: z.number().min(0).max(1),
     }),
     handicapTrend: z.string().optional(),
+    handicapWinLossDraw: z.enum(['HOME_WIN', 'DRAW', 'AWAY_WIN']).optional(),
+    overUnderTrend: z.string().optional(),
     likelyScores: z
       .array(
         z.object({
@@ -84,6 +107,7 @@ export const StructuredPredictionSchema = z.object({
       })
       .optional(),
   }),
+  informationQuality: InformationQualitySchema.optional(),
   disclaimer: z.string().default('娱乐分析，不构成任何投注建议。'),
   generatedAt: z.string(),
 });

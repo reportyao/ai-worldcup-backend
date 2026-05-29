@@ -12,6 +12,7 @@ import {
   PredictionTaskStatus,
   PredictionTrigger,
   PredictionVersion,
+  PromptTemplateStatus,
   Prisma,
 } from '@prisma/client';
 import { DomainError, ErrorCode } from '@ai-worldcup/shared';
@@ -20,6 +21,7 @@ import { read, utils } from 'xlsx';
 
 import { PrismaService } from '../../prisma/prisma.service.js';
 import { PredictionPipelineService } from '../prediction-pipeline/prediction-pipeline.service.js';
+import { ConsensusService } from '../consensus/consensus.service.js';
 
 import type {
   AdminAiModelCreateDto,
@@ -37,6 +39,10 @@ import type {
   AdminPredictionRerunDto,
   AdminPredictionTaskQuery,
   AdminPredictionTriggerDto,
+  AdminPromptTemplateCreateDto,
+  AdminPromptTemplateListQuery,
+  AdminPromptTemplateUpdateDto,
+  AdminModelPredictionUpdateDto,
 } from './admin.schemas.js';
 
 interface RequestMeta {
@@ -64,6 +70,7 @@ export class AdminService {
   constructor(
     private readonly prisma: PrismaService,
     private readonly predictionPipeline: PredictionPipelineService,
+    private readonly consensusService: ConsensusService,
   ) {}
 
   getRequestMeta(req: Request): RequestMeta {
@@ -270,8 +277,9 @@ export class AdminService {
       },
       include: MATCH_INCLUDE,
     });
-    await this.writeAudit(meta, 'MATCH_CREATE', 'Match', created.id, null, created);
-    return created;
+    const enqueueResult = await this.enqueueInitialPredictionForMatch(created.id);
+    await this.writeAudit(meta, 'MATCH_CREATE', 'Match', created.id, null, { ...created, initialPrediction: enqueueResult });
+    return { ...created, initialPrediction: enqueueResult };
   }
 
   async updateMatch(id: string, dto: AdminMatchUpdateDto, meta: RequestMeta) {
@@ -365,7 +373,7 @@ export class AdminService {
           });
           updated += 1;
         } else {
-          await this.prisma.match.create({
+          const createdMatch = await this.prisma.match.create({
             data: {
               competitionId: dto.competitionId,
               homeTeamId,
@@ -379,6 +387,7 @@ export class AdminService {
               externalId: normalized.externalId ? String(normalized.externalId) : null,
             },
           });
+          await this.enqueueInitialPredictionForMatch(createdMatch.id);
           created += 1;
         }
       } catch (error) {
@@ -508,6 +517,102 @@ export class AdminService {
     });
     await this.writeAudit(meta, 'AI_MODEL_REORDER', 'AiModel', null, before, after);
     return { items: after };
+  }
+
+
+  async listPromptTemplates(query: AdminPromptTemplateListQuery) {
+    const where: Prisma.PromptTemplateWhereInput = {
+      ...(query.scene ? { scene: query.scene } : {}),
+      ...(query.status ? { status: query.status as PromptTemplateStatus } : {}),
+    };
+    const [items, total] = await this.prisma.$transaction([
+      this.prisma.promptTemplate.findMany({
+        where,
+        orderBy: [{ status: 'asc' }, { updatedAt: 'desc' }],
+        skip: (query.page - 1) * query.pageSize,
+        take: query.pageSize,
+      }),
+      this.prisma.promptTemplate.count({ where }),
+    ]);
+    return { items, total, page: query.page, pageSize: query.pageSize };
+  }
+
+  async getPromptTemplate(id: string) {
+    const template = await this.prisma.promptTemplate.findUnique({ where: { id } });
+    if (!template) throw new NotFoundException('Prompt template not found');
+    return template;
+  }
+
+  async createPromptTemplate(dto: AdminPromptTemplateCreateDto, meta: RequestMeta) {
+    const created = await this.prisma.$transaction(async (tx) => {
+      if (dto.status === 'ACTIVE') {
+        await tx.promptTemplate.updateMany({
+          where: { scene: dto.scene, status: PromptTemplateStatus.ACTIVE },
+          data: { status: PromptTemplateStatus.INACTIVE },
+        });
+      }
+      return tx.promptTemplate.create({
+        data: {
+          scene: dto.scene,
+          name: dto.name,
+          version: dto.version,
+          status: dto.status as PromptTemplateStatus,
+          systemPrompt: dto.systemPrompt,
+          userPrompt: dto.userPrompt,
+          description: dto.description ?? null,
+          metadata: this.toPrismaJson(dto.metadata ?? null),
+        },
+      });
+    });
+    await this.writeAudit(meta, 'PROMPT_TEMPLATE_CREATE', 'PromptTemplate', created.id, null, created);
+    return created;
+  }
+
+  async updatePromptTemplate(id: string, dto: AdminPromptTemplateUpdateDto, meta: RequestMeta) {
+    const before = await this.prisma.promptTemplate.findUnique({ where: { id } });
+    if (!before) throw new NotFoundException('Prompt template not found');
+    const updated = await this.prisma.$transaction(async (tx) => {
+      const nextScene = dto.scene ?? before.scene;
+      if (dto.status === 'ACTIVE') {
+        await tx.promptTemplate.updateMany({
+          where: { scene: nextScene, status: PromptTemplateStatus.ACTIVE, NOT: { id } },
+          data: { status: PromptTemplateStatus.INACTIVE },
+        });
+      }
+      const data: Prisma.PromptTemplateUpdateInput = {};
+      if (dto.scene !== undefined) data.scene = dto.scene;
+      if (dto.name !== undefined) data.name = dto.name;
+      if (dto.version !== undefined) data.version = dto.version;
+      if (dto.status !== undefined) data.status = dto.status as PromptTemplateStatus;
+      if (dto.systemPrompt !== undefined) data.systemPrompt = dto.systemPrompt;
+      if (dto.userPrompt !== undefined) data.userPrompt = dto.userPrompt;
+      if (dto.description !== undefined) data.description = dto.description;
+      if (dto.metadata !== undefined) data.metadata = this.toPrismaJson(dto.metadata ?? null);
+      return tx.promptTemplate.update({ where: { id }, data });
+    });
+    await this.writeAudit(meta, 'PROMPT_TEMPLATE_UPDATE', 'PromptTemplate', id, before, updated);
+    return updated;
+  }
+
+  async updateModelPrediction(id: string, dto: AdminModelPredictionUpdateDto, meta: RequestMeta) {
+    const before = await this.prisma.modelPrediction.findUnique({ where: { id }, include: { aiModel: true } });
+    if (!before) throw new NotFoundException('Model prediction not found');
+    const updated = await this.prisma.modelPrediction.update({
+      where: { id },
+      data: {
+        structuredOutput: this.toPrismaJson(dto.structuredOutput),
+        rawOutput: dto.rawOutput ?? null,
+        promptVersion: dto.promptVersion ?? before.promptVersion,
+        promptSnapshot: dto.promptSnapshot ?? before.promptSnapshot,
+        isSuccess: dto.isSuccess,
+        errorMessage: dto.errorMessage ?? null,
+        generatedAt: new Date(),
+      },
+      include: { aiModel: true },
+    });
+    const consensus = await this.consensusService.calculateAndSave(before.predictionTaskId);
+    await this.writeAudit(meta, 'MODEL_PREDICTION_UPDATE', 'ModelPrediction', id, before, { updated, consensus });
+    return { item: updated, consensus };
   }
 
   async listPredictionTasks(query: AdminPredictionTaskQuery) {
@@ -641,6 +746,21 @@ export class AdminService {
       this.prisma.adminAuditLog.count({ where }),
     ]);
     return { items, total, page: query.page, pageSize: query.pageSize };
+  }
+
+
+  private async enqueueInitialPredictionForMatch(matchId: string) {
+    try {
+      const result = await this.predictionPipeline.enqueuePrediction({
+        matchId,
+        version: PredictionVersion.T_MINUS_24H,
+        trigger: PredictionTrigger.CRON,
+        rerun: false,
+      });
+      return { ok: true, taskId: result.task.id, jobId: result.jobId };
+    } catch (error) {
+      return { ok: false, error: error instanceof Error ? error.message : String(error) };
+    }
   }
 
   private async resolveTeamId(dto: AdminMatchCreateDto | AdminMatchUpdateDto, side: 'home' | 'away') {

@@ -93,7 +93,7 @@ export class MatchesService {
           status: match.status,
         },
         tabs: ['overview', 'models', 'my_prediction', 'review'],
-        access: await this.buildAccessPayload(viewer.userId, viewer.guestId),
+        access: await this.buildAccessPayload(match.id, viewer.userId, viewer.guestId),
         consensus: this.buildConsensus(match.predictionTasks),
         modelAnalyses: match.predictionTasks.flatMap((task) =>
           task.predictions.map((prediction) => ({
@@ -345,8 +345,8 @@ export class MatchesService {
     };
   }
 
-  private async buildAccessPayload(userId?: string, guestId?: string) {
-    const decision = await this.accessService.checkAccess(userId, guestId);
+  private async buildAccessPayload(matchId: string, userId?: string, guestId?: string) {
+    const decision = await this.accessService.checkAccess(userId, guestId, matchId);
     return {
       canViewBasic: true,
       canViewFullModels: decision.canViewFullModels,

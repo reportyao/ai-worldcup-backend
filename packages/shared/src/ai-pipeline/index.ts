@@ -60,6 +60,12 @@ export interface BuiltPredictionPrompt {
   promptSnapshot: string;
 }
 
+export interface ExternalPromptTemplate {
+  version: string;
+  systemPrompt: string;
+  userPrompt: string;
+}
+
 export interface ProviderUsage {
   inputTokens?: number;
   outputTokens?: number;
@@ -123,13 +129,41 @@ function trimBaseUrl(baseUrl: string): string {
   return baseUrl.replace(/\/+$/, '');
 }
 
+function stringifyContextValue(value: unknown): string {
+  if (value === undefined || value === null || value === '') return '未标注';
+  return String(value);
+}
+
+function renderPromptTemplate(template: string, model: AiGatewayModelConfig, match: AiGatewayMatchContext, version: PredictionVersion): string {
+  const variables: Record<string, unknown> = {
+    version,
+    versionLabel: version === PredictionVersion.T_MINUS_24H ? '开赛前24小时' : '开赛前2小时',
+    modelId: model.modelId,
+    modelDisplayName: model.displayName,
+    modelPersona: model.persona,
+    competitionName: match.competitionName,
+    competitionSeason: match.competitionSeason,
+    matchday: match.matchday,
+    stage: match.stage,
+    kickoffAt: match.kickoffAt,
+    homeTeam: match.homeTeam.name,
+    homeTeamName: match.homeTeam.name,
+    homeTeamCode: match.homeTeam.code,
+    awayTeam: match.awayTeam.name,
+    awayTeamName: match.awayTeam.name,
+    awayTeamCode: match.awayTeam.code,
+  };
+  return template.replace(/{{\s*([a-zA-Z0-9_.-]+)\s*}}/g, (_match, key: string) => stringifyContextValue(variables[key]));
+}
+
 export function buildPredictionPrompt(
   model: AiGatewayModelConfig,
   match: AiGatewayMatchContext,
   version: PredictionVersion,
+  template?: ExternalPromptTemplate | null,
 ): BuiltPredictionPrompt {
   const personaText = PERSONA_DESCRIPTIONS[model.persona] ?? PERSONA_DESCRIPTIONS[ModelPersona.STEADY];
-  const systemPrompt = [
+  const defaultSystemPrompt = [
     '你是 AI 世界杯预测产品的结构化足球分析引擎。',
     '你的任务是为单场比赛生成严谨、克制、可校验的娱乐向赛前分析。',
     '必须只输出一个 JSON 对象，不要使用 Markdown、代码块或额外说明。',
@@ -139,7 +173,7 @@ export function buildPredictionPrompt(
     `当前模型人设：${personaText}`,
   ].join('\n');
 
-  const userPrompt = [
+  const defaultUserPrompt = [
     `Prompt模板版本：${PREDICTION_PROMPT_TEMPLATE_VERSION}`,
     `预测版本：${version === PredictionVersion.T_MINUS_24H ? '开赛前24小时' : '开赛前2小时'}`,
     `模型标识：${model.modelId}`,
@@ -161,6 +195,17 @@ export function buildPredictionPrompt(
         modelDisplayName: model.displayName,
         modelPersona: model.persona,
         matchNature: '一句话概括比赛性质',
+        matchNatureAssessment: '比赛性质评估，说明杯赛/联赛阶段、排名压力、轮换空间和信息完整度',
+        dimensionAnalysis: {
+          recentForm: '近况：双方近期状态、攻防效率与心理趋势',
+          injuriesSuspensions: '伤停：核心缺阵、复出与阵容深度影响；没有可靠信息时明确说明',
+          motivation: '战意：出线/争冠/保级/轮换等动机',
+          schedule: '赛程：休息天数、连续客场、旅途与体能',
+          homeAway: '主客场：场地、气候、球迷与旅行影响',
+          tacticalMatchup: '战术匹配：阵型、压迫、转换、定位球等相克关系',
+          headToHead: '历史交锋：交锋样本的参考价值与局限',
+          marketExpectation: '市场预期：公众热度与预期方向，仅作情绪观察，不构成投注建议'
+        },
         strengths: { home: ['主队优势1'], away: ['客队优势1'] },
         weaknesses: { home: ['主队短板1'], away: ['客队短板1'] },
         keyVariables: ['影响胜负的关键变量'],
@@ -170,10 +215,13 @@ export function buildPredictionPrompt(
           winLossDraw: 'HOME_WIN',
           winProbability: { home: 0.45, draw: 0.28, away: 0.27 },
           handicapTrend: '让球/节奏倾向，不能构成投注建议',
+          handicapWinLossDraw: 'HOME_WIN',
+          overUnderTrend: '大小球倾向，说明节奏和总进球区间，但不构成投注建议',
           likelyScores: [{ home: 2, away: 1, weight: 0.28 }],
           goalsRange: { min: 1, max: 4, expectation: 2.6 },
           cornersRange: { min: 7, max: 12 },
         },
+        informationQuality: { completeness: 'MEDIUM', uncertainty: '请注明哪些信息无法实时核验以及对结论的影响', missingSignals: ['临场首发', '最新伤停'] },
         disclaimer: '娱乐分析，不构成任何投注建议。',
         generatedAt: new Date().toISOString(),
       },
@@ -182,8 +230,15 @@ export function buildPredictionPrompt(
     ),
   ].join('\n');
 
+  const systemPrompt = template?.systemPrompt
+    ? renderPromptTemplate(template.systemPrompt, model, match, version)
+    : defaultSystemPrompt;
+  const userPrompt = template?.userPrompt
+    ? renderPromptTemplate(template.userPrompt, model, match, version)
+    : defaultUserPrompt;
+
   return {
-    version: PREDICTION_PROMPT_TEMPLATE_VERSION,
+    version: template?.version ?? PREDICTION_PROMPT_TEMPLATE_VERSION,
     systemPrompt,
     userPrompt,
     promptSnapshot: `${systemPrompt}\n\n--- USER ---\n${userPrompt}`,
@@ -243,6 +298,17 @@ function buildMockPrediction(model: AiGatewayModelConfig, match: AiGatewayMatchC
     modelDisplayName: model.displayName,
     modelPersona: model.persona,
     matchNature: `${match.homeTeam.name} 与 ${match.awayTeam.name} 的赛前强强对话，需综合节奏、阵容和临场变量判断。`,
+    matchNatureAssessment: '样例数据：比赛性质以赛前对阵强度、阶段压力和阵容完整度综合评估。',
+    dimensionAnalysis: {
+      recentForm: '样例：主队近期控球稳定，客队反击效率存在波动。',
+      injuriesSuspensions: '样例：暂未接入实时伤停源，需管理员核对临场名单。',
+      motivation: '样例：双方均具备拿分动机，但领先方可能更重视风险控制。',
+      schedule: '样例：赛程体能影响中性，仍需关注临场轮换。',
+      homeAway: '样例：主队拥有环境适应优势，客队旅行因素存在不确定性。',
+      tacticalMatchup: '样例：主队高位压迫对客队出球形成压力，客队可通过纵深反击回应。',
+      headToHead: '样例：历史交锋样本有限，仅作辅助参考。',
+      marketExpectation: '样例：外部预期略偏主队，但不构成投注建议。',
+    },
     strengths: {
       home: ['主场开局压迫更容易建立节奏', '中前场连接稳定，控球阶段容错率较高'],
       away: ['反击转换速度具备威胁', '客队在低位防守时阵型保持较紧凑'],
@@ -258,6 +324,8 @@ function buildMockPrediction(model: AiGatewayModelConfig, match: AiGatewayMatchC
       winLossDraw: personaBias,
       winProbability: { home: homeProbability, draw: 0.27, away: awayProbability },
       handicapTrend: '节奏倾向主队主动推进，但不构成投注建议。',
+      handicapWinLossDraw: personaBias,
+      overUnderTrend: '总进球倾向 2-3 球区间，需防守门员状态和早段进球改变节奏。',
       likelyScores: [
         { home: personaBias === 'HOME_WIN' ? 2 : 1, away: personaBias === 'AWAY_WIN' ? 2 : 1, weight: 0.32 },
         { home: 1, away: 1, weight: 0.24 },
@@ -380,8 +448,9 @@ export async function generateStructuredPrediction(
   match: AiGatewayMatchContext,
   version: PredictionVersion,
   runtime: AiGatewayRuntimeConfig = {},
+  template?: ExternalPromptTemplate | null,
 ): Promise<GeneratedPredictionResult> {
-  const prompt = buildPredictionPrompt(model, match, version);
+  const prompt = buildPredictionPrompt(model, match, version, template);
   const startedAt = Date.now();
   const provider = model.provider.toLowerCase();
   let rawOutput: string;

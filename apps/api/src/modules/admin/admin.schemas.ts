@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import { StructuredPredictionSchema } from '@ai-worldcup/shared';
 
 const nullableDateInput = z
   .union([z.string().datetime(), z.string().regex(/^\d{4}-\d{2}-\d{2}$/), z.literal(''), z.null()])
@@ -196,3 +197,35 @@ export const AdminPredictionRerunSchema = z.object({
   reason: optionalTrimmedString,
 });
 export type AdminPredictionRerunDto = z.infer<typeof AdminPredictionRerunSchema>;
+
+
+export const AdminPromptTemplateListQuerySchema = PaginationQuerySchema.extend({
+  scene: z.string().trim().default('MATCH_PREDICTION'),
+  status: z.enum(['ACTIVE', 'INACTIVE']).optional(),
+});
+export type AdminPromptTemplateListQuery = z.infer<typeof AdminPromptTemplateListQuerySchema>;
+
+export const AdminPromptTemplateCreateSchema = z.object({
+  scene: z.string().trim().min(1).max(80).default('MATCH_PREDICTION'),
+  name: z.string().trim().min(1).max(120),
+  version: z.string().trim().min(1).max(80),
+  status: z.enum(['ACTIVE', 'INACTIVE']).default('ACTIVE'),
+  systemPrompt: z.string().trim().min(20),
+  userPrompt: z.string().trim().min(20),
+  description: optionalTrimmedString,
+  metadata: z.record(z.unknown()).optional().nullable(),
+});
+export type AdminPromptTemplateCreateDto = z.infer<typeof AdminPromptTemplateCreateSchema>;
+
+export const AdminPromptTemplateUpdateSchema = AdminPromptTemplateCreateSchema.partial();
+export type AdminPromptTemplateUpdateDto = z.infer<typeof AdminPromptTemplateUpdateSchema>;
+
+export const AdminModelPredictionUpdateSchema = z.object({
+  structuredOutput: StructuredPredictionSchema,
+  rawOutput: optionalTrimmedString,
+  promptVersion: optionalTrimmedString,
+  promptSnapshot: optionalTrimmedString,
+  isSuccess: z.coerce.boolean().default(true),
+  errorMessage: optionalTrimmedString,
+});
+export type AdminModelPredictionUpdateDto = z.infer<typeof AdminModelPredictionUpdateSchema>;

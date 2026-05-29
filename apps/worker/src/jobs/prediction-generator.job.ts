@@ -13,6 +13,7 @@ import {
   generateStructuredPrediction,
   type AiGatewayMatchContext,
   type AiGatewayModelConfig,
+  type ExternalPromptTemplate,
   type StructuredPrediction,
 } from '@ai-worldcup/shared';
 import type { Job } from 'bullmq';
@@ -133,7 +134,6 @@ async function scheduleDuePredictions(windowMinutes: number): Promise<Prediction
   const now = new Date();
   const windows = [
     { version: PredictionVersion.T_MINUS_24H, targetMs: 24 * 60 * 60 * 1000 },
-    { version: PredictionVersion.T_MINUS_2H, targetMs: 2 * 60 * 60 * 1000 },
   ];
   let enqueued = 0;
   const queue = getSchedulerQueue();
@@ -170,6 +170,15 @@ async function scheduleDuePredictions(windowMinutes: number): Promise<Prediction
   return { ok: true, mode: 'SCHEDULE_DUE', enqueued };
 }
 
+async function loadActivePromptTemplate(): Promise<ExternalPromptTemplate | null> {
+  const template = await prisma.promptTemplate.findFirst({
+    where: { scene: 'MATCH_PREDICTION', status: 'ACTIVE' },
+    orderBy: [{ updatedAt: 'desc' }, { createdAt: 'desc' }],
+  });
+  if (!template) return null;
+  return { version: template.version, systemPrompt: template.systemPrompt, userPrompt: template.userPrompt };
+}
+
 async function persistFailedModelPrediction(taskId: string, model: AiModel, reason: string) {
   const modelConfig = toModelConfig(model);
   await prisma.modelPrediction.upsert({
@@ -201,9 +210,9 @@ async function persistFailedModelPrediction(taskId: string, model: AiModel, reas
   });
 }
 
-async function runSingleModel(taskId: string, model: AiModel, matchContext: AiGatewayMatchContext, version: PredictionVersion) {
+async function runSingleModel(taskId: string, model: AiModel, matchContext: AiGatewayMatchContext, version: PredictionVersion, promptTemplate: ExternalPromptTemplate | null) {
   const modelConfig = toModelConfig(model);
-  const result = await generateStructuredPrediction(modelConfig, matchContext, version, getRuntimeConfig());
+  const result = await generateStructuredPrediction(modelConfig, matchContext, version, getRuntimeConfig(), promptTemplate);
   await prisma.modelPrediction.upsert({
     where: { predictionTaskId_aiModelId: { predictionTaskId: taskId, aiModelId: model.id } },
     create: {
@@ -275,12 +284,13 @@ async function generatePrediction(payload: z.infer<typeof DirectPredictionPayloa
   }
 
   const matchContext = toMatchContext(match);
+  const promptTemplate = await loadActivePromptTemplate();
   const successfulPredictions: StructuredPrediction[] = [];
   const failures: string[] = [];
 
   for (const model of activeModels) {
     try {
-      const structured = await runSingleModel(task.id, model, matchContext, payload.version);
+      const structured = await runSingleModel(task.id, model, matchContext, payload.version, promptTemplate);
       successfulPredictions.push(structured);
     } catch (error) {
       const reason = error instanceof Error ? error.message : String(error);

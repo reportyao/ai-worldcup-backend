@@ -29,6 +29,10 @@ import {
   AdminPredictionRerunSchema,
   AdminPredictionTaskQuerySchema,
   AdminPredictionTriggerSchema,
+  AdminPromptTemplateCreateSchema,
+  AdminPromptTemplateListQuerySchema,
+  AdminPromptTemplateUpdateSchema,
+  AdminModelPredictionUpdateSchema,
   AdminTeamListQuerySchema,
   type AdminAiModelCreateDto,
   type AdminAiModelListQuery,
@@ -45,6 +49,10 @@ import {
   type AdminPredictionRerunDto,
   type AdminPredictionTaskQuery,
   type AdminPredictionTriggerDto,
+  type AdminPromptTemplateCreateDto,
+  type AdminPromptTemplateListQuery,
+  type AdminPromptTemplateUpdateDto,
+  type AdminModelPredictionUpdateDto,
 } from './admin.schemas.js';
 import type { AdminService } from './admin.service.js';
 
@@ -177,6 +185,45 @@ export class AdminController {
   @Delete('ai-models/:id')
   deleteAiModel(@Param('id') id: string, @Req() req: Request) {
     return this.adminService.deleteAiModel(id, this.adminService.getRequestMeta(req));
+  }
+
+
+  @Get('prompt-templates')
+  listPromptTemplates(
+    @Query(new ZodValidationPipe(AdminPromptTemplateListQuerySchema)) query: AdminPromptTemplateListQuery,
+  ) {
+    return this.adminService.listPromptTemplates(query);
+  }
+
+  @Post('prompt-templates')
+  createPromptTemplate(
+    @Req() req: Request,
+    @Body(new ZodValidationPipe(AdminPromptTemplateCreateSchema)) dto: AdminPromptTemplateCreateDto,
+  ) {
+    return this.adminService.createPromptTemplate(dto, this.adminService.getRequestMeta(req));
+  }
+
+  @Get('prompt-templates/:id')
+  getPromptTemplate(@Param('id') id: string) {
+    return this.adminService.getPromptTemplate(id);
+  }
+
+  @Patch('prompt-templates/:id')
+  updatePromptTemplate(
+    @Param('id') id: string,
+    @Req() req: Request,
+    @Body(new ZodValidationPipe(AdminPromptTemplateUpdateSchema)) dto: AdminPromptTemplateUpdateDto,
+  ) {
+    return this.adminService.updatePromptTemplate(id, dto, this.adminService.getRequestMeta(req));
+  }
+
+  @Patch('model-predictions/:id')
+  updateModelPrediction(
+    @Param('id') id: string,
+    @Req() req: Request,
+    @Body(new ZodValidationPipe(AdminModelPredictionUpdateSchema)) dto: AdminModelPredictionUpdateDto,
+  ) {
+    return this.adminService.updateModelPrediction(id, dto, this.adminService.getRequestMeta(req));
   }
 
   @Get('prediction-tasks')

@@ -1,5 +1,5 @@
 import { Injectable, Logger } from '@nestjs/common';
-import type { Entitlement, Guest, User } from '@prisma/client';
+import type { Entitlement, EntitlementSource, Guest, User } from '@prisma/client';
 
 import { PrismaService } from '../../prisma/prisma.service.js';
 
@@ -58,6 +58,7 @@ export class AccessService {
   async checkAccess(
     userId?: string,
     guestId?: string,
+    matchId?: string,
   ): Promise<AccessDecision> {
     // 无任何身份标识
     if (!userId && !guestId) {
@@ -84,6 +85,16 @@ export class AccessService {
         };
       }
 
+      if (matchId && await this.hasMatchUnlock(matchId, userId, null)) {
+        const snapshot = await this.buildUserSnapshot(user, todayKey);
+        return {
+          canViewFullModels: true,
+          reason: null,
+          snapshot,
+          unlockHint: null,
+        };
+      }
+
       // 1. Pass 会员判断
       if (user.isPassActive && user.passExpiresAt && user.passExpiresAt > now) {
         const snapshot = await this.buildUserSnapshot(user, todayKey);
@@ -94,6 +105,8 @@ export class AccessService {
           unlockHint: null,
         };
       }
+
+      const shouldRequireExplicitMatchUnlock = Boolean(matchId);
 
       // 2. 邀请奖励判断
       const inviteEntitlements = await this.getActiveEntitlements(
@@ -106,10 +119,10 @@ export class AccessService {
       if (inviteRemaining > 0) {
         const snapshot = await this.buildUserSnapshot(user, todayKey);
         return {
-          canViewFullModels: true,
-          reason: null,
+          canViewFullModels: !shouldRequireExplicitMatchUnlock,
+          reason: shouldRequireExplicitMatchUnlock ? 'FREE_QUOTA_EXHAUSTED' : null,
           snapshot,
-          unlockHint: null,
+          unlockHint: shouldRequireExplicitMatchUnlock ? 'BUY_PASS' : null,
         };
       }
 
@@ -124,10 +137,10 @@ export class AccessService {
       if (freeRemaining > 0) {
         const snapshot = await this.buildUserSnapshot(user, todayKey);
         return {
-          canViewFullModels: true,
-          reason: null,
+          canViewFullModels: !shouldRequireExplicitMatchUnlock,
+          reason: shouldRequireExplicitMatchUnlock ? 'FREE_QUOTA_EXHAUSTED' : null,
           snapshot,
-          unlockHint: null,
+          unlockHint: shouldRequireExplicitMatchUnlock ? 'BUY_PASS' : null,
         };
       }
 
@@ -153,6 +166,25 @@ export class AccessService {
         };
       }
 
+      if (matchId && await this.hasMatchUnlock(matchId, null, guestId)) {
+        const snapshot = {
+          freeDailyRemaining: Math.max(0, FREE_DAILY_MAX_GUEST - (guest.freeResetDate === todayKey ? guest.freeUsedToday : 0)),
+          freeDailyMax: FREE_DAILY_MAX_GUEST,
+          inviteRewardRemaining: 0,
+          isPassActive: false,
+          passExpiresAt: null,
+          passTier: null,
+          todayInviteRewardsGranted: 0,
+          maxDailyInviteRewards: MAX_DAILY_INVITE_REWARDS,
+        };
+        return {
+          canViewFullModels: true,
+          reason: null,
+          snapshot,
+          unlockHint: null,
+        };
+      }
+
       // 游客每日免费次数（通过 Guest 表的 freeUsedToday 字段快速判断）
       const usedToday = guest.freeResetDate === todayKey ? guest.freeUsedToday : 0;
       const freeRemaining = Math.max(0, FREE_DAILY_MAX_GUEST - usedToday);
@@ -170,10 +202,10 @@ export class AccessService {
 
       if (freeRemaining > 0) {
         return {
-          canViewFullModels: true,
-          reason: null,
+          canViewFullModels: !matchId,
+          reason: matchId ? 'FREE_QUOTA_EXHAUSTED' : null,
           snapshot,
-          unlockHint: null,
+          unlockHint: matchId ? 'LOGIN_TO_GET_FREE' : null,
         };
       }
 
@@ -197,7 +229,7 @@ export class AccessService {
    * 消费一次权益（查看模型分析时调用）。
    * 优先消费免费额度，再消费邀请奖励。Pass 会员不消费次数。
    */
-  async consumeOne(userId?: string, guestId?: string): Promise<boolean> {
+  async consumeOne(userId?: string, guestId?: string, matchId?: string): Promise<boolean> {
     const now = new Date();
     const todayKey = now.toISOString().slice(0, 10);
 
@@ -205,8 +237,19 @@ export class AccessService {
       const user = await this.prisma.user.findUnique({ where: { id: userId } });
       if (!user) return false;
 
+      if (matchId && await this.hasMatchUnlock(matchId, userId, null)) {
+        return true;
+      }
+
       // Pass 会员无限制
       if (user.isPassActive && user.passExpiresAt && user.passExpiresAt > now) {
+        if (matchId) {
+          const passEntitlement = await this.prisma.entitlement.findFirst({
+            where: { userId, source: 'PASS_SUBSCRIPTION', status: 'ACTIVE', validFrom: { lte: now }, validUntil: { gte: now } },
+            orderBy: { validUntil: 'desc' },
+          });
+          await this.createMatchUnlock(matchId, userId, null, 'PASS_SUBSCRIPTION', passEntitlement?.id);
+        }
         return true;
       }
 
@@ -223,14 +266,23 @@ export class AccessService {
       });
 
       if (freeEntitlement && freeEntitlement.usedCount < freeEntitlement.maxCount) {
-        await this.prisma.entitlement.update({
-          where: { id: freeEntitlement.id },
-          data: {
-            usedCount: { increment: 1 },
-            ...(freeEntitlement.usedCount + 1 >= freeEntitlement.maxCount
-              ? { status: 'CONSUMED' }
-              : {}),
-          },
+        await this.prisma.$transaction(async (tx) => {
+          await tx.entitlement.update({
+            where: { id: freeEntitlement.id },
+            data: {
+              usedCount: { increment: 1 },
+              ...(freeEntitlement.usedCount + 1 >= freeEntitlement.maxCount
+                ? { status: 'CONSUMED' }
+                : {}),
+            },
+          });
+          if (matchId) {
+            await tx.matchUnlock.upsert({
+              where: { matchId_userId: { matchId, userId } },
+              update: { entitlementId: freeEntitlement.id, source: 'FREE_DAILY' },
+              create: { matchId, userId, entitlementId: freeEntitlement.id, source: 'FREE_DAILY' },
+            });
+          }
         });
         return true;
       }
@@ -248,14 +300,23 @@ export class AccessService {
       });
 
       if (inviteEntitlement && inviteEntitlement.usedCount < inviteEntitlement.maxCount) {
-        await this.prisma.entitlement.update({
-          where: { id: inviteEntitlement.id },
-          data: {
-            usedCount: { increment: 1 },
-            ...(inviteEntitlement.usedCount + 1 >= inviteEntitlement.maxCount
-              ? { status: 'CONSUMED' }
-              : {}),
-          },
+        await this.prisma.$transaction(async (tx) => {
+          await tx.entitlement.update({
+            where: { id: inviteEntitlement.id },
+            data: {
+              usedCount: { increment: 1 },
+              ...(inviteEntitlement.usedCount + 1 >= inviteEntitlement.maxCount
+                ? { status: 'CONSUMED' }
+                : {}),
+            },
+          });
+          if (matchId) {
+            await tx.matchUnlock.upsert({
+              where: { matchId_userId: { matchId, userId } },
+              update: { entitlementId: inviteEntitlement.id, source: 'INVITE_REWARD' },
+              create: { matchId, userId, entitlementId: inviteEntitlement.id, source: 'INVITE_REWARD' },
+            });
+          }
         });
         return true;
       }
@@ -268,15 +329,28 @@ export class AccessService {
       const guest = await this.prisma.guest.findUnique({ where: { id: guestId } });
       if (!guest) return false;
 
+      if (matchId && await this.hasMatchUnlock(matchId, null, guestId)) {
+        return true;
+      }
+
       const usedToday = guest.freeResetDate === todayKey ? guest.freeUsedToday : 0;
       if (usedToday >= FREE_DAILY_MAX_GUEST) return false;
 
-      await this.prisma.guest.update({
-        where: { id: guestId },
-        data: {
-          freeUsedToday: usedToday + 1,
-          freeResetDate: todayKey,
-        },
+      await this.prisma.$transaction(async (tx) => {
+        await tx.guest.update({
+          where: { id: guestId },
+          data: {
+            freeUsedToday: usedToday + 1,
+            freeResetDate: todayKey,
+          },
+        });
+        if (matchId) {
+          await tx.matchUnlock.upsert({
+            where: { matchId_guestId: { matchId, guestId } },
+            update: { source: 'FREE_DAILY' },
+            create: { matchId, guestId, source: 'FREE_DAILY' },
+          });
+        }
       });
       return true;
     }
@@ -438,6 +512,43 @@ export class AccessService {
     this.logger.log(
       `Granted Pass ${passTier} to user ${userId}, expires ${validUntil.toISOString()}`,
     );
+  }
+
+  private async hasMatchUnlock(matchId: string, userId?: string | null, guestId?: string | null): Promise<boolean> {
+    if (!userId && !guestId) return false;
+    const existing = await this.prisma.matchUnlock.findFirst({
+      where: {
+        matchId,
+        ...(userId ? { userId } : { guestId }),
+      },
+      select: { id: true },
+    });
+    return Boolean(existing);
+  }
+
+  private async createMatchUnlock(
+    matchId: string,
+    userId: string | null,
+    guestId: string | null,
+    source: EntitlementSource,
+    entitlementId?: string,
+  ): Promise<void> {
+    if (userId) {
+      await this.prisma.matchUnlock.upsert({
+        where: { matchId_userId: { matchId, userId } },
+        update: { source, entitlementId: entitlementId ?? null },
+        create: { matchId, userId, source, entitlementId: entitlementId ?? null },
+      });
+      return;
+    }
+
+    if (guestId) {
+      await this.prisma.matchUnlock.upsert({
+        where: { matchId_guestId: { matchId, guestId } },
+        update: { source, entitlementId: entitlementId ?? null },
+        create: { matchId, guestId, source, entitlementId: entitlementId ?? null },
+      });
+    }
   }
 
   // ─── Private Helpers ─────────────────────────────────────────────────────────
