@@ -39,6 +39,10 @@ ensure_base_dirs() {
 
 ensure_runtime() {
   ensure_command git
+  if command -v apt-get >/dev/null 2>&1; then
+    run sudo apt-get update -y
+    run sudo apt-get install -y build-essential python3 make g++ pkg-config libcairo2-dev libpango1.0-dev libjpeg-dev libgif-dev librsvg2-dev
+  fi
   mkdir -p /home/ubuntu/.ssh
   ssh-keyscan -p 443 ssh.github.com >> /home/ubuntu/.ssh/known_hosts 2>/dev/null || true
   ssh-keyscan github.com >> /home/ubuntu/.ssh/known_hosts 2>/dev/null || true
@@ -136,7 +140,7 @@ start_infra() {
 
 build_backend() {
   cd "$BACKEND_DIR"
-  run pnpm install --frozen-lockfile
+  run env CI=true npm_config_build_from_source=true pnpm install --frozen-lockfile
   run pnpm prisma generate
   run pnpm prisma migrate deploy
   run pnpm run build
