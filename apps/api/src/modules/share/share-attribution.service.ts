@@ -334,9 +334,10 @@ export class ShareAttributionService {
   /**
    * 生成 scene 值（最长 32 字符，微信限制）
    * 格式：{type}{hash} 例如 "s_a1b2c3d4e5f6"
+   * 使用随机字节确保唯一性
    */
   private generateSceneValue(identifier: string, matchId?: string): string {
-    const raw = `${identifier}:${matchId ?? ''}:${Date.now()}:${randomBytes(4).toString('hex')}`;
+    const raw = `${identifier}:${matchId ?? ''}:${Date.now()}:${randomBytes(8).toString('hex')}`;
     const hash = createHash('sha256').update(raw).digest('hex').slice(0, 24);
     return `s_${hash}`;
   }

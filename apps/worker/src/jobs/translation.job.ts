@@ -194,8 +194,11 @@ async function translateContent(
   targetLocale: string,
   sourceType: string,
 ): Promise<unknown> {
-  const apiKey = process.env.AI_OPENAI_API_KEY ?? process.env.OPENAI_API_KEY;
-  const baseUrl = process.env.AI_OPENAI_BASE_URL ?? 'https://api.openai.com/v1';
+  const apiKey = process.env.AI_OPENAI_API_KEY
+    ?? process.env.OPENAI_API_KEY;
+  const baseUrl = process.env.AI_OPENAI_BASE_URL
+    ?? process.env.OPENAI_BASE_URL
+    ?? 'https://api.openai.com/v1';
 
   if (!apiKey) {
     logger.warn('No AI API key configured, using mock translation');

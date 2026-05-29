@@ -28,7 +28,11 @@ export class AuthController {
     @Req() req: Request,
     @Body(new ZodValidationPipe(WechatLoginSchema)) dto: WechatLoginDto,
   ) {
-    return this.authService.loginWithWechat(dto, this.getRequestMeta(req));
+    return this.authService.loginWithWechat(dto, {
+      ...this.getRequestMeta(req),
+      shareScene: req.headers['x-share-scene'] as string | undefined,
+      inviteCode: req.headers['x-invite-code'] as string | undefined,
+    });
   }
 
   @Get('me')
@@ -40,6 +44,8 @@ export class AuthController {
     return {
       ipAddress: req.ip,
       userAgent: req.headers['user-agent'],
+      shareScene: undefined as string | undefined,
+      inviteCode: undefined as string | undefined,
     };
   }
 }

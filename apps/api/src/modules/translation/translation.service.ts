@@ -336,12 +336,14 @@ export class TranslationService {
     targetLocale: string,
     sourceType: string,
   ): Promise<unknown> {
-    const apiKey = this.configService.get<string>('AI_OPENAI_API_KEY') ??
-      this.configService.get<string>('OPENAI_API_KEY') ??
-      process.env.OPENAI_API_KEY;
-    const baseUrl = this.configService.get<string>('AI_OPENAI_BASE_URL') ??
-      process.env.AI_OPENAI_BASE_URL ??
-      'https://api.openai.com/v1';
+    // 优先使用 ConfigService，回退到环境变量
+    const apiKey = this.configService.get<string>('AI_OPENAI_API_KEY')
+      ?? process.env.AI_OPENAI_API_KEY
+      ?? process.env.OPENAI_API_KEY;
+    const baseUrl = this.configService.get<string>('AI_OPENAI_BASE_URL')
+      ?? process.env.AI_OPENAI_BASE_URL
+      ?? process.env.OPENAI_BASE_URL
+      ?? 'https://api.openai.com/v1';
 
     if (!apiKey) {
       // Mock 翻译（开发环境）

@@ -18,6 +18,9 @@ import { createHash } from 'crypto';
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'fs';
 import { join } from 'path';
 
+// Canvas context type alias for convenience
+type Ctx2D = ReturnType<ReturnType<typeof createCanvas>['getContext']>;
+
 // ─── Types ─────────────────────────────────────────────────────────────────────
 
 export interface RoastCardData {
@@ -207,8 +210,9 @@ const PALETTE = {
 
 // ─── 工具函数 ─────────────────────────────────────────────────────────────────
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 function roundRect(
-  ctx: ReturnType<typeof createCanvas>['getContext'],
+  ctx: any,
   x: number,
   y: number,
   w: number,
@@ -228,8 +232,9 @@ function roundRect(
   ctx.closePath();
 }
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 function wrapText(
-  ctx: ReturnType<typeof createCanvas>['getContext'],
+  ctx: any,
   text: string,
   maxWidth: number,
   maxLines: number,
@@ -256,8 +261,9 @@ function wrapText(
   return lines;
 }
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 function dynamicFontSize(
-  ctx: ReturnType<typeof createCanvas>['getContext'],
+  ctx: any,
   text: string,
   maxWidth: number,
   maxSize: number,

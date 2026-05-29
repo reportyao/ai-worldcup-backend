@@ -32,6 +32,11 @@ const EnvSchema = z.object({
   AI_ANTHROPIC_BASE_URL: z.string().url().optional(),
   AI_ALLOW_MOCK: z.coerce.boolean().default(false),
   PREDICTION_SCHEDULER_WINDOW_MINUTES: z.coerce.number().int().min(1).max(120).default(10),
+
+  // T6: Share & i18n
+  H5_BASE_URL: z.string().default('http://localhost:5173'),
+  WECHAT_APP_ID: z.string().min(1).optional(),
+  WECHAT_APP_SECRET: z.string().min(1).optional(),
 });
 
 export type AppConfig = z.infer<typeof EnvSchema>;

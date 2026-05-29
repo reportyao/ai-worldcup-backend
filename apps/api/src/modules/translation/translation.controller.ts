@@ -11,17 +11,39 @@ import { TranslationService } from './translation.service.js';
 /**
  * T6-05: AI 内容翻译 Controller
  *
+ * 路由顺序重要：NestJS 按定义顺序匹配，固定路径必须在参数化路径之前。
+ *
+ * - GET  /translations/pending      获取待翻译列表
+ * - GET  /translations/stats        获取翻译统计
  * - POST /translations/create       创建翻译任务
  * - POST /translations/batch        批量创建翻译任务
  * - POST /translations/:id/execute  执行翻译（Worker 调用）
- * - GET  /translations/:sourceType/:sourceId  获取翻译内容
- * - GET  /translations/pending      获取待翻译列表
- * - GET  /translations/stats        获取翻译统计
  * - POST /translations/:id/review   人工审核翻译
+ * - GET  /translations/:sourceType/:sourceId  获取翻译内容（参数化路由放最后）
  */
 @Controller('translations')
 export class TranslationController {
   constructor(private readonly translationService: TranslationService) {}
+
+  /**
+   * GET /translations/pending
+   * 获取待翻译任务列表（固定路由，必须在参数化路由之前）
+   */
+  @Get('pending')
+  async getPending(@Query('limit') limit?: string) {
+    return this.translationService.getPendingTranslations(
+      limit ? parseInt(limit, 10) : 10,
+    );
+  }
+
+  /**
+   * GET /translations/stats
+   * 获取翻译统计（固定路由，必须在参数化路由之前）
+   */
+  @Get('stats')
+  async getStats() {
+    return this.translationService.getTranslationStats();
+  }
 
   /**
    * POST /translations/create
@@ -73,43 +95,6 @@ export class TranslationController {
   }
 
   /**
-   * GET /translations/:sourceType/:sourceId
-   * 获取翻译内容
-   */
-  @Get(':sourceType/:sourceId')
-  async getTranslation(
-    @Param('sourceType') sourceType: string,
-    @Param('sourceId') sourceId: string,
-    @Query('locale') locale?: string,
-  ) {
-    return this.translationService.getTranslation({
-      sourceType,
-      sourceId,
-      locale: locale ?? 'en',
-    });
-  }
-
-  /**
-   * GET /translations/pending
-   * 获取待翻译任务列表
-   */
-  @Get('pending')
-  async getPending(@Query('limit') limit?: string) {
-    return this.translationService.getPendingTranslations(
-      limit ? parseInt(limit, 10) : 10,
-    );
-  }
-
-  /**
-   * GET /translations/stats
-   * 获取翻译统计
-   */
-  @Get('stats')
-  async getStats() {
-    return this.translationService.getTranslationStats();
-  }
-
-  /**
    * POST /translations/:id/review
    * 人工审核翻译
    */
@@ -123,5 +108,22 @@ export class TranslationController {
     },
   ) {
     return this.translationService.reviewTranslation(id, body);
+  }
+
+  /**
+   * GET /translations/:sourceType/:sourceId
+   * 获取翻译内容（参数化路由放最后，避免与 /pending、/stats 冲突）
+   */
+  @Get(':sourceType/:sourceId')
+  async getTranslation(
+    @Param('sourceType') sourceType: string,
+    @Param('sourceId') sourceId: string,
+    @Query('locale') locale?: string,
+  ) {
+    return this.translationService.getTranslation({
+      sourceType,
+      sourceId,
+      locale: locale ?? 'en',
+    });
   }
 }
