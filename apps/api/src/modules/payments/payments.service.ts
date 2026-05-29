@@ -1,3 +1,5 @@
+import type { OrderStatus, PaymentChannel, Prisma } from '@prisma/client';
+
 import {
   BadRequestException,
   Injectable,
@@ -328,10 +330,10 @@ export class PaymentsService {
     channel?: string;
   }) {
     const { page = 1, pageSize = 20, status, userId, channel } = params;
-    const where = {
-      ...(status ? { status: status as any } : {}),
+    const where: Prisma.OrderWhereInput = {
+      ...(status ? { status: status as OrderStatus } : {}),
       ...(userId ? { userId } : {}),
-      ...(channel ? { channel: channel as any } : {}),
+      ...(channel ? { channel: channel as PaymentChannel } : {}),
     };
 
     const [items, total] = await this.prisma.$transaction([

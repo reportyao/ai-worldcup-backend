@@ -210,9 +210,8 @@ const PALETTE = {
 
 // ─── 工具函数 ─────────────────────────────────────────────────────────────────
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 function roundRect(
-  ctx: any,
+  ctx: Ctx2D,
   x: number,
   y: number,
   w: number,
@@ -232,9 +231,8 @@ function roundRect(
   ctx.closePath();
 }
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 function wrapText(
-  ctx: any,
+  ctx: Ctx2D,
   text: string,
   maxWidth: number,
   maxLines: number,
@@ -261,9 +259,8 @@ function wrapText(
   return lines;
 }
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 function dynamicFontSize(
-  ctx: any,
+  ctx: Ctx2D,
   text: string,
   maxWidth: number,
   maxSize: number,

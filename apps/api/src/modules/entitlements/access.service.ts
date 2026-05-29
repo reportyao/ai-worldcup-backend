@@ -563,7 +563,7 @@ export class AccessService {
       where: {
         ...(userId ? { userId } : {}),
         ...(guestId ? { guestId } : {}),
-        source: source as any,
+        source: source as EntitlementSource,
         status: 'ACTIVE',
         validFrom: { lte: now },
         validUntil: { gte: now },
