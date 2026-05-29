@@ -23,6 +23,8 @@
     "@prisma/client": "^5.16.1",
     "bullmq": "^5.10.4",
     "canvas": "^3.2.3",
+    "class-transformer": "^0.5.1",
+    "class-validator": "^0.14.1",
     "ioredis": "5.10.1",
     "nestjs-pino": "^4.1.0",
     "pino": "^9.2.0",
