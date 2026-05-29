@@ -20,6 +20,17 @@ ensure_command() {
   command -v "$1" >/dev/null 2>&1 || { log "ERROR: missing command: $1"; exit 1; }
 }
 
+docker_compose() {
+  if docker compose version >/dev/null 2>&1; then
+    docker compose "$@"
+  elif command -v docker-compose >/dev/null 2>&1; then
+    docker-compose "$@"
+  else
+    log "ERROR: Docker Compose is required. Install docker compose plugin or docker-compose."
+    exit 1
+  fi
+}
+
 ensure_base_dirs() {
   mkdir -p /home/ubuntu/apps "$DEPLOY_DIR" "$LOG_DIR"
   sudo mkdir -p "$WEB_ROOT"
@@ -109,7 +120,7 @@ ENVEOF
 start_infra() {
   cd "$BACKEND_DIR"
   if [ -f docker-compose.yml ]; then
-    run docker compose up -d postgres redis
+    run docker_compose up -d postgres redis
   fi
 }
 
