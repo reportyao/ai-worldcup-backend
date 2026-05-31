@@ -1,0 +1,25 @@
+{
+  "league": {
+    "label": "J1 League",
+    "tier": "asia",
+    "priority": 42,
+    "league_id": "209",
+    "league_name": "J1 League",
+    "league_season": "2026",
+    "country_id": "64",
+    "country_name": "Japan",
+    "league_logo": "https://apiv3.apifootball.com/badges/logo_leagues/209_j1-league.png",
+    "country_logo": "https://apiv3.apifootball.com/badges/logo_country/64_japan.png",
+    "matched_candidates_count": 1,
+    "recommendation_reason": "覆盖亚洲高热度联赛与亚冠，有助于世界杯亚洲队、转会球员和区域强队状态建模。"
+  },
+  "action": "get_odds",
+  "name": "odds",
+  "request_url_sanitized": "https://apiv3.apifootball.com/?action=get_odds&APIkey=***&league_id=209&from=2026-01-01&to=2026-12-31",
+  "http_status": 200,
+  "fetched_at": "2026-05-31T12:13:04Z",
+  "data": {
+    "error": 201,
+    "message": "Date interval is to long! (Maximum 5 days)"
+  }
+}

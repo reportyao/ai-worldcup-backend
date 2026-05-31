@@ -1,0 +1,25 @@
+{
+  "league": {
+    "label": "AFC Champions League Elite",
+    "tier": "asia",
+    "priority": 40,
+    "league_id": "727",
+    "league_name": "AFC Champions League",
+    "league_season": "2025/2026",
+    "country_id": "2",
+    "country_name": "intl",
+    "league_logo": "https://apiv3.apifootball.com/badges/logo_leagues/727_afc-champions-league.png",
+    "country_logo": "https://apiv3.apifootball.com/badges/logo_country/2_intl.png",
+    "matched_candidates_count": 3,
+    "recommendation_reason": "覆盖亚洲高热度联赛与亚冠，有助于世界杯亚洲队、转会球员和区域强队状态建模。"
+  },
+  "action": "get_odds",
+  "name": "odds",
+  "request_url_sanitized": "https://apiv3.apifootball.com/?action=get_odds&APIkey=***&league_id=727&from=2025-07-01&to=2026-06-30",
+  "http_status": 200,
+  "fetched_at": "2026-05-31T12:12:55Z",
+  "data": {
+    "error": 201,
+    "message": "Date interval is to long! (Maximum 5 days)"
+  }
+}

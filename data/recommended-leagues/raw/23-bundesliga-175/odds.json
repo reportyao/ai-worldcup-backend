@@ -1,0 +1,25 @@
+{
+  "league": {
+    "label": "Bundesliga",
+    "tier": "top5",
+    "priority": 23,
+    "league_id": "175",
+    "league_name": "Bundesliga",
+    "league_season": "2025/2026",
+    "country_id": "4",
+    "country_name": "Germany",
+    "league_logo": "https://apiv3.apifootball.com/badges/logo_leagues/175_bundesliga.png",
+    "country_logo": "https://apiv3.apifootball.com/badges/logo_country/4_germany.png",
+    "matched_candidates_count": 1,
+    "recommendation_reason": "欧洲五大联赛数据稳定、球队和球员质量高，是俱乐部预测模型的核心样本。"
+  },
+  "action": "get_odds",
+  "name": "odds",
+  "request_url_sanitized": "https://apiv3.apifootball.com/?action=get_odds&APIkey=***&league_id=175&from=2025-07-01&to=2026-06-30",
+  "http_status": 200,
+  "fetched_at": "2026-05-31T12:11:52Z",
+  "data": {
+    "error": 201,
+    "message": "Date interval is to long! (Maximum 5 days)"
+  }
+}

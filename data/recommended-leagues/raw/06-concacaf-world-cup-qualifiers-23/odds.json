@@ -1,0 +1,25 @@
+{
+  "league": {
+    "label": "Concacaf World Cup Qualifiers",
+    "tier": "international",
+    "priority": 6,
+    "league_id": "23",
+    "league_name": "Concacaf World Cup Qualifiers",
+    "league_season": "2026",
+    "country_id": "8",
+    "country_name": "Worldcup",
+    "league_logo": "https://apiv3.apifootball.com/badges/logo_leagues/23_wc-qualification-concacaf.png",
+    "country_logo": "",
+    "matched_candidates_count": 1,
+    "recommendation_reason": "与世界杯预测强相关，可补充国家队近期正式比赛、资格赛强弱关系与跨洲对比特征。"
+  },
+  "action": "get_odds",
+  "name": "odds",
+  "request_url_sanitized": "https://apiv3.apifootball.com/?action=get_odds&APIkey=***&league_id=23&from=2023-01-01&to=2026-12-31",
+  "http_status": 200,
+  "fetched_at": "2026-05-31T12:10:00Z",
+  "data": {
+    "error": 201,
+    "message": "Date interval is to long! (Maximum 5 days)"
+  }
+}

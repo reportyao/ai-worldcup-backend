@@ -103,6 +103,27 @@
 
 Worker 启动时会注册两类重复任务：未来赛程同步任务使用 `FOOTBALL_DATA_FIXTURE_SYNC_CRON`，实时比分同步任务使用 `FOOTBALL_DATA_LIVE_SYNC_CRON`。若 `API_FOOTBALL_KEY` 或默认联赛列表未配置，相关任务会安全跳过，不影响预测队列和其他业务队列运行。
 
+## 内置数据集与文档
+
+本仓库已纳入 apifootball.com 抓取并校验后的项目数据集，统一保存在 `data/` 目录。数据请求使用账号后台 API key 执行，但提交到仓库的脚本、日志、原始响应与文档均已脱敏；提交前密钥扫描结果为 `secret_scan=passed`。
+
+| 数据目录 | 内容 | 关键文档 |
+| --- | --- | --- |
+| `data/worldcup-2026/` | 2026 FIFA World Cup 48 支参赛队伍标准化 JSON/CSV、原始响应、校验脚本和校验结果。 | `data/worldcup-2026/worldcup_2026_teams_validation_report.md` |
+| `data/recommended-leagues/` | 23 个推荐联赛/赛事的球队、积分榜、赛程/赛果、射手榜汇总数据、原始响应、索引和抓取脚本。 | `data/recommended-leagues/recommended_leagues_validation_report.md` |
+| `docs/data_delivery_summary.md` | 本次三仓库代码、数据抓取、校验结论和后续建议的最终交付摘要。 | `docs/data_delivery_summary.md` |
+
+推荐联赛数据汇总规模如下，可直接作为后续导入脚本、离线分析或 AI 预测特征工程的输入。
+
+| 汇总表 | 记录数 | 输出格式 |
+| --- | ---: | --- |
+| `all_teams` | 859 | JSON / CSV |
+| `all_standings` | 884 | JSON / CSV |
+| `all_events` | 6154 | JSON / CSV |
+| `all_topscorers` | 1487 | JSON / CSV |
+
+当前已知限制是 odds 赔率接口在当前账号或接口参数下未返回可用数据，OFC World Cup Qualifiers 的积分榜接口为空，AFC Champions League Elite 的赛程接口为空。上述空响应均已保留在 `raw/` 目录和质量报告中，便于后续复查和增量补抓。
+
 ## 贡献
 
 欢迎提交 Pull Request 或报告 Bug。请确保您的代码符合项目规范并包含相应的测试。

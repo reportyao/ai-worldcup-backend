@@ -1,0 +1,439 @@
+{
+  "source_url": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/teams",
+  "extraction_method": "browser DOM query: a[href*=\"/teams/\"]",
+  "count": 48,
+  "teams": [
+    {
+      "official_name": "Canada",
+      "normalized_name": "Canada",
+      "stage_group": "B",
+      "world_ranking": 30,
+      "fifa_participations": 2,
+      "is_host_on_fifa_page": true,
+      "fifa_team_url": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/teams/canada"
+    },
+    {
+      "official_name": "Mexico",
+      "normalized_name": "Mexico",
+      "stage_group": "A",
+      "world_ranking": 15,
+      "fifa_participations": 17,
+      "is_host_on_fifa_page": true,
+      "fifa_team_url": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/teams/mexico"
+    },
+    {
+      "official_name": "USA",
+      "normalized_name": "United States",
+      "stage_group": "D",
+      "world_ranking": 16,
+      "fifa_participations": 11,
+      "is_host_on_fifa_page": true,
+      "fifa_team_url": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/teams/usa"
+    },
+    {
+      "official_name": "Algeria",
+      "normalized_name": "Algeria",
+      "stage_group": "J",
+      "world_ranking": 28,
+      "fifa_participations": 4,
+      "is_host_on_fifa_page": false,
+      "fifa_team_url": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/teams/algeria"
+    },
+    {
+      "official_name": "Argentina",
+      "normalized_name": "Argentina",
+      "stage_group": "J",
+      "world_ranking": 3,
+      "fifa_participations": 18,
+      "is_host_on_fifa_page": false,
+      "fifa_team_url": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/teams/argentina"
+    },
+    {
+      "official_name": "Australia",
+      "normalized_name": "Australia",
+      "stage_group": "D",
+      "world_ranking": 27,
+      "fifa_participations": 6,
+      "is_host_on_fifa_page": false,
+      "fifa_team_url": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/teams/australia"
+    },
+    {
+      "official_name": "Austria",
+      "normalized_name": "Austria",
+      "stage_group": "J",
+      "world_ranking": 24,
+      "fifa_participations": 7,
+      "is_host_on_fifa_page": false,
+      "fifa_team_url": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/teams/austria"
+    },
+    {
+      "official_name": "Belgium",
+      "normalized_name": "Belgium",
+      "stage_group": "G",
+      "world_ranking": 9,
+      "fifa_participations": 13,
+      "is_host_on_fifa_page": false,
+      "fifa_team_url": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/teams/belgium"
+    },
+    {
+      "official_name": "Bosnia and Herzegovina",
+      "normalized_name": "Bosnia and Herzegovina",
+      "stage_group": "B",
+      "world_ranking": 65,
+      "fifa_participations": 1,
+      "is_host_on_fifa_page": false,
+      "fifa_team_url": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/teams/bosnia-herzegovina"
+    },
+    {
+      "official_name": "Brazil",
+      "normalized_name": "Brazil",
+      "stage_group": "C",
+      "world_ranking": 6,
+      "fifa_participations": 22,
+      "is_host_on_fifa_page": false,
+      "fifa_team_url": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/teams/brazil"
+    },
+    {
+      "official_name": "Cabo Verde",
+      "normalized_name": "Cape Verde",
+      "stage_group": "H",
+      "world_ranking": 69,
+      "fifa_participations": 0,
+      "is_host_on_fifa_page": false,
+      "fifa_team_url": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/teams/cabo-verde"
+    },
+    {
+      "official_name": "Colombia",
+      "normalized_name": "Colombia",
+      "stage_group": "K",
+      "world_ranking": 13,
+      "fifa_participations": 6,
+      "is_host_on_fifa_page": false,
+      "fifa_team_url": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/teams/colombia"
+    },
+    {
+      "official_name": "Congo DR",
+      "normalized_name": "DR Congo",
+      "stage_group": "K",
+      "world_ranking": 46,
+      "fifa_participations": 1,
+      "is_host_on_fifa_page": false,
+      "fifa_team_url": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/teams/congo-dr"
+    },
+    {
+      "official_name": "Côte d'Ivoire",
+      "normalized_name": "Ivory Coast",
+      "stage_group": "E",
+      "world_ranking": 34,
+      "fifa_participations": 3,
+      "is_host_on_fifa_page": false,
+      "fifa_team_url": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/teams/cote-d-ivoire"
+    },
+    {
+      "official_name": "Croatia",
+      "normalized_name": "Croatia",
+      "stage_group": "L",
+      "world_ranking": 11,
+      "fifa_participations": 6,
+      "is_host_on_fifa_page": false,
+      "fifa_team_url": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/teams/croatia"
+    },
+    {
+      "official_name": "Curaçao",
+      "normalized_name": "Curaçao",
+      "stage_group": "E",
+      "world_ranking": 82,
+      "fifa_participations": 0,
+      "is_host_on_fifa_page": false,
+      "fifa_team_url": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/teams/curacao"
+    },
+    {
+      "official_name": "Czechia",
+      "normalized_name": "Czech Republic",
+      "stage_group": "A",
+      "world_ranking": 41,
+      "fifa_participations": 9,
+      "is_host_on_fifa_page": false,
+      "fifa_team_url": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/teams/czechia"
+    },
+    {
+      "official_name": "Ecuador",
+      "normalized_name": "Ecuador",
+      "stage_group": "E",
+      "world_ranking": 23,
+      "fifa_participations": 4,
+      "is_host_on_fifa_page": false,
+      "fifa_team_url": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/teams/ecuador"
+    },
+    {
+      "official_name": "Egypt",
+      "normalized_name": "Egypt",
+      "stage_group": "G",
+      "world_ranking": 29,
+      "fifa_participations": 3,
+      "is_host_on_fifa_page": false,
+      "fifa_team_url": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/teams/egypt"
+    },
+    {
+      "official_name": "England",
+      "normalized_name": "England",
+      "stage_group": "L",
+      "world_ranking": 4,
+      "fifa_participations": 16,
+      "is_host_on_fifa_page": false,
+      "fifa_team_url": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/teams/england"
+    },
+    {
+      "official_name": "France",
+      "normalized_name": "France",
+      "stage_group": "I",
+      "world_ranking": 1,
+      "fifa_participations": 16,
+      "is_host_on_fifa_page": false,
+      "fifa_team_url": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/teams/france"
+    },
+    {
+      "official_name": "Germany",
+      "normalized_name": "Germany",
+      "stage_group": "E",
+      "world_ranking": 10,
+      "fifa_participations": 20,
+      "is_host_on_fifa_page": false,
+      "fifa_team_url": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/teams/germany"
+    },
+    {
+      "official_name": "Ghana",
+      "normalized_name": "Ghana",
+      "stage_group": "L",
+      "world_ranking": 74,
+      "fifa_participations": 4,
+      "is_host_on_fifa_page": false,
+      "fifa_team_url": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/teams/ghana"
+    },
+    {
+      "official_name": "Haiti",
+      "normalized_name": "Haiti",
+      "stage_group": "C",
+      "world_ranking": 83,
+      "fifa_participations": 1,
+      "is_host_on_fifa_page": false,
+      "fifa_team_url": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/teams/haiti"
+    },
+    {
+      "official_name": "IR Iran",
+      "normalized_name": "Iran",
+      "stage_group": "G",
+      "world_ranking": 21,
+      "fifa_participations": 6,
+      "is_host_on_fifa_page": false,
+      "fifa_team_url": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/teams/ir-iran"
+    },
+    {
+      "official_name": "Iraq",
+      "normalized_name": "Iraq",
+      "stage_group": "I",
+      "world_ranking": 57,
+      "fifa_participations": 1,
+      "is_host_on_fifa_page": false,
+      "fifa_team_url": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/teams/iraq"
+    },
+    {
+      "official_name": "Japan",
+      "normalized_name": "Japan",
+      "stage_group": "F",
+      "world_ranking": 18,
+      "fifa_participations": 7,
+      "is_host_on_fifa_page": false,
+      "fifa_team_url": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/teams/japan"
+    },
+    {
+      "official_name": "Jordan",
+      "normalized_name": "Jordan",
+      "stage_group": "J",
+      "world_ranking": 63,
+      "fifa_participations": 0,
+      "is_host_on_fifa_page": false,
+      "fifa_team_url": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/teams/jordan"
+    },
+    {
+      "official_name": "Korea Republic",
+      "normalized_name": "South Korea",
+      "stage_group": "A",
+      "world_ranking": 25,
+      "fifa_participations": 10,
+      "is_host_on_fifa_page": false,
+      "fifa_team_url": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/teams/korea-republic"
+    },
+    {
+      "official_name": "Morocco",
+      "normalized_name": "Morocco",
+      "stage_group": "C",
+      "world_ranking": 8,
+      "fifa_participations": 6,
+      "is_host_on_fifa_page": false,
+      "fifa_team_url": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/teams/morocco"
+    },
+    {
+      "official_name": "Netherlands",
+      "normalized_name": "Netherlands",
+      "stage_group": "F",
+      "world_ranking": 7,
+      "fifa_participations": 10,
+      "is_host_on_fifa_page": false,
+      "fifa_team_url": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/teams/netherlands"
+    },
+    {
+      "official_name": "New Zealand",
+      "normalized_name": "New Zealand",
+      "stage_group": "G",
+      "world_ranking": 85,
+      "fifa_participations": 2,
+      "is_host_on_fifa_page": false,
+      "fifa_team_url": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/teams/new-zealand"
+    },
+    {
+      "official_name": "Norway",
+      "normalized_name": "Norway",
+      "stage_group": "I",
+      "world_ranking": 31,
+      "fifa_participations": 3,
+      "is_host_on_fifa_page": false,
+      "fifa_team_url": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/teams/norway"
+    },
+    {
+      "official_name": "Panama",
+      "normalized_name": "Panama",
+      "stage_group": "L",
+      "world_ranking": 33,
+      "fifa_participations": 1,
+      "is_host_on_fifa_page": false,
+      "fifa_team_url": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/teams/panama"
+    },
+    {
+      "official_name": "Paraguay",
+      "normalized_name": "Paraguay",
+      "stage_group": "D",
+      "world_ranking": 40,
+      "fifa_participations": 8,
+      "is_host_on_fifa_page": false,
+      "fifa_team_url": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/teams/paraguay"
+    },
+    {
+      "official_name": "Portugal",
+      "normalized_name": "Portugal",
+      "stage_group": "K",
+      "world_ranking": 5,
+      "fifa_participations": 8,
+      "is_host_on_fifa_page": false,
+      "fifa_team_url": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/teams/portugal"
+    },
+    {
+      "official_name": "Qatar",
+      "normalized_name": "Qatar",
+      "stage_group": "B",
+      "world_ranking": 55,
+      "fifa_participations": 1,
+      "is_host_on_fifa_page": false,
+      "fifa_team_url": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/teams/qatar"
+    },
+    {
+      "official_name": "Saudi Arabia",
+      "normalized_name": "Saudi Arabia",
+      "stage_group": "H",
+      "world_ranking": 61,
+      "fifa_participations": 6,
+      "is_host_on_fifa_page": false,
+      "fifa_team_url": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/teams/saudi-arabia"
+    },
+    {
+      "official_name": "Scotland",
+      "normalized_name": "Scotland",
+      "stage_group": "C",
+      "world_ranking": 43,
+      "fifa_participations": 7,
+      "is_host_on_fifa_page": false,
+      "fifa_team_url": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/teams/scotland"
+    },
+    {
+      "official_name": "Senegal",
+      "normalized_name": "Senegal",
+      "stage_group": "I",
+      "world_ranking": 14,
+      "fifa_participations": 3,
+      "is_host_on_fifa_page": false,
+      "fifa_team_url": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/teams/senegal"
+    },
+    {
+      "official_name": "South Africa",
+      "normalized_name": "South Africa",
+      "stage_group": "A",
+      "world_ranking": 60,
+      "fifa_participations": 3,
+      "is_host_on_fifa_page": false,
+      "fifa_team_url": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/teams/south-africa"
+    },
+    {
+      "official_name": "Spain",
+      "normalized_name": "Spain",
+      "stage_group": "H",
+      "world_ranking": 2,
+      "fifa_participations": 16,
+      "is_host_on_fifa_page": false,
+      "fifa_team_url": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/teams/spain"
+    },
+    {
+      "official_name": "Sweden",
+      "normalized_name": "Sweden",
+      "stage_group": "F",
+      "world_ranking": 38,
+      "fifa_participations": 12,
+      "is_host_on_fifa_page": false,
+      "fifa_team_url": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/teams/sweden"
+    },
+    {
+      "official_name": "Switzerland",
+      "normalized_name": "Switzerland",
+      "stage_group": "B",
+      "world_ranking": 19,
+      "fifa_participations": 12,
+      "is_host_on_fifa_page": false,
+      "fifa_team_url": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/teams/switzerland"
+    },
+    {
+      "official_name": "Tunisia",
+      "normalized_name": "Tunisia",
+      "stage_group": "F",
+      "world_ranking": 44,
+      "fifa_participations": 6,
+      "is_host_on_fifa_page": false,
+      "fifa_team_url": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/teams/tunisia"
+    },
+    {
+      "official_name": "Türkiye",
+      "normalized_name": "Turkey",
+      "stage_group": "D",
+      "world_ranking": 22,
+      "fifa_participations": 2,
+      "is_host_on_fifa_page": false,
+      "fifa_team_url": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/teams/turkiye"
+    },
+    {
+      "official_name": "Uruguay",
+      "normalized_name": "Uruguay",
+      "stage_group": "H",
+      "world_ranking": 17,
+      "fifa_participations": 14,
+      "is_host_on_fifa_page": false,
+      "fifa_team_url": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/teams/uruguay"
+    },
+    {
+      "official_name": "Uzbekistan",
+      "normalized_name": "Uzbekistan",
+      "stage_group": "K",
+      "world_ranking": 50,
+      "fifa_participations": 0,
+      "is_host_on_fifa_page": false,
+      "fifa_team_url": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/teams/uzbekistan"
+    }
+  ]
+}

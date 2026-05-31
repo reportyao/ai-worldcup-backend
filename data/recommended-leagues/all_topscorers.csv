@@ -1,0 +1,1488 @@
+source_label,tier,priority,league_id,league_name,league_season,country_name,player_place,player_name,player_key,team_name,team_key,goals,assists,penalty_goals,fk_stage_key,stage_name
+FIFA World Cup,international,1,28,World Cup,2026,Worldcup,1,K. Mbappé,2354545782,France,22,8,,2,455,Group Stage
+FIFA World Cup,international,1,28,World Cup,2026,Worldcup,2,L. Messi,1135663375,Argentina,536,7,,4,455,Group Stage
+FIFA World Cup,international,1,28,World Cup,2026,Worldcup,3,Julián Álvarez,1560441904,Argentina,536,4,,0,455,Group Stage
+FIFA World Cup,international,1,28,World Cup,2026,Worldcup,4,O. Giroud,4271018749,France,22,4,,0,455,Group Stage
+FIFA World Cup,international,1,28,World Cup,2026,Worldcup,5,Álvaro Morata,3643520459,Spain,19,3,,0,455,Group Stage
+FIFA World Cup,international,1,28,World Cup,2026,Worldcup,6,C. Gakpo,157543942,Netherlands,10,3,,0,455,Group Stage
+FIFA World Cup,international,1,28,World Cup,2026,Worldcup,7,M. Rashford,2661454570,England,16,3,,0,455,Group Stage
+FIFA World Cup,international,1,28,World Cup,2026,Worldcup,8,G. Ramos,2230606256,Porugal,23,3,,0,455,Group Stage
+FIFA World Cup,international,1,28,World Cup,2026,Worldcup,9,E. Valencia,3670472897,Ecuador,541,3,,1,455,Group Stage
+FIFA World Cup,international,1,28,World Cup,2026,Worldcup,10,Richarlison,2399580076,Brazil,531,3,,0,455,Group Stage
+FIFA World Cup,international,1,28,World Cup,2026,Worldcup,11,V. Aboubakar,1211603426,Cameroon,530,2,1,0,455,Group Stage
+FIFA World Cup,international,1,28,World Cup,2026,Worldcup,12,Salem Al Dawsari,3447794392,Saudi Arabia,647,2,,0,455,Group Stage
+FIFA World Cup,international,1,28,World Cup,2026,Worldcup,13,Bruno Fernandes,3653582633,Portugal,23,2,2,1,455,Group Stage
+FIFA World Cup,international,1,28,World Cup,2026,Worldcup,15,Cho Gue-Sung,3726546135,Korea Republic,651,2,,0,455,Group Stage
+FIFA World Cup,international,1,28,World Cup,2026,Worldcup,15,G. de Arrascaeta,1252371777,Uruguay,539,2,,0,455,Group Stage
+UEFA World Cup Qualifiers,international,2,24,UEFA World Cup Qualifiers,2026,Europe,1,E. Haaland,659972248,Norway,692,16,,,443,Group Stage
+UEFA World Cup Qualifiers,international,2,24,UEFA World Cup Qualifiers,2026,Europe,2,M. Depay,2003280452,Netherlands,10,8,,,443,Group Stage
+UEFA World Cup Qualifiers,international,2,24,UEFA World Cup Qualifiers,2026,Europe,3,M. Arnautovic,2673924483,Austria,9,8,,,443,Group Stage
+UEFA World Cup Qualifiers,international,2,24,UEFA World Cup Qualifiers,2026,Europe,4,H. Kane,3333345663,England,16,8,,,443,Group Stage
+UEFA World Cup Qualifiers,international,2,24,UEFA World Cup Qualifiers,2026,Europe,5,M. Oyarzabal,3111173085,Spain,19,6,,,443,Group Stage
+UEFA World Cup Qualifiers,international,2,24,UEFA World Cup Qualifiers,2026,Europe,6,K. De Bruyne,4271919118,Belgium,6,6,,,443,Group Stage
+UEFA World Cup Qualifiers,international,2,24,UEFA World Cup Qualifiers,2026,Europe,6,A. Kramaric,1476677936,Croatia,14,6,,,443,Group Stage
+UEFA World Cup Qualifiers,international,2,24,UEFA World Cup Qualifiers,2026,Europe,8,M. Merino,2208713585,Spain,19,6,,,443,Group Stage
+UEFA World Cup Qualifiers,international,2,24,UEFA World Cup Qualifiers,2026,Europe,11,J. Doku,193952099,Belgium,6,5,,,443,Group Stage
+UEFA World Cup Qualifiers,international,2,24,UEFA World Cup Qualifiers,2026,Europe,15,B. Varga,574135623,Hungary,24,5,,,443,Group Stage
+UEFA World Cup Qualifiers,international,2,24,UEFA World Cup Qualifiers,2026,Europe,15,C. Ronaldo,103051168,Portugal,23,5,,,443,Group Stage
+UEFA World Cup Qualifiers,international,2,24,UEFA World Cup Qualifiers,2026,Europe,15,T. Parrott,1390647294,Ireland,677,5,,,443,Group Stage
+UEFA World Cup Qualifiers,international,2,24,UEFA World Cup Qualifiers,2026,Europe,15,E. Dzeko,4040542020,Bosnia & Herzegovina,685,5,,,443,Group Stage
+UEFA World Cup Qualifiers,international,2,24,UEFA World Cup Qualifiers,2026,Europe,14,R. Hojlund,1302503360,Denmark,7,5,,,443,Group Stage
+UEFA World Cup Qualifiers,international,2,24,UEFA World Cup Qualifiers,2026,Europe,11,H. Wilson,1384836880,Wales,4,5,,,443,Group Stage
+UEFA World Cup Qualifiers,international,2,24,UEFA World Cup Qualifiers,2026,Europe,11,A. Sorloth,2846654019,Norway,692,5,,,443,Group Stage
+UEFA World Cup Qualifiers,international,2,24,UEFA World Cup Qualifiers,2026,Europe,10,K. Mbappe,2354545782,France,22,5,,,443,Group Stage
+UEFA World Cup Qualifiers,international,2,24,UEFA World Cup Qualifiers,2026,Europe,9,M. Retegui,3268767791,Italy,3,5,,,443,Group Stage
+UEFA World Cup Qualifiers,international,2,24,UEFA World Cup Qualifiers,2026,Europe,19,C. Gakpo,157543942,Netherlands,10,4,,,443,Group Stage
+UEFA World Cup Qualifiers,international,2,24,UEFA World Cup Qualifiers,2026,Europe,19,I. Perisic,4099052894,Croatia,14,4,,,443,Group Stage
+CONMEBOL World Cup Qualifiers,international,3,27,CONMEBOL World Cup Qualifiers,2026,South America,1,L. Díaz,1870772768,Colombia,535,6,,0,449,Current
+CONMEBOL World Cup Qualifiers,international,3,27,CONMEBOL World Cup Qualifiers,2026,South America,2,L. Messi,1135663375,Argentina,536,6,3,0,449,Current
+CONMEBOL World Cup Qualifiers,international,3,27,CONMEBOL World Cup Qualifiers,2026,South America,3,Raphinha,3190208711,Brazil,531,5,2,3,449,Current
+CONMEBOL World Cup Qualifiers,international,3,27,CONMEBOL World Cup Qualifiers,2026,South America,4,D. Núñez,1406825903,Uruguay,539,5,,1,449,Current
+CONMEBOL World Cup Qualifiers,international,3,27,CONMEBOL World Cup Qualifiers,2026,South America,5,M. Terceros,2164891220,Bolivia,534,5,,2,449,Current
+CONMEBOL World Cup Qualifiers,international,3,27,CONMEBOL World Cup Qualifiers,2026,South America,6,E. Valencia,3670472897,Ecuador,541,5,,1,449,Current
+CONMEBOL World Cup Qualifiers,international,3,27,CONMEBOL World Cup Qualifiers,2026,South America,7,S. Rondón,1541199022,Venezuela,532,4,,2,449,Current
+CONMEBOL World Cup Qualifiers,international,3,27,CONMEBOL World Cup Qualifiers,2026,South America,8,A. Sanabria,1285899697,Paraguay,537,4,,0,449,Current
+CONMEBOL World Cup Qualifiers,international,3,27,CONMEBOL World Cup Qualifiers,2026,South America,9,J. Alvarez,1560441904,Argentina,536,3,2,0,449,Current
+CONMEBOL World Cup Qualifiers,international,3,27,CONMEBOL World Cup Qualifiers,2026,South America,10,N. de la Cruz,2206007920,Uruguay,539,3,3,0,449,Current
+CONMEBOL World Cup Qualifiers,international,3,27,CONMEBOL World Cup Qualifiers,2026,South America,11,L. Martínez,2464726737,Argentina,536,3,,0,449,Current
+CONMEBOL World Cup Qualifiers,international,3,27,CONMEBOL World Cup Qualifiers,2026,South America,12,N. Otamendi,2313312130,Argentina,536,3,,0,449,Current
+CONMEBOL World Cup Qualifiers,international,3,27,CONMEBOL World Cup Qualifiers,2026,South America,13,Rodrygo,1579713390,Brazil,531,3,,0,449,Current
+CONMEBOL World Cup Qualifiers,international,3,27,CONMEBOL World Cup Qualifiers,2026,South America,14,E. Vargas,123943812,Chile,528,3,,0,449,Current
+CONMEBOL World Cup Qualifiers,international,3,27,CONMEBOL World Cup Qualifiers,2026,South America,15,O. Alderete,559789502,Paraguay,537,2,,0,449,Current
+AFC World Cup Qualifiers,international,4,22,AFC World Cup Qualifiers,2026,Worldcup,2,Son Heung-Min,499838227,Korea Republic,651,7,,1,439,2nd Round
+AFC World Cup Qualifiers,international,4,22,AFC World Cup Qualifiers,2026,Worldcup,1,Almoez Ali,943644026,Qatar,538,7,,2,439,2nd Round
+AFC World Cup Qualifiers,international,4,22,AFC World Cup Qualifiers,2026,Worldcup,3,A. Ueda,1552040593,Japan,540,6,,0,439,2nd Round
+AFC World Cup Qualifiers,international,4,22,AFC World Cup Qualifiers,2026,Worldcup,2,Yazan Al Naimat,1573477931,Jordan,641,5,,0,2517,3rd Round
+AFC World Cup Qualifiers,international,4,22,AFC World Cup Qualifiers,2026,Worldcup,4,Mousa Al Ta'mari,1640645534,Jordan,641,5,,0,439,2nd Round
+AFC World Cup Qualifiers,international,4,22,AFC World Cup Qualifiers,2026,Worldcup,5,M. Taremi,2043375386,IR Iran,644,5,,2,439,2nd Round
+AFC World Cup Qualifiers,international,4,22,AFC World Cup Qualifiers,2026,Worldcup,6,Wu Lei,911068996,China PR,639,5,,0,439,2nd Round
+AFC World Cup Qualifiers,international,4,22,AFC World Cup Qualifiers,2026,Worldcup,1,Almoez Ali,943644026,Qatar,538,5,,0,2517,3rd Round
+AFC World Cup Qualifiers,international,4,22,AFC World Cup Qualifiers,2026,Worldcup,4,Fábio Lima,2955342562,UAE,650,5,,2,2517,3rd Round
+AFC World Cup Qualifiers,international,4,22,AFC World Cup Qualifiers,2026,Worldcup,3,Yousef Al Sulaiman,1591852907,Kuwait,640,5,,2,2517,3rd Round
+AFC World Cup Qualifiers,international,4,22,AFC World Cup Qualifiers,2026,Worldcup,10,S. Azmoun,237956259,IR Iran,644,4,,0,439,2nd Round
+AFC World Cup Qualifiers,international,4,22,AFC World Cup Qualifiers,2026,Worldcup,9,Saleh Al Shehri,2635193978,Saudi Arabia,647,4,,1,439,2nd Round
+AFC World Cup Qualifiers,international,4,22,AFC World Cup Qualifiers,2026,Worldcup,11,K. Yengi,3775734876,Australia,529,4,,1,439,2nd Round
+AFC World Cup Qualifiers,international,4,22,AFC World Cup Qualifiers,2026,Worldcup,7,Aymen Hussein,3266913372,Iraq,642,4,,2,439,2nd Round
+AFC World Cup Qualifiers,international,4,22,AFC World Cup Qualifiers,2026,Worldcup,12,Jong Il-Gwan,3930238537,Korea DPR,653,4,,0,439,2nd Round
+AFC World Cup Qualifiers,international,4,22,AFC World Cup Qualifiers,2026,Worldcup,13,Lee Kang-In,134993713,Korea Republic,651,4,,0,439,2nd Round
+AFC World Cup Qualifiers,international,4,22,AFC World Cup Qualifiers,2026,Worldcup,14,S. Mueanta,1953259858,Thailand,480,4,,0,439,2nd Round
+AFC World Cup Qualifiers,international,4,22,AFC World Cup Qualifiers,2026,Worldcup,8,Ali Olwan,3282946952,Jordan,641,4,,1,439,2nd Round
+AFC World Cup Qualifiers,international,4,22,AFC World Cup Qualifiers,2026,Worldcup,5,Aymen Hussein,3266913372,Iraq,642,4,,0,2517,3rd Round
+AFC World Cup Qualifiers,international,4,22,AFC World Cup Qualifiers,2026,Worldcup,10,M. Taremi,2043375386,IR Iran,644,4,,0,2517,3rd Round
+AFC World Cup Qualifiers,international,4,22,AFC World Cup Qualifiers,2026,Worldcup,9,K. Ogawa,2281520102,Japan,540,4,,0,2517,3rd Round
+AFC World Cup Qualifiers,international,4,22,AFC World Cup Qualifiers,2026,Worldcup,8,M. Mohebi,4180485959,IR Iran,644,4,,0,2517,3rd Round
+AFC World Cup Qualifiers,international,4,22,AFC World Cup Qualifiers,2026,Worldcup,7,A. Fayzullayev,2705136785,Uzbekistan,646,4,,0,2517,3rd Round
+AFC World Cup Qualifiers,international,4,22,AFC World Cup Qualifiers,2026,Worldcup,6,S. Azmoun,237956259,IR Iran,644,4,,0,2517,3rd Round
+AFC World Cup Qualifiers,international,4,22,AFC World Cup Qualifiers,2026,Worldcup,14,J. Kojo,666848404,Kyrgyz Republic,346,3,,1,2517,3rd Round
+AFC World Cup Qualifiers,international,4,22,AFC World Cup Qualifiers,2026,Worldcup,2,R. Sananta,697615772,Indonesia,484,3,,1,440,1st Round
+AFC World Cup Qualifiers,international,4,22,AFC World Cup Qualifiers,2026,Worldcup,1,D. Drajad,826631238,Indonesia,484,3,,0,440,1st Round
+AFC World Cup Qualifiers,international,4,22,AFC World Cup Qualifiers,2026,Worldcup,15,Sultan Adil,474021053,UAE,650,3,,0,439,2nd Round
+AFC World Cup Qualifiers,international,4,22,AFC World Cup Qualifiers,2026,Worldcup,12,Harib Abdalla,825202645,UAE,650,3,,0,2517,3rd Round
+AFC World Cup Qualifiers,international,4,22,AFC World Cup Qualifiers,2026,Worldcup,13,J. Irvine,3969960718,Australia,529,3,,0,2517,3rd Round
+AFC World Cup Qualifiers,international,4,22,AFC World Cup Qualifiers,2026,Worldcup,15,Lee Jae-Sung,2255064188,Korea Republic,651,3,,0,2517,3rd Round
+AFC World Cup Qualifiers,international,4,22,AFC World Cup Qualifiers,2026,Worldcup,11,Wessam Abou Ali,3145083884,Palestine,339,3,,1,2517,3rd Round
+AFC World Cup Qualifiers,international,4,22,AFC World Cup Qualifiers,2026,Worldcup,7,M. Udebuluzor,1975778877,"Hong Kong, China",645,2,,0,440,1st Round
+AFC World Cup Qualifiers,international,4,22,AFC World Cup Qualifiers,2026,Worldcup,8,Yu Yao-hsing,4221192852,Chinese Taipei,348,2,,0,440,1st Round
+AFC World Cup Qualifiers,international,4,22,AFC World Cup Qualifiers,2026,Worldcup,6,R. Ridho,3301392722,Indonesia,484,2,,0,440,1st Round
+AFC World Cup Qualifiers,international,4,22,AFC World Cup Qualifiers,2026,Worldcup,5,Lwin Moe Aung,1742551118,Myanmar,345,2,,0,440,1st Round
+AFC World Cup Qualifiers,international,4,22,AFC World Cup Qualifiers,2026,Worldcup,4,H. Caraka,325507600,Indonesia,484,2,,0,440,1st Round
+AFC World Cup Qualifiers,international,4,22,AFC World Cup Qualifiers,2026,Worldcup,3,Abdulwasea Al Matari,3222030226,Yemen,648,2,,0,440,1st Round
+AFC World Cup Qualifiers,international,4,22,AFC World Cup Qualifiers,2026,Worldcup,9,Ibrahim Aisam,908313338,Maldives,342,1,,0,440,1st Round
+AFC World Cup Qualifiers,international,4,22,AFC World Cup Qualifiers,2026,Worldcup,10,Nasser Mohammedoh,1067035072,Yemen,648,1,,0,440,1st Round
+AFC World Cup Qualifiers,international,4,22,AFC World Cup Qualifiers,2026,Worldcup,11,S. Anuar,4072686677,Singapore,483,1,,0,440,1st Round
+AFC World Cup Qualifiers,international,4,22,AFC World Cup Qualifiers,2026,Worldcup,12,Anjan Bista,4263280794,Nepal,349,1,,0,440,1st Round
+AFC World Cup Qualifiers,international,4,22,AFC World Cup Qualifiers,2026,Worldcup,13,B. Bounkong,2577286956,Laos,344,1,,0,440,1st Round
+AFC World Cup Qualifiers,international,4,22,AFC World Cup Qualifiers,2026,Worldcup,14,S. Chan,2228460311,"Hong Kong, China",645,1,,0,440,1st Round
+AFC World Cup Qualifiers,international,4,22,AFC World Cup Qualifiers,2026,Worldcup,15,Chen Ting-yang,4095389298,Chinese Taipei,348,1,,0,440,1st Round
+CAF World Cup Qualifiers,international,5,21,CAF World Cup Qualifiers,2026,Worldcup,1,Mohamed Salah,2432523569,Egypt,716,6,3,1,2513,Group stage
+CAF World Cup Qualifiers,international,5,21,CAF World Cup Qualifiers,2026,Worldcup,2,M. Amoura,2512870329,Algeria,734,5,3,0,2513,Group stage
+CAF World Cup Qualifiers,international,5,21,CAF World Cup Qualifiers,2026,Worldcup,3,J. Ayew,1729799759,Ghana,725,5,4,2,2513,Group stage
+CAF World Cup Qualifiers,international,5,21,CAF World Cup Qualifiers,2026,Worldcup,4,D. Bouanga,436594578,Gabon,727,5,,0,2513,Group stage
+CAF World Cup Qualifiers,international,5,21,CAF World Cup Qualifiers,2026,Worldcup,5,K. Doumbia,2508022276,Mali,721,5,,0,2513,Group stage
+CAF World Cup Qualifiers,international,5,21,CAF World Cup Qualifiers,2026,Worldcup,6,Trézéguet,4014054022,Egypt,716,5,,0,2513,Group stage
+CAF World Cup Qualifiers,international,5,21,CAF World Cup Qualifiers,2026,Worldcup,7,L. Traoré,2170602794,Burkina Faso,723,5,,1,2513,Group stage
+CAF World Cup Qualifiers,international,5,21,CAF World Cup Qualifiers,2026,Worldcup,8,V. Aboubakar,1211603426,Cameroon,530,4,,2,2513,Group stage
+CAF World Cup Qualifiers,international,5,21,CAF World Cup Qualifiers,2026,Worldcup,9,M. Olunga,706807307,Kenya,733,4,,1,2513,Group stage
+CAF World Cup Qualifiers,international,5,21,CAF World Cup Qualifiers,2026,Worldcup,10,R. Raveloson,2754527874,Madagascar,739,4,,0,2513,Group stage
+CAF World Cup Qualifiers,international,5,21,CAF World Cup Qualifiers,2026,Worldcup,11,S. Abdallah,2571935255,Burundi,612,3,,0,2513,Group stage
+CAF World Cup Qualifiers,international,5,21,CAF World Cup Qualifiers,2026,Worldcup,12,P. Aubameyang,4146555699,Gabon,727,3,,1,2513,Group stage
+CAF World Cup Qualifiers,international,5,21,CAF World Cup Qualifiers,2026,Worldcup,13,M. Barrow,895501110,Gambia,634,3,3,1,2513,Group stage
+CAF World Cup Qualifiers,international,5,21,CAF World Cup Qualifiers,2026,Worldcup,14,P. Daka,2834230991,Zambia,735,3,,0,2513,Group stage
+CAF World Cup Qualifiers,international,5,21,CAF World Cup Qualifiers,2026,Worldcup,15,B. Desta,3799803315,Ethiopia,610,3,,1,2513,Group stage
+Concacaf World Cup Qualifiers,international,6,23,Concacaf World Cup Qualifiers,2026,Worldcup,1,C. Larin,1651223396,Canada,512,6,,1,2540,Final Stage
+Concacaf World Cup Qualifiers,international,6,23,Concacaf World Cup Qualifiers,2026,Worldcup,2,J. David,272450319,Canada,512,5,,0,2540,Final Stage
+Concacaf World Cup Qualifiers,international,6,23,Concacaf World Cup Qualifiers,2026,Worldcup,3,C. Pulišić,3629528922,United States,523,5,,2,2540,Final Stage
+Concacaf World Cup Qualifiers,international,6,23,Concacaf World Cup Qualifiers,2026,Worldcup,4,R. Blackburn,4185544125,Panama,524,4,,0,2540,Final Stage
+Concacaf World Cup Qualifiers,international,6,23,Concacaf World Cup Qualifiers,2026,Worldcup,5,M. Antonio,433130452,Jamaica,519,3,,1,2540,Final Stage
+Concacaf World Cup Qualifiers,international,6,23,Concacaf World Cup Qualifiers,2026,Worldcup,6,T. Buchanan,2524615592,Canada,512,3,,0,2540,Final Stage
+Concacaf World Cup Qualifiers,international,6,23,Concacaf World Cup Qualifiers,2026,Worldcup,7,R. Jiménez,1249672088,Mexico,511,3,,3,2540,Final Stage
+Concacaf World Cup Qualifiers,international,6,23,Concacaf World Cup Qualifiers,2026,Worldcup,8,R. Pepi,1595420875,United States,523,3,,0,2540,Final Stage
+Concacaf World Cup Qualifiers,international,6,23,Concacaf World Cup Qualifiers,2026,Worldcup,9,C. Waterman,818147340,Panama,524,3,,0,2540,Final Stage
+Concacaf World Cup Qualifiers,international,6,23,Concacaf World Cup Qualifiers,2026,Worldcup,2,S. Nicholson,873466526,Jamaica,519,3,,1,441,2nd Round
+Concacaf World Cup Qualifiers,international,6,23,Concacaf World Cup Qualifiers,2026,Worldcup,1,R. Janga,117715914,Curaçao,520,3,,1,441,2nd Round
+Concacaf World Cup Qualifiers,international,6,23,Concacaf World Cup Qualifiers,2026,Worldcup,7,O. Galo,2109695789,Costa Rica,516,2,,0,441,2nd Round
+Concacaf World Cup Qualifiers,international,6,23,Concacaf World Cup Qualifiers,2026,Worldcup,3,O. Anderson,1870159028,St. Vincent / Grenadines,664,2,,0,441,2nd Round
+Concacaf World Cup Qualifiers,international,6,23,Concacaf World Cup Qualifiers,2026,Worldcup,8,B. Hernández,3548721947,Nicaragua,518,2,,0,441,2nd Round
+Concacaf World Cup Qualifiers,international,6,23,Concacaf World Cup Qualifiers,2026,Worldcup,9,M. Hippolyte,1736344472,Grenada,657,2,,1,441,2nd Round
+Concacaf World Cup Qualifiers,international,6,23,Concacaf World Cup Qualifiers,2026,Worldcup,10,R. Rubín,840983175,Guatemala,662,2,,0,441,2nd Round
+Concacaf World Cup Qualifiers,international,6,23,Concacaf World Cup Qualifiers,2026,Worldcup,11,R. Moore,2300541973,Trinidad and Tobago,526,2,2,0,441,2nd Round
+Concacaf World Cup Qualifiers,international,6,23,Concacaf World Cup Qualifiers,2026,Worldcup,12,D. Moore,227331163,Guyana,525,2,,0,441,2nd Round
+Concacaf World Cup Qualifiers,international,6,23,Concacaf World Cup Qualifiers,2026,Worldcup,13,J. Moreno,413130992,Nicaragua,518,2,,1,441,2nd Round
+Concacaf World Cup Qualifiers,international,6,23,Concacaf World Cup Qualifiers,2026,Worldcup,14,D. Muckette,326736299,Trinidad and Tobago,526,2,,0,441,2nd Round
+Concacaf World Cup Qualifiers,international,6,23,Concacaf World Cup Qualifiers,2026,Worldcup,15,R. Núñez,1201747687,Dominican Republic,665,2,,0,441,2nd Round
+Concacaf World Cup Qualifiers,international,6,23,Concacaf World Cup Qualifiers,2026,Worldcup,6,A. Galindo,525034963,Guatemala,662,2,,0,441,2nd Round
+Concacaf World Cup Qualifiers,international,6,23,Concacaf World Cup Qualifiers,2026,Worldcup,5,J. de León,1956194325,Puerto Rico,673,2,,1,441,2nd Round
+Concacaf World Cup Qualifiers,international,6,23,Concacaf World Cup Qualifiers,2026,Worldcup,4,T. Conraad,584652608,Suriname,659,2,,0,441,2nd Round
+Concacaf World Cup Qualifiers,international,6,23,Concacaf World Cup Qualifiers,2026,Worldcup,15,A. Godoy,2450485948,Panama,524,2,,0,2540,Final Stage
+Concacaf World Cup Qualifiers,international,6,23,Concacaf World Cup Qualifiers,2026,Worldcup,14,É. Davis,2467058417,Panama,524,2,,0,2540,Final Stage
+Concacaf World Cup Qualifiers,international,6,23,Concacaf World Cup Qualifiers,2026,Worldcup,13,A. Contreras,1109788866,Costa Rica,516,2,,0,2540,Final Stage
+Concacaf World Cup Qualifiers,international,6,23,Concacaf World Cup Qualifiers,2026,Worldcup,12,J. Campbell,1856065804,Costa Rica,516,2,,0,2540,Final Stage
+Concacaf World Cup Qualifiers,international,6,23,Concacaf World Cup Qualifiers,2026,Worldcup,11,C. Borges,1346525433,Costa Rica,516,2,,1,2540,Final Stage
+Concacaf World Cup Qualifiers,international,6,23,Concacaf World Cup Qualifiers,2026,Worldcup,10,B. Aaronson,4289853633,United States,523,2,,0,2540,Final Stage
+Concacaf World Cup Qualifiers,international,6,23,Concacaf World Cup Qualifiers,2026,Worldcup,1,J. Blaschka,2445972920,US Virgin Islands,658,1,,0,442,1st Round
+Concacaf World Cup Qualifiers,international,6,23,Concacaf World Cup Qualifiers,2026,Worldcup,2,H. Liziário,2776243430,British Virgin Islands,663,1,,0,442,1st Round
+Concacaf World Cup Qualifiers,international,6,23,Concacaf World Cup Qualifiers,2026,Worldcup,3,B. Forbes,596868031,Turks and Caicos Islands,670,1,,0,442,1st Round
+Concacaf World Cup Qualifiers,international,6,23,Concacaf World Cup Qualifiers,2026,Worldcup,4,L. Paris,2340586801,Anguilla,667,1,,1,442,1st Round
+OFC World Cup Qualifiers,international,7,26,OFC World Cup Qualifiers,2026,Worldcup,1,C. Wood,3313915333,New Zealand,527,6,,0,2555,Group Stage
+OFC World Cup Qualifiers,international,7,26,OFC World Cup Qualifiers,2026,Worldcup,2,J. Athale,1155779609,New Caledonia,706,3,,3,2555,Group Stage
+OFC World Cup Qualifiers,international,7,26,OFC World Cup Qualifiers,2026,Worldcup,3,E. Just,1818840237,New Zealand,527,3,,0,2555,Group Stage
+OFC World Cup Qualifiers,international,7,26,OFC World Cup Qualifiers,2026,Worldcup,4,Roy Krishna,247594803,Fiji,707,3,,2,2555,Group Stage
+OFC World Cup Qualifiers,international,7,26,OFC World Cup Qualifiers,2026,Worldcup,9,T. Semmy,4181680247,Papua New Guinea,710,2,,0,2555,Group Stage
+OFC World Cup Qualifiers,international,7,26,OFC World Cup Qualifiers,2026,Worldcup,10,B. Waine,1667350311,New Zealand,527,2,,1,2555,Group Stage
+OFC World Cup Qualifiers,international,7,26,OFC World Cup Qualifiers,2026,Worldcup,8,C. McCowatt,1269655817,New Zealand,527,2,,0,2555,Group Stage
+OFC World Cup Qualifiers,international,7,26,OFC World Cup Qualifiers,2026,Worldcup,7,B. Mathon,3261191188,Tahiti,709,2,,1,2555,Group Stage
+OFC World Cup Qualifiers,international,7,26,OFC World Cup Qualifiers,2026,Worldcup,6,T. Bindon,748547611,New Zealand,527,2,,0,2555,Group Stage
+OFC World Cup Qualifiers,international,7,26,OFC World Cup Qualifiers,2026,Worldcup,5,J. Alick,3613784462,Vanuatu,711,2,,0,2555,Group Stage
+OFC World Cup Qualifiers,international,7,26,OFC World Cup Qualifiers,2026,Worldcup,6,J. Vaai,345045717,Samoa,712,1,,0,10861,1st Qualifying Round
+OFC World Cup Qualifiers,international,7,26,OFC World Cup Qualifiers,2026,Worldcup,5,D. Tumua,492624629,Samoa,712,1,,1,10861,1st Qualifying Round
+OFC World Cup Qualifiers,international,7,26,OFC World Cup Qualifiers,2026,Worldcup,4,V. Tikoipau,687810725,Tonga,713,1,,0,10861,1st Qualifying Round
+OFC World Cup Qualifiers,international,7,26,OFC World Cup Qualifiers,2026,Worldcup,3,H. Polovili,280452981,Tonga,713,1,,1,10861,1st Qualifying Round
+OFC World Cup Qualifiers,international,7,26,OFC World Cup Qualifiers,2026,Worldcup,2,T. Kumsuz,3272909397,Cook Islands,714,1,,0,10861,1st Qualifying Round
+OFC World Cup Qualifiers,international,7,26,OFC World Cup Qualifiers,2026,Worldcup,1,C. Kefu,2066596268,Tonga,713,1,,0,10861,1st Qualifying Round
+OFC World Cup Qualifiers,international,7,26,OFC World Cup Qualifiers,2026,Worldcup,3,U. Sonasi,2556598818,Tonga,713,1,,0,10860,2nd Qualifying Round
+OFC World Cup Qualifiers,international,7,26,OFC World Cup Qualifiers,2026,Worldcup,2,L. Salisbury,182849421,Samoa,712,1,,0,10860,2nd Qualifying Round
+OFC World Cup Qualifiers,international,7,26,OFC World Cup Qualifiers,2026,Worldcup,1,J. Fa'amata'u,4097802176,Samoa,712,1,,0,10860,2nd Qualifying Round
+OFC World Cup Qualifiers,international,7,26,OFC World Cup Qualifiers,2026,Worldcup,15,M. Garbett,1732610857,New Zealand,527,1,,0,2555,Group Stage
+OFC World Cup Qualifiers,international,7,26,OFC World Cup Qualifiers,2026,Worldcup,14,T. Dunn,753413292,Fiji,707,1,,0,2555,Group Stage
+OFC World Cup Qualifiers,international,7,26,OFC World Cup Qualifiers,2026,Worldcup,13,F. de Vries,1916069809,New Zealand,527,1,,0,2555,Group Stage
+OFC World Cup Qualifiers,international,7,26,OFC World Cup Qualifiers,2026,Worldcup,12,J. David,3368450316,Solomon Islands,708,1,,0,2555,Group Stage
+OFC World Cup Qualifiers,international,7,26,OFC World Cup Qualifiers,2026,Worldcup,11,M. Cooper,2458800576,Vanuatu,711,1,,0,2555,Group Stage
+UEFA Champions League,europe_club,10,3,UEFA Champions League,2025/2026,Europe,1,Kylian Mbappe,2354545782,Real Madrid,76,15,,3,21477, - 2nd Stage
+UEFA Champions League,europe_club,10,3,UEFA Champions League,2025/2026,Europe,2,Harry Kane,3333345663,Bayern Munich,72,14,,4,21477, - 2nd Stage
+UEFA Champions League,europe_club,10,3,UEFA Champions League,2025/2026,Europe,3,Khvicha Kvaratskhelia,2868127481,Paris S.G.,100,10,6,0,21477, - 2nd Stage
+UEFA Champions League,europe_club,10,3,UEFA Champions League,2025/2026,Europe,4,Anthony Gordon,2240532787,Newcastle United,3100,10,,5,21477, - 2nd Stage
+UEFA Champions League,europe_club,10,3,UEFA Champions League,2025/2026,Europe,5,Julian Alvarez,1560441904,Atletico Madrid,73,10,4,3,21477, - 2nd Stage
+UEFA Champions League,europe_club,10,3,UEFA Champions League,2025/2026,Europe,1,K. Mbappe,2354545782,Real Madrid,76,9,,,18569,League Phase
+UEFA Champions League,europe_club,10,3,UEFA Champions League,2025/2026,Europe,6,Erling Haaland,659972248,Manchester City,80,8,,1,21477, - 2nd Stage
+UEFA Champions League,europe_club,10,3,UEFA Champions League,2025/2026,Europe,9,Victor Osimhen,4282558875,Galatasaray,192,7,,3,21477, - 2nd Stage
+UEFA Champions League,europe_club,10,3,UEFA Champions League,2025/2026,Europe,8,Ousmane Dembele,868556402,Paris S.G.,100,7,,1,21477, - 2nd Stage
+UEFA Champions League,europe_club,10,3,UEFA Champions League,2025/2026,Europe,7,Luis Diaz,1870772768,Bayern Munich,72,7,3,0,21477, - 2nd Stage
+UEFA Champions League,europe_club,10,3,UEFA Champions League,2025/2026,Europe,14,Harvey Barnes,1067884178,Newcastle United,3100,6,4,0,21477, - 2nd Stage
+UEFA Champions League,europe_club,10,3,UEFA Champions League,2025/2026,Europe,13,Barnabas Varga,574135623,Ferencvaros,99,6,,1,21477, - 2nd Stage
+UEFA Champions League,europe_club,10,3,UEFA Champions League,2025/2026,Europe,12,Kasper Hogh,351059988,Bodo/Glimt,215,6,3,0,21477, - 2nd Stage
+UEFA Champions League,europe_club,10,3,UEFA Champions League,2025/2026,Europe,11,Gabriel Martinelli,1818970307,Arsenal,141,6,,0,21477, - 2nd Stage
+UEFA Champions League,europe_club,10,3,UEFA Champions League,2025/2026,Europe,10,Jens Hauge,837642028,Bodo/Glimt,215,6,5,0,21477, - 2nd Stage
+UEFA Champions League,europe_club,10,3,UEFA Champions League,2025/2026,Europe,15,Alexander Sorloth,2846654019,Atletico Madrid,73,6,,0,21477, - 2nd Stage
+UEFA Champions League,europe_club,10,3,UEFA Champions League,2025/2026,Europe,16,Fermin Lopez,1790385112,Barcelona,97,6,4,0,21477, - 2nd Stage
+UEFA Champions League,europe_club,10,3,UEFA Champions League,2025/2026,Europe,17,Vitinha,227253151,Paris S.G.,100,6,,1,21477, - 2nd Stage
+UEFA Champions League,europe_club,10,3,UEFA Champions League,2025/2026,Europe,18,Yamal Lamine,2532001232,Barcelona,97,6,4,3,21477, - 2nd Stage
+UEFA Champions League,europe_club,10,3,UEFA Champions League,2025/2026,Europe,2,E. Haaland,659972248,Manchester City,80,6,,,18569,League Phase
+UEFA Champions League,europe_club,10,3,UEFA Champions League,2025/2026,Europe,2,V. Osimhen,4282558875,Galatasaray,192,6,,,18569,League Phase
+UEFA Champions League,europe_club,10,3,UEFA Champions League,2025/2026,Europe,6,H. Kane,3333345663,Bayern Munich,72,5,,,18569,League Phase
+UEFA Champions League,europe_club,10,3,UEFA Champions League,2025/2026,Europe,28,Folarin Balogun,3224443369,Monaco,3817,5,,0,21477, - 2nd Stage
+UEFA Champions League,europe_club,10,3,UEFA Champions League,2025/2026,Europe,27,Gorka Guruzeta,1080393351,Athletic Club,7258,5,,0,21477, - 2nd Stage
+UEFA Champions League,europe_club,10,3,UEFA Champions League,2025/2026,Europe,26,Michael Olise,3325881493,Bayern Munich,72,5,6,0,21477, - 2nd Stage
+UEFA Champions League,europe_club,10,3,UEFA Champions League,2025/2026,Europe,25,Junior Vinicius,822853843,Real Madrid,76,5,5,1,21477, - 2nd Stage
+UEFA Champions League,europe_club,10,3,UEFA Champions League,2025/2026,Europe,24,Desire Doue,1315775020,Paris S.G.,100,5,4,0,21477, - 2nd Stage
+UEFA Champions League,europe_club,10,3,UEFA Champions League,2025/2026,Europe,23,Dominik Szoboszlai,1521124062,Liverpool,84,5,4,1,21477, - 2nd Stage
+UEFA Champions League,europe_club,10,3,UEFA Champions League,2025/2026,Europe,22,Viktor Gyökeres,1317952879,Arsenal,141,5,,1,21477, - 2nd Stage
+UEFA Champions League,europe_club,10,3,UEFA Champions League,2025/2026,Europe,21,Camilo Duran,2592138833,Qarabag,110,5,,0,21477, - 2nd Stage
+UEFA Champions League,europe_club,10,3,UEFA Champions League,2025/2026,Europe,20,Luis Suarez,2516254031,Sporting CP,177,5,,2,21477, - 2nd Stage
+UEFA Champions League,europe_club,10,3,UEFA Champions League,2025/2026,Europe,19,Marcus Rashford,2661454570,Barcelona,97,5,3,0,21477, - 2nd Stage
+UEFA Champions League,europe_club,10,3,UEFA Champions League,2025/2026,Europe,4,A. Gordon,2240532787,Newcastle,3100,5,,,18569,League Phase
+UEFA Champions League,europe_club,10,3,UEFA Champions League,2025/2026,Europe,5,G. Martinelli,1818970307,Arsenal,141,5,,,18569,League Phase
+UEFA Champions League,europe_club,10,3,UEFA Champions League,2025/2026,Europe,43,Robert,3408023493,FC Copenhagen,175,4,,0,21477, - 2nd Stage
+UEFA Champions League,europe_club,10,3,UEFA Champions League,2025/2026,Europe,30,Lennart Karl,3053791132,Bayern Munich,72,4,,0,21477, - 2nd Stage
+UEFA Champions League,europe_club,10,3,UEFA Champions League,2025/2026,Europe,31,Alejandro Grimaldo,2535879029,Bayer Leverkusen,143,4,3,0,21477, - 2nd Stage
+UEFA Champions League,europe_club,10,3,UEFA Champions League,2025/2026,Europe,32,Sondre Fet,1629894047,Bodo/Glimt,215,4,,2,21477, - 2nd Stage
+UEFA Champions League,europe_club,10,3,UEFA Champions League,2025/2026,Europe,33,Trincao,1640681299,Sporting CP,177,4,3,0,21477, - 2nd Stage
+UEFA Champions League,europe_club,10,3,UEFA Champions League,2025/2026,Europe,34,Scott McTominay,3320133030,Napoli,152,4,,0,21477, - 2nd Stage
+UEFA Champions League,europe_club,10,3,UEFA Champions League,2025/2026,Europe,35,Hans Vanaken,2649209530,Club Brugge,94,4,4,0,21477, - 2nd Stage
+UEFA Champions League,europe_club,10,3,UEFA Champions League,2025/2026,Europe,36,Nicolo Tresoldi,1853409286,Club Brugge,94,4,,0,21477, - 2nd Stage
+UEFA Champions League,europe_club,10,3,UEFA Champions League,2025/2026,Europe,37,Serhou Guirassy,1297242007,Dortmund,92,4,3,0,21477, - 2nd Stage
+UEFA Champions League,europe_club,10,3,UEFA Champions League,2025/2026,Europe,38,Patrik Schick,1051893800,Bayer Leverkusen,143,4,,0,21477, - 2nd Stage
+UEFA Champions League,europe_club,10,3,UEFA Champions League,2025/2026,Europe,39,Lautaro Martinez,2464726737,Inter Milan,79,4,,0,21477, - 2nd Stage
+UEFA Champions League,europe_club,10,3,UEFA Champions League,2025/2026,Europe,40,Muani Kolo,362408690,Tottenham Hotspur,164,4,,0,21477, - 2nd Stage
+UEFA Champions League,europe_club,10,3,UEFA Champions League,2025/2026,Europe,41,Weston McKennie,1534660939,Juventus,96,4,,0,21477, - 2nd Stage
+UEFA Champions League,europe_club,10,3,UEFA Champions League,2025/2026,Europe,42,Igor Paixao,1699064920,Marseille,83,4,,0,21477, - 2nd Stage
+UEFA Champions League,europe_club,10,3,UEFA Champions League,2025/2026,Europe,29,Andrade Leandro,2841517811,Qarabag,110,4,,0,21477, - 2nd Stage
+UEFA Champions League,europe_club,10,3,UEFA Champions League,2025/2026,Europe,7,J. Alvarez,1560441904,Atl. Madrid,73,4,,,18569,League Phase
+UEFA Champions League,europe_club,10,3,UEFA Champions League,2025/2026,Europe,7,M. Rashford,2661454570,Barcelona,97,4,,,18569,League Phase
+UEFA Champions League,europe_club,10,3,UEFA Champions League,2025/2026,Europe,9,H. Barnes,1067884178,Newcastle,3100,4,,,18569,League Phase
+UEFA Champions League,europe_club,10,3,UEFA Champions League,2025/2026,Europe,9,I. Paixao,1699064920,Marseille,83,4,,,18569,League Phase
+UEFA Champions League,europe_club,10,3,UEFA Champions League,2025/2026,Europe,9,V. Ferreira,227253151,PSG,100,4,,,18569,League Phase
+UEFA Champions League,europe_club,10,3,UEFA Champions League,2025/2026,Europe,12,L. Martinez,2464726737,Inter,79,4,,,18569,League Phase
+UEFA Champions League,europe_club,10,3,UEFA Champions League,2025/2026,Europe,44,Romeo Vermant,1271395030,Club Brugge,94,4,,0,21477, - 2nd Stage
+UEFA Champions League,europe_club,10,3,UEFA Champions League,2025/2026,Europe,45,Lazar Samardzic,557715458,Atalanta,85,4,,2,21477, - 2nd Stage
+UEFA Champions League,europe_club,10,3,UEFA Champions League,2025/2026,Europe,46,Marcos Llorente,1825909373,Atletico Madrid,73,4,,0,21477, - 2nd Stage
+UEFA Champions League,europe_club,10,3,UEFA Champions League,2025/2026,Europe,47,Robert Lewandowski,482155080,Barcelona,97,4,,0,21477, - 2nd Stage
+UEFA Champions League,europe_club,10,3,UEFA Champions League,2025/2026,Europe,48,Hugo Ekitike,983632643,Liverpool,84,3,,0,21477, - 2nd Stage
+UEFA Champions League,europe_club,10,3,UEFA Champions League,2025/2026,Europe,49,Raphinha,3190208711,Barcelona,97,3,,1,21477, - 2nd Stage
+UEFA Champions League,europe_club,10,3,UEFA Champions League,2025/2026,Europe,19,M. Greenwood,3219336045,Marseille,83,3,,,18569,League Phase
+UEFA Champions League,europe_club,10,3,UEFA Champions League,2025/2026,Europe,50,Estêvão,1720175401,Chelsea,88,3,,1,21477, - 2nd Stage
+UEFA Champions League,europe_club,10,3,UEFA Champions League,2025/2026,Europe,13,P. Aubameyang,4146555699,Marseille,83,3,,,18569,League Phase
+UEFA Champions League,europe_club,10,3,UEFA Champions League,2025/2026,Europe,14,D. Szoboszlai,1521124062,Liverpool,84,3,,,18569,League Phase
+UEFA Champions League,europe_club,10,3,UEFA Champions League,2025/2026,Europe,15,C. Driouech,4222637429,PSV,150,3,,,18569,League Phase
+UEFA Champions League,europe_club,10,3,UEFA Champions League,2025/2026,Europe,15,Fermín,1790385112,Barcelona,97,3,,,18569,League Phase
+UEFA Champions League,europe_club,10,3,UEFA Champions League,2025/2026,Europe,15,S. Guirassy,1297242007,Dortmund,92,3,,,18569,League Phase
+UEFA Champions League,europe_club,10,3,UEFA Champions League,2025/2026,Europe,15,R. Pepi,1595420875,PSV,150,3,,,18569,League Phase
+UEFA Champions League,europe_club,10,3,UEFA Champions League,2025/2026,Europe,19,J. Burkardt,441256721,Eintracht Frankfurt,3945,3,,,18569,League Phase
+UEFA Europa League,europe_club,11,4,UEFA Europa League,2025/2026,Europe,2,Jesus Igor,306355406,Nottingham Forest,3089,7,,1,21477, - 2nd Stage
+UEFA Europa League,europe_club,11,4,UEFA Europa League,2025/2026,Europe,1,Petar Stanic,1955002987,Ludogorets,119,7,,3,21477, - 2nd Stage
+UEFA Europa League,europe_club,11,4,UEFA Europa League,2025/2026,Europe,1,P. Stanic,1955002987,Ludogorets,119,6,,,18571,League Phase
+UEFA Europa League,europe_club,11,4,UEFA Europa League,2025/2026,Europe,4,Kerem Akturkoglu,3546667817,Fenerbahce,7694,6,,2,21477, - 2nd Stage
+UEFA Europa League,europe_club,11,4,UEFA Europa League,2025/2026,Europe,3,Antony,3366469981,Real Betis,7261,6,3,0,21477, - 2nd Stage
+UEFA Europa League,europe_club,11,4,UEFA Europa League,2025/2026,Europe,7,Williot Swedberg,3250734439,Celta de Vigo,7290,5,2,0,21477, - 2nd Stage
+UEFA Europa League,europe_club,11,4,UEFA Europa League,2025/2026,Europe,6,Vincenzo Grifo,3948358159,Freiburg,3962,5,4,1,21477, - 2nd Stage
+UEFA Europa League,europe_club,11,4,UEFA Europa League,2025/2026,Europe,5,John McGinn,215174918,Aston Villa,3088,5,,0,21477, - 2nd Stage
+UEFA Europa League,europe_club,11,4,UEFA Europa League,2025/2026,Europe,8,Dion Beljo,3686021914,Dinamo Zagreb,121,5,,0,21477, - 2nd Stage
+UEFA Europa League,europe_club,11,4,UEFA Europa League,2025/2026,Europe,9,Ollie Watkins,1056875046,Aston Villa,3088,5,2,0,21477, - 2nd Stage
+UEFA Europa League,europe_club,11,4,UEFA Europa League,2025/2026,Europe,10,Federico Bernardeschi,2871734872,Bologna,4983,5,,2,21477, - 2nd Stage
+UEFA Europa League,europe_club,11,4,UEFA Europa League,2025/2026,Europe,16,Khannouss El,3540289405,Stuttgart,3933,4,,0,21477, - 2nd Stage
+UEFA Europa League,europe_club,11,4,UEFA Europa League,2025/2026,Europe,15,Olivier Giroud,4271018749,Lille,160,4,,1,21477, - 2nd Stage
+UEFA Europa League,europe_club,11,4,UEFA Europa League,2025/2026,Europe,14,Jonathan Rowe,2048695082,Bologna,4983,4,2,0,21477, - 2nd Stage
+UEFA Europa League,europe_club,11,4,UEFA Europa League,2025/2026,Europe,13,Yuito Suzuki,1141895696,Freiburg,3962,4,2,0,21477, - 2nd Stage
+UEFA Europa League,europe_club,11,4,UEFA Europa League,2025/2026,Europe,12,Hamza Igamane,1024899057,Lille,160,4,,0,21477, - 2nd Stage
+UEFA Europa League,europe_club,11,4,UEFA Europa League,2025/2026,Europe,11,Abde Ezzalzouli,2265352211,Real Betis,7261,4,,0,21477, - 2nd Stage
+UEFA Europa League,europe_club,11,4,UEFA Europa League,2025/2026,Europe,17,Daan Heymans,3743048229,Racing Genk,1359,4,4,2,21477, - 2nd Stage
+UEFA Europa League,europe_club,11,4,UEFA Europa League,2025/2026,Europe,18,Georgios Giakoumakis,2475257648,PAOK Saloniki,106,4,,1,21477, - 2nd Stage
+UEFA Europa League,europe_club,11,4,UEFA Europa League,2025/2026,Europe,19,Benjamin Nygren,4051313421,Celtic,127,4,,0,21477, - 2nd Stage
+UEFA Europa League,europe_club,11,4,UEFA Europa League,2025/2026,Europe,20,Ouahdi El,3209690393,Racing Genk,1359,4,,0,21477, - 2nd Stage
+UEFA Europa League,europe_club,11,4,UEFA Europa League,2025/2026,Europe,21,Martin Erlic,3321709881,Midtjylland,87,4,,0,21477, - 2nd Stage
+UEFA Europa League,europe_club,11,4,UEFA Europa League,2025/2026,Europe,22,Ricardo Horta,3742020785,Sporting Braga,156,4,4,1,21477, - 2nd Stage
+UEFA Europa League,europe_club,11,4,UEFA Europa League,2025/2026,Europe,23,Talisca,4121602239,Fenerbahce,7694,4,,0,21477, - 2nd Stage
+UEFA Europa League,europe_club,11,4,UEFA Europa League,2025/2026,Europe,24,Corentin Tolisso,4078391553,Lyon,3815,4,,0,21477, - 2nd Stage
+UEFA Europa League,europe_club,11,4,UEFA Europa League,2025/2026,Europe,25,Barnabas Varga,574135623,Ferencvaros,99,4,,0,21477, - 2nd Stage
+UEFA Europa League,europe_club,11,4,UEFA Europa League,2025/2026,Europe,2,H. Igamane,1024899057,Lille,160,4,,,18571,League Phase
+UEFA Europa League,europe_club,11,4,UEFA Europa League,2025/2026,Europe,2,A. Talisca,4121602239,Fenerbahce,7694,4,,,18571,League Phase
+UEFA Europa League,europe_club,11,4,UEFA Europa League,2025/2026,Europe,2,C. Tolisso,4078391553,Lyon,3815,4,,,18571,League Phase
+UEFA Europa League,europe_club,11,4,UEFA Europa League,2025/2026,Europe,5,K. Akturkoglu,3546667817,Fenerbahce,7694,4,,,18571,League Phase
+UEFA Europa League,europe_club,11,4,UEFA Europa League,2025/2026,Europe,5,Jesus Igor,306355406,Nottingham,3089,4,,,18571,League Phase
+UEFA Europa League,europe_club,11,4,UEFA Europa League,2025/2026,Europe,5,B. Varga,574135623,Ferencvaros,99,4,,,18571,League Phase
+UEFA Europa League,europe_club,11,4,UEFA Europa League,2025/2026,Europe,5,K. Swiderski,2544192944,Panathinaikos,4299,4,,,18571,League Phase
+UEFA Europa League,europe_club,11,4,UEFA Europa League,2025/2026,Europe,33,Donyell Malen,4072925799,Aston Villa,3088,3,,1,21477, - 2nd Stage
+UEFA Europa League,europe_club,11,4,UEFA Europa League,2025/2026,Europe,29,Pau Victor,2533742153,Sporting Braga,156,3,,0,21477, - 2nd Stage
+UEFA Europa League,europe_club,11,4,UEFA Europa League,2025/2026,Europe,34,Joel Monteiro,3481013959,Young Boys,125,3,,0,21477, - 2nd Stage
+UEFA Europa League,europe_club,11,4,UEFA Europa League,2025/2026,Europe,35,Milan Smit,3381595547,Go Ahead Eagles,5469,3,,0,21477, - 2nd Stage
+UEFA Europa League,europe_club,11,4,UEFA Europa League,2025/2026,Europe,36,Emil Kornvig,1689919406,Brann Bergen,5608,3,,1,21477, - 2nd Stage
+UEFA Europa League,europe_club,11,4,UEFA Europa League,2025/2026,Europe,37,Fran Navarro,1699300128,Sporting Braga,156,3,,0,21477, - 2nd Stage
+UEFA Europa League,europe_club,11,4,UEFA Europa League,2025/2026,Europe,38,Deniz Undav,112196112,Stuttgart,3933,3,6,0,21477, - 2nd Stage
+UEFA Europa League,europe_club,11,4,UEFA Europa League,2025/2026,Europe,39,Iago Aspas,187516187,Celta de Vigo,7290,3,3,0,21477, - 2nd Stage
+UEFA Europa League,europe_club,11,4,UEFA Europa League,2025/2026,Europe,40,Tetteh Andrews,3494431206,Panathinaikos,4299,3,,0,21477, - 2nd Stage
+UEFA Europa League,europe_club,11,4,UEFA Europa League,2025/2026,Europe,41,Pablo Duran,2008443828,Celta de Vigo,7290,3,,0,21477, - 2nd Stage
+UEFA Europa League,europe_club,11,4,UEFA Europa League,2025/2026,Europe,42,Samu,2353297598,Porto,81,3,,1,21477, - 2nd Stage
+UEFA Europa League,europe_club,11,4,UEFA Europa League,2025/2026,Europe,43,Lorenzo Pellegrini,1354125569,Roma,139,3,,0,21477, - 2nd Stage
+UEFA Europa League,europe_club,11,4,UEFA Europa League,2025/2026,Europe,44,Otar Kiteishvili,1876292082,Sturm Graz,1236,3,,0,21477, - 2nd Stage
+UEFA Europa League,europe_club,11,4,UEFA Europa League,2025/2026,Europe,45,Monsef Bakrar,1362870750,Dinamo Zagreb,121,3,,0,21477, - 2nd Stage
+UEFA Europa League,europe_club,11,4,UEFA Europa League,2025/2026,Europe,46,Reo Hatate,3786836261,Celtic,127,3,,1,21477, - 2nd Stage
+UEFA Europa League,europe_club,11,4,UEFA Europa League,2025/2026,Europe,47,Karol Swiderski,2544192944,Panathinaikos,4299,3,,0,21477, - 2nd Stage
+UEFA Europa League,europe_club,11,4,UEFA Europa League,2025/2026,Europe,48,Franculino,1878463679,Midtjylland,87,3,,0,21477, - 2nd Stage
+UEFA Europa League,europe_club,11,4,UEFA Europa League,2025/2026,Europe,49,Emiliano Buendia,10184531,Aston Villa,3088,3,5,1,21477, - 2nd Stage
+UEFA Europa League,europe_club,11,4,UEFA Europa League,2025/2026,Europe,50,William,3755012374,Porto,81,3,,1,21477, - 2nd Stage
+UEFA Europa League,europe_club,11,4,UEFA Europa League,2025/2026,Europe,11,F. Gluda Dju,1878463679,Midtjylland,87,3,,,18571,League Phase
+UEFA Europa League,europe_club,11,4,UEFA Europa League,2025/2026,Europe,13,Hyeon-Gyu Oh,2904552120,Genk,1359,3,,,18571,League Phase
+UEFA Europa League,europe_club,11,4,UEFA Europa League,2025/2026,Europe,13,F. Navarro,1699300128,Braga,156,3,,,18571,League Phase
+UEFA Europa League,europe_club,11,4,UEFA Europa League,2025/2026,Europe,13,J. Monteiro,3481013959,Young Boys,125,3,,,18571,League Phase
+UEFA Europa League,europe_club,11,4,UEFA Europa League,2025/2026,Europe,13,D. Malen,4072925799,Aston Villa,3088,3,,,18571,League Phase
+UEFA Europa League,europe_club,11,4,UEFA Europa League,2025/2026,Europe,13,B. El Khannouss,3540289405,Stuttgart,3933,3,,,18571,League Phase
+UEFA Europa League,europe_club,11,4,UEFA Europa League,2025/2026,Europe,13,P. Duran,2008443828,Celta Vigo,7290,3,,,18571,League Phase
+UEFA Europa League,europe_club,11,4,UEFA Europa League,2025/2026,Europe,13,F. Bernardeschi,2871734872,Bologna,4983,3,,,18571,League Phase
+UEFA Europa League,europe_club,11,4,UEFA Europa League,2025/2026,Europe,11,A. Zaroury,2657969816,Panathinaikos,4299,3,,,18571,League Phase
+UEFA Europa League,europe_club,11,4,UEFA Europa League,2025/2026,Europe,32,Morgan Gibbs-White,21993197,Nottingham Forest,3089,3,3,1,21477, - 2nd Stage
+UEFA Europa League,europe_club,11,4,UEFA Europa League,2025/2026,Europe,9,X. Shaqiri,857492224,Basel,176,3,,,18571,League Phase
+UEFA Europa League,europe_club,11,4,UEFA Europa League,2025/2026,Europe,9,Antony,3366469981,Betis,7261,3,,,18571,League Phase
+UEFA Europa League,europe_club,11,4,UEFA Europa League,2025/2026,Europe,26,Gabri Martinez,4232314119,Sporting Braga,156,3,,0,21477, - 2nd Stage
+UEFA Europa League,europe_club,11,4,UEFA Europa League,2025/2026,Europe,27,Riccardo Orsolini,286349307,Bologna,4983,3,,0,21477, - 2nd Stage
+UEFA Europa League,europe_club,11,4,UEFA Europa League,2025/2026,Europe,28,Jamie Leweling,733402394,Stuttgart,3933,3,,0,21477, - 2nd Stage
+UEFA Europa League,europe_club,11,4,UEFA Europa League,2025/2026,Europe,13,Samu,2353297598,FC Porto,81,3,,,18571,League Phase
+UEFA Europa League,europe_club,11,4,UEFA Europa League,2025/2026,Europe,30,Thijs Dallinga,1049514244,Bologna,4983,3,2,0,21477, - 2nd Stage
+UEFA Europa League,europe_club,11,4,UEFA Europa League,2025/2026,Europe,31,Igor Matanovic,4195335024,Freiburg,3962,3,,0,21477, - 2nd Stage
+UEFA Conference League,europe_club,12,683,UEFA Conference League,2025/2026,Europe,1,Ismaila Sarr,3516323646,Crystal Palace,3429,9,,0,21477, - 2nd Stage
+UEFA Conference League,europe_club,12,683,UEFA Conference League,2025/2026,Europe,2,Marius,2718353842,Samsunspor,7665,8,2,0,21477, - 2nd Stage
+UEFA Conference League,europe_club,12,683,UEFA Conference League,2025/2026,Europe,3,F. Kovačević,1508431017,Publikum Celje,116,8,,2,21477, - 2nd Stage
+UEFA Conference League,europe_club,12,683,UEFA Conference League,2025/2026,Europe,4,Troy Parrott,1390647294,AZ Alkmaar,113,8,,1,21477, - 2nd Stage
+UEFA Conference League,europe_club,12,683,UEFA Conference League,2025/2026,Europe,5,Mikael Ishak,3997911552,Lech Poznan,149,8,,4,21477, - 2nd Stage
+UEFA Conference League,europe_club,12,683,UEFA Conference League,2025/2026,Europe,1,Marc Guiu,4018653069,Chelsea,88,6,,0,10351,League Stage
+UEFA Conference League,europe_club,12,683,UEFA Conference League,2025/2026,Europe,6,Sven Mijnans,3282058793,AZ Alkmaar,113,6,2,0,21477, - 2nd Stage
+UEFA Conference League,europe_club,12,683,UEFA Conference League,2025/2026,Europe,1,B. Nygren,4051313421,Nordsjælland,2649,5,,0,5081,Group Stage
+UEFA Conference League,europe_club,12,683,UEFA Conference League,2025/2026,Europe,2,G. Orban,2478896425,Gent,109,5,,1,5081,Group Stage
+UEFA Conference League,europe_club,12,683,UEFA Conference League,2025/2026,Europe,3,E. Zahavi,153562409,Maccabi Tel Aviv,105,5,,0,5081,Group Stage
+UEFA Conference League,europe_club,12,683,UEFA Conference League,2025/2026,Europe,2,J. Kenny,436295276,Shamrock Rovers,226,5,,0,10351,League Stage
+UEFA Conference League,europe_club,12,683,UEFA Conference League,2025/2026,Europe,3,C. Nkunku,1586788271,Chelsea,88,5,,2,10351,League Stage
+UEFA Conference League,europe_club,12,683,UEFA Conference League,2025/2026,Europe,4,M. Pantović,1287541157,TSC,242,5,,0,10351,League Stage
+UEFA Conference League,europe_club,12,683,UEFA Conference League,2025/2026,Europe,5,K. Piątek,1115128491,Istanbul Basaksehir,103,5,,1,10351,League Stage
+UEFA Conference League,europe_club,12,683,UEFA Conference League,2025/2026,Europe,6,Afimico Pululu,3752433789,Jagiellonia Białystok,5770,5,,0,10351,League Stage
+UEFA Conference League,europe_club,12,683,UEFA Conference League,2025/2026,Europe,1,N. Mulahusejnovic,1330033314,Noah,246,5,,,18567,League Phase
+UEFA Conference League,europe_club,12,683,UEFA Conference League,2025/2026,Europe,2,M. Ishak,3997911552,Lech Poznan,149,5,,,18567,League Phase
+UEFA Conference League,europe_club,12,683,UEFA Conference League,2025/2026,Europe,2,F. Kovacevic,1508431017,Celje,116,5,,,18567,League Phase
+UEFA Conference League,europe_club,12,683,UEFA Conference League,2025/2026,Europe,7,Jesus Imaz,3610119265,Jagiellonia Bialystok,5770,5,,0,21477, - 2nd Stage
+UEFA Conference League,europe_club,12,683,UEFA Conference League,2025/2026,Europe,8,Isak Jensen,139542730,AZ Alkmaar,113,5,,0,21477, - 2nd Stage
+UEFA Conference League,europe_club,12,683,UEFA Conference League,2025/2026,Europe,9,Nardin Mulahusejnovic,1330033314,Artsakh,246,5,,0,21477, - 2nd Stage
+UEFA Conference League,europe_club,12,683,UEFA Conference League,2025/2026,Europe,10,Toni Fruk,120507839,Rijeka,154,5,,0,21477, - 2nd Stage
+UEFA Conference League,europe_club,12,683,UEFA Conference League,2025/2026,Europe,4,A. Čavrić,3370919062,Slovan Bratislava,6565,4,,1,5081,Group Stage
+UEFA Conference League,europe_club,12,683,UEFA Conference League,2025/2026,Europe,5,Omar Marmoush,3693408449,Eintracht Frankfurt,3945,4,,1,5081,Group Stage
+UEFA Conference League,europe_club,12,683,UEFA Conference League,2025/2026,Europe,6,Thiago,1960495728,Club Brugge,94,4,,1,5081,Group Stage
+UEFA Conference League,europe_club,12,683,UEFA Conference League,2025/2026,Europe,7,Dor Peretz,2540419276,Maccabi Tel Aviv,105,4,,0,5081,Group Stage
+UEFA Conference League,europe_club,12,683,UEFA Conference League,2025/2026,Europe,8,B. Petković,1330672003,Dinamo Zagreb,121,4,,3,5081,Group Stage
+UEFA Conference League,europe_club,12,683,UEFA Conference League,2025/2026,Europe,9,J. Piotrowski,2813412492,Ludogorets,119,4,,0,5081,Group Stage
+UEFA Conference League,europe_club,12,683,UEFA Conference League,2025/2026,Europe,10,H. Vanaken,2649209530,Club Brugge,94,4,,0,5081,Group Stage
+UEFA Conference League,europe_club,12,683,UEFA Conference League,2025/2026,Europe,11,Y. Yazıcı,2646807274,Lille,160,4,,1,5081,Group Stage
+UEFA Conference League,europe_club,12,683,UEFA Conference League,2025/2026,Europe,7,Matheus Aiás,2244134627,Noah,246,4,,0,10351,League Stage
+UEFA Conference League,europe_club,12,683,UEFA Conference League,2025/2026,Europe,8,F. Ihler,3568358345,Molde,108,4,,0,10351,League Stage
+UEFA Conference League,europe_club,12,683,UEFA Conference League,2025/2026,Europe,9,K. Denkey,373841779,Cercle Brugge,1370,4,,1,10351,League Stage
+UEFA Conference League,europe_club,12,683,UEFA Conference League,2025/2026,Europe,10,João Félix,961844152,Chelsea,88,4,,0,10351,League Stage
+UEFA Conference League,europe_club,12,683,UEFA Conference League,2025/2026,Europe,11,J. Ikoné,1048510307,Fiorentina,4974,4,,0,10351,League Stage
+UEFA Conference League,europe_club,12,683,UEFA Conference League,2025/2026,Europe,1,T. Adamsen,617352910,Silkeborg,2728,4,,2,4995,3rd Qualifying Round
+UEFA Conference League,europe_club,12,683,UEFA Conference League,2025/2026,Europe,1,L. García,1064184415,AEK Athens,158,4,,0,4940,2nd Qualifying Round
+UEFA Conference League,europe_club,12,683,UEFA Conference League,2025/2026,Europe,4,Marius,2718353842,Samsunspor,7665,4,2,,18567,League Phase
+UEFA Conference League,europe_club,12,683,UEFA Conference League,2025/2026,Europe,11,Adjei Adu,1684703527,Rijeka,154,4,,0,21477, - 2nd Stage
+UEFA Conference League,europe_club,12,683,UEFA Conference League,2025/2026,Europe,12,Alemao,3593366009,Rayo Vallecano,7264,4,,0,21477, - 2nd Stage
+UEFA Conference League,europe_club,12,683,UEFA Conference League,2025/2026,Europe,13,T. Abraham,2031049528,Besiktas,187,4,,1,21477, - 2nd Stage
+UEFA Conference League,europe_club,12,683,UEFA Conference League,2025/2026,Europe,14,A. Koïta,1059289168,AEK Athens,158,4,,0,21477, - 2nd Stage
+UEFA Conference League,europe_club,12,683,UEFA Conference League,2025/2026,Europe,15,Cher Ndour,3197639607,Fiorentina,4974,4,,0,21477, - 2nd Stage
+UEFA Conference League,europe_club,12,683,UEFA Conference League,2025/2026,Europe,16,Lamine Mohamed,3478448922,Rakow Czestochowa,5763,4,,1,21477, - 2nd Stage
+UEFA Conference League,europe_club,12,683,UEFA Conference League,2025/2026,Europe,17,Albert Gudmundsson,2441657013,Fiorentina,4974,4,2,2,21477, - 2nd Stage
+UEFA Conference League,europe_club,12,683,UEFA Conference League,2025/2026,Europe,18,Martial Godo,94650606,Strasbourg,3818,4,3,0,21477, - 2nd Stage
+UEFA Conference League,europe_club,12,683,UEFA Conference League,2025/2026,Europe,12,M. Batshuayi,4200421186,Fenerbahce,7694,3,,0,5081,Group Stage
+UEFA Conference League,europe_club,12,683,UEFA Conference League,2025/2026,Europe,13,T. Chorý,3386352793,Viktoria Plzen,114,3,,2,5081,Group Stage
+UEFA Conference League,europe_club,12,683,UEFA Conference League,2025/2026,Europe,14,H. Cuypers,2556459977,Gent,109,3,,0,5081,Group Stage
+UEFA Conference League,europe_club,12,683,UEFA Conference League,2025/2026,Europe,15,A. Pellegrino,2631119949,Bodø / Glimt,215,3,,1,5081,Group Stage
+UEFA Conference League,europe_club,12,683,UEFA Conference League,2025/2026,Europe,1,Jesús Imaz,3610119265,Jagiellonia Białystok,5770,3,,0,5456,Knockout Round Play-offs
+UEFA Conference League,europe_club,12,683,UEFA Conference League,2025/2026,Europe,2,A. Kučys,2705632236,Celje,116,3,,0,5456,Knockout Round Play-offs
+UEFA Conference League,europe_club,12,683,UEFA Conference League,2025/2026,Europe,12,João Correia,1431231127,Pafos,2473,3,,0,10351,League Stage
+UEFA Conference League,europe_club,12,683,UEFA Conference League,2025/2026,Europe,13,D. Beljo,3686021914,Rapid Vienna,118,3,,0,10351,League Stage
+UEFA Conference League,europe_club,12,683,UEFA Conference League,2025/2026,Europe,14,Álex Blanco,1101468848,Olimpija,217,3,,0,10351,League Stage
+UEFA Conference League,europe_club,12,683,UEFA Conference League,2025/2026,Europe,15,A. Chiakha,3606174977,FC Copenhagen,175,3,,0,10351,League Stage
+UEFA Conference League,europe_club,12,683,UEFA Conference League,2025/2026,Europe,1,L. Erwin,2365307439,HJK,3549,3,,0,5027,Play-offs
+UEFA Conference League,europe_club,12,683,UEFA Conference League,2025/2026,Europe,2,A. Ryan,421825855,Larne,5581,3,,2,5027,Play-offs
+UEFA Conference League,europe_club,12,683,UEFA Conference League,2025/2026,Europe,2,M. Ďuriš,2568543608,Spartak Trnava,6554,3,,0,4995,3rd Qualifying Round
+UEFA Conference League,europe_club,12,683,UEFA Conference League,2025/2026,Europe,3,C. Geoffrey,1749994822,Astana,208,3,,0,4995,3rd Qualifying Round
+UEFA Conference League,europe_club,12,683,UEFA Conference League,2025/2026,Europe,2,Jorginho,1917780598,Differdange 03,5260,3,,0,4940,2nd Qualifying Round
+UEFA Conference League,europe_club,12,683,UEFA Conference League,2025/2026,Europe,3,Gonçalo Gregório,387257081,Noah,246,3,,0,4940,2nd Qualifying Round
+UEFA Conference League,europe_club,12,683,UEFA Conference League,2025/2026,Europe,4,Marc Gual,275664233,Legia Warsaw,122,3,,0,4940,2nd Qualifying Round
+UEFA Conference League,europe_club,12,683,UEFA Conference League,2025/2026,Europe,5,S. Hrstić,4154864489,Häcken,7348,3,,0,4940,2nd Qualifying Round
+UEFA Conference League,europe_club,12,683,UEFA Conference League,2025/2026,Europe,6,R. Miérez,2600671114,Osijek,241,3,,0,4940,2nd Qualifying Round
+UEFA Conference League,europe_club,12,683,UEFA Conference League,2025/2026,Europe,7,K. Piątek,1115128491,Istanbul Basaksehir,103,3,,0,4940,2nd Qualifying Round
+UEFA Conference League,europe_club,12,683,UEFA Conference League,2025/2026,Europe,1,E. Atlason,2009401404,Stjarnan,4701,3,,0,4941,1st Qualifying Round
+UEFA Conference League,europe_club,12,683,UEFA Conference League,2025/2026,Europe,1,F. Kovačević,1508431017,Celje,116,3,,,18531,League Phase
+UEFA Conference League,europe_club,12,683,UEFA Conference League,2025/2026,Europe,5,M. Godo,94650606,Strasbourg,3818,3,,,18567,League Phase
+UEFA Conference League,europe_club,12,683,UEFA Conference League,2025/2026,Europe,6,G. Burke,224389944,Shamrock Rovers,226,3,2,,18567,League Phase
+UEFA Conference League,europe_club,12,683,UEFA Conference League,2025/2026,Europe,7,L. Diaby-Fadiga,3478448922,Rakow,5763,3,,,18567,League Phase
+UEFA Conference League,europe_club,12,683,UEFA Conference League,2025/2026,Europe,7,L. Jovic,3945085378,AEK Athens,19696,3,,,18567,League Phase
+UEFA Conference League,europe_club,12,683,UEFA Conference League,2025/2026,Europe,7,A. Koita,1059289168,AEK Athens,19696,3,,,18567,League Phase
+UEFA Conference League,europe_club,12,683,UEFA Conference League,2025/2026,Europe,7,D. Kutesa,845895334,AEK Athens,19696,3,,,18567,League Phase
+UEFA Conference League,europe_club,12,683,UEFA Conference League,2025/2026,Europe,7,S. Mijnans,3282058793,AZ Alkmaar,113,3,,,18567,League Phase
+UEFA Conference League,europe_club,12,683,UEFA Conference League,2025/2026,Europe,7,A. Neofytou,1199417411,Omonia,107,3,,,18567,League Phase
+UEFA Conference League,europe_club,12,683,UEFA Conference League,2025/2026,Europe,7,P. Parzyszek,1144097860,KuPS,180,3,,,18567,League Phase
+UEFA Conference League,europe_club,12,683,UEFA Conference League,2025/2026,Europe,19,Braut Jonatan,1299152938,Rakow Czestochowa,5763,3,,2,21477, - 2nd Stage
+UEFA Conference League,europe_club,12,683,UEFA Conference League,2025/2026,Europe,20,Santana Alisson,2064870041,Shakhtar Donetsk,78,3,,0,21477, - 2nd Stage
+UEFA Conference League,europe_club,12,683,UEFA Conference League,2025/2026,Europe,21,Nadiem Amiri,2877597160,Mainz 05,3939,3,,2,21477, - 2nd Stage
+UEFA Conference League,europe_club,12,683,UEFA Conference League,2025/2026,Europe,22,Bartosz Mazurek,2644020071,Jagiellonia Bialystok,5770,3,,0,21477, - 2nd Stage
+UEFA Conference League,europe_club,12,683,UEFA Conference League,2025/2026,Europe,23,Taofeek Ismaheel,3980749033,Lech Poznan,149,3,3,0,21477, - 2nd Stage
+UEFA Conference League,europe_club,12,683,UEFA Conference League,2025/2026,Europe,24,Maurice Malone,1612747527,Austria Vienna,1237,3,,1,21477, - 2nd Stage
+UEFA Conference League,europe_club,12,683,UEFA Conference League,2025/2026,Europe,25,D. Kutesa,845895334,AEK Athens,158,3,,0,21477, - 2nd Stage
+UEFA Conference League,europe_club,12,683,UEFA Conference League,2025/2026,Europe,26,R. Marin,3789526315,AEK Athens,158,3,2,1,21477, - 2nd Stage
+UEFA Conference League,europe_club,12,683,UEFA Conference League,2025/2026,Europe,27,Gaoussou Diakite,3070674389,Lausanne Sport,7409,3,,0,21477, - 2nd Stage
+UEFA Conference League,europe_club,12,683,UEFA Conference League,2025/2026,Europe,28,Julio Enciso,1501343529,Strasbourg,3818,3,3,0,21477, - 2nd Stage
+UEFA Conference League,europe_club,12,683,UEFA Conference League,2025/2026,Europe,29,T. Adamsen,617352910,Silkeborg,2728,3,,0,21477, - 2nd Stage
+UEFA Conference League,europe_club,12,683,UEFA Conference League,2025/2026,Europe,30,L. Jović,3945085378,AEK Athens,158,3,,2,21477, - 2nd Stage
+UEFA Conference League,europe_club,12,683,UEFA Conference League,2025/2026,Europe,31,Roberto Piccoli,324440720,Fiorentina,4974,3,,1,21477, - 2nd Stage
+UEFA Conference League,europe_club,12,683,UEFA Conference League,2025/2026,Europe,32,M. Watters,3167725677,Dundee United,6342,3,,1,21477, - 2nd Stage
+UEFA Conference League,europe_club,12,683,UEFA Conference League,2025/2026,Europe,33,Piotr Parzyszek,1144097860,KuPS,180,3,,0,21477, - 2nd Stage
+UEFA Conference League,europe_club,12,683,UEFA Conference League,2025/2026,Europe,34,Meirelles Luca,3586801966,Shakhtar Donetsk,78,3,,0,21477, - 2nd Stage
+UEFA Conference League,europe_club,12,683,UEFA Conference League,2025/2026,Europe,35,J. Dembe,4199158739,Hacken,7348,3,,0,21477, - 2nd Stage
+UEFA Conference League,europe_club,12,683,UEFA Conference League,2025/2026,Europe,36,G. Burke,224389944,Shamrock Rovers,226,3,2,2,21477, - 2nd Stage
+UEFA Conference League,europe_club,12,683,UEFA Conference League,2025/2026,Europe,37,Isi Palazon,2121100261,Rayo Vallecano,7264,3,3,1,21477, - 2nd Stage
+UEFA Conference League,europe_club,12,683,UEFA Conference League,2025/2026,Europe,38,Alvaro Garcia,77255648,Rayo Vallecano,7264,3,3,0,21477, - 2nd Stage
+UEFA Conference League,europe_club,12,683,UEFA Conference League,2025/2026,Europe,39,Angelos Neofytou,1199417411,Omonia Nicosia,107,3,,0,21477, - 2nd Stage
+UEFA Conference League,europe_club,12,683,UEFA Conference League,2025/2026,Europe,40,Baiaram Ștefan,2570198421,CS U Craiova,6187,3,,0,21477, - 2nd Stage
+UEFA Conference League,europe_club,12,683,UEFA Conference League,2025/2026,Europe,3,Thalisson,3603353905,Olimpija,217,2,,0,5027,Play-offs
+UEFA Conference League,europe_club,12,683,UEFA Conference League,2025/2026,Europe,4,Matheus Aiás,2244134627,Noah,246,2,,0,5027,Play-offs
+UEFA Conference League,europe_club,12,683,UEFA Conference League,2025/2026,Europe,5,A. Ezzalzouli,2265352211,Real Betis,7261,2,,0,5027,Play-offs
+UEFA Conference League,europe_club,12,683,UEFA Conference League,2025/2026,Europe,6,Á. Frederiksberg,3506602070,KÍ,126,2,,1,5027,Play-offs
+UEFA Conference League,europe_club,12,683,UEFA Conference League,2025/2026,Europe,7,C. Geoffrey,1749994822,Astana,208,2,,0,5027,Play-offs
+UEFA Conference League,europe_club,12,683,UEFA Conference League,2025/2026,Europe,8,N. Hansen,229107747,Víkingur Reykjavík,4703,2,,0,5027,Play-offs
+UEFA Conference League,europe_club,12,683,UEFA Conference League,2025/2026,Europe,9,V. Ingimundarson,120976024,Víkingur Reykjavík,4703,2,,1,5027,Play-offs
+UEFA Conference League,europe_club,12,683,UEFA Conference League,2025/2026,Europe,10,Willy Semedo,2281087438,Omonia Nicosia,107,2,,1,5027,Play-offs
+UEFA Conference League,europe_club,12,683,UEFA Conference League,2025/2026,Europe,11,M. Kean,2149669217,Fiorentina,4974,2,,0,5027,Play-offs
+UEFA Conference League,europe_club,12,683,UEFA Conference League,2025/2026,Europe,12,A. Kučys,2705632236,Celje,116,2,,0,5027,Play-offs
+UEFA Conference League,europe_club,12,683,UEFA Conference League,2025/2026,Europe,13,Z. Nagy,395791314,Puskás,4587,2,,2,5027,Play-offs
+UEFA Conference League,europe_club,12,683,UEFA Conference League,2025/2026,Europe,14,C. Nkunku,1586788271,Chelsea,88,2,,2,5027,Play-offs
+UEFA Conference League,europe_club,12,683,UEFA Conference League,2025/2026,Europe,15,Pedro Lucas,4284390619,Olimpija,217,2,,1,5027,Play-offs
+UEFA Conference League,europe_club,12,683,UEFA Conference League,2025/2026,Europe,4,R. Amané,81121409,Häcken,7348,2,,0,4995,3rd Qualifying Round
+UEFA Conference League,europe_club,12,683,UEFA Conference League,2025/2026,Europe,5,M. Dean,4221687531,Gent,109,2,,0,4995,3rd Qualifying Round
+UEFA Conference League,europe_club,12,683,UEFA Conference League,2025/2026,Europe,6,O. Gandelman,1750237418,Gent,109,2,,0,4995,3rd Qualifying Round
+UEFA Conference League,europe_club,12,683,UEFA Conference League,2025/2026,Europe,7,W. Geubbels,2274934272,St.Gallen,198,2,,1,4995,3rd Qualifying Round
+UEFA Conference League,europe_club,12,683,UEFA Conference League,2025/2026,Europe,8,F. Myhre,224441341,Brann,5608,2,,0,4995,3rd Qualifying Round
+UEFA Conference League,europe_club,12,683,UEFA Conference League,2025/2026,Europe,9,T. Ladra,2032047989,Mladá Boleslav,2643,2,,0,4995,3rd Qualifying Round
+UEFA Conference League,europe_club,12,683,UEFA Conference League,2025/2026,Europe,10,A. Layouni,2703421811,Häcken,7348,2,5,0,4995,3rd Qualifying Round
+UEFA Conference League,europe_club,12,683,UEFA Conference League,2025/2026,Europe,11,A. Matković,536373934,Osijek,241,2,,0,4995,3rd Qualifying Round
+UEFA Conference League,europe_club,12,683,UEFA Conference League,2025/2026,Europe,12,Z. Nagy,395791314,Puskás,4587,2,,0,4995,3rd Qualifying Round
+UEFA Conference League,europe_club,12,683,UEFA Conference League,2025/2026,Europe,13,Y. Otubanjo,1517523138,Pyunik,1013,2,,0,4995,3rd Qualifying Round
+UEFA Conference League,europe_club,12,683,UEFA Conference League,2025/2026,Europe,14,R. Riski,2660386007,Ilves,3551,2,,0,4995,3rd Qualifying Round
+UEFA Conference League,europe_club,12,683,UEFA Conference League,2025/2026,Europe,15,Ángel Rodado,2025457656,Wisła Kraków,5769,2,,1,4995,3rd Qualifying Round
+UEFA Conference League,europe_club,12,683,UEFA Conference League,2025/2026,Europe,8,M. Aleksić,2017167221,Radnički Kragujevac,6442,2,,0,4940,2nd Qualifying Round
+UEFA Conference League,europe_club,12,683,UEFA Conference League,2025/2026,Europe,9,S. Hadji,3313945186,F91 Dudelange,5259,2,,2,4940,2nd Qualifying Round
+UEFA Conference League,europe_club,12,683,UEFA Conference League,2025/2026,Europe,10,R. Alliku,3888589073,Flora,129,2,,0,4940,2nd Qualifying Round
+UEFA Conference League,europe_club,12,683,UEFA Conference League,2025/2026,Europe,11,L. Antal,232923117,Zalgiris,216,2,,0,4940,2nd Qualifying Round
+UEFA Conference League,europe_club,12,683,UEFA Conference League,2025/2026,Europe,12,E. Atlason,2009401404,Stjarnan,4701,2,,0,4940,2nd Qualifying Round
+UEFA Conference League,europe_club,12,683,UEFA Conference League,2025/2026,Europe,13,D. Bîrligea,2656023345,CFR Cluj,120,2,,0,4940,2nd Qualifying Round
+UEFA Conference League,europe_club,12,683,UEFA Conference League,2025/2026,Europe,14,João Figueiredo,1189555926,Istanbul Basaksehir,103,2,,0,4940,2nd Qualifying Round
+UEFA Conference League,europe_club,12,683,UEFA Conference League,2025/2026,Europe,15,F. Cavegn,2972476692,Vaduz,252,2,,1,4940,2nd Qualifying Round
+UEFA Conference League,europe_club,12,683,UEFA Conference League,2025/2026,Europe,2,S. Hadji,3313945186,F91 Dudelange,5259,2,,1,4941,1st Qualifying Round
+UEFA Conference League,europe_club,12,683,UEFA Conference League,2025/2026,Europe,3,D. Berlanga,489527388,Inter Club d'Escaldes,225,2,,0,4941,1st Qualifying Round
+UEFA Conference League,europe_club,12,683,UEFA Conference League,2025/2026,Europe,4,Yuri,2602934963,Marsaxlokk,5329,2,,0,4941,1st Qualifying Round
+UEFA Conference League,europe_club,12,683,UEFA Conference League,2025/2026,Europe,5,A. Fofana,179005205,Zalgiris,216,2,,0,4941,1st Qualifying Round
+UEFA Conference League,europe_club,12,683,UEFA Conference League,2025/2026,Europe,6,P. Kallsberg,3283756367,Víkingur,3474,2,,0,4941,1st Qualifying Round
+UEFA Conference League,europe_club,12,683,UEFA Conference League,2025/2026,Europe,7,Guillaume López,1898353139,Inter Club d'Escaldes,225,2,,0,4941,1st Qualifying Round
+UEFA Conference League,europe_club,12,683,UEFA Conference League,2025/2026,Europe,8,A. Miljković,3317639809,Noah,246,2,,0,4941,1st Qualifying Round
+UEFA Conference League,europe_club,12,683,UEFA Conference League,2025/2026,Europe,9,M. Mirzoyan,3415382730,Urartu,1011,2,,0,4941,1st Qualifying Round
+UEFA Conference League,europe_club,12,683,UEFA Conference League,2025/2026,Europe,10,E. Movsesyan,2638513878,Urartu,1011,2,,0,4941,1st Qualifying Round
+UEFA Conference League,europe_club,12,683,UEFA Conference League,2025/2026,Europe,11,O. Ruoppi,3201776454,KuPS,180,2,,0,4941,1st Qualifying Round
+UEFA Conference League,europe_club,12,683,UEFA Conference League,2025/2026,Europe,12,D. Spătaru,1476992169,Milsami,5374,2,,0,4941,1st Qualifying Round
+UEFA Conference League,europe_club,12,683,UEFA Conference League,2025/2026,Europe,13,G. Tryggvason,3366507340,Valur,4702,2,,0,4941,1st Qualifying Round
+UEFA Conference League,europe_club,12,683,UEFA Conference League,2025/2026,Europe,14,J. Enciso,1501343529,Strasbourg,3818,2,,,18567,League Phase
+UEFA Conference League,europe_club,12,683,UEFA Conference League,2025/2026,Europe,14,A. Garcia,77255648,Rayo Vallecano,7264,2,,,18567,League Phase
+UEFA Conference League,europe_club,12,683,UEFA Conference League,2025/2026,Europe,14,C. Holse,3198073180,Samsunspor,7665,2,5,,18567,League Phase
+UEFA Conference League,europe_club,12,683,UEFA Conference League,2025/2026,Europe,14,T. Ismaheel,3980749033,Lech Poznan,149,2,,,18567,League Phase
+UEFA Conference League,europe_club,12,683,UEFA Conference League,2025/2026,Europe,14,L. Palma,305766848,Lech Poznan,149,2,,,18567,League Phase
+UEFA Conference League,europe_club,12,683,UEFA Conference League,2025/2026,Europe,19,R. Bajic,2948123210,AEK Larnaca,2471,2,,,18567,League Phase
+UEFA Conference League,europe_club,12,683,UEFA Conference League,2025/2026,Europe,19,J. Brunes,1299152938,Rakow,5763,2,,,18567,League Phase
+UEFA Conference League,europe_club,12,683,UEFA Conference League,2025/2026,Europe,41,Vladyslav Kabaev,3598652769,Dynamo Kyiv,98,2,,0,21477, - 2nd Stage
+UEFA Conference League,europe_club,12,683,UEFA Conference League,2025/2026,Europe,42,Blerim Krasniqi,1978017876,Drita,136,2,,0,21477, - 2nd Stage
+UEFA Conference League,europe_club,12,683,UEFA Conference League,2025/2026,Europe,43,Albert Dabiqaj,1756278370,Drita,136,2,,0,21477, - 2nd Stage
+UEFA Conference League,europe_club,12,683,UEFA Conference League,2025/2026,Europe,44,Luis Palma,305766848,Lech Poznan,149,2,2,0,21477, - 2nd Stage
+UEFA Conference League,europe_club,12,683,UEFA Conference League,2025/2026,Europe,45,M. Kvesić,4213256844,Publikum Celje,116,2,2,0,21477, - 2nd Stage
+UEFA Conference League,europe_club,12,683,UEFA Conference League,2025/2026,Europe,46,Fran Perez,1330350257,Rayo Vallecano,7264,2,,0,21477, - 2nd Stage
+UEFA Conference League,europe_club,12,683,UEFA Conference League,2025/2026,Europe,47,Gómez Kike,2153612837,Lincoln Red Imps,209,2,,0,21477, - 2nd Stage
+UEFA Conference League,europe_club,12,683,UEFA Conference League,2025/2026,Europe,48,Beyatt Lekoueiry,2900556509,Lausanne Sport,7409,2,,0,21477, - 2nd Stage
+UEFA Conference League,europe_club,12,683,UEFA Conference League,2025/2026,Europe,49,Willy Semedo,2281087438,Omonia Nicosia,107,2,,1,21477, - 2nd Stage
+UEFA Conference League,europe_club,12,683,UEFA Conference League,2025/2026,Europe,50,Dominik Fitz,1495248235,Austria Vienna,1237,2,3,0,21477, - 2nd Stage
+UEFA Conference League,europe_club,12,683,UEFA Conference League,2025/2026,Europe,1,M. Caicedo,996824059,Chelsea,88,1,,0,5685,Round of 16
+UEFA Conference League,europe_club,12,683,UEFA Conference League,2025/2026,Europe,2,A. Ezzalzouli,2265352211,Real Betis,7261,1,,0,5685,Round of 16
+UEFA Conference League,europe_club,12,683,UEFA Conference League,2025/2026,Europe,3,E. Fernández,2811909403,Chelsea,88,1,,0,5685,Round of 16
+UEFA Conference League,europe_club,12,683,UEFA Conference League,2025/2026,Europe,4,N. Jackson,2931500671,Chelsea,88,1,,0,5685,Round of 16
+UEFA Conference League,europe_club,12,683,UEFA Conference League,2025/2026,Europe,5,J. Sancho,1266053083,Chelsea,88,1,,0,5685,Round of 16
+UEFA Conference League,europe_club,12,683,UEFA Conference League,2025/2026,Europe,3,D. Abagna,321796671,APOEL,194,1,,0,5456,Knockout Round Play-offs
+UEFA Conference League,europe_club,12,683,UEFA Conference League,2025/2026,Europe,4,Sergi Altimira,3779916135,Real Betis,7261,1,,0,5456,Knockout Round Play-offs
+UEFA Conference League,europe_club,12,683,UEFA Conference League,2025/2026,Europe,5,D. Atlason,209891315,Víkingur Reykjavík,4703,1,,0,5456,Knockout Round Play-offs
+UEFA Conference League,europe_club,12,683,UEFA Conference League,2025/2026,Europe,6,C. Bakambu,2188930282,Real Betis,7261,1,,0,5456,Knockout Round Play-offs
+UEFA Conference League,europe_club,12,683,UEFA Conference League,2025/2026,Europe,7,A. Brown,3402637685,Gent,109,1,,0,5456,Knockout Round Play-offs
+UEFA Conference League,europe_club,12,683,UEFA Conference League,2025/2026,Europe,8,Tetê,1446865383,Panathinaikos,4299,1,,0,5456,Knockout Round Play-offs
+UEFA Conference League,europe_club,12,683,UEFA Conference League,2025/2026,Europe,9,A. Chiakha,3606174977,FC Copenhagen,175,1,,0,5456,Knockout Round Play-offs
+UEFA Conference League,europe_club,12,683,UEFA Conference League,2025/2026,Europe,10,K. Diks,3705629399,FC Copenhagen,175,1,,1,5456,Knockout Round Play-offs
+UEFA Conference League,europe_club,12,683,UEFA Conference League,2025/2026,Europe,11,Antony,3366469981,Real Betis,7261,1,,0,5456,Knockout Round Play-offs
+UEFA Conference League,europe_club,12,683,UEFA Conference League,2025/2026,Europe,12,R. Huescas,1098115290,FC Copenhagen,175,1,,0,5456,Knockout Round Play-offs
+UEFA Conference League,europe_club,12,683,UEFA Conference League,2025/2026,Europe,13,F. Ioannidis,2518258913,Panathinaikos,4299,1,,1,5456,Knockout Round Play-offs
+UEFA Conference League,europe_club,12,683,UEFA Conference League,2025/2026,Europe,14,Willy Semedo,2281087438,Omonia Nicosia,107,1,,1,5456,Knockout Round Play-offs
+UEFA Conference League,europe_club,12,683,UEFA Conference League,2025/2026,Europe,15,S. Jovetić,4080940201,Omonia Nicosia,107,1,,0,5456,Knockout Round Play-offs
+UEFA Conference League,europe_club,12,683,UEFA Conference League,2025/2026,Europe,14,P. Ahiabu,3239467143,VPS,3544,1,,0,4941,1st Qualifying Round
+UEFA Conference League,europe_club,12,683,UEFA Conference League,2025/2026,Europe,15,Elzio Lohan,656453936,Velez,1655,1,,0,4941,1st Qualifying Round
+UEFA Conference League,europe_club,12,683,UEFA Conference League,2025/2026,Europe,2,Palma Luis,305766848,Lech Poznan,149,1,,,18531,League Phase
+UEFA Conference League,europe_club,12,683,UEFA Conference League,2025/2026,Europe,3,R. Bajić,2948123210,AEK Larnaca,2471,1,,,18531,League Phase
+UEFA Conference League,europe_club,12,683,UEFA Conference League,2025/2026,Europe,3,Ismaheel Taofeek,3980749033,Lech Poznan,149,1,,,18531,League Phase
+UEFA Conference League,europe_club,12,683,UEFA Conference League,2025/2026,Europe,3,Ndour Cher,3197639607,Fiorentina,4974,1,,,18531,League Phase
+UEFA Conference League,europe_club,12,683,UEFA Conference League,2025/2026,Europe,3,L. Sadílek,2114090277,Sparta Prague,161,1,,,18531,League Phase
+UEFA Conference League,europe_club,12,683,UEFA Conference League,2025/2026,Europe,7,Amiri Nadiem,2877597160,Mainz,3939,1,,,18531,League Phase
+UEFA Conference League,europe_club,12,683,UEFA Conference League,2025/2026,Europe,7,Bair Theo,47237162,Lausanne,7409,1,,,18531,League Phase
+UEFA Conference League,europe_club,12,683,UEFA Conference League,2025/2026,Europe,7,Bengtsson Leo,2858736568,Lech Poznan,149,1,,,18531,League Phase
+UEFA Conference League,europe_club,12,683,UEFA Conference League,2025/2026,Europe,7,Nemanja Bilbija,647536745,Zrinjski,195,1,,,18531,League Phase
+UEFA Conference League,europe_club,12,683,UEFA Conference League,2025/2026,Europe,7,Dabiqaj Albert,1756278370,Drita,136,1,,,18531,League Phase
+UEFA Conference League,europe_club,12,683,UEFA Conference League,2025/2026,Europe,7,V. Damaşcan,2698850242,Zrinjski,195,1,,,18531,League Phase
+UEFA Conference League,europe_club,12,683,UEFA Conference League,2025/2026,Europe,7,N. Devlin,2071544007,Aberdeen,237,1,,,18531,League Phase
+UEFA Conference League,europe_club,12,683,UEFA Conference League,2025/2026,Europe,7,Diakite Gaoussou,3070674389,Lausanne,7409,1,,,18531,League Phase
+UEFA Conference League,europe_club,12,683,UEFA Conference League,2025/2026,Europe,7,D. Dujmovic,838323407,Zrinjski,195,1,,,18531,League Phase
+UEFA Conference League,europe_club,12,683,UEFA Conference League,2025/2026,Europe,7,L. Haraslín,913888366,Sparta Prague,161,1,1,,18531,League Phase
+UEFA Conference League,europe_club,12,683,UEFA Conference League,2025/2026,Europe,7,Pedrinho,2999289400,Shakhtar Donetsk,78,1,,,18531,League Phase
+UEFA Conference League,europe_club,12,683,UEFA Conference League,2025/2026,Europe,7,R. Ibrahim,2470625937,Slovan Bratislava,6565,1,,,18531,League Phase
+UEFA Conference League,europe_club,12,683,UEFA Conference League,2025/2026,Europe,7,Ishak Mikael,3997911552,Lech Poznan,149,1,,,18531,League Phase
+UEFA Conference League,europe_club,12,683,UEFA Conference League,2025/2026,Europe,7,Đ. Ivanović,2236452916,AEK Larnaca,2471,1,,,18531,League Phase
+Premier League,top5,20,152,Premier League,2025/2026,England,1,Erling Haaland,659972248,Manchester City,80,27,8,3,21477, - 2nd Stage
+Premier League,top5,20,152,Premier League,2025/2026,England,2,Igor Thiago,1960495728,Brentford,3086,22,,8,21477, - 2nd Stage
+Premier League,top5,20,152,Premier League,2025/2026,England,1,E. Haaland,659972248,Manchester City,80,20,,,6,Current
+Premier League,top5,20,152,Premier League,2025/2026,England,2,I. Thiago,1960495728,Brentford,3086,16,,,6,Current
+Premier League,top5,20,152,Premier League,2025/2026,England,3,Pedro Joao,114577412,Chelsea,88,15,5,0,21477, - 2nd Stage
+Premier League,top5,20,152,Premier League,2025/2026,England,4,Ollie Watkins,1056875046,Aston Villa,3088,14,,0,21477, - 2nd Stage
+Premier League,top5,20,152,Premier League,2025/2026,England,7,Dominic Calvert-Lewin,3490293551,Leeds United,3103,14,,4,21477, - 2nd Stage
+Premier League,top5,20,152,Premier League,2025/2026,England,6,Viktor Gyökeres,1317952879,Arsenal,141,14,,3,21477, - 2nd Stage
+Premier League,top5,20,152,Premier League,2025/2026,England,5,Morgan Gibbs-White,21993197,Nottingham Forest,3089,14,4,1,21477, - 2nd Stage
+Premier League,top5,20,152,Premier League,2025/2026,England,9,Eli Kroupi,3325245293,AFC Bournemouth,3071,13,,2,21477, - 2nd Stage
+Premier League,top5,20,152,Premier League,2025/2026,England,8,Danny Welbeck,3206548206,Brighton,3079,13,,1,21477, - 2nd Stage
+Premier League,top5,20,152,Premier League,2025/2026,England,13,Richarlison,2399580076,Tottenham Hotspur,164,11,4,0,21477, - 2nd Stage
+Premier League,top5,20,152,Premier League,2025/2026,England,12,Hugo Ekitike,983632643,Liverpool,84,11,4,0,21477, - 2nd Stage
+Premier League,top5,20,152,Premier League,2025/2026,England,11,Benjamin Sesko,3128683777,Manchester United,102,11,,0,21477, - 2nd Stage
+Premier League,top5,20,152,Premier League,2025/2026,England,10,Jean-Philippe Mateta,3423954383,Crystal Palace,3429,11,,4,21477, - 2nd Stage
+Premier League,top5,20,152,Premier League,2025/2026,England,16,Bryan Mbeumo,1339054678,Manchester United,102,10,,0,21477, - 2nd Stage
+Premier League,top5,20,152,Premier League,2025/2026,England,18,Harry Wilson,1384836880,Fulham,3085,10,6,0,21477, - 2nd Stage
+Premier League,top5,20,152,Premier League,2025/2026,England,20,Antoine Semenyo,1054010834,AFC Bournemouth,3071,10,,1,21477, - 2nd Stage
+Premier League,top5,20,152,Premier League,2025/2026,England,14,Zian Flemming,2640189962,Burnley,3075,10,,2,21477, - 2nd Stage
+Premier League,top5,20,152,Premier League,2025/2026,England,15,Matheus Cunha,3425600851,Manchester United,102,10,,0,21477, - 2nd Stage
+Premier League,top5,20,152,Premier League,2025/2026,England,19,Enzo Fernandez,2811909403,Chelsea,88,10,,2,21477, - 2nd Stage
+Premier League,top5,20,152,Premier League,2025/2026,England,17,Morgan Rogers,2797666696,Aston Villa,3088,10,6,0,21477, - 2nd Stage
+Premier League,top5,20,152,Premier League,2025/2026,England,3,A. Semenyo,1054010834,Manchester City,80,10,,,6,Current
+Premier League,top5,20,152,Premier League,2025/2026,England,26,Beto,3035521875,Everton,3073,9,,0,21477, - 2nd Stage
+Premier League,top5,20,152,Premier League,2025/2026,England,25,Ismaila Sarr,3516323646,Crystal Palace,3429,9,,3,21477, - 2nd Stage
+Premier League,top5,20,152,Premier League,2025/2026,England,24,Guimaraes Bruno,3432657688,Newcastle United,3100,9,5,2,21477, - 2nd Stage
+Premier League,top5,20,152,Premier League,2025/2026,England,23,Casemiro,2593939520,Manchester United,102,9,,0,21477, - 2nd Stage
+Premier League,top5,20,152,Premier League,2025/2026,England,22,Cole Palmer,1568757289,Chelsea,88,9,,5,21477, - 2nd Stage
+Premier League,top5,20,152,Premier League,2025/2026,England,21,Raul Jimenez,1249672088,Fulham,3085,9,,4,21477, - 2nd Stage
+Premier League,top5,20,152,Premier League,2025/2026,England,4,D. Calvert-Lewin,3490293551,Leeds,3103,9,,,6,Current
+Premier League,top5,20,152,Premier League,2025/2026,England,6,H. Ekitike,983632643,Liverpool,84,8,,,6,Current
+Premier League,top5,20,152,Premier League,2025/2026,England,31,Jarrod Bowen,2223691422,West Ham United,3081,8,10,1,21477, - 2nd Stage
+Premier League,top5,20,152,Premier League,2025/2026,England,30,Bruno Fernandes,3653582633,Manchester United,102,8,20,4,21477, - 2nd Stage
+Premier League,top5,20,152,Premier League,2025/2026,England,29,Jaidon Anthony,1728018217,Burnley,3075,8,,0,21477, - 2nd Stage
+Premier League,top5,20,152,Premier League,2025/2026,England,28,Noah Okafor,554337339,Leeds United,3103,8,,0,21477, - 2nd Stage
+Premier League,top5,20,152,Premier League,2025/2026,England,27,Kiernan Dewsbury-Hall,179187128,Everton,3073,8,4,0,21477, - 2nd Stage
+Premier League,top5,20,152,Premier League,2025/2026,England,5,Guimaraes Bruno,3432657688,Newcastle,3100,8,,,6,Current
+Premier League,top5,20,152,Premier League,2025/2026,England,7,J. Mateta,3423954383,Crystal Palace,3429,8,,,6,Current
+Premier League,top5,20,152,Premier League,2025/2026,England,7,D. Welbeck,3206548206,Brighton,3079,8,,,6,Current
+Premier League,top5,20,152,Premier League,2025/2026,England,32,Nick Woltemade,2935685984,Newcastle United,3100,8,,1,21477, - 2nd Stage
+Premier League,top5,20,152,Premier League,2025/2026,England,33,Thierno Barry,2796859808,Everton,3073,8,,0,21477, - 2nd Stage
+Premier League,top5,20,152,Premier League,2025/2026,England,43,Harvey Barnes,1067884178,Newcastle United,3100,7,,0,21477, - 2nd Stage
+Premier League,top5,20,152,Premier League,2025/2026,England,34,Eberechi Eze,3237499772,Arsenal,141,7,,0,21477, - 2nd Stage
+Premier League,top5,20,152,Premier League,2025/2026,England,35,Bukayo Saka,2764979995,Arsenal,141,7,5,1,21477, - 2nd Stage
+Premier League,top5,20,152,Premier League,2025/2026,England,36,Cody Gakpo,157543942,Liverpool,84,7,5,0,21477, - 2nd Stage
+Premier League,top5,20,152,Premier League,2025/2026,England,37,William Osula,778280555,Newcastle United,3100,7,,0,21477, - 2nd Stage
+Premier League,top5,20,152,Premier League,2025/2026,England,38,Dango Ouattara,2354271331,Brentford,3086,7,,0,21477, - 2nd Stage
+Premier League,top5,20,152,Premier League,2025/2026,England,39,Kevin Schade,2286394723,Brentford,3086,7,,0,21477, - 2nd Stage
+Premier League,top5,20,152,Premier League,2025/2026,England,40,Phil Foden,2538499189,Manchester City,80,7,5,0,21477, - 2nd Stage
+Premier League,top5,20,152,Premier League,2025/2026,England,41,Brian Brobbey,2676411699,Sunderland,3111,7,,0,21477, - 2nd Stage
+Premier League,top5,20,152,Premier League,2025/2026,England,42,Mohamed Salah,2432523569,Liverpool,84,7,6,1,21477, - 2nd Stage
+Premier League,top5,20,152,Premier League,2025/2026,England,9,M. Rogers,2797666696,Aston Villa,3088,7,10,,6,Current
+Premier League,top5,20,152,Premier League,2025/2026,England,9,H. Wilson,1384836880,Fulham,3085,7,,,6,Current
+Premier League,top5,20,152,Premier League,2025/2026,England,11,Pedro Joao,114577412,Chelsea,88,7,5,,6,Current
+Premier League,top5,20,152,Premier League,2025/2026,England,11,Richarlison,2399580076,Tottenham,164,7,,,6,Current
+Premier League,top5,20,152,Premier League,2025/2026,England,13,P. Foden,2538499189,Manchester City,80,7,,,6,Current
+Premier League,top5,20,152,Premier League,2025/2026,England,13,N. Woltemade,2935685984,Newcastle,3100,7,,,6,Current
+Premier League,top5,20,152,Premier League,2025/2026,England,15,B. Mbeumo,1339054678,Manchester Utd,102,7,,,6,Current
+Premier League,top5,20,152,Premier League,2025/2026,England,15,O. Watkins,1056875046,Aston Villa,3088,7,8,,6,Current
+Premier League,top5,20,152,Premier League,2025/2026,England,17,E. J. Kroupi,3325245293,Bournemouth,3071,7,,,6,Current
+Premier League,top5,20,152,Premier League,2025/2026,England,48,Iliman Ndiaye,85525664,Everton,3073,6,,2,21477, - 2nd Stage
+Premier League,top5,20,152,Premier League,2025/2026,England,50,Callum Wilson,2121852954,West Ham United,3081,6,,0,21477, - 2nd Stage
+Premier League,top5,20,152,Premier League,2025/2026,England,47,Wilson Isidor,3580450151,Sunderland,3111,6,,0,21477, - 2nd Stage
+Premier League,top5,20,152,Premier League,2025/2026,England,49,Evanilson,37033346,AFC Bournemouth,3071,6,,0,21477, - 2nd Stage
+Premier League,top5,20,152,Premier League,2025/2026,England,20,J. Bowen,2223691422,West Ham,3081,6,,,6,Current
+Premier League,top5,20,152,Premier League,2025/2026,England,46,Dominik Szoboszlai,1521124062,Liverpool,84,6,7,0,21477, - 2nd Stage
+Premier League,top5,20,152,Premier League,2025/2026,England,45,Leandro Trossard,1966766994,Arsenal,141,6,6,0,21477, - 2nd Stage
+Premier League,top5,20,152,Premier League,2025/2026,England,44,Antoine Semenyo,1054010834,Manchester City,80,6,,0,21477, - 2nd Stage
+Premier League,top5,20,152,Premier League,2025/2026,England,18,K. Schade,2286394723,Brentford,3086,6,,,6,Current
+Premier League,top5,20,152,Premier League,2025/2026,England,19,E. Fernandez,2811909403,Chelsea,88,6,,,6,Current
+La Liga,top5,21,302,La Liga,2025/2026,Spain,1,Kylian Mbappe,2354545782,Real Madrid,76,25,5,8,21477, - 2nd Stage
+La Liga,top5,21,302,La Liga,2025/2026,Spain,2,Vedat Muriqi,1468412695,Mallorca,7285,23,,5,21477, - 2nd Stage
+La Liga,top5,21,302,La Liga,2025/2026,Spain,1,K. Mbappe,2354545782,Real Madrid,76,19,,,402,Current
+La Liga,top5,21,302,La Liga,2025/2026,Spain,3,Ante Budimir,1306374671,Osasuna,7269,17,,6,21477, - 2nd Stage
+La Liga,top5,21,302,La Liga,2025/2026,Spain,4,Yamal Lamine,2532001232,Barcelona,97,16,11,3,21477, - 2nd Stage
+La Liga,top5,21,302,La Liga,2025/2026,Spain,5,Junior Vinicius,822853843,Real Madrid,76,16,5,4,21477, - 2nd Stage
+La Liga,top5,21,302,La Liga,2025/2026,Spain,6,Ferran Torres,1671654033,Barcelona,97,16,,0,21477, - 2nd Stage
+La Liga,top5,21,302,La Liga,2025/2026,Spain,7,Mikel Oyarzabal,3111173085,Real Sociedad,153,15,4,7,21477, - 2nd Stage
+La Liga,top5,21,302,La Liga,2025/2026,Spain,9,Borja Iglesias,2461543274,Celta de Vigo,7290,14,,4,21477, - 2nd Stage
+La Liga,top5,21,302,La Liga,2025/2026,Spain,8,Robert Lewandowski,482155080,Barcelona,97,14,,1,21477, - 2nd Stage
+La Liga,top5,21,302,La Liga,2025/2026,Spain,10,Toni Martinez,2835856988,Deportivo Alaves,7275,14,,1,21477, - 2nd Stage
+La Liga,top5,21,302,La Liga,2025/2026,Spain,2,V. Muriqi,1468412695,Mallorca,7285,14,,,402,Current
+La Liga,top5,21,302,La Liga,2025/2026,Spain,11,Alexander Sorloth,2846654019,Atletico Madrid,73,13,,0,21477, - 2nd Stage
+La Liga,top5,21,302,La Liga,2025/2026,Spain,12,Raphinha,3190208711,Barcelona,97,13,,3,21477, - 2nd Stage
+La Liga,top5,21,302,La Liga,2025/2026,Spain,13,Georges Mikautadze,1851210859,Villarreal,162,12,6,0,21477, - 2nd Stage
+La Liga,top5,21,302,La Liga,2025/2026,Spain,16,Carlos Espi,2751041659,Levante,7259,11,,0,21477, - 2nd Stage
+La Liga,top5,21,302,La Liga,2025/2026,Spain,14,Hernandez Cucho,479912550,Real Betis,7261,11,,1,21477, - 2nd Stage
+La Liga,top5,21,302,La Liga,2025/2026,Spain,15,Lucas Boye,4144029830,Deportivo Alaves,7275,11,,3,21477, - 2nd Stage
+La Liga,top5,21,302,La Liga,2025/2026,Spain,3,F. Torres,1671654033,Barcelona,97,11,,,402,Current
+La Liga,top5,21,302,La Liga,2025/2026,Spain,24,Gorka Guruzeta,1080393351,Athletic Club,7258,10,,1,21477, - 2nd Stage
+La Liga,top5,21,302,La Liga,2025/2026,Spain,23,Alberto Moleiro,2028445551,Villarreal,162,10,5,0,21477, - 2nd Stage
+La Liga,top5,21,302,La Liga,2025/2026,Spain,22,Silva Andre,2268685656,Elche,7274,10,,3,21477, - 2nd Stage
+La Liga,top5,21,302,La Liga,2025/2026,Spain,21,Frutos de,4114002721,Rayo Vallecano,7264,10,,1,21477, - 2nd Stage
+La Liga,top5,21,302,La Liga,2025/2026,Spain,20,Abde Ezzalzouli,2265352211,Real Betis,7261,10,8,0,21477, - 2nd Stage
+La Liga,top5,21,302,La Liga,2025/2026,Spain,19,Gerard Moreno,387294631,Villarreal,162,10,,3,21477, - 2nd Stage
+La Liga,top5,21,302,La Liga,2025/2026,Spain,18,Akor Adams,613735972,Sevilla,89,10,,3,21477, - 2nd Stage
+La Liga,top5,21,302,La Liga,2025/2026,Spain,17,Hugo Duro,3326381139,Valencia,7272,10,,1,21477, - 2nd Stage
+La Liga,top5,21,302,La Liga,2025/2026,Spain,29,Orri Oskarsson,3949063308,Real Sociedad,153,9,,0,21477, - 2nd Stage
+La Liga,top5,21,302,La Liga,2025/2026,Spain,28,Pablo Fornals,1365350807,Real Betis,7261,9,6,0,21477, - 2nd Stage
+La Liga,top5,21,302,La Liga,2025/2026,Spain,27,Federico Vinas,4113799863,Real Oviedo,7282,9,,2,21477, - 2nd Stage
+La Liga,top5,21,302,La Liga,2025/2026,Spain,26,Ferran Jutgla,791473901,Celta de Vigo,7290,9,,0,21477, - 2nd Stage
+La Liga,top5,21,302,La Liga,2025/2026,Spain,25,Vladyslav Vanat,1674889168,Girona,7263,9,,3,21477, - 2nd Stage
+La Liga,top5,21,302,La Liga,2025/2026,Spain,4,R. Lewandowski,482155080,Barcelona,97,9,,,402,Current
+La Liga,top5,21,302,La Liga,2025/2026,Spain,5,Hernandez Cucho,479912550,Betis,7261,8,,,402,Current
+La Liga,top5,21,302,La Liga,2025/2026,Spain,5,A. Moleiro,2028445551,Villarreal,162,8,,,402,Current
+La Liga,top5,21,302,La Liga,2025/2026,Spain,7,A. Budimir,1306374671,Osasuna,7269,8,,,402,Current
+La Liga,top5,21,302,La Liga,2025/2026,Spain,30,Goncalo Guedes,670803778,Real Sociedad,153,8,4,0,21477, - 2nd Stage
+La Liga,top5,21,302,La Liga,2025/2026,Spain,31,Nicolas Pepe,2602980393,Villarreal,162,8,6,1,21477, - 2nd Stage
+La Liga,top5,21,302,La Liga,2025/2026,Spain,32,Kike Garcia,1063280758,Espanyol,7268,8,,1,21477, - 2nd Stage
+La Liga,top5,21,302,La Liga,2025/2026,Spain,33,Rafa Mir,2047824345,Elche,7274,8,,1,21477, - 2nd Stage
+La Liga,top5,21,302,La Liga,2025/2026,Spain,34,Marcus Rashford,2661454570,Barcelona,97,8,7,0,21477, - 2nd Stage
+La Liga,top5,21,302,La Liga,2025/2026,Spain,35,Julian Alvarez,1560441904,Atletico Madrid,73,8,,2,21477, - 2nd Stage
+La Liga,top5,21,302,La Liga,2025/2026,Spain,36,Antony,3366469981,Real Betis,7261,8,6,0,21477, - 2nd Stage
+La Liga,top5,21,302,La Liga,2025/2026,Spain,42,Dani Olmo,946035169,Barcelona,97,7,8,0,21477, - 2nd Stage
+La Liga,top5,21,302,La Liga,2025/2026,Spain,37,Pere Milla,385252281,Espanyol,7268,7,,0,21477, - 2nd Stage
+La Liga,top5,21,302,La Liga,2025/2026,Spain,38,Tajon Buchanan,2524615592,Villarreal,162,7,,0,21477, - 2nd Stage
+La Liga,top5,21,302,La Liga,2025/2026,Spain,39,Antoine Griezmann,1462779601,Atletico Madrid,73,7,,0,21477, - 2nd Stage
+La Liga,top5,21,302,La Liga,2025/2026,Spain,40,Raul Garcia,653151048,Osasuna,7269,7,,0,21477, - 2nd Stage
+La Liga,top5,21,302,La Liga,2025/2026,Spain,41,Alvaro Rodriguez,2859780585,Elche,7274,7,5,0,21477, - 2nd Stage
+La Liga,top5,21,302,La Liga,2025/2026,Spain,8,Yamal Lamine,2532001232,Barcelona,97,7,11,,402,Current
+La Liga,top5,21,302,La Liga,2025/2026,Spain,9,J. Alvarez,1560441904,Atl. Madrid,73,7,,,402,Current
+La Liga,top5,21,302,La Liga,2025/2026,Spain,9,Raphinha,3190208711,Barcelona,97,7,3,,402,Current
+La Liga,top5,21,302,La Liga,2025/2026,Spain,11,B. Iglesias,2461543274,Celta Vigo,7290,7,,,402,Current
+La Liga,top5,21,302,La Liga,2025/2026,Spain,12,V. Vanat,1674889168,Girona,7263,7,,,402,Current
+La Liga,top5,21,302,La Liga,2025/2026,Spain,43,Costa Samu,412597878,Mallorca,7285,7,,0,21477, - 2nd Stage
+La Liga,top5,21,302,La Liga,2025/2026,Spain,44,Ivan Romero,266383353,Levante,7259,7,,0,21477, - 2nd Stage
+La Liga,top5,21,302,La Liga,2025/2026,Spain,45,Jaen Fernandez,2318602467,Espanyol,7268,7,,1,21477, - 2nd Stage
+La Liga,top5,21,302,La Liga,2025/2026,Spain,46,Viktor Tsygankov,1317264990,Girona,7263,6,5,0,21477, - 2nd Stage
+La Liga,top5,21,302,La Liga,2025/2026,Spain,47,Victor Munoz,4180639370,Osasuna,7269,6,,0,21477, - 2nd Stage
+La Liga,top5,21,302,La Liga,2025/2026,Spain,48,Fermin Lopez,1790385112,Barcelona,97,6,9,0,21477, - 2nd Stage
+La Liga,top5,21,302,La Liga,2025/2026,Spain,49,Mauro Arambarri,3355136098,Getafe,7288,6,,2,21477, - 2nd Stage
+La Liga,top5,21,302,La Liga,2025/2026,Spain,50,Martin Satriano,1805698179,Getafe,7288,6,,0,21477, - 2nd Stage
+La Liga,top5,21,302,La Liga,2025/2026,Spain,13,K. Etta Eyong,410646158,Levante,7259,6,,,402,Current
+La Liga,top5,21,302,La Liga,2025/2026,Spain,14,J. de Frutos,4114002721,Rayo Vallecano,7264,6,,,402,Current
+La Liga,top5,21,302,La Liga,2025/2026,Spain,15,H. Duro,3326381139,Valencia,7272,6,,,402,Current
+La Liga,top5,21,302,La Liga,2025/2026,Spain,15,A. Griezmann,1462779601,Atl. Madrid,73,6,,,402,Current
+La Liga,top5,21,302,La Liga,2025/2026,Spain,15,P. Milla,385252281,Espanyol,7268,6,,,402,Current
+La Liga,top5,21,302,La Liga,2025/2026,Spain,15,R. Mir,2047824345,Elche,7274,6,,,402,Current
+La Liga,top5,21,302,La Liga,2025/2026,Spain,20,Antony,3366469981,Betis,7261,5,,,402,Current
+La Liga,top5,21,302,La Liga,2025/2026,Spain,19,Junior Vinicius,822853843,Real Madrid,76,5,5,,402,Current
+Serie A,top5,22,207,Serie A,2025/2026,Italy,1,Lautaro Martinez,2464726737,Inter Milan,79,17,6,0,21477, - 2nd Stage
+Serie A,top5,22,207,Serie A,2025/2026,Italy,4,Donyell Malen,4072925799,Roma,139,13,,3,21477, - 2nd Stage
+Serie A,top5,22,207,Serie A,2025/2026,Italy,3,Marcus Thuram,165919460,Inter Milan,79,13,6,0,21477, - 2nd Stage
+Serie A,top5,22,207,Serie A,2025/2026,Italy,2,Anastasios Douvikas,2341220232,Como,8239,13,,1,21477, - 2nd Stage
+Serie A,top5,22,207,Serie A,2025/2026,Italy,5,Nico Paz,3728408473,Como,8239,12,6,0,21477, - 2nd Stage
+Serie A,top5,22,207,Serie A,2025/2026,Italy,1,L. Martinez,2464726737,Inter,79,11,,,331,Current
+Serie A,top5,22,207,Serie A,2025/2026,Italy,6,Rasmus Hojlund,1302503360,Napoli,152,11,5,1,21477, - 2nd Stage
+Serie A,top5,22,207,Serie A,2025/2026,Italy,7,Giovanni Simeone,1864969808,Torino,4973,11,,0,21477, - 2nd Stage
+Serie A,top5,22,207,Serie A,2025/2026,Italy,13,Kenan Yildiz,3573468021,Juventus,96,10,6,1,21477, - 2nd Stage
+Serie A,top5,22,207,Serie A,2025/2026,Italy,12,Gianluca Scamacca,3784117593,Atalanta,85,10,,2,21477, - 2nd Stage
+Serie A,top5,22,207,Serie A,2025/2026,Italy,11,Riccardo Orsolini,286349307,Bologna,4983,10,,4,21477, - 2nd Stage
+Serie A,top5,22,207,Serie A,2025/2026,Italy,10,Scott McTominay,3320133030,Napoli,152,10,,0,21477, - 2nd Stage
+Serie A,top5,22,207,Serie A,2025/2026,Italy,9,Keinan Davis,348174863,Udinese,4984,10,4,4,21477, - 2nd Stage
+Serie A,top5,22,207,Serie A,2025/2026,Italy,8,Nikola Krstovic,1348749812,Atalanta,85,10,5,0,21477, - 2nd Stage
+Serie A,top5,22,207,Serie A,2025/2026,Italy,16,Hakan Calhanoglu,322318492,Inter Milan,79,9,4,4,21477, - 2nd Stage
+Serie A,top5,22,207,Serie A,2025/2026,Italy,15,Rafael Leao,3613754290,Milan,159,9,,2,21477, - 2nd Stage
+Serie A,top5,22,207,Serie A,2025/2026,Italy,14,Andrea Pinamonti,3560019589,Sassuolo,4975,9,,0,21477, - 2nd Stage
+Serie A,top5,22,207,Serie A,2025/2026,Italy,17,Federico Bonazzoli,1747748050,Cremonese,4998,9,,2,21477, - 2nd Stage
+Serie A,top5,22,207,Serie A,2025/2026,Italy,18,Mateo Pellegrino,2698738648,Parma,4978,8,,1,21477, - 2nd Stage
+Serie A,top5,22,207,Serie A,2025/2026,Italy,19,Moise Kean,2149669217,Fiorentina,4974,8,,2,21477, - 2nd Stage
+Serie A,top5,22,207,Serie A,2025/2026,Italy,20,Christian Pulisic,3629528922,Milan,159,8,4,0,21477, - 2nd Stage
+Serie A,top5,22,207,Serie A,2025/2026,Italy,21,Nikola Vlasic,2705223089,Torino,4973,8,,5,21477, - 2nd Stage
+Serie A,top5,22,207,Serie A,2025/2026,Italy,22,Domenico Berardi,3390910691,Sassuolo,4975,8,4,2,21477, - 2nd Stage
+Serie A,top5,22,207,Serie A,2025/2026,Italy,2,C. Pulisic,3629528922,AC Milan,159,8,9,,331,Current
+Serie A,top5,22,207,Serie A,2025/2026,Italy,29,Santiago Castro,4088780097,Bologna,4983,7,,0,21477, - 2nd Stage
+Serie A,top5,22,207,Serie A,2025/2026,Italy,25,Sebastiano Esposito,1502929856,Cagliari,4981,7,5,1,21477, - 2nd Stage
+Serie A,top5,22,207,Serie A,2025/2026,Italy,24,Stefano Moreo,2153681205,Pisa,4988,7,,2,21477, - 2nd Stage
+Serie A,top5,22,207,Serie A,2025/2026,Italy,23,Lorenzo Colombo,1021494156,Genoa,4986,7,,1,21477, - 2nd Stage
+Serie A,top5,22,207,Serie A,2025/2026,Italy,3,K. Yildiz,3573468021,Juventus,96,7,,,331,Current
+Serie A,top5,22,207,Serie A,2025/2026,Italy,4,H. Calhanoglu,322318492,Inter,79,7,,,331,Current
+Serie A,top5,22,207,Serie A,2025/2026,Italy,4,R. Leao,3613754290,AC Milan,159,7,,,331,Current
+Serie A,top5,22,207,Serie A,2025/2026,Italy,6,R. Orsolini,286349307,Bologna,4983,7,,,331,Current
+Serie A,top5,22,207,Serie A,2025/2026,Italy,26,Rolando Mandragora,1380760679,Fiorentina,4974,7,,1,21477, - 2nd Stage
+Serie A,top5,22,207,Serie A,2025/2026,Italy,27,Federico Dimarco,522957892,Inter Milan,79,7,16,0,21477, - 2nd Stage
+Serie A,top5,22,207,Serie A,2025/2026,Italy,28,Gift Orban,2478896425,Hellas Verona,4982,7,,2,21477, - 2nd Stage
+Serie A,top5,22,207,Serie A,2025/2026,Italy,30,Armand Lauriente,3840201945,Sassuolo,4975,7,9,0,21477, - 2nd Stage
+Serie A,top5,22,207,Serie A,2025/2026,Italy,31,Jamie Vardy,2275291859,Cremonese,4998,7,,0,21477, - 2nd Stage
+Serie A,top5,22,207,Serie A,2025/2026,Italy,32,Francesco Esposito,3145382259,Inter Milan,79,7,,0,21477, - 2nd Stage
+Serie A,top5,22,207,Serie A,2025/2026,Italy,33,Christopher Nkunku,1586788271,Milan,159,7,,5,21477, - 2nd Stage
+Serie A,top5,22,207,Serie A,2025/2026,Italy,39,Ruslan Malinovskyi,3912238384,Genoa,4986,6,,3,21477, - 2nd Stage
+Serie A,top5,22,207,Serie A,2025/2026,Italy,34,Piotr Zielinski,1139898122,Inter Milan,79,6,,1,21477, - 2nd Stage
+Serie A,top5,22,207,Serie A,2025/2026,Italy,35,Jonathan David,272450319,Juventus,96,6,4,0,21477, - 2nd Stage
+Serie A,top5,22,207,Serie A,2025/2026,Italy,36,Ismael Kone,1099940994,Sassuolo,4975,6,,0,21477, - 2nd Stage
+Serie A,top5,22,207,Serie A,2025/2026,Italy,37,Martin Baturina,1211941076,Como,8239,6,,0,21477, - 2nd Stage
+Serie A,top5,22,207,Serie A,2025/2026,Italy,38,Matias Soule,4265859702,Roma,139,6,5,0,21477, - 2nd Stage
+Serie A,top5,22,207,Serie A,2025/2026,Italy,7,N. Paz,3728408473,Como,8239,6,8,,331,Current
+Serie A,top5,22,207,Serie A,2025/2026,Italy,8,M. Soule,4265859702,AS Roma,139,6,,,331,Current
+Serie A,top5,22,207,Serie A,2025/2026,Italy,9,K. Davis,348174863,Udinese,4984,6,,,331,Current
+Serie A,top5,22,207,Serie A,2025/2026,Italy,10,S. Castro,4088780097,Bologna,4983,6,,,331,Current
+Serie A,top5,22,207,Serie A,2025/2026,Italy,10,R. Hojlund,1302503360,Napoli,152,6,,,331,Current
+Serie A,top5,22,207,Serie A,2025/2026,Italy,10,M. Thuram,165919460,Inter,79,6,,,331,Current
+Serie A,top5,22,207,Serie A,2025/2026,Italy,13,G. Orban,2478896425,Verona,4982,6,,,331,Current
+Serie A,top5,22,207,Serie A,2025/2026,Italy,13,M. Pellegrino,2698738648,Parma,4978,6,,,331,Current
+Serie A,top5,22,207,Serie A,2025/2026,Italy,15,A. Douvikas,2341220232,Como,8239,6,,,331,Current
+Serie A,top5,22,207,Serie A,2025/2026,Italy,40,Adrien Rabiot,1992946583,Milan,159,6,4,0,21477, - 2nd Stage
+Serie A,top5,22,207,Serie A,2025/2026,Italy,46,Nicolo Zaniolo,1200093086,Udinese,4984,5,6,0,21477, - 2nd Stage
+Serie A,top5,22,207,Serie A,2025/2026,Italy,45,Dusan Vlahovic,841107665,Juventus,96,5,,1,21477, - 2nd Stage
+Serie A,top5,22,207,Serie A,2025/2026,Italy,50,Franca Wesley,1043137531,Roma,139,5,,0,21477, - 2nd Stage
+Serie A,top5,22,207,Serie A,2025/2026,Italy,44,Strahinja Pavlovic,209443702,Milan,159,5,,0,21477, - 2nd Stage
+Serie A,top5,22,207,Serie A,2025/2026,Italy,47,Bruyne De,4271919118,Napoli,152,5,,3,21477, - 2nd Stage
+Serie A,top5,22,207,Serie A,2025/2026,Italy,48,Leo Ostigard,3089724829,Genoa,4986,5,,0,21477, - 2nd Stage
+Serie A,top5,22,207,Serie A,2025/2026,Italy,49,Jurgen Ekkelenkamp,3478817226,Udinese,4984,5,,0,21477, - 2nd Stage
+Serie A,top5,22,207,Serie A,2025/2026,Italy,18,N. Zaniolo,1200093086,Udinese,4984,5,,,331,Current
+Serie A,top5,22,207,Serie A,2025/2026,Italy,43,Pedro,1099919382,Lazio,93,5,,2,21477, - 2nd Stage
+Serie A,top5,22,207,Serie A,2025/2026,Italy,42,Ange-Yoan Bonny,1074802469,Inter Milan,79,5,4,0,21477, - 2nd Stage
+Serie A,top5,22,207,Serie A,2025/2026,Italy,41,Cesare Casadei,3671447759,Torino,4973,5,,0,21477, - 2nd Stage
+Serie A,top5,22,207,Serie A,2025/2026,Italy,16,N. Krstovic,1348749812,Atalanta,85,5,,,331,Current
+Serie A,top5,22,207,Serie A,2025/2026,Italy,16,S. McTominay,3320133030,Napoli,152,5,,,331,Current
+Serie A,top5,22,207,Serie A,2025/2026,Italy,18,F. Bonazzoli,1747748050,Cremonese,4998,5,,,331,Current
+Serie A,top5,22,207,Serie A,2025/2026,Italy,18,N. Vlasic,2705223089,Torino,4973,5,,,331,Current
+Bundesliga,top5,23,175,Bundesliga,2025/2026,Germany,1,Harry Kane,3333345663,Bayern Munich,72,36,5,10,21477, - 2nd Stage
+Bundesliga,top5,23,175,Bundesliga,2025/2026,Germany,1,H. Kane,3333345663,Bayern Munich,72,21,8,,304,Regular season
+Bundesliga,top5,23,175,Bundesliga,2025/2026,Germany,2,Deniz Undav,112196112,Stuttgart,3933,19,7,0,21477, - 2nd Stage
+Bundesliga,top5,23,175,Bundesliga,2025/2026,Germany,3,Serhou Guirassy,1297242007,Dortmund,92,19,,1,21477, - 2nd Stage
+Bundesliga,top5,23,175,Bundesliga,2025/2026,Germany,4,Patrik Schick,1051893800,Bayer Leverkusen,143,17,,5,21477, - 2nd Stage
+Bundesliga,top5,23,175,Bundesliga,2025/2026,Germany,5,Michael Olise,3325881493,Bayern Munich,72,15,19,0,21477, - 2nd Stage
+Bundesliga,top5,23,175,Bundesliga,2025/2026,Germany,6,Luis Diaz,1870772768,Bayern Munich,72,15,14,0,21477, - 2nd Stage
+Bundesliga,top5,23,175,Bundesliga,2025/2026,Germany,10,Ermedin Demirovic,1950178238,Stuttgart,3933,14,,2,21477, - 2nd Stage
+Bundesliga,top5,23,175,Bundesliga,2025/2026,Germany,7,Andrej Kramaric,1476677936,Hoffenheim,170,14,6,5,21477, - 2nd Stage
+Bundesliga,top5,23,175,Bundesliga,2025/2026,Germany,8,Mala El,923827015,1. FC Cologne,3932,14,,1,21477, - 2nd Stage
+Bundesliga,top5,23,175,Bundesliga,2025/2026,Germany,9,H. Tabaković,3177122599,Borussia M&apos;gladbach,77,14,,0,21477, - 2nd Stage
+Bundesliga,top5,23,175,Bundesliga,2025/2026,Germany,11,Jonathan Burkardt,441256721,Eintracht Frankfurt,3945,14,,5,21477, - 2nd Stage
+Bundesliga,top5,23,175,Bundesliga,2025/2026,Germany,12,Christoph Baumgartner,3141861436,RB Leipzig,101,13,8,0,21477, - 2nd Stage
+Bundesliga,top5,23,175,Bundesliga,2025/2026,Germany,13,Yan Diomande,1439486837,RB Leipzig,101,12,8,0,21477, - 2nd Stage
+Bundesliga,top5,23,175,Bundesliga,2025/2026,Germany,14,Nadiem Amiri,2877597160,Mainz 05,3939,12,,8,21477, - 2nd Stage
+Bundesliga,top5,23,175,Bundesliga,2025/2026,Germany,15,Fisnik Asllani,3295426067,Hoffenheim,170,11,7,0,21477, - 2nd Stage
+Bundesliga,top5,23,175,Bundesliga,2025/2026,Germany,16,Jens Stage,1374541904,Werder Bremen,3930,11,,0,21477, - 2nd Stage
+Bundesliga,top5,23,175,Bundesliga,2025/2026,Germany,17,Igor Matanovic,4195335024,Freiburg,3962,11,,1,21477, - 2nd Stage
+Bundesliga,top5,23,175,Bundesliga,2025/2026,Germany,2,M. Olise,3325881493,Bayern Munich,72,10,15,,304,Regular season
+Bundesliga,top5,23,175,Bundesliga,2025/2026,Germany,19,Alejandro Grimaldo,2535879029,Bayer Leverkusen,143,10,8,3,21477, - 2nd Stage
+Bundesliga,top5,23,175,Bundesliga,2025/2026,Germany,18,Can Uzun,2335245,Eintracht Frankfurt,3945,10,4,1,21477, - 2nd Stage
+Bundesliga,top5,23,175,Bundesliga,2025/2026,Germany,3,D. Undav,112196112,Stuttgart,3933,10,,,304,Regular season
+Bundesliga,top5,23,175,Bundesliga,2025/2026,Germany,23,Jakub Kaminski,3779170572,1. FC Cologne,3932,9,,0,21477, - 2nd Stage
+Bundesliga,top5,23,175,Bundesliga,2025/2026,Germany,22,Cardoso Romulo,461476663,RB Leipzig,101,9,4,0,21477, - 2nd Stage
+Bundesliga,top5,23,175,Bundesliga,2025/2026,Germany,21,Maximilian Beier,2871783750,Dortmund,92,9,7,0,21477, - 2nd Stage
+Bundesliga,top5,23,175,Bundesliga,2025/2026,Germany,20,Oliver Burke,312077452,Union Berlin,3936,9,,0,21477, - 2nd Stage
+Bundesliga,top5,23,175,Bundesliga,2025/2026,Germany,4,L. Diaz,1870772768,Bayern Munich,72,9,,,304,Regular season
+Bundesliga,top5,23,175,Bundesliga,2025/2026,Germany,5,H. Tabakovic,3177122599,B. Monchengladbach,77,9,,,304,Regular season
+Bundesliga,top5,23,175,Bundesliga,2025/2026,Germany,26,Serge Gnabry,1436981970,Bayern Munich,72,8,6,0,21477, - 2nd Stage
+Bundesliga,top5,23,175,Bundesliga,2025/2026,Germany,6,J. Burkardt,441256721,Eintracht Frankfurt,3945,8,,,304,Regular season
+Bundesliga,top5,23,175,Bundesliga,2025/2026,Germany,24,Mohamed Amoura,2512870329,Wolfsburg,196,8,,1,21477, - 2nd Stage
+Bundesliga,top5,23,175,Bundesliga,2025/2026,Germany,25,Tim Lemperle,3659959109,Hoffenheim,170,8,,1,21477, - 2nd Stage
+Bundesliga,top5,23,175,Bundesliga,2025/2026,Germany,27,Karim Adeyemi,101462621,Dortmund,92,8,,0,21477, - 2nd Stage
+Bundesliga,top5,23,175,Bundesliga,2025/2026,Germany,28,Nicolas Jackson,2931500671,Bayern Munich,72,8,,0,21477, - 2nd Stage
+Bundesliga,top5,23,175,Bundesliga,2025/2026,Germany,29,Dzenan Pejcinovic,423677890,Wolfsburg,196,8,,0,21477, - 2nd Stage
+Bundesliga,top5,23,175,Bundesliga,2025/2026,Germany,37,Vieira Fábio,619906820,Hamburger SV,3912,7,5,1,21477, - 2nd Stage
+Bundesliga,top5,23,175,Bundesliga,2025/2026,Germany,30,Vincenzo Grifo,3948358159,Freiburg,3962,7,4,4,21477, - 2nd Stage
+Bundesliga,top5,23,175,Bundesliga,2025/2026,Germany,31,Jamie Leweling,733402394,Stuttgart,3933,7,10,0,21477, - 2nd Stage
+Bundesliga,top5,23,175,Bundesliga,2025/2026,Germany,32,Chris Fuhrich,3081024688,Stuttgart,3933,7,7,0,21477, - 2nd Stage
+Bundesliga,top5,23,175,Bundesliga,2025/2026,Germany,33,Marius Bulter,2634699224,1. FC Cologne,3932,7,6,0,21477, - 2nd Stage
+Bundesliga,top5,23,175,Bundesliga,2025/2026,Germany,34,Grischa Promel,2718108111,Hoffenheim,170,7,,0,21477, - 2nd Stage
+Bundesliga,top5,23,175,Bundesliga,2025/2026,Germany,35,Malik Tillman,226824126,Bayer Leverkusen,143,7,,0,21477, - 2nd Stage
+Bundesliga,top5,23,175,Bundesliga,2025/2026,Germany,36,Julian Brandt,278033217,Dortmund,92,7,,0,21477, - 2nd Stage
+Bundesliga,top5,23,175,Bundesliga,2025/2026,Germany,7,S. El Mala,923827015,FC Koln,3932,7,,,304,Regular season
+Bundesliga,top5,23,175,Bundesliga,2025/2026,Germany,38,Fabian Rieder,3907711678,Augsburg,3934,7,,2,21477, - 2nd Stage
+Bundesliga,top5,23,175,Bundesliga,2025/2026,Germany,39,Ragnar Ache,1295081530,1. FC Cologne,3932,7,5,0,21477, - 2nd Stage
+Bundesliga,top5,23,175,Bundesliga,2025/2026,Germany,40,Vušković Luka,1951951570,Hamburger SV,3912,6,,1,21477, - 2nd Stage
+Bundesliga,top5,23,175,Bundesliga,2025/2026,Germany,41,Anton Kade,2963469940,Augsburg,3934,6,,0,21477, - 2nd Stage
+Bundesliga,top5,23,175,Bundesliga,2025/2026,Germany,42,Danel Sinani,20666924,St. Pauli,3921,6,,3,21477, - 2nd Stage
+Bundesliga,top5,23,175,Bundesliga,2025/2026,Germany,43,Justin Njinmah,3572336188,Werder Bremen,3930,6,,0,21477, - 2nd Stage
+Bundesliga,top5,23,175,Bundesliga,2025/2026,Germany,44,M. Gregoritsch,3879505493,Augsburg,3934,6,,1,21477, - 2nd Stage
+Bundesliga,top5,23,175,Bundesliga,2025/2026,Germany,45,Andreas Hountondji,3911849969,St. Pauli,3921,6,,0,21477, - 2nd Stage
+Bundesliga,top5,23,175,Bundesliga,2025/2026,Germany,46,Arnaud Kalimuendo,3243674041,Eintracht Frankfurt,3945,6,,0,21477, - 2nd Stage
+Bundesliga,top5,23,175,Bundesliga,2025/2026,Germany,47,Ilyas Ansah,4000799865,Union Berlin,3936,6,,0,21477, - 2nd Stage
+Bundesliga,top5,23,175,Bundesliga,2025/2026,Germany,48,Maximilian Mittelstadt,2820025370,Stuttgart,3933,6,,4,21477, - 2nd Stage
+Bundesliga,top5,23,175,Bundesliga,2025/2026,Germany,49,Budu Zivzivadze,1204431756,Heidenheim,3917,6,,0,21477, - 2nd Stage
+Bundesliga,top5,23,175,Bundesliga,2025/2026,Germany,18,S. Guirassy,1297242007,Dortmund,92,6,,,304,Regular season
+Bundesliga,top5,23,175,Bundesliga,2025/2026,Germany,8,C. Baumgartner,3141861436,RB Leipzig,101,6,,,304,Regular season
+Bundesliga,top5,23,175,Bundesliga,2025/2026,Germany,9,S. Gnabry,1436981970,Bayern Munich,72,6,,,304,Regular season
+Bundesliga,top5,23,175,Bundesliga,2025/2026,Germany,10,F. Asllani,3295426067,Hoffenheim,170,6,,,304,Regular season
+Bundesliga,top5,23,175,Bundesliga,2025/2026,Germany,10,A. Kramaric,1476677936,Hoffenheim,170,6,8,,304,Regular season
+Bundesliga,top5,23,175,Bundesliga,2025/2026,Germany,10,Cardoso Romulo,461476663,RB Leipzig,101,6,4,,304,Regular season
+Bundesliga,top5,23,175,Bundesliga,2025/2026,Germany,10,C. Y. Uzun,2335245,Eintracht Frankfurt,3945,6,,,304,Regular season
+Bundesliga,top5,23,175,Bundesliga,2025/2026,Germany,14,M. Amoura,2512870329,Wolfsburg,196,6,9,,304,Regular season
+Bundesliga,top5,23,175,Bundesliga,2025/2026,Germany,14,Y. Diomande,1439486837,RB Leipzig,101,6,,,304,Regular season
+Bundesliga,top5,23,175,Bundesliga,2025/2026,Germany,14,T. Lemperle,3659959109,Hoffenheim,170,6,,,304,Regular season
+Bundesliga,top5,23,175,Bundesliga,2025/2026,Germany,14,P. Schick,1051893800,Bayer Leverkusen,143,6,,,304,Regular season
+Bundesliga,top5,23,175,Bundesliga,2025/2026,Germany,18,V. Grifo,3948358159,Freiburg,3962,6,11,,304,Regular season
+Bundesliga,top5,23,175,Bundesliga,2025/2026,Germany,18,J. Stage,1374541904,Werder Bremen,3930,6,,,304,Regular season
+Bundesliga,top5,23,175,Bundesliga,2025/2026,Germany,50,Rani Khedira,3076438626,Union Berlin,3936,5,,0,21477, - 2nd Stage
+Ligue 1,top5,24,168,Ligue 1,2025/2026,France,1,Esteban Lepaul,1296719156,Rennes,91,20,5,3,21477, - 2nd Stage
+Ligue 1,top5,24,168,Ligue 1,2025/2026,France,2,Joaquin Panichelli,3113830331,Strasbourg,3818,16,,5,21477, - 2nd Stage
+Ligue 1,top5,24,168,Ligue 1,2025/2026,France,3,Mason Greenwood,3219336045,Marseille,83,16,7,4,21477, - 2nd Stage
+Ligue 1,top5,24,168,Ligue 1,2025/2026,France,4,Folarin Balogun,3224443369,Monaco,3817,13,4,3,21477, - 2nd Stage
+Ligue 1,top5,24,168,Ligue 1,2025/2026,France,1,M. Greenwood,3219336045,Marseille,83,12,,,279,Regular season
+Ligue 1,top5,24,168,Ligue 1,2025/2026,France,5,Wesley Said,3427649730,Lens,3821,12,,1,21477, - 2nd Stage
+Ligue 1,top5,24,168,Ligue 1,2025/2026,France,6,Odsonne Edouard,1312361157,Lens,3821,12,,1,21477, - 2nd Stage
+Ligue 1,top5,24,168,Ligue 1,2025/2026,France,7,Lassine Sinayoko,936741802,Auxerre,3797,12,,3,21477, - 2nd Stage
+Ligue 1,top5,24,168,Ligue 1,2025/2026,France,11,Florian Thauvin,238500556,Lens,3821,11,6,2,21477, - 2nd Stage
+Ligue 1,top5,24,168,Ligue 1,2025/2026,France,10,Pavel Sulc,882103002,Lyon,3815,11,,0,21477, - 2nd Stage
+Ligue 1,top5,24,168,Ligue 1,2025/2026,France,9,Ansu Fati,1829011096,Monaco,3817,11,,3,21477, - 2nd Stage
+Ligue 1,top5,24,168,Ligue 1,2025/2026,France,8,Corentin Tolisso,4078391553,Lyon,3815,11,,2,21477, - 2nd Stage
+Ligue 1,top5,24,168,Ligue 1,2025/2026,France,12,Bradley Barcola,1448708927,Paris S.G.,100,11,,0,21477, - 2nd Stage
+Ligue 1,top5,24,168,Ligue 1,2025/2026,France,13,Pablo Pagis,690368946,Lorient,3814,10,5,2,21477, - 2nd Stage
+Ligue 1,top5,24,168,Ligue 1,2025/2026,France,14,Pierre-Emerick Aubameyang,4146555699,Marseille,83,10,5,0,21477, - 2nd Stage
+Ligue 1,top5,24,168,Ligue 1,2025/2026,France,15,Martial Godo,94650606,Strasbourg,3818,10,,0,21477, - 2nd Stage
+Ligue 1,top5,24,168,Ligue 1,2025/2026,France,16,Bamba Dieng,2620047560,Lorient,3814,10,,1,21477, - 2nd Stage
+Ligue 1,top5,24,168,Ligue 1,2025/2026,France,17,Ousmane Dembele,868556402,Paris S.G.,100,10,7,2,21477, - 2nd Stage
+Ligue 1,top5,24,168,Ligue 1,2025/2026,France,2,J. Panichelli,3113830331,Strasbourg,3818,10,,,279,Regular season
+Ligue 1,top5,24,168,Ligue 1,2025/2026,France,19,Ilan Kebbal,745617471,Paris,3796,9,4,3,21477, - 2nd Stage
+Ligue 1,top5,24,168,Ligue 1,2025/2026,France,18,Castillo Del,1281576558,Brest,3823,9,,6,21477, - 2nd Stage
+Ligue 1,top5,24,168,Ligue 1,2025/2026,France,3,E. Lepaul,1296719156,Rennes,91,9,,,279,Regular season
+Ligue 1,top5,24,168,Ligue 1,2025/2026,France,20,Breel Embolo,1123365805,Rennes,91,9,,0,21477, - 2nd Stage
+Ligue 1,top5,24,168,Ligue 1,2025/2026,France,23,Yann Gboho,3364345355,Toulouse,3794,8,,0,21477, - 2nd Stage
+Ligue 1,top5,24,168,Ligue 1,2025/2026,France,4,W. Said,3427649730,Lens,3821,8,,,279,Regular season
+Ligue 1,top5,24,168,Ligue 1,2025/2026,France,4,P. Sulc,882103002,Lyon,3815,8,,,279,Regular season
+Ligue 1,top5,24,168,Ligue 1,2025/2026,France,21,Amine Gouiri,437393909,Marseille,83,8,,0,21477, - 2nd Stage
+Ligue 1,top5,24,168,Ligue 1,2025/2026,France,22,Ludovic Ajorque,3432803445,Brest,3823,8,9,0,21477, - 2nd Stage
+Ligue 1,top5,24,168,Ligue 1,2025/2026,France,24,Hakon Haraldsson,3718596979,Lille,160,8,,0,21477, - 2nd Stage
+Ligue 1,top5,24,168,Ligue 1,2025/2026,France,25,Sofiane Diop,2158564010,Nice,145,8,,2,21477, - 2nd Stage
+Ligue 1,top5,24,168,Ligue 1,2025/2026,France,26,Khvicha Kvaratskhelia,2868127481,Paris S.G.,100,8,4,1,21477, - 2nd Stage
+Ligue 1,top5,24,168,Ligue 1,2025/2026,France,27,Issa Soumare,2873071148,Le Havre,3804,8,5,1,21477, - 2nd Stage
+Ligue 1,top5,24,168,Ligue 1,2025/2026,France,28,Gauthier Hein,1418062067,Metz,3822,8,7,5,21477, - 2nd Stage
+Ligue 1,top5,24,168,Ligue 1,2025/2026,France,29,Mathias Fernandez-Pardo,2552307951,Lille,160,8,5,2,21477, - 2nd Stage
+Ligue 1,top5,24,168,Ligue 1,2025/2026,France,6,O. Edouard,1312361157,Lens,3821,7,,,279,Regular season
+Ligue 1,top5,24,168,Ligue 1,2025/2026,France,30,Sebastian Nanasi,614987252,Strasbourg,3818,7,,0,21477, - 2nd Stage
+Ligue 1,top5,24,168,Ligue 1,2025/2026,France,31,Desire Doue,1315775020,Paris S.G.,100,7,4,0,21477, - 2nd Stage
+Ligue 1,top5,24,168,Ligue 1,2025/2026,France,32,Olivier Giroud,4271018749,Lille,160,7,,3,21477, - 2nd Stage
+Ligue 1,top5,24,168,Ligue 1,2025/2026,France,33,Igor Paixao,1699064920,Marseille,83,6,5,0,21477, - 2nd Stage
+Ligue 1,top5,24,168,Ligue 1,2025/2026,France,7,I. Kebbal,745617471,Paris FC,3796,6,,,279,Regular season
+Ligue 1,top5,24,168,Ligue 1,2025/2026,France,8,R. Del Castillo,1281576558,Brest,3823,6,,,279,Regular season
+Ligue 1,top5,24,168,Ligue 1,2025/2026,France,8,S. Diop,2158564010,Nice,145,6,,,279,Regular season
+Ligue 1,top5,24,168,Ligue 1,2025/2026,France,8,L. Sinayoko,936741802,Auxerre,3797,6,8,,279,Regular season
+Ligue 1,top5,24,168,Ligue 1,2025/2026,France,11,B. Barcola,1448708927,PSG,100,6,10,,279,Regular season
+Ligue 1,top5,24,168,Ligue 1,2025/2026,France,11,A. Fati,1829011096,Monaco,3817,6,,,279,Regular season
+Ligue 1,top5,24,168,Ligue 1,2025/2026,France,34,Matthis Abline,2196443553,Nantes,3820,6,4,0,21477, - 2nd Stage
+Ligue 1,top5,24,168,Ligue 1,2025/2026,France,35,Mousa Tamari,1640645534,Rennes,91,6,6,0,21477, - 2nd Stage
+Ligue 1,top5,24,168,Ligue 1,2025/2026,France,36,Emersonn,1233413401,Toulouse,3794,6,,0,21477, - 2nd Stage
+Ligue 1,top5,24,168,Ligue 1,2025/2026,France,37,Maghnes Akliouche,2244515244,Monaco,3817,6,6,0,21477, - 2nd Stage
+Ligue 1,top5,24,168,Ligue 1,2025/2026,France,38,Goncalo Ramos,2230606256,Paris S.G.,100,6,,1,21477, - 2nd Stage
+Ligue 1,top5,24,168,Ligue 1,2025/2026,France,43,Endrick,2948203929,Lyon,3815,5,7,1,21477, - 2nd Stage
+Ligue 1,top5,24,168,Ligue 1,2025/2026,France,50,Joao Neves,3761985065,Paris S.G.,100,5,,0,21477, - 2nd Stage
+Ligue 1,top5,24,168,Ligue 1,2025/2026,France,42,Kamory Doumbia,2508022276,Brest,3823,5,4,0,21477, - 2nd Stage
+Ligue 1,top5,24,168,Ligue 1,2025/2026,France,44,Frank Magri,1225778896,Toulouse,3794,5,,0,21477, - 2nd Stage
+Ligue 1,top5,24,168,Ligue 1,2025/2026,France,45,Rayan Fofana,4201308752,Lens,3821,5,,0,21477, - 2nd Stage
+Ligue 1,top5,24,168,Ligue 1,2025/2026,France,46,Prosper Peter,3665960999,Angers SCO,3827,5,,0,21477, - 2nd Stage
+Ligue 1,top5,24,168,Ligue 1,2025/2026,France,47,Alimani Gory,1195678212,Paris,3796,5,,0,21477, - 2nd Stage
+Ligue 1,top5,24,168,Ligue 1,2025/2026,France,48,Ebimbe Dina,223359764,Brest,3823,5,,0,21477, - 2nd Stage
+Ligue 1,top5,24,168,Ligue 1,2025/2026,France,49,Elye Wahi,101564585,Nice,145,5,,1,21477, - 2nd Stage
+Ligue 1,top5,24,168,Ligue 1,2025/2026,France,18,F. Magri,1225778896,Toulouse,3794,5,,,279,Regular season
+Ligue 1,top5,24,168,Ligue 1,2025/2026,France,41,Hamza Igamane,1024899057,Lille,160,5,,0,21477, - 2nd Stage
+Ligue 1,top5,24,168,Ligue 1,2025/2026,France,40,Ludovic Blas,3566797557,Rennes,91,5,4,2,21477, - 2nd Stage
+Ligue 1,top5,24,168,Ligue 1,2025/2026,France,39,Lascary Labeau,1790570702,Brest,3823,5,,0,21477, - 2nd Stage
+Ligue 1,top5,24,168,Ligue 1,2025/2026,France,13,P. Aubameyang,4146555699,Marseille,83,5,,,279,Regular season
+Ligue 1,top5,24,168,Ligue 1,2025/2026,France,14,G. Hein,1418062067,Metz,3822,5,,,279,Regular season
+Ligue 1,top5,24,168,Ligue 1,2025/2026,France,15,O. Dembele,868556402,PSG,100,5,,,279,Regular season
+Ligue 1,top5,24,168,Ligue 1,2025/2026,France,15,Y. Gboho,3364345355,Toulouse,3794,5,,,279,Regular season
+Ligue 1,top5,24,168,Ligue 1,2025/2026,France,15,F. Thauvin,238500556,Lens,3821,5,,,279,Regular season
+Ligue 1,top5,24,168,Ligue 1,2025/2026,France,18,H. Haraldsson,3718596979,Lille,160,5,,,279,Regular season
+Ligue 1,top5,24,168,Ligue 1,2025/2026,France,18,H. Igamane,1024899057,Lille,160,5,,,279,Regular season
+MLS,americas,32,332,MLS,2026,USA,1,L. Messi,1135663375,Inter Miami,7953,29,5,,1718,Regular season
+MLS,americas,32,332,MLS,2026,USA,3,S. Surridge,1695190185,Nashville SC,7955,24,,,1718,Regular season
+MLS,americas,32,332,MLS,2026,USA,2,D. Bouanga,436594578,Los Angeles FC,7964,24,,,1718,Regular season
+MLS,americas,32,332,MLS,2026,USA,4,A. Dreyer,2650461324,San Diego FC,38680,19,,,1718,Regular season
+MLS,americas,32,332,MLS,2026,USA,7,D. Joveljic,2193738842,Sporting Kansas City,7967,18,,,1718,Regular season
+MLS,americas,32,332,MLS,2026,USA,6,P. Musa,1196736362,FC Dallas,7962,18,,,1718,Regular season
+MLS,americas,32,332,MLS,2026,USA,5,Evander,26564388,FC Cincinnati,7952,18,,,1718,Regular season
+MLS,americas,32,332,MLS,2026,USA,8,E. M. Choupo-Moting,589025508,New York Red Bulls,7958,17,,,1718,Regular season
+MLS,americas,32,332,MLS,2026,USA,9,H. Cuypers,2556459977,Chicago Fire,7951,17,,,1718,Regular season
+MLS,americas,32,332,MLS,2026,USA,10,A. Martinez,3153428531,New York City,7957,17,,,1718,Regular season
+MLS,americas,32,332,MLS,2026,USA,15,B. White,2792480876,Vancouver Whitecaps,289,16,,,1718,Regular season
+MLS,americas,32,332,MLS,2026,USA,11,M. Ojeda,1236938402,Orlando City,7959,16,,,1718,Regular season
+MLS,americas,32,332,MLS,2026,USA,12,H. Mukhtar,1023663417,Nashville SC,7955,16,5,,1718,Regular season
+MLS,americas,32,332,MLS,2026,USA,13,D. Rossi,423680617,Columbus Crew,306,16,,,1718,Regular season
+MLS,americas,32,332,MLS,2026,USA,14,T. Baribo,2741100806,Philadelphia Union,302,16,,,1718,Regular season
+MLS,americas,32,332,MLS,2026,USA,16,P. Zinckernagel,1660170480,Chicago Fire,7951,15,,,1718,Regular season
+MLS,americas,32,332,MLS,2026,USA,17,K. Denkey,373841779,FC Cincinnati,7952,15,,,1718,Regular season
+MLS,americas,32,332,MLS,2026,USA,18,D. Musovski,1324751414,Seattle Sounders,287,14,,,1718,Regular season
+MLS,americas,32,332,MLS,2026,USA,19,J. Martinez,1292465388,San Jose Earthquakes,7966,14,,,1718,Regular season
+MLS,americas,32,332,MLS,2026,USA,20,D. Mihailovic,3365747783,Toronto FC,304,13,,,1718,Regular season
+MLS,americas,32,332,MLS,2026,USA,1,Hugo Cuypers,2556459977,Chicago,7951,13,,2,21477, - 2nd Stage
+MLS,americas,32,332,MLS,2026,USA,2,Lionel Messi,1135663375,Inter Miami,7953,12,7,1,21477, - 2nd Stage
+MLS,americas,32,332,MLS,2026,USA,3,Petar Musa,1196736362,FC Dallas,7962,12,,2,21477, - 2nd Stage
+MLS,americas,32,332,MLS,2026,USA,4,Marcus Ingvartsen,2773987986,San Diego,38680,11,,1,21477, - 2nd Stage
+MLS,americas,32,332,MLS,2026,USA,5,Martin Ojeda,1236938402,Orlando City,7959,11,,3,21477, - 2nd Stage
+MLS,americas,32,332,MLS,2026,USA,6,Preston Judd,3528718,SJ Earthquakes,7966,11,,0,21477, - 2nd Stage
+MLS,americas,32,332,MLS,2026,USA,7,Brian White,2792480876,Vancouver Whitecaps FC,289,10,,1,21477, - 2nd Stage
+MLS,americas,32,332,MLS,2026,USA,8,Nicolas Mercau,264169067,New York City,7957,10,3,2,21477, - 2nd Stage
+MLS,americas,32,332,MLS,2026,USA,9,Prince-Osei Owusu,1818961284,Montreal Impact,7954,9,6,4,21477, - 2nd Stage
+MLS,americas,32,332,MLS,2026,USA,11,Evander,26564388,Cincinnati,7952,9,6,3,21477, - 2nd Stage
+MLS,americas,32,332,MLS,2026,USA,12,Julian Hall,760183179,New York RB,7958,9,,0,21477, - 2nd Stage
+MLS,americas,32,332,MLS,2026,USA,13,Ahoueke Denkey,373841779,Cincinnati,7952,9,,2,21477, - 2nd Stage
+MLS,americas,32,332,MLS,2026,USA,10,Sam Surridge,1695190185,Nashville SC,7955,9,,1,21477, - 2nd Stage
+MLS,americas,32,332,MLS,2026,USA,14,Guilherme,2192860533,Houston,7963,8,4,0,21477, - 2nd Stage
+MLS,americas,32,332,MLS,2026,USA,15,Kelvin Yeboah,1103878105,Minnesota United,7965,8,,1,21477, - 2nd Stage
+MLS,americas,32,332,MLS,2026,USA,16,Tai Baribo,2741100806,DC United,293,8,,2,21477, - 2nd Stage
+MLS,americas,32,332,MLS,2026,USA,17,Navarro Rafael,611996870,Colorado Rapids,7961,8,3,1,21477, - 2nd Stage
+MLS,americas,32,332,MLS,2026,USA,20,Pep Biel,2918786780,Charlotte,23878,7,4,1,21477, - 2nd Stage
+MLS,americas,32,332,MLS,2026,USA,21,Berterame Germán,1012153978,Inter Miami,7953,7,,0,21477, - 2nd Stage
+MLS,americas,32,332,MLS,2026,USA,19,Milan Iloski,4222434115,Philadelphia Union,302,7,,2,21477, - 2nd Stage
+MLS,americas,32,332,MLS,2026,USA,18,Antonio Jorge,2326801446,New York RB,7958,7,,0,21477, - 2nd Stage
+MLS,americas,32,332,MLS,2026,USA,22,Diego Rossi,423680617,Columbus,306,6,,1,21477, - 2nd Stage
+MLS,americas,32,332,MLS,2026,USA,23,Denis Bouanga,436594578,Los Angeles FC,7964,6,,0,21477, - 2nd Stage
+MLS,americas,32,332,MLS,2026,USA,24,Dejan Joveljic,2193738842,Sporting Kansas City,7967,6,,0,21477, - 2nd Stage
+MLS,americas,32,332,MLS,2026,USA,25,Logan Farrington,4252634105,FC Dallas,7962,6,,1,21477, - 2nd Stage
+MLS,americas,32,332,MLS,2026,USA,26,Sebastian Berhalter,859929812,Vancouver Whitecaps FC,289,6,4,1,21477, - 2nd Stage
+MLS,americas,32,332,MLS,2026,USA,27,Solans Sergi,559369150,Real Salt Lake,290,6,,0,21477, - 2nd Stage
+MLS,americas,32,332,MLS,2026,USA,28,Luis Suarez,1960076254,Inter Miami,7953,6,,0,21477, - 2nd Stage
+MLS,americas,32,332,MLS,2026,USA,29,Hany Mukhtar,1023663417,Nashville SC,7955,6,4,0,21477, - 2nd Stage
+MLS,americas,32,332,MLS,2026,USA,30,Anders Dreyer,2650461324,San Diego,38680,6,7,2,21477, - 2nd Stage
+MLS,americas,32,332,MLS,2026,USA,31,Zavier Gozo,1575112044,Real Salt Lake,290,6,4,0,21477, - 2nd Stage
+MLS,americas,32,332,MLS,2026,USA,32,W. Madrigal,2495007702,Nashville SC,7955,5,,0,21477, - 2nd Stage
+MLS,americas,32,332,MLS,2026,USA,46,Aleksey Miranchuk,3380880946,Atlanta United,299,5,,0,21477, - 2nd Stage
+MLS,americas,32,332,MLS,2026,USA,45,Idan Toklomati,1139910064,Charlotte,23878,5,,0,21477, - 2nd Stage
+MLS,americas,32,332,MLS,2026,USA,44,Klauss Joao,2104793427,LA Galaxy,281,5,,0,21477, - 2nd Stage
+MLS,americas,32,332,MLS,2026,USA,43,Ali Abou,3145083884,Columbus,306,5,,0,21477, - 2nd Stage
+MLS,americas,32,332,MLS,2026,USA,42,Kevin Kelsy,3255264173,Portland Timbers,297,5,,0,21477, - 2nd Stage
+MLS,americas,32,332,MLS,2026,USA,41,Hannes Wolf,2168276154,New York City,7957,5,,0,21477, - 2nd Stage
+MLS,americas,32,332,MLS,2026,USA,40,Munteanu Louis,3979216073,DC United,293,5,,1,21477, - 2nd Stage
+MLS,americas,32,332,MLS,2026,USA,39,Carles Gil,3825647624,New England Re&apos;lution,7956,5,,3,21477, - 2nd Stage
+MLS,americas,32,332,MLS,2026,USA,38,Philip Zinckernagel,1660170480,Chicago,7951,5,6,1,21477, - 2nd Stage
+MLS,americas,32,332,MLS,2026,USA,37,Ousseni Bouda,2477895555,SJ Earthquakes,7966,5,,0,21477, - 2nd Stage
+MLS,americas,32,332,MLS,2026,USA,36,David Martinez,3199734717,Los Angeles FC,7964,5,,0,21477, - 2nd Stage
+MLS,americas,32,332,MLS,2026,USA,35,Tom Barlow,40961033,Cincinnati,7952,5,,0,21477, - 2nd Stage
+MLS,americas,32,332,MLS,2026,USA,34,Pec Gabriel,6297528,LA Galaxy,281,5,4,0,21477, - 2nd Stage
+MLS,americas,32,332,MLS,2026,USA,33,Myrto Uzuni,1778749209,Austin,7960,5,,1,21477, - 2nd Stage
+MLS,americas,32,332,MLS,2026,USA,47,Timo Werner,1876083414,SJ Earthquakes,7966,4,,2,21477, - 2nd Stage
+MLS,americas,32,332,MLS,2026,USA,48,Paul Rothrock,2677220682,Seattle Sounders FC,287,4,,0,21477, - 2nd Stage
+MLS,americas,32,332,MLS,2026,USA,49,Kenji Mboma,1966612875,Cincinnati,7952,4,,0,21477, - 2nd Stage
+MLS,americas,32,332,MLS,2026,USA,1,Riqui Puig,3544593437,LA Galaxy,281,4,,0,5259,MLS Cup - Round 1
+MLS,americas,32,332,MLS,2026,USA,50,Marco Reus,1782223026,LA Galaxy,281,4,5,1,21477, - 2nd Stage
+MLS,americas,32,332,MLS,2026,USA,1,R. Gauld,3072164298,Vancouver Whitecaps,289,3,,0,5098,MLS Cup - Play-In Round
+MLS,americas,32,332,MLS,2026,USA,2,R. Gauld,3072164298,Vancouver Whitecaps,289,2,,0,5259,MLS Cup - Round 1
+MLS,americas,32,332,MLS,2026,USA,3,D. Joveljić,2193738842,LA Galaxy,281,2,,0,5259,MLS Cup - Round 1
+MLS,americas,32,332,MLS,2026,USA,4,J. Thiaré,3883168374,Atlanta United,299,2,,0,5259,MLS Cup - Round 1
+MLS,americas,32,332,MLS,2026,USA,2,Josef Martínez,1292465388,Montréal,7954,2,,1,5098,MLS Cup - Play-In Round
+MLS,americas,32,332,MLS,2026,USA,5,F. Torres,3383478260,Orlando City,7959,2,,0,5259,MLS Cup - Round 1
+MLS,americas,32,332,MLS,2026,USA,11,F. Carballo,4033738225,New York RB,7958,1,,0,5259,MLS Cup - Round 1
+MLS,americas,32,332,MLS,2026,USA,6,Jordi Alba,2589928287,Inter Miami,7953,1,4,0,5259,MLS Cup - Round 1
+MLS,americas,32,332,MLS,2026,USA,7,M. Arfsten,2396855900,Columbus Crew,306,1,3,0,5259,MLS Cup - Round 1
+MLS,americas,32,332,MLS,2026,USA,8,Y. Asad,4168254558,Cincinnati,7952,1,,0,5259,MLS Cup - Round 1
+MLS,americas,32,332,MLS,2026,USA,9,M. Bogusz,377508508,Los Angeles,7964,1,,0,5259,MLS Cup - Round 1
+MLS,americas,32,332,MLS,2026,USA,10,D. Bouanga,436594578,Los Angeles,7964,1,,1,5259,MLS Cup - Round 1
+MLS,americas,32,332,MLS,2026,USA,6,B. White,2792480876,Vancouver Whitecaps,289,1,,0,5098,MLS Cup - Play-In Round
+MLS,americas,32,332,MLS,2026,USA,12,E. Eneli,3644465078,Real Salt Lake,290,1,,0,5259,MLS Cup - Round 1
+MLS,americas,32,332,MLS,2026,USA,13,E. Forsberg,686331763,New York RB,7958,1,,1,5259,MLS Cup - Round 1
+MLS,americas,32,332,MLS,2026,USA,14,Gabriel Pec,6297528,LA Galaxy,281,1,,0,5259,MLS Cup - Round 1
+MLS,americas,32,332,MLS,2026,USA,15,S. Lobjanidze,3139069000,Atlanta United,299,1,5,0,5259,MLS Cup - Round 1
+MLS,americas,32,332,MLS,2026,USA,3,S. Armstrong,1407951516,Vancouver Whitecaps,289,1,,0,5098,MLS Cup - Play-In Round
+MLS,americas,32,332,MLS,2026,USA,4,B. Lennon,841848614,Atlanta United,299,1,,0,5098,MLS Cup - Play-In Round
+MLS,americas,32,332,MLS,2026,USA,5,S. Gregersen,2708883239,Atlanta United,299,1,,0,5098,MLS Cup - Play-In Round
+Liga MX,americas,33,235,Liga MX,2025/2026,Mexico,1,Pedro João,4071580685,Atletico San Luis,5353,26,,8,21477, - 2nd Stage
+Liga MX,americas,33,235,Liga MX,2025/2026,Mexico,2,González Armando,284347034,Guadalajara,5355,24,,4,21477, - 2nd Stage
+Liga MX,americas,33,235,Liga MX,2025/2026,Mexico,3,Francisco Juan,1628805925,Tigres UANL,275,19,9,3,21477, - 2nd Stage
+Liga MX,americas,33,235,Liga MX,2025/2026,Mexico,4,Paulo João,1424395098,Toluca,5347,18,4,0,21477, - 2nd Stage
+Liga MX,americas,33,235,Liga MX,2025/2026,Mexico,5,Martín Ángel,2863432275,Tigres UANL,275,16,12,1,21477, - 2nd Stage
+Liga MX,americas,33,235,Liga MX,2025/2026,Mexico,6,Eduardo Óscar,3316259323,FC Juarez,5357,15,,8,21477, - 2nd Stage
+Liga MX,americas,33,235,Liga MX,2025/2026,Mexico,8,Brian Paul,3248340350,CF America,284,13,7,3,21477, - 2nd Stage
+Liga MX,americas,33,235,Liga MX,2025/2026,Mexico,9,Matías Gabriel,1150340266,Cruz Azul,301,13,6,3,21477, - 2nd Stage
+Liga MX,americas,33,235,Liga MX,2025/2026,Mexico,10,Castañeda Kevin,592109669,Tijuana,5350,13,7,5,21477, - 2nd Stage
+Liga MX,americas,33,235,Liga MX,2025/2026,Mexico,7,Canales Sergio,789620009,Monterrey,308,13,6,2,21477, - 2nd Stage
+Liga MX,americas,33,235,Liga MX,2025/2026,Mexico,1,Paulinho,1424395098,Toluca,5347,12,,0,1284,Clausura
+Liga MX,americas,33,235,Liga MX,2025/2026,Mexico,2,R. Zúñiga,2845352562,Tijuana,5350,12,,2,1284,Clausura
+Liga MX,americas,33,235,Liga MX,2025/2026,Mexico,3,U. Đurđević,2847593205,Atlas,5348,12,,4,1284,Clausura
+Liga MX,americas,33,235,Liga MX,2025/2026,Mexico,11,Berterame Germán,1012153978,Monterrey,308,12,,0,21477, - 2nd Stage
+Liga MX,americas,33,235,Liga MX,2025/2026,Mexico,4,D. Cambindo,1807724551,Necaxa,5356,11,,0,1284,Clausura
+Liga MX,americas,33,235,Liga MX,2025/2026,Mexico,12,Zendejas Alejandro,1251246847,CF America,284,11,7,4,21477, - 2nd Stage
+Liga MX,americas,33,235,Liga MX,2025/2026,Mexico,13,Ávila Alí,942833409,Queretaro,278,11,,2,21477, - 2nd Stage
+Liga MX,americas,33,235,Liga MX,2025/2026,Mexico,14,I. Díaz,1947286130,Leon,303,10,6,1,21477, - 2nd Stage
+Liga MX,americas,33,235,Liga MX,2025/2026,Mexico,20,Martínez Guillermo,1594156033,Pumas UNAM,5354,9,,2,21477, - 2nd Stage
+Liga MX,americas,33,235,Liga MX,2025/2026,Mexico,15,Kenedy Robert,569228407,Pachuca,5352,9,,0,21477, - 2nd Stage
+Liga MX,americas,33,235,Liga MX,2025/2026,Mexico,16,Đurđević Uroš,2847593205,Atlas,5348,9,,5,21477, - 2nd Stage
+Liga MX,americas,33,235,Liga MX,2025/2026,Mexico,19,Antonio José,372585655,Cruz Azul,301,9,10,0,21477, - 2nd Stage
+Liga MX,americas,33,235,Liga MX,2025/2026,Mexico,18,Osmar Robert,967079687,Pumas UNAM,5354,9,,4,21477, - 2nd Stage
+Liga MX,americas,33,235,Liga MX,2025/2026,Mexico,7,A. Vega,2618342711,Toluca,5347,9,,1,1284,Clausura
+Liga MX,americas,33,235,Liga MX,2025/2026,Mexico,6,S. Rondón,1541199022,Pachuca,5352,9,,1,1284,Clausura
+Liga MX,americas,33,235,Liga MX,2025/2026,Mexico,5,John Kennedy,2056937239,Pachuca,5352,9,,0,1284,Clausura
+Liga MX,americas,33,235,Liga MX,2025/2026,Mexico,17,Júnio Hélio,3509663723,Toluca,5347,9,5,4,21477, - 2nd Stage
+Liga MX,americas,33,235,Liga MX,2025/2026,Mexico,24,Gómez Emiliano,4227607196,Puebla,5349,8,5,0,21477, - 2nd Stage
+Liga MX,americas,33,235,Liga MX,2025/2026,Mexico,25,Oscar Tomás,2379338226,Necaxa,5356,8,,0,21477, - 2nd Stage
+Liga MX,americas,33,235,Liga MX,2025/2026,Mexico,26,Juninho,540661375,Pumas UNAM,5354,8,4,3,21477, - 2nd Stage
+Liga MX,americas,33,235,Liga MX,2025/2026,Mexico,23,Alberto Carlos,158635275,Cruz Azul,301,8,6,0,21477, - 2nd Stage
+Liga MX,americas,33,235,Liga MX,2025/2026,Mexico,1,João Pedro,4071580685,Atlético San Luis,5353,8,,3,1286,Apertura
+Liga MX,americas,33,235,Liga MX,2025/2026,Mexico,8,J. Paradela,372585655,Necaxa,5356,8,,1,1284,Clausura
+Liga MX,americas,33,235,Liga MX,2025/2026,Mexico,21,E. Valencia,3670472897,Pachuca,5352,8,,3,21477, - 2nd Stage
+Liga MX,americas,33,235,Liga MX,2025/2026,Mexico,22,Armando Diber,1807724551,Leon,303,8,,2,21477, - 2nd Stage
+Liga MX,americas,33,235,Liga MX,2025/2026,Mexico,12,Álvaro Fidalgo,2744710840,Club América,284,7,,0,1284,Clausura
+Liga MX,americas,33,235,Liga MX,2025/2026,Mexico,11,V. Dávila,2764852709,Club América,284,7,,1,1284,Clausura
+Liga MX,americas,33,235,Liga MX,2025/2026,Mexico,10,J. Cádiz,690798399,León,303,7,,0,1284,Clausura
+Liga MX,americas,33,235,Liga MX,2025/2026,Mexico,9,G. Berterame,1012153978,Monterrey,308,7,,0,1284,Clausura
+Liga MX,americas,33,235,Liga MX,2025/2026,Mexico,30,Ariel Lucas,1098296331,Monterrey,308,7,6,3,21477, - 2nd Stage
+Liga MX,americas,33,235,Liga MX,2025/2026,Mexico,29,Baltazar Ángel,2528691375,Cruz Azul,301,7,,3,21477, - 2nd Stage
+Liga MX,americas,33,235,Liga MX,2025/2026,Mexico,28,Alfonso Arturo,79221292,Atlas,5348,7,,2,21477, - 2nd Stage
+Liga MX,americas,33,235,Liga MX,2025/2026,Mexico,27,Castilho Guilherme,2271434637,FC Juarez,5357,7,,1,21477, - 2nd Stage
+Liga MX,americas,33,235,Liga MX,2025/2026,Mexico,34,Alonso Bryan,4044434454,Guadalajara,5355,6,5,0,21477, - 2nd Stage
+Liga MX,americas,33,235,Liga MX,2025/2026,Mexico,32,Ricardo Jesús,4149108676,Toluca,5347,6,4,0,21477, - 2nd Stage
+Liga MX,americas,33,235,Liga MX,2025/2026,Mexico,46,Anyiver Álvaro,2669000051,Pumas UNAM,5354,6,,1,21477, - 2nd Stage
+Liga MX,americas,33,235,Liga MX,2025/2026,Mexico,45,Sandoval Santiago,3746561370,Guadalajara,5355,6,,0,21477, - 2nd Stage
+Liga MX,americas,33,235,Liga MX,2025/2026,Mexico,44,L. Di Yorio,670382788,Santos,272,6,,2,21477, - 2nd Stage
+Liga MX,americas,33,235,Liga MX,2025/2026,Mexico,13,B. Barticciotto,2692795753,Santos Laguna,272,6,,0,1284,Clausura
+Liga MX,americas,33,235,Liga MX,2025/2026,Mexico,14,J. Brunetta,1628805925,Tigres UANL,275,6,,0,1284,Clausura
+Liga MX,americas,33,235,Liga MX,2025/2026,Mexico,15,Sergio Canales,789620009,Monterrey,308,6,,3,1284,Clausura
+Liga MX,americas,33,235,Liga MX,2025/2026,Mexico,43,Ozziel Jonathan,1826327475,Tigres UANL,275,6,4,0,21477, - 2nd Stage
+Liga MX,americas,33,235,Liga MX,2025/2026,Mexico,42,Rodolfo Carlos,3181029229,Cruz Azul,301,6,7,0,21477, - 2nd Stage
+Liga MX,americas,33,235,Liga MX,2025/2026,Mexico,41,Ezequiel Facundo,4097711909,Mazatlan FC,5351,6,,0,21477, - 2nd Stage
+Liga MX,americas,33,235,Liga MX,2025/2026,Mexico,40,Palavecino Agustín,1666786796,Cruz Azul,301,6,,0,21477, - 2nd Stage
+Liga MX,americas,33,235,Liga MX,2025/2026,Mexico,39,Armando Diber,1807724551,Necaxa,5356,6,,0,21477, - 2nd Stage
+Liga MX,americas,33,235,Liga MX,2025/2026,Mexico,38,Carrillo Jordán,2641844059,Pumas UNAM,5354,6,,0,21477, - 2nd Stage
+Liga MX,americas,33,235,Liga MX,2025/2026,Mexico,37,Thierry Frank,922493394,Tijuana,5350,6,,0,21477, - 2nd Stage
+Liga MX,americas,33,235,Liga MX,2025/2026,Mexico,36,Jeremy Ángel,432558780,Cruz Azul,301,6,,0,21477, - 2nd Stage
+Liga MX,americas,33,235,Liga MX,2025/2026,Mexico,2,Sergio Canales,789620009,Monterrey,308,6,,1,1286,Apertura
+Liga MX,americas,33,235,Liga MX,2025/2026,Mexico,35,Luis Diego,3568231143,Atlas,5348,6,7,2,21477, - 2nd Stage
+Liga MX,americas,33,235,Liga MX,2025/2026,Mexico,33,Idrissi Oussama,2579703606,Pachuca,5352,6,,1,21477, - 2nd Stage
+Liga MX,americas,33,235,Liga MX,2025/2026,Mexico,31,Gilberto Mora,1110898893,Tijuana,5350,6,,1,21477, - 2nd Stage
+Liga MX,americas,33,235,Liga MX,2025/2026,Mexico,50,Antonio Jorge,2326801446,Pumas UNAM,5354,5,4,0,21477, - 2nd Stage
+Liga MX,americas,33,235,Liga MX,2025/2026,Mexico,47,Lainez Diego,3494143793,Tigres UANL,275,5,7,0,21477, - 2nd Stage
+Liga MX,americas,33,235,Liga MX,2025/2026,Mexico,48,Alfonso Víctor,4216615262,Pachuca,5352,5,8,0,21477, - 2nd Stage
+Liga MX,americas,33,235,Liga MX,2025/2026,Mexico,49,Ovalle Josue,3726702835,Mazatlan FC,5351,5,,0,21477, - 2nd Stage
+Liga MX,americas,33,235,Liga MX,2025/2026,Mexico,3,Á. Sepúlveda,2528691375,Cruz Azul,301,5,,2,1286,Apertura
+Liga MX,americas,33,235,Liga MX,2025/2026,Mexico,4,G. Berterame,1012153978,Monterrey,308,5,,0,1286,Apertura
+Liga MX,americas,33,235,Liga MX,2025/2026,Mexico,5,F. Boya,922493394,Tijuana,5350,5,,0,1286,Apertura
+Liga MX,americas,33,235,Liga MX,2025/2026,Mexico,6,A. González,284347034,Guadalajara,5355,4,,0,1286,Apertura
+Liga MX,americas,33,235,Liga MX,2025/2026,Mexico,9,Á. Correa,2863432275,Tigres UANL,275,4,,0,1286,Apertura
+Liga MX,americas,33,235,Liga MX,2025/2026,Mexico,8,I. Díaz,1947286130,León,303,4,6,1,1286,Apertura
+Liga MX,americas,33,235,Liga MX,2025/2026,Mexico,7,L. Ocampos,1098296331,Monterrey,308,4,,1,1286,Apertura
+Liga MX,americas,33,235,Liga MX,2025/2026,Mexico,14,J. Gallardo,2989327065,Toluca,5347,3,,0,1286,Apertura
+Liga MX,americas,33,235,Liga MX,2025/2026,Mexico,15,R. Morales,967079687,Toluca,5347,3,,0,1286,Apertura
+Liga MX,americas,33,235,Liga MX,2025/2026,Mexico,10,C. Rodríguez,158635275,Cruz Azul,301,3,,0,1286,Apertura
+Liga MX,americas,33,235,Liga MX,2025/2026,Mexico,11,G. Fernández,1150340266,Cruz Azul,301,3,,1,1286,Apertura
+Liga MX,americas,33,235,Liga MX,2025/2026,Mexico,12,Ó. Estupiñán,3316259323,Juárez,5357,3,,2,1286,Apertura
+Liga MX,americas,33,235,Liga MX,2025/2026,Mexico,13,Paulinho,1424395098,Toluca,5347,3,,0,1286,Apertura
+Liga MX,americas,33,235,Liga MX,2025/2026,Mexico,1,R. Zúñiga,2845352562,Tijuana,5350,2,,0,3771,Apertura - Play-offs
+Liga MX,americas,33,235,Liga MX,2025/2026,Mexico,1,G. Berterame,1012153978,Monterrey,308,1,,0,3770,Clausura - Play-offs
+Liga MX,americas,33,235,Liga MX,2025/2026,Mexico,2,N. Deossa,4088930528,Monterrey,308,1,,0,3770,Clausura - Play-offs
+Liga MX,americas,33,235,Liga MX,2025/2026,Mexico,1,G. Berterame,1012153978,Monterrey,308,1,,0,1951,Clausura - Reclasificacion
+Liga MX,americas,33,235,Liga MX,2025/2026,Mexico,2,Madson,2567251278,Juárez,5357,1,,0,1951,Clausura - Reclasificacion
+Liga MX,americas,33,235,Liga MX,2025/2026,Mexico,3,Eduardo Bauermann,661189681,Pachuca,5352,1,,0,1951,Clausura - Reclasificacion
+Liga MX,americas,33,235,Liga MX,2025/2026,Mexico,4,G. Martínez,1594156033,Pumas UNAM,5354,1,,0,1951,Clausura - Reclasificacion
+Liga MX,americas,33,235,Liga MX,2025/2026,Mexico,5,S. Rondón,1541199022,Pachuca,5352,1,,0,1951,Clausura - Reclasificacion
+Liga MX,americas,33,235,Liga MX,2025/2026,Mexico,2,K. Castañeda,592109669,Tijuana,5350,1,,0,3771,Apertura - Play-offs
+Liga MX,americas,33,235,Liga MX,2025/2026,Mexico,1,Unai Bilbao,74121014,Tijuana,5350,1,,0,1285,Apertura - Reclasificación
+Liga MX,americas,33,235,Liga MX,2025/2026,Mexico,2,C. Borja,2197679128,Club América,284,1,,0,1285,Apertura - Reclasificación
+Liga MX,americas,33,235,Liga MX,2025/2026,Mexico,3,V. Guzmán,4216615262,Guadalajara,5355,1,,1,1285,Apertura - Reclasificación
+Liga MX,americas,33,235,Liga MX,2025/2026,Mexico,4,A. Rocha,3256664016,Atlas,5348,1,,1,1285,Apertura - Reclasificación
+Liga MX,americas,33,235,Liga MX,2025/2026,Mexico,5,B. Rodríguez,3248340350,Club América,284,1,,0,1285,Apertura - Reclasificación
+Liga MX,americas,33,235,Liga MX,2025/2026,Mexico,6,R. Zúñiga,2845352562,Tijuana,5350,1,,0,1285,Apertura - Reclasificación
+Brazil Serie A,americas,34,99,Serie A,2026,Brazil,1,Jorge Kaio,963015647,Cruzeiro,1745,21,,,700,Current
+Brazil Serie A,americas,34,99,Serie A,2026,Brazil,2,G. de Arrascaeta,1252371777,Flamengo RJ,542,18,,,700,Current
+Brazil Serie A,americas,34,99,Serie A,2026,Brazil,3,Roque Vitor,2857588461,Palmeiras,546,16,,,700,Current
+Brazil Serie A,americas,34,99,Serie A,2026,Brazil,4,Rayan,4078647747,Vasco,1877,14,,,700,Current
+Brazil Serie A,americas,34,99,Serie A,2026,Brazil,4,P. Vegetti,2972145002,Vasco,1877,14,,,700,Current
+Brazil Serie A,americas,34,99,Serie A,2026,Brazil,6,Reinaldo,2311793453,Mirassol,1804,13,,,700,Current
+Brazil Serie A,americas,34,99,Serie A,2026,Brazil,7,Pedro,39962086,Flamengo RJ,542,12,,,700,Current
+Brazil Serie A,americas,34,99,Serie A,2026,Brazil,8,J. Lopez,1048202909,Palmeiras,546,12,,,700,Current
+Brazil Serie A,americas,34,99,Serie A,2026,Brazil,9,Vinicius Carlos,85026834,Gremio,558,12,,,700,Current
+Brazil Serie A,americas,34,99,Serie A,2026,Brazil,10,Patrick Alan,510307236,Internacional,559,11,,,700,Current
+Brazil Serie A,americas,34,99,Serie A,2026,Brazil,11,Jose Willian,2431703569,Bahia,1985,11,1,,700,Current
+Brazil Serie A,americas,34,99,Serie A,2026,Brazil,12,Raul Pedro,2077227413,Ceara,2016,11,,,700,Current
+Brazil Serie A,americas,34,99,Serie A,2026,Brazil,1,K. Viveros,1521094163,Athletico Paranaense,551,10,,2,21477, - 2nd Stage
+Brazil Serie A,americas,34,99,Serie A,2026,Brazil,13,Jhon Jhon,1514631787,Bragantino,2015,10,,,700,Current
+Brazil Serie A,americas,34,99,Serie A,2026,Brazil,14,Alberto Yuri,2943309168,Corinthians,2017,10,,,700,Current
+Brazil Serie A,americas,34,99,Serie A,2026,Brazil,15,Luciano,2004188105,Sao Paulo,556,9,1,,700,Current
+Brazil Serie A,americas,34,99,Serie A,2026,Brazil,16,A. Barreal,523788019,Santos,566,9,,,700,Current
+Brazil Serie A,americas,34,99,Serie A,2026,Brazil,17,Kayzer Renato,2577558466,Vitoria,1748,9,,,700,Current
+Brazil Serie A,americas,34,99,Serie A,2026,Brazil,2,Pedro,39962086,Flamengo,542,9,3,0,21477, - 2nd Stage
+Brazil Serie A,americas,34,99,Serie A,2026,Brazil,18,Hulk,3317811432,Atletico-MG,1865,8,,,700,Current
+Brazil Serie A,americas,34,99,Serie A,2026,Brazil,19,Taliari Gabriel,2877084339,Juventude,1737,8,,,700,Current
+Brazil Serie A,americas,34,99,Serie A,2026,Brazil,20,Sasha Eduardo,2897512017,Bragantino,2015,8,,,700,Current
+Brazil Serie A,americas,34,99,Serie A,2026,Brazil,3,Lopes Breno,3742333350,Coritiba,2019,8,,0,21477, - 2nd Stage
+Brazil Serie A,americas,34,99,Serie A,2026,Brazil,4,Kennedy John,2056937239,Fluminense,1879,8,,0,21477, - 2nd Stage
+Brazil Serie A,americas,34,99,Serie A,2026,Brazil,5,Vinicius Carlos,85026834,Gremio,558,8,,1,21477, - 2nd Stage
+Brazil Serie A,americas,34,99,Serie A,2026,Brazil,6,Danillo,3761788482,Botafogo,1875,7,2,0,21477, - 2nd Stage
+Brazil Serie A,americas,34,99,Serie A,2026,Brazil,8,Cabral Arthur,3511082206,Botafogo,1875,6,,0,21477, - 2nd Stage
+Brazil Serie A,americas,34,99,Serie A,2026,Brazil,11,Juba Luciano,3388016807,Bahia,1985,6,,2,21477, - 2nd Stage
+Brazil Serie A,americas,34,99,Serie A,2026,Brazil,10,Jose Lopez,1048202909,Palmeiras,546,6,3,0,21477, - 2nd Stage
+Brazil Serie A,americas,34,99,Serie A,2026,Brazil,9,Luciano,2004188105,Sao Paulo,556,6,,0,21477, - 2nd Stage
+Brazil Serie A,americas,34,99,Serie A,2026,Brazil,7,Barbosa Gabriel,3775326368,Santos,566,6,2,1,21477, - 2nd Stage
+Brazil Serie A,americas,34,99,Serie A,2026,Brazil,12,Isidro Pitta,392816270,Bragantino,2015,5,,0,21477, - 2nd Stage
+Brazil Serie A,americas,34,99,Serie A,2026,Brazil,13,S. Mendoza,3649497511,Athletico Paranaense,551,5,,0,21477, - 2nd Stage
+Brazil Serie A,americas,34,99,Serie A,2026,Brazil,14,J. Lavega,2303437738,Coritiba,2019,5,,0,21477, - 2nd Stage
+Brazil Serie A,americas,34,99,Serie A,2026,Brazil,15,J. Calleri,3263788507,Sao Paulo,556,5,,1,21477, - 2nd Stage
+Brazil Serie A,americas,34,99,Serie A,2026,Brazil,16,Manga Alef,1297654262,Remo,1784,4,3,0,21477, - 2nd Stage
+Brazil Serie A,americas,34,99,Serie A,2026,Brazil,27,Christian,575694022,Cruzeiro,1745,4,2,0,21477, - 2nd Stage
+Brazil Serie A,americas,34,99,Serie A,2026,Brazil,26,Allan,2253529655,Palmeiras,546,4,2,0,21477, - 2nd Stage
+Brazil Serie A,americas,34,99,Serie A,2026,Brazil,25,A. Canobbio,2043461715,Fluminense,1879,4,,0,21477, - 2nd Stage
+Brazil Serie A,americas,34,99,Serie A,2026,Brazil,24,Neymar,322456720,Santos,566,4,2,1,21477, - 2nd Stage
+Brazil Serie A,americas,34,99,Serie A,2026,Brazil,23,Ferreira,291430416,Sao Paulo,556,4,,0,21477, - 2nd Stage
+Brazil Serie A,americas,34,99,Serie A,2026,Brazil,21,Alexandro Bernabei,3452995374,Internacional,559,4,,0,21477, - 2nd Stage
+Brazil Serie A,americas,34,99,Serie A,2026,Brazil,20,Renê,3228598789,Vitoria,1748,4,,0,21477, - 2nd Stage
+Brazil Serie A,americas,34,99,Serie A,2026,Brazil,19,Jaja,913744325,Remo,1784,4,,0,21477, - 2nd Stage
+Brazil Serie A,americas,34,99,Serie A,2026,Brazil,18,Johan Carbonero,2157454280,Internacional,559,4,3,0,21477, - 2nd Stage
+Brazil Serie A,americas,34,99,Serie A,2026,Brazil,17,Teixeira dos Santos Matheus,54034406,Botafogo,1875,4,,0,21477, - 2nd Stage
+Brazil Serie A,americas,34,99,Serie A,2026,Brazil,22,Rocha Pedro,2360902023,Coritiba,2019,4,,0,21477, - 2nd Stage
+Brazil Serie A,americas,34,99,Serie A,2026,Brazil,40,J. Arias,4168416428,Palmeiras,546,3,,0,21477, - 2nd Stage
+Brazil Serie A,americas,34,99,Serie A,2026,Brazil,50,Edenilson,2499232340,Botafogo,1875,3,,0,21477, - 2nd Stage
+Brazil Serie A,americas,34,99,Serie A,2026,Brazil,41,Jose Willian,2431703569,Bahia,1985,3,,1,21477, - 2nd Stage
+Brazil Serie A,americas,34,99,Serie A,2026,Brazil,42,Gustavo Gomez,3875504524,Palmeiras,546,3,,0,21477, - 2nd Stage
+Brazil Serie A,americas,34,99,Serie A,2026,Brazil,43,Hugo Victor,3006150972,Atletico Mineiro,1865,3,,0,21477, - 2nd Stage
+Brazil Serie A,americas,34,99,Serie A,2026,Brazil,44,Paqueta Lucas,2727857005,Flamengo,542,3,,0,21477, - 2nd Stage
+Brazil Serie A,americas,34,99,Serie A,2026,Brazil,45,Hércules,845554102,Fluminense,1879,3,,0,21477, - 2nd Stage
+Brazil Serie A,americas,34,99,Serie A,2026,Brazil,46,Barros Cauan,4139342749,Vasco da Gama,1877,3,,0,21477, - 2nd Stage
+Brazil Serie A,americas,34,99,Serie A,2026,Brazil,47,Barbosa Lucas,247751217,Bragantino,2015,3,,0,21477, - 2nd Stage
+Brazil Serie A,americas,34,99,Serie A,2026,Brazil,48,Arrascaeta de,1252371777,Flamengo,542,3,,1,21477, - 2nd Stage
+Brazil Serie A,americas,34,99,Serie A,2026,Brazil,49,Jefferson Savarino,763083622,Fluminense,1879,3,2,1,21477, - 2nd Stage
+Brazil Serie A,americas,34,99,Serie A,2026,Brazil,39,Jorge Kaio,963015647,Cruzeiro,1745,3,,3,21477, - 2nd Stage
+Brazil Serie A,americas,34,99,Serie A,2026,Brazil,38,Julimar,252120787,Athletico Paranaense,551,3,,1,21477, - 2nd Stage
+Brazil Serie A,americas,34,99,Serie A,2026,Brazil,37,W. Clar,2145009639,Chapecoense,1735,3,,2,21477, - 2nd Stage
+Brazil Serie A,americas,34,99,Serie A,2026,Brazil,36,Kayzer Renato,2577558466,Vitoria,1748,3,,1,21477, - 2nd Stage
+Brazil Serie A,americas,34,99,Serie A,2026,Brazil,35,Castillo Rodrigo,3030746652,Fluminense,1879,3,,0,21477, - 2nd Stage
+Brazil Serie A,americas,34,99,Serie A,2026,Brazil,34,Luciano Acosta,2247385947,Fluminense,1879,3,4,0,21477, - 2nd Stage
+Brazil Serie A,americas,34,99,Serie A,2026,Brazil,33,Roque Vitor,2857588461,Palmeiras,546,3,,1,21477, - 2nd Stage
+Brazil Serie A,americas,34,99,Serie A,2026,Brazil,32,Mendes Thiago,4244573389,Vasco da Gama,1877,3,,0,21477, - 2nd Stage
+Brazil Serie A,americas,34,99,Serie A,2026,Brazil,31,Benjamin Rollheiser,3406157922,Santos,566,3,,2,21477, - 2nd Stage
+Brazil Serie A,americas,34,99,Serie A,2026,Brazil,30,Patrick Alan,510307236,Internacional,559,3,,1,21477, - 2nd Stage
+Brazil Serie A,americas,34,99,Serie A,2026,Brazil,29,Taliari Gabriel,2877084339,Remo,1784,3,,0,21477, - 2nd Stage
+Brazil Serie A,americas,34,99,Serie A,2026,Brazil,28,Carlos Gomez,1146286133,Vasco da Gama,1877,3,,0,21477, - 2nd Stage
+Argentina Primera División,americas,35,44,Liga Profesional Argentina,2026,Argentina,1,F. Jara,841945315,Belgrano,927,13,,0,4920,2nd Phase
+Argentina Primera División,americas,35,44,Liga Profesional Argentina,2026,Argentina,2,B. Romero,266554568,Vélez Sarsfield,998,12,,2,4920,2nd Phase
+Argentina Primera División,americas,35,44,Liga Profesional Argentina,2026,Argentina,3,M. Borja,2305696432,River Plate,554,11,,3,4920,2nd Phase
+Argentina Primera División,americas,35,44,Liga Profesional Argentina,2026,Argentina,4,M. Giménez,3209356208,Banfield,991,10,,1,4920,2nd Phase
+Argentina Primera División,americas,35,44,Liga Profesional Argentina,2026,Argentina,5,M. Pellegrino,2698738648,Platense,996,10,,4,4920,2nd Phase
+Argentina Primera División,americas,35,44,Liga Profesional Argentina,2026,Argentina,1,Ávalos Gabriel,3310058449,Independiente,999,10,5,2,21477, - 2nd Stage
+Argentina Primera División,americas,35,44,Liga Profesional Argentina,2026,Argentina,6,C. Aquino,437082270,Vélez Sarsfield,998,9,,3,4920,2nd Phase
+Argentina Primera División,americas,35,44,Liga Profesional Argentina,2026,Argentina,7,G. Ávalos,3310058449,Independiente,999,9,,2,4920,2nd Phase
+Argentina Primera División,americas,35,44,Liga Profesional Argentina,2026,Argentina,8,J. Herrera,3226856337,Deportivo Riestra,939,9,,2,4920,2nd Phase
+Argentina Primera División,americas,35,44,Liga Profesional Argentina,2026,Argentina,1,A. Martínez,1509577303,Racing Club,563,9,,1,512,1st Phase
+Argentina Primera División,americas,35,44,Liga Profesional Argentina,2026,Argentina,9,S. Rodríguez,3887527631,Godoy Cruz,994,8,,1,4920,2nd Phase
+Argentina Primera División,americas,35,44,Liga Profesional Argentina,2026,Argentina,2,G. Ávalos,3310058449,Independiente,999,8,,2,512,1st Phase
+Argentina Primera División,americas,35,44,Liga Profesional Argentina,2026,Argentina,3,N. Fernández,3525738514,Belgrano,927,8,,0,512,1st Phase
+Argentina Primera División,americas,35,44,Liga Profesional Argentina,2026,Argentina,4,T. Molina,1022554521,Argentinos Juniors,995,8,,0,512,1st Phase
+Argentina Primera División,americas,35,44,Liga Profesional Argentina,2026,Argentina,1,R. Martinez,1739222866,Platense,996,8,,,2235,Regular Season
+Argentina Primera División,americas,35,44,Liga Profesional Argentina,2026,Argentina,2,J. Caicedo,1041841556,Huracan,1004,8,,3,21477, - 2nd Stage
+Argentina Primera División,americas,35,44,Liga Profesional Argentina,2026,Argentina,3,Marcelo Luis,2056144714,Gimnasia La Plata,1002,8,,3,21477, - 2nd Stage
+Argentina Primera División,americas,35,44,Liga Profesional Argentina,2026,Argentina,10,B. Barticciotto,2692795753,Talleres de Córdoba,1003,7,,0,4920,2nd Phase
+Argentina Primera División,americas,35,44,Liga Profesional Argentina,2026,Argentina,11,W. Bou,594861982,Lanús,1001,7,,1,4920,2nd Phase
+Argentina Primera División,americas,35,44,Liga Profesional Argentina,2026,Argentina,12,G. Carrillo,434114115,Estudiantes,989,7,,0,4920,2nd Phase
+Argentina Primera División,americas,35,44,Liga Profesional Argentina,2026,Argentina,13,F. Colidio,438360838,River Plate,554,7,,1,4920,2nd Phase
+Argentina Primera División,americas,35,44,Liga Profesional Argentina,2026,Argentina,14,A. Martínez,1509577303,Racing Club,563,7,,0,4920,2nd Phase
+Argentina Primera División,americas,35,44,Liga Profesional Argentina,2026,Argentina,15,M. Merentiel,3817281264,Boca Juniors,570,7,,1,4920,2nd Phase
+Argentina Primera División,americas,35,44,Liga Profesional Argentina,2026,Argentina,5,A. Vombergar,3438210473,San Lorenzo,574,7,,4,512,1st Phase
+Argentina Primera División,americas,35,44,Liga Profesional Argentina,2026,Argentina,2,A. Di Maria,1652674065,Rosario Central,992,7,,,2235,Regular Season
+Argentina Primera División,americas,35,44,Liga Profesional Argentina,2026,Argentina,3,R. Castillo,3030746652,Lanus,1001,7,,,2235,Regular Season
+Argentina Primera División,americas,35,44,Liga Profesional Argentina,2026,Argentina,4,M. Torres,2056144714,Gimnasia L.P.,1002,7,,,2235,Regular Season
+Argentina Primera División,americas,35,44,Liga Profesional Argentina,2026,Argentina,4,Alberto Cristian,3692446882,Union Santa Fe,1000,7,,1,21477, - 2nd Stage
+Argentina Primera División,americas,35,44,Liga Profesional Argentina,2026,Argentina,5,Romero David,983017244,Tigre,549,7,,0,21477, - 2nd Stage
+Argentina Primera División,americas,35,44,Liga Profesional Argentina,2026,Argentina,6,Sartori Fabrizio,3623154923,Independiente Rivadavia,947,7,,0,21477, - 2nd Stage
+Argentina Primera División,americas,35,44,Liga Profesional Argentina,2026,Argentina,6,J. Candia,3281966519,Barracas Central,945,6,,0,512,1st Phase
+Argentina Primera División,americas,35,44,Liga Profesional Argentina,2026,Argentina,7,M. Merentiel,3817281264,Boca Juniors,570,6,,0,512,1st Phase
+Argentina Primera División,americas,35,44,Liga Profesional Argentina,2026,Argentina,8,E. Torres,1202075379,Aldosivi,993,6,,2,512,1st Phase
+Argentina Primera División,americas,35,44,Liga Profesional Argentina,2026,Argentina,5,J. Herrera,3226856337,Dep. Riestra,939,6,,,2235,Regular Season
+Argentina Primera División,americas,35,44,Liga Profesional Argentina,2026,Argentina,7,Andrés Mauro,970678929,Banfield,991,6,3,0,21477, - 2nd Stage
+Argentina Primera División,americas,35,44,Liga Profesional Argentina,2026,Argentina,8,J. Marabel,2779958735,Sarmiento,1005,6,3,2,21477, - 2nd Stage
+Argentina Primera División,americas,35,44,Liga Profesional Argentina,2026,Argentina,9,M. Borja,2305696432,River Plate,554,5,,1,512,1st Phase
+Argentina Primera División,americas,35,44,Liga Profesional Argentina,2026,Argentina,10,F. Bruera,2613816032,Barracas Central,945,5,,0,512,1st Phase
+Argentina Primera División,americas,35,44,Liga Profesional Argentina,2026,Argentina,11,L. Heredia,1001227496,Central Córdoba SdE,990,5,,1,512,1st Phase
+Argentina Primera División,americas,35,44,Liga Profesional Argentina,2026,Argentina,12,A. Luna,3787510091,Instituto,943,5,,1,512,1st Phase
+Argentina Primera División,americas,35,44,Liga Profesional Argentina,2026,Argentina,13,M. Miljevic,639775815,Huracán,1004,5,,3,512,1st Phase
+Argentina Primera División,americas,35,44,Liga Profesional Argentina,2026,Argentina,14,I. Russo,577882936,Tigre,549,5,,0,512,1st Phase
+Argentina Primera División,americas,35,44,Liga Profesional Argentina,2026,Argentina,15,G. Togni,1224872817,Defensa y Justicia,568,5,,0,512,1st Phase
+Argentina Primera División,americas,35,44,Liga Profesional Argentina,2026,Argentina,6,F. Bruera,2613816032,Barracas Central,945,5,,,2235,Regular Season
+Argentina Primera División,americas,35,44,Liga Profesional Argentina,2026,Argentina,7,M. Gimenez,3209356208,Boca Juniors,570,5,,,2235,Regular Season
+Argentina Primera División,americas,35,44,Liga Profesional Argentina,2026,Argentina,8,A. Cuello,927339104,San Lorenzo,574,5,,,2235,Regular Season
+Argentina Primera División,americas,35,44,Liga Profesional Argentina,2026,Argentina,8,G. Galoppo,49931408,River Plate,554,5,,,2235,Regular Season
+Argentina Primera División,americas,35,44,Liga Profesional Argentina,2026,Argentina,8,M. Merentiel,3817281264,Boca Juniors,570,5,,,2235,Regular Season
+Argentina Primera División,americas,35,44,Liga Profesional Argentina,2026,Argentina,8,A. Veliz,2756277301,Rosario Central,992,5,,,2235,Regular Season
+Argentina Primera División,americas,35,44,Liga Profesional Argentina,2026,Argentina,12,I. Russo,577882936,Tigre,549,5,,,2235,Regular Season
+Argentina Primera División,americas,35,44,Liga Profesional Argentina,2026,Argentina,9,Gonzalo Florián,2897675867,Velez Sarsfield,998,5,,1,21477, - 2nd Stage
+Argentina Primera División,americas,35,44,Liga Profesional Argentina,2026,Argentina,10,Ángel Miguel,3817281264,Boca Juniors,570,5,,0,21477, - 2nd Stage
+Argentina Primera División,americas,35,44,Liga Profesional Argentina,2026,Argentina,11,Fabricio Dylan,947938050,Lanus,1001,5,,0,21477, - 2nd Stage
+Argentina Primera División,americas,35,44,Liga Profesional Argentina,2026,Argentina,12,Nahuel Enzo,1124371740,Rosario Central,992,5,,0,21477, - 2nd Stage
+Argentina Primera División,americas,35,44,Liga Profesional Argentina,2026,Argentina,13,Fabián Ángel,1652674065,Rosario Central,992,5,4,1,21477, - 2nd Stage
+Argentina Primera División,americas,35,44,Liga Profesional Argentina,2026,Argentina,14,Nahuel Alex,3787510091,Instituto,943,5,,2,21477, - 2nd Stage
+Argentina Primera División,americas,35,44,Liga Profesional Argentina,2026,Argentina,15,Nicolás Leandro,2170849070,Atletico Tucuman,1006,5,,3,21477, - 2nd Stage
+Argentina Primera División,americas,35,44,Liga Profesional Argentina,2026,Argentina,16,Driussi Sebastián,1599495911,River Plate,554,5,,0,21477, - 2nd Stage
+Argentina Primera División,americas,35,44,Liga Profesional Argentina,2026,Argentina,17,M. Abaldo,1075247706,Independiente,999,5,,0,21477, - 2nd Stage
+Argentina Primera División,americas,35,44,Liga Profesional Argentina,2026,Argentina,13,R. Auzmendi,4047990230,Banfield,991,4,,,2235,Regular Season
+Argentina Primera División,americas,35,44,Liga Profesional Argentina,2026,Argentina,13,J. B. Miritello,4281378394,Defensa y Justicia,568,4,,,2235,Regular Season
+Argentina Primera División,americas,35,44,Liga Profesional Argentina,2026,Argentina,13,B. Romero,266554568,Velez Sarsfield,998,4,,,2235,Regular Season
+Argentina Primera División,americas,35,44,Liga Profesional Argentina,2026,Argentina,13,C. Tarragona,3692446882,Union de Santa Fe,1000,4,,,2235,Regular Season
+Argentina Primera División,americas,35,44,Liga Profesional Argentina,2026,Argentina,13,E. Zeballos,3872494949,Boca Juniors,570,4,,,2235,Regular Season
+Argentina Primera División,americas,35,44,Liga Profesional Argentina,2026,Argentina,18,G. Avalos,3310058449,Independiente,999,4,,,2235,Regular Season
+Argentina Primera División,americas,35,44,Liga Profesional Argentina,2026,Argentina,18,A. Lescano,3540264540,Argentinos Jrs,995,4,,,2235,Regular Season
+Argentina Primera División,americas,35,44,Liga Profesional Argentina,2026,Argentina,18,H. Lopez,3667552511,Argentinos Jrs,995,4,,,2235,Regular Season
+Argentina Primera División,americas,35,44,Liga Profesional Argentina,2026,Argentina,18,Martín Tomás,1022554521,Argentinos Juniors,995,4,,0,21477, - 2nd Stage
+Argentina Primera División,americas,35,44,Liga Profesional Argentina,2026,Argentina,19,Osella Alejo,3557146790,Independiente Rivadavia,947,4,,0,21477, - 2nd Stage
+Argentina Primera División,americas,35,44,Liga Profesional Argentina,2026,Argentina,20,Bucca Leonel,1304745471,Independiente Rivadavia,947,4,,0,21477, - 2nd Stage
+Argentina Primera División,americas,35,44,Liga Profesional Argentina,2026,Argentina,21,Colidio Facundo,438360838,River Plate,554,4,2,1,21477, - 2nd Stage
+Argentina Primera División,americas,35,44,Liga Profesional Argentina,2026,Argentina,22,Russo Ignacio,577882936,Tigre,549,4,3,0,21477, - 2nd Stage
+Argentina Primera División,americas,35,44,Liga Profesional Argentina,2026,Argentina,23,Giménez Milton,3209356208,Boca Juniors,570,4,,1,21477, - 2nd Stage
+Argentina Primera División,americas,35,44,Liga Profesional Argentina,2026,Argentina,24,Ignacio Ramirez,2139401324,Newell&apos;s Old Boys,1007,4,,1,21477, - 2nd Stage
+Argentina Primera División,americas,35,44,Liga Profesional Argentina,2026,Argentina,25,Auzmendi Rodrigo,4047990230,San Lorenzo,574,4,,0,21477, - 2nd Stage
+Argentina Primera División,americas,35,44,Liga Profesional Argentina,2026,Argentina,26,Emmanuel Adrián,1509577303,Racing Club,563,4,,1,21477, - 2nd Stage
+Argentina Primera División,americas,35,44,Liga Profesional Argentina,2026,Argentina,27,Ariel Gonzalo,3291246315,River Plate,554,4,,2,21477, - 2nd Stage
+Argentina Primera División,americas,35,44,Liga Profesional Argentina,2026,Argentina,28,Perrota Tiziano,2714445298,Banfield,991,4,,0,21477, - 2nd Stage
+Argentina Primera División,americas,35,44,Liga Profesional Argentina,2026,Argentina,29,Manuel Lucas,110031040,Belgrano,927,4,,0,21477, - 2nd Stage
+Argentina Primera División,americas,35,44,Liga Profesional Argentina,2026,Argentina,30,Dávila Valentín,3271576544,Talleres Cordoba,1003,4,,0,21477, - 2nd Stage
+Argentina Primera División,americas,35,44,Liga Profesional Argentina,2026,Argentina,31,Nicolás Michael,56434305,Central Cordoba Santiago,990,4,,1,21477, - 2nd Stage
+Argentina Primera División,americas,35,44,Liga Profesional Argentina,2026,Argentina,32,Véliz Alejo,2756277301,Rosario Central,992,4,,0,21477, - 2nd Stage
+Argentina Primera División,americas,35,44,Liga Profesional Argentina,2026,Argentina,33,Iván Ronaldo,1739222866,Talleres Cordoba,1003,3,,0,21477, - 2nd Stage
+Argentina Primera División,americas,35,44,Liga Profesional Argentina,2026,Argentina,34,J. Quintero,1750002712,River Plate,554,3,3,0,21477, - 2nd Stage
+Argentina Primera División,americas,35,44,Liga Profesional Argentina,2026,Argentina,35,Matías Federico,3689831883,Racing Club,563,3,,0,21477, - 2nd Stage
+Argentina Primera División,americas,35,44,Liga Profesional Argentina,2026,Argentina,36,Axel Rodrigo,2756397336,Barracas Central,945,3,,2,21477, - 2nd Stage
+Argentina Primera División,americas,35,44,Liga Profesional Argentina,2026,Argentina,37,Asael Tiago,1514894654,Estudiantes,989,3,,0,21477, - 2nd Stage
+Argentina Primera División,americas,35,44,Liga Profesional Argentina,2026,Argentina,38,Ignacio José,1893318248,Independiente Rivadavia,947,3,,0,21477, - 2nd Stage
+Argentina Primera División,americas,35,44,Liga Profesional Argentina,2026,Argentina,39,Nicolás Diego,1127114460,Central Cordoba Santiago,990,3,,0,21477, - 2nd Stage
+Argentina Primera División,americas,35,44,Liga Profesional Argentina,2026,Argentina,40,Nicolás Aaron,1248766306,Defensa y Justicia,568,3,4,3,21477, - 2nd Stage
+Argentina Primera División,americas,35,44,Liga Profesional Argentina,2026,Argentina,41,Ricardo Alexis,927339104,San Lorenzo,574,3,3,1,21477, - 2nd Stage
+Argentina Primera División,americas,35,44,Liga Profesional Argentina,2026,Argentina,42,Hernán Alan,3540264540,Argentinos Juniors,995,3,,1,21477, - 2nd Stage
+Argentina Primera División,americas,35,44,Liga Profesional Argentina,2026,Argentina,43,L. Gómez,2227001375,Banfield,991,3,,0,21477, - 2nd Stage
+Argentina Primera División,americas,35,44,Liga Profesional Argentina,2026,Argentina,44,González Francisco,1929146164,Belgrano,927,3,,0,21477, - 2nd Stage
+Argentina Primera División,americas,35,44,Liga Profesional Argentina,2026,Argentina,45,Adolfo Gaich,1113866985,Estudiantes,989,3,,0,21477, - 2nd Stage
+Argentina Primera División,americas,35,44,Liga Profesional Argentina,2026,Argentina,46,Nicolás Ayrton,2861278885,Defensa y Justicia,568,3,,0,21477, - 2nd Stage
+Argentina Primera División,americas,35,44,Liga Profesional Argentina,2026,Argentina,47,Adam Bareiro,84837872,Boca Juniors,570,3,,0,21477, - 2nd Stage
+Argentina Primera División,americas,35,44,Liga Profesional Argentina,2026,Argentina,48,Alexis Fabricio,2694653745,Estudiantes,989,3,,0,21477, - 2nd Stage
+Argentina Primera División,americas,35,44,Liga Profesional Argentina,2026,Argentina,49,Pellegrini Matías,2783542901,Velez Sarsfield,998,3,,0,21477, - 2nd Stage
+Argentina Primera División,americas,35,44,Liga Profesional Argentina,2026,Argentina,50,Marcelino Damián,851324024,Lanus,1001,3,,0,21477, - 2nd Stage
+Argentina Primera División,americas,35,44,Liga Profesional Argentina,2026,Argentina,1,N. Colazo,2291008850,Gimnasia La Plata,1002,1,,0,9585,Relegation Decider
+AFC Champions League Elite,asia,40,727,AFC Champions League,2025/2026,intl,1,Mújica Rafa,3787596036,Al Sadd,372,8,2,0,21477, - 2nd Stage
+AFC Champions League Elite,asia,40,727,AFC Champions League,2025/2026,intl,1,Salem Al Dawsari,3447794392,Al Hilal,366,7,,0,11217,League Stage
+AFC Champions League Elite,asia,40,727,AFC Champions League,2025/2026,intl,2,J. Asani,1735065077,Gwangju,5172,7,,1,11217,League Stage
+AFC Champions League Elite,asia,40,727,AFC Champions League,2025/2026,intl,1,Cryzan,1463740137,Shandong Taishan,2251,6,,1,62,Group Stage
+AFC Champions League Elite,asia,40,727,AFC Champions League,2025/2026,intl,2,Talisca,4121602239,Al Nassr,371,6,,0,62,Group Stage
+AFC Champions League Elite,asia,40,727,AFC Champions League,2025/2026,intl,3,Cristiano Ronaldo,103051168,Al Nassr,371,6,,1,11217,League Stage
+AFC Champions League Elite,asia,40,727,AFC Champions League,2025/2026,intl,4,Anderson Lopes,3935613644,Yokohama F. Marinos,387,6,,2,11217,League Stage
+AFC Champions League Elite,asia,40,727,AFC Champions League,2025/2026,intl,2,Boulbina Adil,4214563238,Al Duhail,369,6,,1,21477, - 2nd Stage
+AFC Champions League Elite,asia,40,727,AFC Champions League,2025/2026,intl,3,H. Aouar,2921205670,Al-Ittihad Jeddah,6328,6,,0,21477, - 2nd Stage
+AFC Champions League Elite,asia,40,727,AFC Champions League,2025/2026,intl,3,M. Ádám,520866817,Ulsan,379,5,,1,62,Group Stage
+AFC Champions League Elite,asia,40,727,AFC Champions League,2025/2026,intl,4,B. Bounedjah,3739543522,Al Sadd,372,5,,0,62,Group Stage
+AFC Champions League Elite,asia,40,727,AFC Champions League,2025/2026,intl,5,H. Erkinov,4211830214,Pakhtakor,363,5,,0,62,Group Stage
+AFC Champions League Elite,asia,40,727,AFC Champions League,2025/2026,intl,6,K. Laba,830680294,Al Ain,374,5,,0,62,Group Stage
+AFC Champions League Elite,asia,40,727,AFC Champions League,2025/2026,intl,7,A. Mitrović,1500775822,Al Hilal,366,5,,0,62,Group Stage
+AFC Champions League Elite,asia,40,727,AFC Champions League,2025/2026,intl,5,Arif Aiman,2157182276,Johor Darul Ta'zim,386,5,,0,11217,League Stage
+AFC Champions League Elite,asia,40,727,AFC Champions League,2025/2026,intl,6,R. Mahrez,2739453175,Al Ahli,359,5,2,1,11217,League Stage
+AFC Champions League Elite,asia,40,727,AFC Champions League,2025/2026,intl,7,A. Mitrović,1500775822,Al Hilal,366,5,,0,11217,League Stage
+AFC Champions League Elite,asia,40,727,AFC Champions League,2025/2026,intl,8,S. Rahimi,1860646306,Al Ain,374,5,,1,11217,League Stage
+AFC Champions League Elite,asia,40,727,AFC Champions League,2025/2026,intl,9,I. Toney,864596779,Al Ahli,359,5,3,2,11217,League Stage
+AFC Champions League Elite,asia,40,727,AFC Champions League,2025/2026,intl,10,M. Vargas,2502920081,Shanghai Port,2256,5,,0,11217,League Stage
+AFC Champions League Elite,asia,40,727,AFC Champions League,2025/2026,intl,1,A. Boulbina,4214563238,Al-Duhail,369,5,,,2212,Regular Season
+AFC Champions League Elite,asia,40,727,AFC Champions League,2025/2026,intl,4,K. Piątek,1115128491,Al Duhail,369,5,,0,21477, - 2nd Stage
+AFC Champions League Elite,asia,40,727,AFC Champions League,2025/2026,intl,8,Ali Jasim,664113519,Al Quwa Al Jawiya,9726,4,,0,62,Group Stage
+AFC Champions League Elite,asia,40,727,AFC Champions League,2025/2026,intl,9,M. Azadi,1199233736,Nassaji Mazandaran,4739,4,,0,62,Group Stage
+AFC Champions League Elite,asia,40,727,AFC Champions League,2025/2026,intl,10,G. Čaušić,4061212032,Buriram United,7565,4,,3,62,Group Stage
+AFC Champions League Elite,asia,40,727,AFC Champions League,2025/2026,intl,11,J. Jantscher,350830125,Kitchee,412,4,,0,62,Group Stage
+AFC Champions League Elite,asia,40,727,AFC Champions League,2025/2026,intl,12,J. Kanté,943902092,Urawa Reds,5051,4,,0,62,Group Stage
+AFC Champions League Elite,asia,40,727,AFC Champions League,2025/2026,intl,13,Moon Seon-Min,2903813006,Jeonbuk Motors,389,4,,0,62,Group Stage
+AFC Champions League Elite,asia,40,727,AFC Champions League,2025/2026,intl,14,Leonardo,565238118,Zhejiang,2234,4,,3,62,Group Stage
+AFC Champions League Elite,asia,40,727,AFC Champions League,2025/2026,intl,15,M. Olunga,706807307,Al Duhail,369,4,,0,62,Group Stage
+AFC Champions League Elite,asia,40,727,AFC Champions League,2025/2026,intl,11,Akram Afif,257524612,Al Sadd,372,4,,1,11217,League Stage
+AFC Champions League Elite,asia,40,727,AFC Champions League,2025/2026,intl,12,Roberto Firmino,3306946250,Al Ahli,359,4,,0,11217,League Stage
+AFC Champions League Elite,asia,40,727,AFC Champions League,2025/2026,intl,13,Bissoli,1660891502,Buriram United,7565,4,,0,11217,League Stage
+AFC Champions League Elite,asia,40,727,AFC Champions League,2025/2026,intl,14,Joselu,1661095253,Al Gharafa,391,4,,1,11217,League Stage
+AFC Champions League Elite,asia,40,727,AFC Champions League,2025/2026,intl,15,T. Miyashiro,2847631369,Vissel Kobe,383,4,,1,11217,League Stage
+AFC Champions League Elite,asia,40,727,AFC Champions League,2025/2026,intl,2,K. Benzema,323235386,Al Ittihad,6328,4,,,2212,Regular Season
+AFC Champions League Elite,asia,40,727,AFC Champions League,2025/2026,intl,5,Felipe,744325434,Chengdu Better City,2236,4,,2,21477, - 2nd Stage
+AFC Champions League Elite,asia,40,727,AFC Champions League,2025/2026,intl,6,E. Millot,3600769342,Al Ahli,359,4,2,0,21477, - 2nd Stage
+AFC Champions League Elite,asia,40,727,AFC Champions League,2025/2026,intl,7,R. Mahrez,2739453175,Al Ahli,359,4,2,0,21477, - 2nd Stage
+AFC Champions League Elite,asia,40,727,AFC Champions League,2025/2026,intl,8,Leonardo Marcos,2813743847,Al Hilal,366,4,,0,21477, - 2nd Stage
+AFC Champions League Elite,asia,40,727,AFC Champions League,2025/2026,intl,9,S. Milinković-Savić,3963045396,Al Hilal,366,4,,0,21477, - 2nd Stage
+AFC Champions League Elite,asia,40,727,AFC Champions League,2025/2026,intl,10,K. Benzema,323235386,Al-Ittihad Jeddah,6328,4,,0,21477, - 2nd Stage
+AFC Champions League Elite,asia,40,727,AFC Champions League,2025/2026,intl,11,Cascardo Breno,3436717138,Shabab Al Ahli Dubai,364,4,,0,21477, - 2nd Stage
+AFC Champions League Elite,asia,40,727,AFC Champions League,2025/2026,intl,12,Firmino Roberto,3306946250,Al Sadd,372,4,3,0,21477, - 2nd Stage
+AFC Champions League Elite,asia,40,727,AFC Champions League,2025/2026,intl,13,Y. Muto,2768894720,Vissel Kobe,383,4,,0,21477, - 2nd Stage
+AFC Champions League Elite,asia,40,727,AFC Champions League,2025/2026,intl,14,Y. Soma,3471715154,Machida Zelvia,5085,4,1,1,21477, - 2nd Stage
+AFC Champions League Elite,asia,40,727,AFC Champions League,2025/2026,intl,1,I. Sergeyev,1841777777,BG Pathum United,418,3,,0,63,Play-offs
+AFC Champions League Elite,asia,40,727,AFC Champions League,2025/2026,intl,3,J. Lingard,1867191391,Seoul,377,3,2,,2212,Regular Season
+AFC Champions League Elite,asia,40,727,AFC Champions League,2025/2026,intl,4,R. Mahrez,2739453175,Al Ahli SC,359,3,,,2212,Regular Season
+AFC Champions League Elite,asia,40,727,AFC Champions League,2025/2026,intl,4,S. Milinkovic-Savic,3963045396,Al Hilal,366,3,1,,2212,Regular Season
+AFC Champions League Elite,asia,40,727,AFC Champions League,2025/2026,intl,4,E. Millot,3600769342,Al Ahli SC,359,3,,,2212,Regular Season
+AFC Champions League Elite,asia,40,727,AFC Champions League,2025/2026,intl,4,R. Mujica,793249412,Al-Sadd,372,3,,,2212,Regular Season
+AFC Champions League Elite,asia,40,727,AFC Champions League,2025/2026,intl,8,Canedo Caio,521884043,Al Wahda,362,3,,,2212,Regular Season
+AFC Champions League Elite,asia,40,727,AFC Champions League,2025/2026,intl,8,Silva Felipe,744325434,Chengdu Rongcheng,2236,3,,,2212,Regular Season
+AFC Champions League Elite,asia,40,727,AFC Champions League,2025/2026,intl,8,Joselu,1661095253,Al-Gharafa,391,3,,,2212,Regular Season
+AFC Champions League Elite,asia,40,727,AFC Champions League,2025/2026,intl,8,R. Lushkja,2765096850,Tractor,414,3,,,2212,Regular Season
+AFC Champions League Elite,asia,40,727,AFC Champions League,2025/2026,intl,8,Leonardo Marcos,2813743847,Al Hilal,366,3,,,2212,Regular Season
+AFC Champions League Elite,asia,40,727,AFC Champions League,2025/2026,intl,8,T. Miyashiro,2847631369,Vissel Kobe,383,3,,,2212,Regular Season
+AFC Champions League Elite,asia,40,727,AFC Champions League,2025/2026,intl,8,K. Piatek,1115128491,Al-Duhail,369,3,,,2212,Regular Season
+AFC Champions League Elite,asia,40,727,AFC Champions League,2025/2026,intl,15,Aboulshamat Saleh,1920859677,Al Ahli,359,3,2,1,21477, - 2nd Stage
+AFC Champions League Elite,asia,40,727,AFC Champions League,2025/2026,intl,16,J. Lingard,1867191391,Seoul,377,3,2,0,21477, - 2nd Stage
+AFC Champions League Elite,asia,40,727,AFC Champions League,2025/2026,intl,17,Y. Osako,3973181521,Vissel Kobe,383,3,2,0,21477, - 2nd Stage
+AFC Champions League Elite,asia,40,727,AFC Champions League,2025/2026,intl,18,T. Yengi,3696282922,Machida Zelvia,5085,3,,0,21477, - 2nd Stage
+AFC Champions League Elite,asia,40,727,AFC Champions League,2025/2026,intl,19,Bissoli,1660891502,Buriram United,7565,3,,1,21477, - 2nd Stage
+AFC Champions League Elite,asia,40,727,AFC Champions League,2025/2026,intl,20,Caio,1924490738,Al Wahda,393,3,,0,21477, - 2nd Stage
+AFC Champions League Elite,asia,40,727,AFC Champions League,2025/2026,intl,21,S. Ezatolahi,2634811154,Shabab Al Ahli Dubai,364,3,,0,21477, - 2nd Stage
+AFC Champions League Elite,asia,40,727,AFC Champions League,2025/2026,intl,22,Y. Ideguchi,1406154304,Vissel Kobe,383,3,,0,21477, - 2nd Stage
+AFC Champions League Elite,asia,40,727,AFC Champions League,2025/2026,intl,23,Guilherme Marcos,3268664504,Johor Darul Ta&apos;zim,386,3,,0,21477, - 2nd Stage
+AFC Champions League Elite,asia,40,727,AFC Champions League,2025/2026,intl,24,T. Miyashiro,2847631369,Vissel Kobe,383,3,,0,21477, - 2nd Stage
+AFC Champions League Elite,asia,40,727,AFC Champions League,2025/2026,intl,25,B. Bourigeaud,2368727988,Al Duhail,369,3,2,2,21477, - 2nd Stage
+AFC Champions League Elite,asia,40,727,AFC Champions League,2025/2026,intl,26,F. Kessié,1418011210,Al Ahli,359,3,,0,21477, - 2nd Stage
+AFC Champions League Elite,asia,40,727,AFC Champions League,2025/2026,intl,27,R. Lushkja,2765096850,Tractor Sazi,414,3,,0,21477, - 2nd Stage
+AFC Champions League Elite,asia,40,727,AFC Champions League,2025/2026,intl,28,Galeno,3117891560,Al Ahli,359,3,3,0,21477, - 2nd Stage
+AFC Champions League Elite,asia,40,727,AFC Champions League,2025/2026,intl,29,Max Caputo,1901030316,Melbourne Heart,401,3,,0,21477, - 2nd Stage
+AFC Champions League Elite,asia,40,727,AFC Champions League,2025/2026,intl,30,Luiz Cláudio,1655521585,Al Sadd,372,3,2,1,21477, - 2nd Stage
+AFC Champions League Elite,asia,40,727,AFC Champions League,2025/2026,intl,31,Joselu,1661095253,Al Gharafa,391,3,,1,21477, - 2nd Stage
+AFC Champions League Elite,asia,40,727,AFC Champions League,2025/2026,intl,32,Fernandes Roger,320218526,Al-Ittihad Jeddah,6328,3,,0,21477, - 2nd Stage
+AFC Champions League Elite,asia,40,727,AFC Champions League,2025/2026,intl,2,Yahya Al Ghassani,1297082035,Shabab Al Ahli,364,2,,0,63,Play-offs
+AFC Champions League Elite,asia,40,727,AFC Champions League,2025/2026,intl,3,Talisca,4121602239,Al Nassr,371,2,,0,63,Play-offs
+AFC Champions League Elite,asia,40,727,AFC Champions League,2025/2026,intl,1,Luanzinho,320395151,Sharjah,370,2,,0,64,Preliminary Round
+AFC Champions League Elite,asia,40,727,AFC Champions League,2025/2026,intl,2,M. Paulissen,1045314046,Lee Man,459,2,,0,64,Preliminary Round
+AFC Champions League Elite,asia,40,727,AFC Champions League,2025/2026,intl,3,Yuri Mamute,2586299705,Hai Phong,8055,2,,0,64,Preliminary Round
+AFC Champions League Elite,asia,40,727,AFC Champions League,2025/2026,intl,1,Yahya Al Ghassani,1297082035,Shabab Al Ahli,364,2,,0,2487,1st Preliminary Round
+AFC Champions League Elite,asia,40,727,AFC Champions League,2025/2026,intl,15,F. Cartabia,3465136029,Shabab Al-Ahli Dubai,364,2,,,2212,Regular Season
+AFC Champions League Elite,asia,40,727,AFC Champions League,2025/2026,intl,15,B. Guilherme,3911234964,Shabab Al-Ahli Dubai,364,2,,,2212,Regular Season
+AFC Champions League Elite,asia,40,727,AFC Champions League,2025/2026,intl,17,S. Abu Al Shamat,1920859677,Al Ahli SC,359,2,,,2212,Regular Season
+AFC Champions League Elite,asia,40,727,AFC Champions League,2025/2026,intl,17,Junior Edmilson,2262474249,Al-Duhail,369,2,,,2212,Regular Season
+AFC Champions League Elite,asia,40,727,AFC Champions League,2025/2026,intl,17,Goncalves Matheus,1515035657,Al Ahli SC,359,2,,,2212,Regular Season
+AFC Champions League Elite,asia,40,727,AFC Champions League,2025/2026,intl,17,D. Tadic,3285146644,Al Wahda,362,2,,,2212,Regular Season
+AFC Champions League Elite,asia,40,727,AFC Champions League,2025/2026,intl,33,Jae-Hyeon Mo,2726741054,Gangwon,5171,2,,0,21477, - 2nd Stage
+AFC Champions League Elite,asia,40,727,AFC Champions League,2025/2026,intl,34,B. Sambou,1085345312,Al Shorta,361,2,,0,21477, - 2nd Stage
+AFC Champions League Elite,asia,40,727,AFC Champions League,2025/2026,intl,35,Silva Lucas,3628557738,Seoul,377,2,,0,21477, - 2nd Stage
+AFC Champions League Elite,asia,40,727,AFC Champions League,2025/2026,intl,36,S. Mueanta,1953259858,Buriram United,7565,2,,0,21477, - 2nd Stage
+AFC Champions League Elite,asia,40,727,AFC Champions League,2025/2026,intl,37,A. Hosseinzadeh,3869682229,Tractor Sazi,414,2,,0,21477, - 2nd Stage
+AFC Champions League Elite,asia,40,727,AFC Champions League,2025/2026,intl,38,I. Toney,864596779,Al Ahli,359,2,3,0,21477, - 2nd Stage
+AFC Champions League Elite,asia,40,727,AFC Champions League,2025/2026,intl,39,Coronado Igor,287024705,Al Sharjah,370,2,,1,21477, - 2nd Stage
+AFC Champions League Elite,asia,40,727,AFC Champions League,2025/2026,intl,40,B. Diarra,1660204874,Al Wahda,393,2,,0,21477, - 2nd Stage
+AFC Champions League Elite,asia,40,727,AFC Champions League,2025/2026,intl,41,Kato Mutsuki,1709154931,Sanfrecce Hiroshima,5046,2,,0,21477, - 2nd Stage
+AFC Champions League Elite,asia,40,727,AFC Champions League,2025/2026,intl,42,F. Cartabia,3465136029,Shabab Al Ahli Dubai,364,2,3,0,21477, - 2nd Stage
+AFC Champions League Elite,asia,40,727,AFC Champions League,2025/2026,intl,43,O. Camara,1852293477,Al Sharjah,370,2,,0,21477, - 2nd Stage
+AFC Champions League Elite,asia,40,727,AFC Champions League,2025/2026,intl,44,Mateusão,1412826880,Shabab Al Ahli Dubai,364,2,,0,21477, - 2nd Stage
+AFC Champions League Elite,asia,40,727,AFC Champions League,2025/2026,intl,45,A. Suzuki,91477619,Sanfrecce Hiroshima,5046,2,,1,21477, - 2nd Stage
+AFC Champions League Elite,asia,40,727,AFC Champions League,2025/2026,intl,46,L. Asue,1591435361,Shanghai Shenhua,381,2,,0,21477, - 2nd Stage
+AFC Champions League Elite,asia,40,727,AFC Champions League,2025/2026,intl,47,Renan,3942647126,Shabab Al Ahli Dubai,364,2,,0,21477, - 2nd Stage
+AFC Champions League Elite,asia,40,727,AFC Champions League,2025/2026,intl,48,Bergwijn Steven,2375441316,Al-Ittihad Jeddah,6328,2,,0,21477, - 2nd Stage
+AFC Champions League Elite,asia,40,727,AFC Champions League,2025/2026,intl,49,Lucas Caio,959621660,Al Sharjah,370,2,,1,21477, - 2nd Stage
+AFC Champions League Elite,asia,40,727,AFC Champions League,2025/2026,intl,50,Gonçalves Matheus,1515035657,Al Ahli,359,2,2,0,21477, - 2nd Stage
+AFC Champions League Elite,asia,40,727,AFC Champions League,2025/2026,intl,4,D. Abdumannopov,2200085786,Navbahor,7997,1,,0,63,Play-offs
+AFC Champions League Elite,asia,40,727,AFC Champions League,2025/2026,intl,5,Sultan Al Ghannam,782907300,Al Nassr,371,1,2,0,63,Play-offs
+AFC Champions League Elite,asia,40,727,AFC Champions League,2025/2026,intl,6,F. Andrijašević,3525310605,Zhejiang,2234,1,,0,63,Play-offs
+AFC Champions League Elite,asia,40,727,AFC Champions League,2025/2026,intl,7,M. Brozović,1277649277,Al Nassr,371,1,,0,63,Play-offs
+AFC Champions League Elite,asia,40,727,AFC Champions League,2025/2026,intl,8,O. Camara,1852293477,Sharjah,370,1,,0,63,Play-offs
+AFC Champions League Elite,asia,40,727,AFC Champions League,2025/2026,intl,9,Cheon Seong-Hoon,1149615973,Incheon United,5170,1,,0,63,Play-offs
+AFC Champions League Elite,asia,40,727,AFC Champions League,2025/2026,intl,10,Gerso,4048089438,Incheon United,5170,1,,0,63,Play-offs
+AFC Champions League Elite,asia,40,727,AFC Champions League,2025/2026,intl,11,M. Hashemnejad,4118084040,Tractor,414,1,,0,63,Play-offs
+AFC Champions League Elite,asia,40,727,AFC Champions League,2025/2026,intl,12,Y. Koizumi,540906400,Urawa Reds,5051,1,,0,63,Play-offs
+AFC Champions League Elite,asia,40,727,AFC Champions League,2025/2026,intl,13,S. Koroki,4153022589,Urawa Reds,5051,1,,0,63,Play-offs
+AFC Champions League Elite,asia,40,727,AFC Champions League,2025/2026,intl,14,Caio Lucas,959621660,Sharjah,370,1,,1,63,Play-offs
+AFC Champions League Elite,asia,40,727,AFC Champions League,2025/2026,intl,15,Mirahmetjan Muzepper,3302196765,Shanghai Port,2256,1,,0,63,Play-offs
+AFC Champions League Elite,asia,40,727,AFC Champions League,2025/2026,intl,4,José Ángel,1794671115,Lee Man,459,1,,0,64,Preliminary Round
+AFC Champions League Elite,asia,40,727,AFC Champions League,2025/2026,intl,5,Everton Camargo,3762185139,Lee Man,459,1,,0,64,Preliminary Round
+AFC Champions League Elite,asia,40,727,AFC Champions League,2025/2026,intl,6,Renan,3942647126,Shabab Al Ahli,364,1,,0,64,Preliminary Round
+AFC Champions League Elite,asia,40,727,AFC Champions League,2025/2026,intl,7,M. Dabbur,1219440978,Shabab Al Ahli,364,1,,0,64,Preliminary Round
+AFC Champions League Elite,asia,40,727,AFC Champions League,2025/2026,intl,8,K. Giyosov,3158967415,AGMK,392,1,,0,64,Preliminary Round
+AFC Champions League Elite,asia,40,727,AFC Champions League,2025/2026,intl,9,A. Gʻaniyev,1715995159,Shabab Al Ahli,364,1,,0,64,Preliminary Round
+AFC Champions League Elite,asia,40,727,AFC Champions League,2025/2026,intl,10,Y. Kanda,2608152984,BC Rangers,,1,,0,64,Preliminary Round
+AFC Champions League Elite,asia,40,727,AFC Champions League,2025/2026,intl,11,M. Lo,739295557,Hai Phong,8055,1,,0,64,Preliminary Round
+AFC Champions League Elite,asia,40,727,AFC Champions League,2025/2026,intl,12,Gil Martins,3360066769,Lee Man,459,1,,0,64,Preliminary Round
+AFC Champions League Elite,asia,40,727,AFC Champions League,2025/2026,intl,13,Nguyễn Tuấn Anh,3102382182,Hai Phong,8055,1,,0,64,Preliminary Round
+AFC Champions League Elite,asia,40,727,AFC Champions League,2025/2026,intl,1,F. Kessie,1418011210,Al Ahli,359,1,,0,4928,Round of 16
+AFC Champions League Elite,asia,40,727,AFC Champions League,2025/2026,intl,2,Galeno,3117891560,Al Ahli,359,1,3,0,4928,Round of 16
+AFC Champions League Elite,asia,40,727,AFC Champions League,2025/2026,intl,1,V. Qazaishvili,3609045884,Shandong Taishan,2251,1,,0,2486,2nd Preliminary Round
+AFC Champions League Elite,asia,40,727,AFC Champions League,2025/2026,intl,2,F. Sassi,2592099292,Al Gharafa,391,1,,0,2486,2nd Preliminary Round
+AFC Champions League Elite,asia,40,727,AFC Champions League,2025/2026,intl,3,R. Živković,77542852,Bangkok United,7566,1,,0,2486,2nd Preliminary Round
+AFC Champions League Elite,asia,40,727,AFC Champions League,2025/2026,intl,2,S. Azmoun,237956259,Shabab Al Ahli,364,1,,0,2487,1st Preliminary Round
+AFC Champions League Elite,asia,40,727,AFC Champions League,2025/2026,intl,3,M. Mohebi,2975177918,Sepahan,373,1,,0,2487,1st Preliminary Round
+AFC Champions League Elite,asia,40,727,AFC Champions League,2025/2026,intl,4,Yuri César,984103372,Shabab Al Ahli,364,1,,0,2487,1st Preliminary Round
+J1 League,asia,42,209,J1 League,2026,Japan,1,Ceara Leo,665488085,Kashima Antlers,5053,21,,,1179,Current
+J1 League,asia,42,209,J1 League,2026,Japan,2,Elias Rafael,728332189,Kyoto,5078,19,,,1179,Current
+J1 League,asia,42,209,J1 League,2026,Japan,3,Ratao Rafael,2291204951,Cerezo Osaka,5045,18,,,1179,Current
+J1 League,asia,42,209,J1 League,2026,Japan,4,T. Ito,945442537,Kawasaki Frontale,417,13,,,1179,Current
+J1 League,asia,42,209,J1 League,2026,Japan,5,Erison,1023740818,Kawasaki Frontale,417,12,,,1179,Current
+J1 League,asia,42,209,J1 League,2026,Japan,6,S. Inagaki,3735748446,Nagoya Grampus,415,11,,,1179,Current
+J1 League,asia,42,209,J1 League,2026,Japan,7,T. Miyashiro,2847631369,Vissel Kobe,383,11,,,1179,Current
+J1 League,asia,42,209,J1 League,2026,Japan,8,M. Hosoya,3142376158,Kashiwa Reysol,5055,11,,,1179,Current
+J1 League,asia,42,209,J1 League,2026,Japan,9,Y. Suzuki,1694496678,Kashima Antlers,5053,10,,,1179,Current
+J1 League,asia,42,209,J1 League,2026,Japan,10,K. Kitagawa,754381216,Shimizu S-Pulse,5047,10,,,1179,Current
+J1 League,asia,42,209,J1 League,2026,Japan,11,Y. Soma,3471715154,Machida,5085,9,,,1179,Current
+J1 League,asia,42,209,J1 League,2026,Japan,12,A. Suzuki,91477619,Shonan Bellmare,5054,9,,,1179,Current
+J1 League,asia,42,209,J1 League,2026,Japan,12,K. Kinoshita,2241613923,Sanfrecce Hiroshima,5046,9,,,1179,Current
+J1 League,asia,42,209,J1 League,2026,Japan,12,Erik,2824037431,Vissel Kobe,383,9,,,1179,Current
+J1 League,asia,42,209,J1 League,2026,Japan,15,A. Uenaka,4203334936,Yokohama F. Marinos,387,8,,,1179,Current
+J1 League,asia,42,209,J1 League,2026,Japan,16,Y. Osako,3973181521,Vissel Kobe,383,8,,,1179,Current
+J1 League,asia,42,209,J1 League,2026,Japan,17,T. Usami,3956824205,Gamba Osaka,411,8,,,1179,Current
+J1 League,asia,42,209,J1 League,2026,Japan,18,Marcelo Ryan,797433096,FC Tokyo,380,8,,,1179,Current
+J1 League,asia,42,209,J1 League,2026,Japan,19,L. Fernandes,1165749196,Cerezo Osaka,5045,7,,,1179,Current
+J1 League,asia,42,209,J1 League,2026,Japan,20,Y. Wakizaka,1054408498,Kawasaki Frontale,417,7,,,1179,Current
+K League 1,asia,43,219,K League 1,2026,Korea Republic,1,Jeon Jin-Woo,3801471358,Jeonbuk Motors,389,14,,0,1208,Current
+K League 1,asia,43,219,K League 1,2026,Korea Republic,2,Lee Ho-Jae,256614484,Pohang Steelers,396,13,,4,1208,Current
+K League 1,asia,43,219,K League 1,2026,Korea Republic,3,Joo Min-Kyu,426335617,Daejeon Hana Citizen,5160,13,,2,1208,Current
+K League 1,asia,43,219,K League 1,2026,Korea Republic,4,Pablo Sabbag,3373484706,Suwon,5173,13,,1,1208,Current
+K League 1,asia,43,219,K League 1,2026,Korea Republic,5,A. Compagno,4093009516,Jeonbuk Motors,389,12,,3,1208,Current
+K League 1,asia,43,219,K League 1,2026,Korea Republic,6,Bruno Mota,751827060,Anyang,5166,11,,1,1208,Current
+K League 1,asia,43,219,K League 1,2026,Korea Republic,8,Lee Dong-Gyeong,2160314586,Gimcheon Sangmu,5165,10,4,2,1208,Current
+K League 1,asia,43,219,K League 1,2026,Korea Republic,7,Park Sang-Hyeok,608224196,Gimcheon Sangmu,5165,10,,0,1208,Current
+K League 1,asia,43,219,K League 1,2026,Korea Republic,9,Matheus Oliveira,340684215,Anyang,5166,9,,0,1208,Current
+K League 1,asia,43,219,K League 1,2026,Korea Republic,10,Erick Farias,1876808339,Ulsan HD,379,9,,3,1208,Current
+K League 1,asia,43,219,K League 1,2026,Korea Republic,11,Yuri,3927970812,Jeju FC,5169,8,,1,1208,Current
+K League 1,asia,43,219,K League 1,2026,Korea Republic,12,Reis,252691871,Gwangju,5172,8,,0,1208,Current
+K League 1,asia,43,219,K League 1,2026,Korea Republic,13,J. Asani,1735065077,Gwangju,5172,8,,2,1208,Current
+K League 1,asia,43,219,K League 1,2026,Korea Republic,14,Willyan,2487968058,Suwon,5173,8,,2,1208,Current
+K League 1,asia,43,219,K League 1,2026,Korea Republic,15,J. Lingard,1867191391,Seoul,377,7,,3,1208,Current
+K League 1,asia,43,219,K League 1,2026,Korea Republic,1,Gerso,4048089438,Incheon United,5170,4,,0,3703,Relegation Round
+K League 1,asia,43,219,K League 1,2026,Korea Republic,2,M. Ishida,2110249513,Daejeon Hana Citizen,5160,3,2,0,3703,Relegation Round
+K League 1,asia,43,219,K League 1,2026,Korea Republic,1,Jeong Seung-Won,240580645,Suwon,5173,3,,0,3702,Championship Round
+K League 1,asia,43,219,K League 1,2026,Korea Republic,2,Wanderson,1882110541,Pohang Steelers,396,2,,0,3702,Championship Round
+K League 1,asia,43,219,K League 1,2026,Korea Republic,3,Joo Min-Kyu,426335617,Ulsan HD,379,2,,0,3702,Championship Round
+K League 1,asia,43,219,K League 1,2026,Korea Republic,4,Ko Seung-Beom,2522543409,Ulsan HD,379,2,,0,3702,Championship Round
+K League 1,asia,43,219,K League 1,2026,Korea Republic,5,Yang Min-Hyeok,717179376,Gangwon,5171,2,,0,3702,Championship Round
+K League 1,asia,43,219,K League 1,2026,Korea Republic,4,Kim Ju-Gong,2513600162,Jeju United,5169,2,,0,3703,Relegation Round
+K League 1,asia,43,219,K League 1,2026,Korea Republic,3,Kim Jun-Bum,1197883857,Daejeon Hana Citizen,5160,2,,0,3703,Relegation Round
+K League 1,asia,43,219,K League 1,2026,Korea Republic,15,Kim Ju-Yeop,724112934,Suwon,5173,1,,0,3702,Championship Round
+K League 1,asia,43,219,K League 1,2026,Korea Republic,6,Yago Cariello,804848121,Ulsan HD,379,1,,1,3702,Championship Round
+K League 1,asia,43,219,K League 1,2026,Korea Republic,7,Cho Young-Wook,1303765782,Seoul,377,1,,0,3702,Championship Round
+K League 1,asia,43,219,K League 1,2026,Korea Republic,8,Anderson Oliveira,2005614264,Suwon,5173,1,5,0,3702,Championship Round
+K League 1,asia,43,219,K League 1,2026,Korea Republic,9,A. Esaka,3237200115,Ulsan HD,379,1,,0,3702,Championship Round
+K League 1,asia,43,219,K League 1,2026,Korea Republic,10,Jung Seung-Bae,2610200341,Suwon,5173,1,,0,3702,Championship Round
+K League 1,asia,43,219,K League 1,2026,Korea Republic,11,Kang Sang-Woo,2049502281,Seoul,377,1,,0,3702,Championship Round
+K League 1,asia,43,219,K League 1,2026,Korea Republic,12,Kim Young-Bin,1405671522,Gangwon,5171,1,,0,3702,Championship Round
+K League 1,asia,43,219,K League 1,2026,Korea Republic,13,Kim Tae-Han,2022484967,Suwon,5173,1,,0,3702,Championship Round
+K League 1,asia,43,219,K League 1,2026,Korea Republic,14,Kim Seung-Sub,2327469565,Gimcheon Sangmu,5165,1,,0,3702,Championship Round
+K League 1,asia,43,219,K League 1,2026,Korea Republic,5,Lucas Barcelos,4215093032,Daegu,398,1,,0,3703,Relegation Round
+K League 1,asia,43,219,K League 1,2026,Korea Republic,15,Lee Ju-Yong,4050566378,Jeju United,5169,1,,0,3703,Relegation Round
+K League 1,asia,43,219,K League 1,2026,Korea Republic,14,Kwon Chang-Hoon,4293993811,Jeonbuk Motors,389,1,,0,3703,Relegation Round
+K League 1,asia,43,219,K League 1,2026,Korea Republic,13,A. Krivotsyuk,1860725,Daejeon Hana Citizen,5160,1,,0,3703,Relegation Round
+K League 1,asia,43,219,K League 1,2026,Korea Republic,12,Kim Jin-Gyu,3552057632,Jeonbuk Motors,389,1,2,0,3703,Relegation Round
+K League 1,asia,43,219,K League 1,2026,Korea Republic,11,Ji Eon-Hak,3702768889,Incheon United,5170,1,,0,3703,Relegation Round
+K League 1,asia,43,219,K League 1,2026,Korea Republic,10,Jang Sung-won,2715651743,Daegu,398,1,,0,3703,Relegation Round
+K League 1,asia,43,219,K League 1,2026,Korea Republic,9,Jefferson Galego,694890174,Jeju United,5169,1,,0,3703,Relegation Round
+K League 1,asia,43,219,K League 1,2026,Korea Republic,8,Hwang Jae-Won,1068130006,Daegu,398,1,2,1,3703,Relegation Round
+K League 1,asia,43,219,K League 1,2026,Korea Republic,7,Edgar,1236049362,Daegu,398,1,,0,3703,Relegation Round
+K League 1,asia,43,219,K League 1,2026,Korea Republic,6,Byeon Jun-Soo,104344946,Gwangju,5172,1,2,0,3703,Relegation Round
+Chinese Super League,asia,44,118,Chinese Super League,2026,China PR,1,Fabio Abreu,1760648460,Beijing Guoan,375,28,6,4,21477, - 2nd Stage
+Chinese Super League,asia,44,118,Chinese Super League,2026,China PR,1,F. Abreu,1760648460,Beijing Guoan,375,28,,,806,Current
+Chinese Super League,asia,44,118,Chinese Super League,2026,China PR,2,V. Qazaishvili,3609045884,Shandong Taishan,2251,27,4,,806,Current
+Chinese Super League,asia,44,118,Chinese Super League,2026,China PR,2,V. Qazaishvili,3609045884,Shandong Luneng,2251,27,5,1,21477, - 2nd Stage
+Chinese Super League,asia,44,118,Chinese Super League,2026,China PR,3,Leo,565238118,Shanghai Port,2256,21,,,806,Current
+Chinese Super League,asia,44,118,Chinese Super League,2026,China PR,3,Leonardo,565238118,Shanghai SIPG,2256,21,6,0,21477, - 2nd Stage
+Chinese Super League,asia,44,118,Chinese Super League,2026,China PR,4,A. Quiles,3107239050,Tianjin Jinmen Tiger,2262,16,,,806,Current
+Chinese Super League,asia,44,118,Chinese Super League,2026,China PR,4,Quiles Alberto,3107239050,Tianjin Teda,2262,16,,0,21477, - 2nd Stage
+Chinese Super League,asia,44,118,Chinese Super League,2026,China PR,5,Silva Felipe,744325434,Chengdu Rongcheng,2236,15,,,806,Current
+Chinese Super League,asia,44,118,Chinese Super League,2026,China PR,5,Felipe,744325434,Chengdu Better City,2236,15,4,1,21477, - 2nd Stage
+Chinese Super League,asia,44,118,Chinese Super League,2026,China PR,6,F. Acheampong,2061293215,Henan Songshan Longmen,2255,14,,,806,Current
+Chinese Super League,asia,44,118,Chinese Super League,2026,China PR,6,F. Acheampong,2061293215,Henan Jianye,2255,14,,0,21477, - 2nd Stage
+Chinese Super League,asia,44,118,Chinese Super League,2026,China PR,7,Zeca,839837359,Shandong Luneng,2251,12,8,0,21477, - 2nd Stage
+Chinese Super League,asia,44,118,Chinese Super League,2026,China PR,7,Zeca,839837359,Shandong Taishan,2251,12,3,,806,Current
+Chinese Super League,asia,44,118,Chinese Super League,2026,China PR,10,Silva Wellington,1666365471,Qingdao Jonoon,13465,11,,1,21477, - 2nd Stage
+Chinese Super League,asia,44,118,Chinese Super League,2026,China PR,8,Henrique Pedro,265735812,Yunnan Yukun,31511,11,,2,21477, - 2nd Stage
+Chinese Super League,asia,44,118,Chinese Super League,2026,China PR,9,Yudong Wang,1232885730,Zhejiang Greentown,2234,11,5,0,21477, - 2nd Stage
+Chinese Super League,asia,44,118,Chinese Super League,2026,China PR,11,Cryzan,1463740137,Shandong Luneng,2251,11,9,3,21477, - 2nd Stage
+Chinese Super League,asia,44,118,Chinese Super League,2026,China PR,12,Gabrielzinho,626132797,Shanghai SIPG,2256,11,5,3,21477, - 2nd Stage
+Chinese Super League,asia,44,118,Chinese Super League,2026,China PR,12,Silva Wellington,1666365471,Qingdao Hainiu,13465,11,,,806,Current
+Chinese Super League,asia,44,118,Chinese Super League,2026,China PR,11,H. Pedro,265735812,Yunnan Yukun,31511,11,,,806,Current
+Chinese Super League,asia,44,118,Chinese Super League,2026,China PR,9,Y. Wang,1232885730,Zhejiang Professional,2234,11,,,806,Current
+Chinese Super League,asia,44,118,Chinese Super League,2026,China PR,9,Gabrielzinho,626132797,Shanghai Port,2256,11,,,806,Current
+Chinese Super League,asia,44,118,Chinese Super League,2026,China PR,8,C. da Cruz Queiroz Barcelo,1463740137,Shandong Taishan,2251,11,,,806,Current
+Chinese Super League,asia,44,118,Chinese Super League,2026,China PR,13,Wesley,984438318,Sichuan,2241,10,,1,21477, - 2nd Stage
+Chinese Super League,asia,44,118,Chinese Super League,2026,China PR,14,F. Andrijašević,3525310605,Zhejiang Greentown,2234,10,5,1,21477, - 2nd Stage
+Chinese Super League,asia,44,118,Chinese Super League,2026,China PR,15,Luís André,1200625445,Shanghai Shenhua,381,10,,3,21477, - 2nd Stage
+Chinese Super League,asia,44,118,Chinese Super League,2026,China PR,17,A. Yakubu,3758590957,Qingdao Youth Island,19588,10,7,1,21477, - 2nd Stage
+Chinese Super League,asia,44,118,Chinese Super League,2026,China PR,18,Cariello Yago,804848121,Zhejiang Greentown,2234,10,,0,21477, - 2nd Stage
+Chinese Super League,asia,44,118,Chinese Super League,2026,China PR,16,Felippe Wanderson,484836449,Henan Jianye,2255,10,6,7,21477, - 2nd Stage
+Chinese Super League,asia,44,118,Chinese Super League,2026,China PR,19,Cariello Yago,804848121,Zhejiang Professional,2234,10,,,806,Current
+Chinese Super League,asia,44,118,Chinese Super League,2026,China PR,17,Moraes Wesley,984438318,Shenzhen Xinpengcheng,2241,10,,,806,Current
+Chinese Super League,asia,44,118,Chinese Super League,2026,China PR,17,Luis Andre,1200625445,Shanghai Shenhua,381,10,,,806,Current
+Chinese Super League,asia,44,118,Chinese Super League,2026,China PR,16,F. Andrijasevic,3525310605,Zhejiang Professional,2234,10,,,806,Current
+Chinese Super League,asia,44,118,Chinese Super League,2026,China PR,15,Cardoso Felippe,484836449,Henan Songshan Longmen,2255,10,,,806,Current
+Chinese Super League,asia,44,118,Chinese Super League,2026,China PR,14,A. Yakubu,3758590957,Qingdao West Coast,19588,10,4,,806,Current
+Chinese Super League,asia,44,118,Chinese Super League,2026,China PR,13,Shihao Wei,1868060950,Chengdu Rongcheng,2236,10,,,806,Current
+Chinese Super League,asia,44,118,Chinese Super League,2026,China PR,20,A. Tudorie,2444583332,Wuhan Three Towns,11814,10,,,806,Current
+Chinese Super League,asia,44,118,Chinese Super League,2026,China PR,19,O. Maritu,3405505671,Yunnan Yukun,31511,9,8,2,21477, - 2nd Stage
+Chinese Super League,asia,44,118,Chinese Super League,2026,China PR,20,Xi Wu,688230281,Shanghai Shenhua,381,9,5,3,21477, - 2nd Stage
+Chinese Super League,asia,44,118,Chinese Super League,2026,China PR,21,A. Tudorie,2444583332,Wuhan Three Towns,11814,9,,3,21477, - 2nd Stage
+Chinese Super League,asia,44,118,Chinese Super League,2026,China PR,22,Shihao Wei,1868060950,Chengdu Better City,2236,9,8,1,21477, - 2nd Stage
+Chinese Super League,asia,44,118,Chinese Super League,2026,China PR,24,Mineiro Saulo,2427907754,Shanghai Shenhua,381,8,6,0,21477, - 2nd Stage
+Chinese Super League,asia,44,118,Chinese Super League,2026,China PR,26,Rômulo,3164670858,Chengdu Better City,2236,8,7,0,21477, - 2nd Stage
+Chinese Super League,asia,44,118,Chinese Super League,2026,China PR,25,Long Tan,2701843655,Changchun Yatai,2233,8,,0,21477, - 2nd Stage
+Chinese Super League,asia,44,118,Chinese Super League,2026,China PR,23,A. Mitriță,3837728296,Zhejiang Greentown,2234,8,7,0,21477, - 2nd Stage
+Chinese Super League,asia,44,118,Chinese Super League,2026,China PR,27,Gustavo,1145396825,Shanghai SIPG,2256,7,,1,21477, - 2nd Stage
+Chinese Super League,asia,44,118,Chinese Super League,2026,China PR,28,Davidson,2202649165,Qingdao Youth Island,19588,7,,2,21477, - 2nd Stage
+Chinese Super League,asia,44,118,Chinese Super League,2026,China PR,29,D. Lamkel Zé,830187591,Qingdao Jonoon,13465,7,,0,21477, - 2nd Stage
+Chinese Super League,asia,44,118,Chinese Super League,2026,China PR,30,Serginho,502434398,Beijing Guoan,375,7,5,0,21477, - 2nd Stage
+Chinese Super League,asia,44,118,Chinese Super League,2026,China PR,31,Xadas Bruno,3989773535,Tianjin Teda,2262,6,5,3,21477, - 2nd Stage
+Chinese Super League,asia,44,118,Chinese Super League,2026,China PR,42,O. Omoijuanfo,654526847,Changchun Yatai,2233,6,,1,21477, - 2nd Stage
+Chinese Super League,asia,44,118,Chinese Super League,2026,China PR,41,Qianglong Tao,4107583375,Zhejiang Greentown,2234,6,,0,21477, - 2nd Stage
+Chinese Super League,asia,44,118,Chinese Super League,2026,China PR,40,Maia Lucas,2561975020,Henan Jianye,2255,6,,0,21477, - 2nd Stage
+Chinese Super League,asia,44,118,Chinese Super League,2026,China PR,39,Sauer Gustavo,4147672801,Wuhan Three Towns,11814,6,6,1,21477, - 2nd Stage
+Chinese Super League,asia,44,118,Chinese Super League,2026,China PR,38,Xinxiang Li,2640826560,Shanghai SIPG,2256,6,,0,21477, - 2nd Stage
+Chinese Super League,asia,44,118,Chinese Super League,2026,China PR,37,García Edu,3777020708,Sichuan,2241,6,5,0,21477, - 2nd Stage
+Chinese Super League,asia,44,118,Chinese Super League,2026,China PR,36,C. Malele,1400638153,Dalian Zhixing,31510,6,,2,21477, - 2nd Stage
+Chinese Super League,asia,44,118,Chinese Super League,2026,China PR,35,Liuyu Duan,2156988416,Qingdao Youth Island,19588,6,,0,21477, - 2nd Stage
+Chinese Super League,asia,44,118,Chinese Super League,2026,China PR,34,Yuning Zhang,3140197016,Beijing Guoan,375,6,,0,21477, - 2nd Stage
+Chinese Super League,asia,44,118,Chinese Super League,2026,China PR,33,Liangming Lin,1191862138,Beijing Guoan,375,6,,0,21477, - 2nd Stage
+Chinese Super League,asia,44,118,Chinese Super League,2026,China PR,32,Hanchao Yu,580998872,Shanghai Shenhua,381,6,,0,21477, - 2nd Stage
+Chinese Super League,asia,44,118,Chinese Super League,2026,China PR,43,Yihao Zhong,3826638854,Henan Jianye,2255,5,,0,21477, - 2nd Stage
+Chinese Super League,asia,44,118,Chinese Super League,2026,China PR,44,Nazário Bruno,3296019081,Henan Jianye,2255,5,9,3,21477, - 2nd Stage
+Chinese Super League,asia,44,118,Chinese Super League,2026,China PR,45,Henrique Rodrigo,528153907,Meizhou Kejia,2237,5,6,1,21477, - 2nd Stage
+Chinese Super League,asia,44,118,Chinese Super League,2026,China PR,46,E. Sarić,451524720,Qingdao Jonoon,13465,5,,2,21477, - 2nd Stage
+Chinese Super League,asia,44,118,Chinese Super League,2026,China PR,47,Vital Mateus,575426950,Shanghai SIPG,2256,5,8,1,21477, - 2nd Stage
+Chinese Super League,asia,44,118,Chinese Super League,2026,China PR,48,Tim Chow,1884690409,Chengdu Better City,2236,5,,1,21477, - 2nd Stage
+Chinese Super League,asia,44,118,Chinese Super League,2026,China PR,49,Indio,1927825905,Qingdao Youth Island,19588,5,,1,21477, - 2nd Stage
+Chinese Super League,asia,44,118,Chinese Super League,2026,China PR,50,Qiuming Wang,3845755,Tianjin Teda,2262,5,,0,21477, - 2nd Stage

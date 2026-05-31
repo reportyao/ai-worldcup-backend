@@ -1,0 +1,1156 @@
+{
+  "competition": {
+    "name": "FIFA World Cup 2026",
+    "season": 2026,
+    "api_sports_league_id": 1,
+    "expected_team_count": 48,
+    "host_countries": [
+      "Canada",
+      "Mexico",
+      "United States"
+    ],
+    "start_date": "2026-06-11",
+    "end_date": "2026-07-19"
+  },
+  "metadata": {
+    "generated_at": "2026-05-31T11:59:53+00:00",
+    "primary_public_source": "https://en.wikipedia.org/wiki/2026_FIFA_World_Cup_qualification",
+    "api_provider_requested_by_user": "https://apifootball.com/",
+    "api_provider_endpoint": "https://apiv3.apifootball.com/",
+    "validation": {
+      "generated_at": "2026-05-31T11:59:53+00:00",
+      "expected_team_count": 48,
+      "actual_team_count": 48,
+      "team_count_ok": true,
+      "duplicate_names": [],
+      "missing_confederation": [],
+      "missing_fifa_code": [],
+      "counts_by_confederation": {
+        "CONCACAF": 6,
+        "AFC": 9,
+        "OFC": 1,
+        "CONMEBOL": 6,
+        "CAF": 10,
+        "UEFA": 16
+      },
+      "confederation_count_mismatches": {},
+      "hosts_ok": true,
+      "host_names": [
+        "Canada",
+        "Mexico",
+        "United States"
+      ],
+      "debutants_ok": true,
+      "debutant_names": [
+        "Cape Verde",
+        "Curaçao",
+        "Jordan",
+        "Uzbekistan"
+      ],
+      "apifootball_status": {
+        "provider": "apifootball.com",
+        "available": true,
+        "status": "ok",
+        "leagues_raw_file": "/home/ubuntu/worldcup-work/data/worldcup-2026/raw/apifootball_get_leagues.json",
+        "world_cup_league_candidates": [
+          {
+            "country_id": "214",
+            "country_name": "South America",
+            "league_id": "27",
+            "league_name": "CONMEBOL World Cup Qualifiers",
+            "league_season": "2026",
+            "league_logo": "https://apiv3.apifootball.com/badges/logo_leagues/27_wc-qualification-south-america.png",
+            "country_logo": ""
+          },
+          {
+            "country_id": "160",
+            "country_name": "Europe",
+            "league_id": "24",
+            "league_name": "UEFA World Cup Qualifiers",
+            "league_season": "2026",
+            "league_logo": "https://apiv3.apifootball.com/badges/logo_leagues/24_wc-qualification-europe.png",
+            "country_logo": "https://apiv3.apifootball.com/badges/logo_country/160_europe.png"
+          },
+          {
+            "country_id": "8",
+            "country_name": "Worldcup",
+            "league_id": "28",
+            "league_name": "World Cup",
+            "league_season": "2026",
+            "league_logo": "https://apiv3.apifootball.com/badges/logo_leagues/28_world-cup.png",
+            "country_logo": ""
+          },
+          {
+            "country_id": "8",
+            "country_name": "Worldcup",
+            "league_id": "19",
+            "league_name": "FIFA Intercontinental Cup",
+            "league_season": "2025",
+            "league_logo": "https://apiv3.apifootball.com/badges/logo_leagues/19_fifa-club-world-cup.png",
+            "country_logo": ""
+          },
+          {
+            "country_id": "8",
+            "country_name": "Worldcup",
+            "league_id": "22",
+            "league_name": "AFC World Cup Qualifiers",
+            "league_season": "2026",
+            "league_logo": "https://apiv3.apifootball.com/badges/logo_leagues/22_wc-qualification-asia.png",
+            "country_logo": ""
+          },
+          {
+            "country_id": "8",
+            "country_name": "Worldcup",
+            "league_id": "21",
+            "league_name": "CAF World Cup Qualifiers",
+            "league_season": "2026",
+            "league_logo": "https://apiv3.apifootball.com/badges/logo_leagues/21_wc-qualification-africa.png",
+            "country_logo": ""
+          },
+          {
+            "country_id": "2",
+            "country_name": "intl",
+            "league_id": "7555",
+            "league_name": "Concacaf Women's World Cup Qualifiers",
+            "league_season": "2026",
+            "league_logo": "",
+            "country_logo": "https://apiv3.apifootball.com/badges/logo_country/2_intl.png"
+          },
+          {
+            "country_id": "8",
+            "country_name": "Worldcup",
+            "league_id": "23",
+            "league_name": "Concacaf World Cup Qualifiers",
+            "league_season": "2026",
+            "league_logo": "https://apiv3.apifootball.com/badges/logo_leagues/23_wc-qualification-concacaf.png",
+            "country_logo": ""
+          },
+          {
+            "country_id": "133",
+            "country_name": "World",
+            "league_id": "8141",
+            "league_name": "FIFA Club World Cup",
+            "league_season": "2025",
+            "league_logo": "",
+            "country_logo": "https://apiv3.apifootball.com/badges/logo_country/133_world.png"
+          },
+          {
+            "country_id": "2",
+            "country_name": "intl",
+            "league_id": "8158",
+            "league_name": "FIFA Club World Cup Play-In",
+            "league_season": "2025",
+            "league_logo": "",
+            "country_logo": "https://apiv3.apifootball.com/badges/logo_country/2_intl.png"
+          },
+          {
+            "country_id": "2",
+            "country_name": "intl",
+            "league_id": "7997",
+            "league_name": "FIFA U17 Women's World Cup",
+            "league_season": "2025",
+            "league_logo": "",
+            "country_logo": "https://apiv3.apifootball.com/badges/logo_country/2_intl.png"
+          },
+          {
+            "country_id": "8",
+            "country_name": "Worldcup",
+            "league_id": "415",
+            "league_name": "FIFA U17 World Cup",
+            "league_season": "2026",
+            "league_logo": "https://apiv3.apifootball.com/badges/logo_leagues/415_u17-world-cup.png",
+            "country_logo": ""
+          },
+          {
+            "country_id": "2",
+            "country_name": "intl",
+            "league_id": "7548",
+            "league_name": "FIFA U20 Women's World Cup",
+            "league_season": "2024",
+            "league_logo": "",
+            "country_logo": "https://apiv3.apifootball.com/badges/logo_country/2_intl.png"
+          },
+          {
+            "country_id": "8",
+            "country_name": "Worldcup",
+            "league_id": "425",
+            "league_name": "FIFA U20 World Cup",
+            "league_season": "2025",
+            "league_logo": "",
+            "country_logo": ""
+          },
+          {
+            "country_id": "166",
+            "country_name": "World cup",
+            "league_id": "20",
+            "league_name": "FIFA Women's World Cup",
+            "league_season": "2023",
+            "league_logo": "https://apiv3.apifootball.com/badges/logo_leagues/20_women's-world-cup.png",
+            "country_logo": "https://apiv3.apifootball.com/badges/logo_country/166_world-cup.png"
+          },
+          {
+            "country_id": "8",
+            "country_name": "Worldcup",
+            "league_id": "26",
+            "league_name": "OFC World Cup Qualifiers",
+            "league_season": "2026",
+            "league_logo": "https://apiv3.apifootball.com/badges/logo_leagues/26_wc-qualification-oceania.png",
+            "country_logo": ""
+          },
+          {
+            "country_id": "8",
+            "country_name": "Worldcup",
+            "league_id": "717",
+            "league_name": "Women's Asian Cup Qualification",
+            "league_season": "2026",
+            "league_logo": "",
+            "country_logo": ""
+          }
+        ],
+        "selected_league": {
+          "country_id": "8",
+          "country_name": "Worldcup",
+          "league_id": "28",
+          "league_name": "World Cup",
+          "league_season": "2026",
+          "league_logo": "https://apiv3.apifootball.com/badges/logo_leagues/28_world-cup.png",
+          "country_logo": ""
+        },
+        "teams_raw_file": "/home/ubuntu/worldcup-work/data/worldcup-2026/raw/apifootball_get_teams_league_28.json",
+        "teams_count": 48
+      },
+      "api_sports_status": {
+        "provider": "api-football.com/api-sports",
+        "available": false,
+        "league": 1,
+        "season": 2026,
+        "status": "blocked_no_key",
+        "error": "HTTP 403: {'get': '', 'parameters': [], 'errors': {'token': 'Missing application key, Check our documentation on how to add your API key in headers.', 'error': '4xHe'}, 'results': 0, 'paging': {'current': 1, 'total': 1}, 'response': []}",
+        "raw_file": "/home/ubuntu/worldcup-work/data/worldcup-2026/raw/api_sports_teams_league_1_season_2026_no_key.json"
+      },
+      "api_sports_name_diff": null,
+      "apifootball_name_diff": []
+    }
+  },
+  "teams": [
+    {
+      "name": "Australia",
+      "fifa_code": "AUS",
+      "confederation": "AFC",
+      "qualification_method": "AFC third round Group C runners-up",
+      "qualification_date": "10 June 2025",
+      "total_times_qualified": "7",
+      "last_time_qualified": "2022",
+      "current_consecutive_appearances": "6",
+      "previous_best_performance": "Round of 16 ( 2006 , 2022 )",
+      "is_host": false,
+      "is_debutant": false,
+      "source": "https://en.wikipedia.org/wiki/2026_FIFA_World_Cup_qualification",
+      "api_football_team_id": "529",
+      "logo_url": "https://apiv3.apifootball.com/badges/529_australia.jpg",
+      "raw_names_seen": [
+        "Australia"
+      ]
+    },
+    {
+      "name": "Iran",
+      "fifa_code": "IRN",
+      "confederation": "AFC",
+      "qualification_method": "AFC third round Group A winners",
+      "qualification_date": "25 March 2025",
+      "total_times_qualified": "7",
+      "last_time_qualified": "2022",
+      "current_consecutive_appearances": "4",
+      "previous_best_performance": "Group stage ( 1978 , 1998 , 2006 , 2014 , 2018 , 2022 )",
+      "is_host": false,
+      "is_debutant": false,
+      "source": "https://en.wikipedia.org/wiki/2026_FIFA_World_Cup_qualification",
+      "api_football_team_id": "644",
+      "logo_url": "https://apiv3.apifootball.com/badges/644_ir-iran.jpg",
+      "raw_names_seen": [
+        "Iran",
+        "IR Iran"
+      ]
+    },
+    {
+      "name": "Iraq",
+      "fifa_code": "IRQ",
+      "confederation": "AFC",
+      "qualification_method": "Inter-confederation Pathway 2 play-off winners",
+      "qualification_date": "31 March 2026",
+      "total_times_qualified": "2",
+      "last_time_qualified": "1986",
+      "current_consecutive_appearances": "1",
+      "previous_best_performance": "Group stage ( 1986 )",
+      "is_host": false,
+      "is_debutant": false,
+      "source": "https://en.wikipedia.org/wiki/2026_FIFA_World_Cup_qualification",
+      "api_football_team_id": "642",
+      "logo_url": "https://apiv3.apifootball.com/badges/642_iraq.jpg",
+      "raw_names_seen": [
+        "Iraq"
+      ]
+    },
+    {
+      "name": "Japan",
+      "fifa_code": "JPN",
+      "confederation": "AFC",
+      "qualification_method": "AFC third round Group C winners",
+      "qualification_date": "20 March 2025",
+      "total_times_qualified": "8",
+      "last_time_qualified": "2022",
+      "current_consecutive_appearances": "8",
+      "previous_best_performance": "Round of 16 ( 2002 , 2010 , 2018 , 2022 )",
+      "is_host": false,
+      "is_debutant": false,
+      "source": "https://en.wikipedia.org/wiki/2026_FIFA_World_Cup_qualification",
+      "api_football_team_id": "540",
+      "logo_url": "https://apiv3.apifootball.com/badges/540_japan.jpg",
+      "raw_names_seen": [
+        "Japan"
+      ]
+    },
+    {
+      "name": "Jordan",
+      "fifa_code": "JOR",
+      "confederation": "AFC",
+      "qualification_method": "AFC third round Group B runners-up",
+      "qualification_date": "5 June 2025",
+      "total_times_qualified": "1",
+      "last_time_qualified": "N/A",
+      "current_consecutive_appearances": "1",
+      "previous_best_performance": "N/A",
+      "is_host": false,
+      "is_debutant": true,
+      "source": "https://en.wikipedia.org/wiki/2026_FIFA_World_Cup_qualification",
+      "api_football_team_id": "641",
+      "logo_url": "https://apiv3.apifootball.com/badges/641_jordan.jpg",
+      "raw_names_seen": [
+        "Jordan"
+      ]
+    },
+    {
+      "name": "Qatar",
+      "fifa_code": "QAT",
+      "confederation": "AFC",
+      "qualification_method": "AFC fourth round Group A winners",
+      "qualification_date": "14 October 2025",
+      "total_times_qualified": "2",
+      "last_time_qualified": "2022",
+      "current_consecutive_appearances": "2",
+      "previous_best_performance": "Group stage ( 2022 )",
+      "is_host": false,
+      "is_debutant": false,
+      "source": "https://en.wikipedia.org/wiki/2026_FIFA_World_Cup_qualification",
+      "api_football_team_id": "538",
+      "logo_url": "https://apiv3.apifootball.com/badges/538_qatar.jpg",
+      "raw_names_seen": [
+        "Qatar"
+      ]
+    },
+    {
+      "name": "Saudi Arabia",
+      "fifa_code": "KSA",
+      "confederation": "AFC",
+      "qualification_method": "AFC fourth round Group B winners",
+      "qualification_date": "14 October 2025",
+      "total_times_qualified": "7",
+      "last_time_qualified": "2022",
+      "current_consecutive_appearances": "3",
+      "previous_best_performance": "Round of 16 ( 1994 )",
+      "is_host": false,
+      "is_debutant": false,
+      "source": "https://en.wikipedia.org/wiki/2026_FIFA_World_Cup_qualification",
+      "api_football_team_id": "647",
+      "logo_url": "https://apiv3.apifootball.com/badges/647_saudi-arabia.jpg",
+      "raw_names_seen": [
+        "Saudi Arabia"
+      ]
+    },
+    {
+      "name": "South Korea",
+      "fifa_code": "KOR",
+      "confederation": "AFC",
+      "qualification_method": "AFC third round Group B winners",
+      "qualification_date": "5 June 2025",
+      "total_times_qualified": "12",
+      "last_time_qualified": "2022",
+      "current_consecutive_appearances": "11",
+      "previous_best_performance": "Fourth place ( 2002 )",
+      "is_host": false,
+      "is_debutant": false,
+      "source": "https://en.wikipedia.org/wiki/2026_FIFA_World_Cup_qualification",
+      "api_football_team_id": "651",
+      "logo_url": "https://apiv3.apifootball.com/badges/651_korea-republic.jpg",
+      "raw_names_seen": [
+        "South Korea",
+        "Korea Republic"
+      ]
+    },
+    {
+      "name": "Uzbekistan",
+      "fifa_code": "UZB",
+      "confederation": "AFC",
+      "qualification_method": "AFC third round Group A runners-up",
+      "qualification_date": "5 June 2025",
+      "total_times_qualified": "1",
+      "last_time_qualified": "N/A",
+      "current_consecutive_appearances": "1",
+      "previous_best_performance": "N/A",
+      "is_host": false,
+      "is_debutant": true,
+      "source": "https://en.wikipedia.org/wiki/2026_FIFA_World_Cup_qualification",
+      "api_football_team_id": "646",
+      "logo_url": "https://apiv3.apifootball.com/badges/646_uzbekistan.jpg",
+      "raw_names_seen": [
+        "Uzbekistan"
+      ]
+    },
+    {
+      "name": "Algeria",
+      "fifa_code": "ALG",
+      "confederation": "CAF",
+      "qualification_method": "CAF Group G winners",
+      "qualification_date": "9 October 2025",
+      "total_times_qualified": "5",
+      "last_time_qualified": "2014",
+      "current_consecutive_appearances": "1",
+      "previous_best_performance": "Round of 16 ( 2014 )",
+      "is_host": false,
+      "is_debutant": false,
+      "source": "https://en.wikipedia.org/wiki/2026_FIFA_World_Cup_qualification",
+      "api_football_team_id": "734",
+      "logo_url": "https://apiv3.apifootball.com/badges/734_algeria.jpg",
+      "raw_names_seen": [
+        "Algeria"
+      ]
+    },
+    {
+      "name": "Cape Verde",
+      "fifa_code": "CPV",
+      "confederation": "CAF",
+      "qualification_method": "CAF Group D winners",
+      "qualification_date": "13 October 2025",
+      "total_times_qualified": "1",
+      "last_time_qualified": "N/A",
+      "current_consecutive_appearances": "1",
+      "previous_best_performance": "N/A",
+      "is_host": false,
+      "is_debutant": true,
+      "source": "https://en.wikipedia.org/wiki/2026_FIFA_World_Cup_qualification",
+      "api_football_team_id": "732",
+      "logo_url": "https://apiv3.apifootball.com/badges/732_cabo-verde.jpg",
+      "raw_names_seen": [
+        "Cape Verde",
+        "Cabo Verde"
+      ]
+    },
+    {
+      "name": "DR Congo",
+      "fifa_code": "COD",
+      "confederation": "CAF",
+      "qualification_method": "Inter-confederation Pathway 1 play-off winners",
+      "qualification_date": "31 March 2026",
+      "total_times_qualified": "2",
+      "last_time_qualified": "1974",
+      "current_consecutive_appearances": "1",
+      "previous_best_performance": "Group stage ( 1974 )",
+      "is_host": false,
+      "is_debutant": false,
+      "source": "https://en.wikipedia.org/wiki/2026_FIFA_World_Cup_qualification",
+      "api_football_team_id": "728",
+      "logo_url": "https://apiv3.apifootball.com/badges/728_congo-dr.jpg",
+      "raw_names_seen": [
+        "DR Congo",
+        "Congo DR"
+      ]
+    },
+    {
+      "name": "Egypt",
+      "fifa_code": "EGY",
+      "confederation": "CAF",
+      "qualification_method": "CAF Group A winners",
+      "qualification_date": "8 October 2025",
+      "total_times_qualified": "4",
+      "last_time_qualified": "2018",
+      "current_consecutive_appearances": "1",
+      "previous_best_performance": "First round ( 1934 ), group stage ( 1990 , 2018 )",
+      "is_host": false,
+      "is_debutant": false,
+      "source": "https://en.wikipedia.org/wiki/2026_FIFA_World_Cup_qualification",
+      "api_football_team_id": "716",
+      "logo_url": "https://apiv3.apifootball.com/badges/716_egypt.jpg",
+      "raw_names_seen": [
+        "Egypt"
+      ]
+    },
+    {
+      "name": "Ghana",
+      "fifa_code": "GHA",
+      "confederation": "CAF",
+      "qualification_method": "CAF Group I winners",
+      "qualification_date": "12 October 2025",
+      "total_times_qualified": "5",
+      "last_time_qualified": "2022",
+      "current_consecutive_appearances": "2",
+      "previous_best_performance": "Quarter-finals ( 2010 )",
+      "is_host": false,
+      "is_debutant": false,
+      "source": "https://en.wikipedia.org/wiki/2026_FIFA_World_Cup_qualification",
+      "api_football_team_id": "725",
+      "logo_url": "https://apiv3.apifootball.com/badges/725_ghana.jpg",
+      "raw_names_seen": [
+        "Ghana"
+      ]
+    },
+    {
+      "name": "Ivory Coast",
+      "fifa_code": "CIV",
+      "confederation": "CAF",
+      "qualification_method": "CAF Group F winners",
+      "qualification_date": "14 October 2025",
+      "total_times_qualified": "4",
+      "last_time_qualified": "2014",
+      "current_consecutive_appearances": "1",
+      "previous_best_performance": "Group stage ( 2006 , 2010 , 2014 )",
+      "is_host": false,
+      "is_debutant": false,
+      "source": "https://en.wikipedia.org/wiki/2026_FIFA_World_Cup_qualification",
+      "api_football_team_id": "738",
+      "logo_url": "https://apiv3.apifootball.com/badges/738_ivory-coast.jpg",
+      "raw_names_seen": [
+        "Ivory Coast"
+      ]
+    },
+    {
+      "name": "Morocco",
+      "fifa_code": "MAR",
+      "confederation": "CAF",
+      "qualification_method": "CAF Group E winners",
+      "qualification_date": "5 September 2025",
+      "total_times_qualified": "7",
+      "last_time_qualified": "2022",
+      "current_consecutive_appearances": "3",
+      "previous_best_performance": "Fourth place ( 2022 )",
+      "is_host": false,
+      "is_debutant": false,
+      "source": "https://en.wikipedia.org/wiki/2026_FIFA_World_Cup_qualification",
+      "api_football_team_id": "717",
+      "logo_url": "https://apiv3.apifootball.com/badges/717_morocco.jpg",
+      "raw_names_seen": [
+        "Morocco"
+      ]
+    },
+    {
+      "name": "Senegal",
+      "fifa_code": "SEN",
+      "confederation": "CAF",
+      "qualification_method": "CAF Group B winners",
+      "qualification_date": "14 October 2025",
+      "total_times_qualified": "4",
+      "last_time_qualified": "2022",
+      "current_consecutive_appearances": "3",
+      "previous_best_performance": "Quarter-finals ( 2002 )",
+      "is_host": false,
+      "is_debutant": false,
+      "source": "https://en.wikipedia.org/wiki/2026_FIFA_World_Cup_qualification",
+      "api_football_team_id": "720",
+      "logo_url": "https://apiv3.apifootball.com/badges/720_senegal.jpg",
+      "raw_names_seen": [
+        "Senegal"
+      ]
+    },
+    {
+      "name": "South Africa",
+      "fifa_code": "RSA",
+      "confederation": "CAF",
+      "qualification_method": "CAF Group C winners",
+      "qualification_date": "14 October 2025",
+      "total_times_qualified": "4",
+      "last_time_qualified": "2010",
+      "current_consecutive_appearances": "1",
+      "previous_best_performance": "Group stage ( 1998 , 2002 , 2010 )",
+      "is_host": false,
+      "is_debutant": false,
+      "source": "https://en.wikipedia.org/wiki/2026_FIFA_World_Cup_qualification",
+      "api_football_team_id": "726",
+      "logo_url": "https://apiv3.apifootball.com/badges/726_south-africa.jpg",
+      "raw_names_seen": [
+        "South Africa"
+      ]
+    },
+    {
+      "name": "Tunisia",
+      "fifa_code": "TUN",
+      "confederation": "CAF",
+      "qualification_method": "CAF Group H winners",
+      "qualification_date": "8 September 2025",
+      "total_times_qualified": "7",
+      "last_time_qualified": "2022",
+      "current_consecutive_appearances": "3",
+      "previous_best_performance": "Group stage ( 1978 , 1998 , 2002 , 2006 , 2018 , 2022 )",
+      "is_host": false,
+      "is_debutant": false,
+      "source": "https://en.wikipedia.org/wiki/2026_FIFA_World_Cup_qualification",
+      "api_football_team_id": "719",
+      "logo_url": "https://apiv3.apifootball.com/badges/719_tunisia.jpg",
+      "raw_names_seen": [
+        "Tunisia"
+      ]
+    },
+    {
+      "name": "Canada",
+      "fifa_code": "CAN",
+      "confederation": "CONCACAF",
+      "qualification_method": "Hosts",
+      "qualification_date": "14 February 2023",
+      "total_times_qualified": "3",
+      "last_time_qualified": "2022",
+      "current_consecutive_appearances": "2",
+      "previous_best_performance": "Group stage ( 1986 , 2022 )",
+      "is_host": true,
+      "is_debutant": false,
+      "source": "https://en.wikipedia.org/wiki/2026_FIFA_World_Cup_qualification",
+      "api_football_team_id": "512",
+      "logo_url": "https://apiv3.apifootball.com/badges/512_canada.jpg",
+      "raw_names_seen": [
+        "Canada"
+      ]
+    },
+    {
+      "name": "Curaçao",
+      "fifa_code": "CUW",
+      "confederation": "CONCACAF",
+      "qualification_method": "CONCACAF third round Group B winners",
+      "qualification_date": "18 November 2025",
+      "total_times_qualified": "1",
+      "last_time_qualified": "N/A",
+      "current_consecutive_appearances": "1",
+      "previous_best_performance": "N/A",
+      "is_host": false,
+      "is_debutant": true,
+      "source": "https://en.wikipedia.org/wiki/2026_FIFA_World_Cup_qualification",
+      "api_football_team_id": "520",
+      "logo_url": "https://apiv3.apifootball.com/badges/520_curacao.jpg",
+      "raw_names_seen": [
+        "Curaçao"
+      ]
+    },
+    {
+      "name": "Haiti",
+      "fifa_code": "HAI",
+      "confederation": "CONCACAF",
+      "qualification_method": "CONCACAF third round Group C winners",
+      "qualification_date": "18 November 2025",
+      "total_times_qualified": "2",
+      "last_time_qualified": "1974",
+      "current_consecutive_appearances": "1",
+      "previous_best_performance": "Group stage ( 1974 )",
+      "is_host": false,
+      "is_debutant": false,
+      "source": "https://en.wikipedia.org/wiki/2026_FIFA_World_Cup_qualification",
+      "api_football_team_id": "515",
+      "logo_url": "https://apiv3.apifootball.com/badges/515_haiti.jpg",
+      "raw_names_seen": [
+        "Haiti"
+      ]
+    },
+    {
+      "name": "Mexico",
+      "fifa_code": "MEX",
+      "confederation": "CONCACAF",
+      "qualification_method": "Hosts",
+      "qualification_date": "14 February 2023",
+      "total_times_qualified": "18",
+      "last_time_qualified": "2022",
+      "current_consecutive_appearances": "9",
+      "previous_best_performance": "Quarter-finals ( 1970 , 1986 )",
+      "is_host": true,
+      "is_debutant": false,
+      "source": "https://en.wikipedia.org/wiki/2026_FIFA_World_Cup_qualification",
+      "api_football_team_id": "511",
+      "logo_url": "https://apiv3.apifootball.com/badges/511_mexico.jpg",
+      "raw_names_seen": [
+        "Mexico"
+      ]
+    },
+    {
+      "name": "Panama",
+      "fifa_code": "PAN",
+      "confederation": "CONCACAF",
+      "qualification_method": "CONCACAF third round Group A winners",
+      "qualification_date": "18 November 2025",
+      "total_times_qualified": "2",
+      "last_time_qualified": "2018",
+      "current_consecutive_appearances": "1",
+      "previous_best_performance": "Group stage ( 2018 )",
+      "is_host": false,
+      "is_debutant": false,
+      "source": "https://en.wikipedia.org/wiki/2026_FIFA_World_Cup_qualification",
+      "api_football_team_id": "524",
+      "logo_url": "https://apiv3.apifootball.com/badges/524_panama.jpg",
+      "raw_names_seen": [
+        "Panama"
+      ]
+    },
+    {
+      "name": "United States",
+      "fifa_code": "USA",
+      "confederation": "CONCACAF",
+      "qualification_method": "Hosts",
+      "qualification_date": "14 February 2023",
+      "total_times_qualified": "12",
+      "last_time_qualified": "2022",
+      "current_consecutive_appearances": "2",
+      "previous_best_performance": "Third place ( 1930 )",
+      "is_host": true,
+      "is_debutant": false,
+      "source": "https://en.wikipedia.org/wiki/2026_FIFA_World_Cup_qualification",
+      "api_football_team_id": "523",
+      "logo_url": "https://apiv3.apifootball.com/badges/523_united-states.jpg",
+      "raw_names_seen": [
+        "United States"
+      ]
+    },
+    {
+      "name": "Argentina",
+      "fifa_code": "ARG",
+      "confederation": "CONMEBOL",
+      "qualification_method": "CONMEBOL winners",
+      "qualification_date": "25 March 2025",
+      "total_times_qualified": "19",
+      "last_time_qualified": "2022",
+      "current_consecutive_appearances": "14",
+      "previous_best_performance": "Winners ( 1978 , 1986 , 2022 )",
+      "is_host": false,
+      "is_debutant": false,
+      "source": "https://en.wikipedia.org/wiki/2026_FIFA_World_Cup_qualification",
+      "api_football_team_id": "536",
+      "logo_url": "https://apiv3.apifootball.com/badges/536_argentina.jpg",
+      "raw_names_seen": [
+        "Argentina"
+      ]
+    },
+    {
+      "name": "Brazil",
+      "fifa_code": "BRA",
+      "confederation": "CONMEBOL",
+      "qualification_method": "CONMEBOL fifth place",
+      "qualification_date": "10 June 2025",
+      "total_times_qualified": "23",
+      "last_time_qualified": "2022",
+      "current_consecutive_appearances": "23",
+      "previous_best_performance": "Winners ( 1958 , 1962 , 1970 , 1994 , 2002 )",
+      "is_host": false,
+      "is_debutant": false,
+      "source": "https://en.wikipedia.org/wiki/2026_FIFA_World_Cup_qualification",
+      "api_football_team_id": "531",
+      "logo_url": "https://apiv3.apifootball.com/badges/531_brazil.jpg",
+      "raw_names_seen": [
+        "Brazil"
+      ]
+    },
+    {
+      "name": "Colombia",
+      "fifa_code": "COL",
+      "confederation": "CONMEBOL",
+      "qualification_method": "CONMEBOL third place",
+      "qualification_date": "4 September 2025",
+      "total_times_qualified": "7",
+      "last_time_qualified": "2018",
+      "current_consecutive_appearances": "1",
+      "previous_best_performance": "Quarter-finals ( 2014 )",
+      "is_host": false,
+      "is_debutant": false,
+      "source": "https://en.wikipedia.org/wiki/2026_FIFA_World_Cup_qualification",
+      "api_football_team_id": "535",
+      "logo_url": "https://apiv3.apifootball.com/badges/535_colombia.jpg",
+      "raw_names_seen": [
+        "Colombia"
+      ]
+    },
+    {
+      "name": "Ecuador",
+      "fifa_code": "ECU",
+      "confederation": "CONMEBOL",
+      "qualification_method": "CONMEBOL runners-up",
+      "qualification_date": "10 June 2025",
+      "total_times_qualified": "5",
+      "last_time_qualified": "2022",
+      "current_consecutive_appearances": "2",
+      "previous_best_performance": "Round of 16 ( 2006 )",
+      "is_host": false,
+      "is_debutant": false,
+      "source": "https://en.wikipedia.org/wiki/2026_FIFA_World_Cup_qualification",
+      "api_football_team_id": "541",
+      "logo_url": "https://apiv3.apifootball.com/badges/541_ecuador.jpg",
+      "raw_names_seen": [
+        "Ecuador"
+      ]
+    },
+    {
+      "name": "Paraguay",
+      "fifa_code": "PAR",
+      "confederation": "CONMEBOL",
+      "qualification_method": "CONMEBOL sixth place",
+      "qualification_date": "4 September 2025",
+      "total_times_qualified": "9",
+      "last_time_qualified": "2010",
+      "current_consecutive_appearances": "1",
+      "previous_best_performance": "Quarter-finals ( 2010 )",
+      "is_host": false,
+      "is_debutant": false,
+      "source": "https://en.wikipedia.org/wiki/2026_FIFA_World_Cup_qualification",
+      "api_football_team_id": "537",
+      "logo_url": "https://apiv3.apifootball.com/badges/537_paraguay.jpg",
+      "raw_names_seen": [
+        "Paraguay"
+      ]
+    },
+    {
+      "name": "Uruguay",
+      "fifa_code": "URU",
+      "confederation": "CONMEBOL",
+      "qualification_method": "CONMEBOL fourth place",
+      "qualification_date": "4 September 2025",
+      "total_times_qualified": "15",
+      "last_time_qualified": "2022",
+      "current_consecutive_appearances": "5",
+      "previous_best_performance": "Winners ( 1930 , 1950 )",
+      "is_host": false,
+      "is_debutant": false,
+      "source": "https://en.wikipedia.org/wiki/2026_FIFA_World_Cup_qualification",
+      "api_football_team_id": "539",
+      "logo_url": "https://apiv3.apifootball.com/badges/539_uruguay.jpg",
+      "raw_names_seen": [
+        "Uruguay"
+      ]
+    },
+    {
+      "name": "New Zealand",
+      "fifa_code": "NZL",
+      "confederation": "OFC",
+      "qualification_method": "OFC third round winners",
+      "qualification_date": "24 March 2025",
+      "total_times_qualified": "3",
+      "last_time_qualified": "2010",
+      "current_consecutive_appearances": "1",
+      "previous_best_performance": "Group stage ( 1982 , 2010 )",
+      "is_host": false,
+      "is_debutant": false,
+      "source": "https://en.wikipedia.org/wiki/2026_FIFA_World_Cup_qualification",
+      "api_football_team_id": "527",
+      "logo_url": "https://apiv3.apifootball.com/badges/527_new-zealand.jpg",
+      "raw_names_seen": [
+        "New Zealand"
+      ]
+    },
+    {
+      "name": "Austria",
+      "fifa_code": "AUT",
+      "confederation": "UEFA",
+      "qualification_method": "UEFA Group H winners",
+      "qualification_date": "18 November 2025",
+      "total_times_qualified": "9",
+      "last_time_qualified": "1998",
+      "current_consecutive_appearances": "1",
+      "previous_best_performance": "Third place ( 1954 )",
+      "is_host": false,
+      "is_debutant": false,
+      "source": "https://en.wikipedia.org/wiki/2026_FIFA_World_Cup_qualification",
+      "api_football_team_id": "9",
+      "logo_url": "https://apiv3.apifootball.com/badges/9_austria.jpg",
+      "raw_names_seen": [
+        "Austria"
+      ]
+    },
+    {
+      "name": "Belgium",
+      "fifa_code": "BEL",
+      "confederation": "UEFA",
+      "qualification_method": "UEFA Group J winners",
+      "qualification_date": "18 November 2025",
+      "total_times_qualified": "15",
+      "last_time_qualified": "2022",
+      "current_consecutive_appearances": "4",
+      "previous_best_performance": "Third place ( 2018 )",
+      "is_host": false,
+      "is_debutant": false,
+      "source": "https://en.wikipedia.org/wiki/2026_FIFA_World_Cup_qualification",
+      "api_football_team_id": "6",
+      "logo_url": "https://apiv3.apifootball.com/badges/6_belgium.jpg",
+      "raw_names_seen": [
+        "Belgium"
+      ]
+    },
+    {
+      "name": "Bosnia and Herzegovina",
+      "fifa_code": "BIH",
+      "confederation": "UEFA",
+      "qualification_method": "UEFA play-offs Path A winners",
+      "qualification_date": "31 March 2026",
+      "total_times_qualified": "2",
+      "last_time_qualified": "2014",
+      "current_consecutive_appearances": "1",
+      "previous_best_performance": "Group stage ( 2014 )",
+      "is_host": false,
+      "is_debutant": false,
+      "source": "https://en.wikipedia.org/wiki/2026_FIFA_World_Cup_qualification",
+      "api_football_team_id": "685",
+      "logo_url": "https://apiv3.apifootball.com/badges/685_bosnia-herzegovina.jpg",
+      "raw_names_seen": [
+        "Bosnia and Herzegovina",
+        "Bosnia-Herzegovina"
+      ]
+    },
+    {
+      "name": "Croatia",
+      "fifa_code": "CRO",
+      "confederation": "UEFA",
+      "qualification_method": "UEFA Group L winners",
+      "qualification_date": "14 November 2025",
+      "total_times_qualified": "7",
+      "last_time_qualified": "2022",
+      "current_consecutive_appearances": "4",
+      "previous_best_performance": "Runners-up ( 2018 )",
+      "is_host": false,
+      "is_debutant": false,
+      "source": "https://en.wikipedia.org/wiki/2026_FIFA_World_Cup_qualification",
+      "api_football_team_id": "14",
+      "logo_url": "https://apiv3.apifootball.com/badges/14_croatia.jpg",
+      "raw_names_seen": [
+        "Croatia"
+      ]
+    },
+    {
+      "name": "Czech Republic",
+      "fifa_code": "CZE",
+      "confederation": "UEFA",
+      "qualification_method": "UEFA play-offs Path D winners",
+      "qualification_date": "31 March 2026",
+      "total_times_qualified": "10",
+      "last_time_qualified": "2006",
+      "current_consecutive_appearances": "1",
+      "previous_best_performance": "Runners-up ( 1934 , 1962 )",
+      "is_host": false,
+      "is_debutant": false,
+      "source": "https://en.wikipedia.org/wiki/2026_FIFA_World_Cup_qualification",
+      "api_football_team_id": "13",
+      "logo_url": "https://apiv3.apifootball.com/badges/13_czechia.jpg",
+      "raw_names_seen": [
+        "Czech Republic",
+        "Czechia"
+      ]
+    },
+    {
+      "name": "England",
+      "fifa_code": "ENG",
+      "confederation": "UEFA",
+      "qualification_method": "UEFA Group K winners",
+      "qualification_date": "14 October 2025",
+      "total_times_qualified": "17",
+      "last_time_qualified": "2022",
+      "current_consecutive_appearances": "8",
+      "previous_best_performance": "Winners ( 1966 )",
+      "is_host": false,
+      "is_debutant": false,
+      "source": "https://en.wikipedia.org/wiki/2026_FIFA_World_Cup_qualification",
+      "api_football_team_id": "16",
+      "logo_url": "https://apiv3.apifootball.com/badges/16_england.jpg",
+      "raw_names_seen": [
+        "England"
+      ]
+    },
+    {
+      "name": "France",
+      "fifa_code": "FRA",
+      "confederation": "UEFA",
+      "qualification_method": "UEFA Group D winners",
+      "qualification_date": "13 November 2025",
+      "total_times_qualified": "18",
+      "last_time_qualified": "2022",
+      "current_consecutive_appearances": "8",
+      "previous_best_performance": "Winners ( 1998 , 2018 )",
+      "is_host": false,
+      "is_debutant": false,
+      "source": "https://en.wikipedia.org/wiki/2026_FIFA_World_Cup_qualification",
+      "api_football_team_id": "22",
+      "logo_url": "https://apiv3.apifootball.com/badges/22_france.jpg",
+      "raw_names_seen": [
+        "France"
+      ]
+    },
+    {
+      "name": "Germany",
+      "fifa_code": "GER",
+      "confederation": "UEFA",
+      "qualification_method": "UEFA Group A winners",
+      "qualification_date": "17 November 2025",
+      "total_times_qualified": "21",
+      "last_time_qualified": "2022",
+      "current_consecutive_appearances": "19",
+      "previous_best_performance": "Winners ( 1954 , 1974 , 1990 , 2014 )",
+      "is_host": false,
+      "is_debutant": false,
+      "source": "https://en.wikipedia.org/wiki/2026_FIFA_World_Cup_qualification",
+      "api_football_team_id": "21",
+      "logo_url": "https://apiv3.apifootball.com/badges/21_germany.jpg",
+      "raw_names_seen": [
+        "Germany"
+      ]
+    },
+    {
+      "name": "Netherlands",
+      "fifa_code": "NED",
+      "confederation": "UEFA",
+      "qualification_method": "UEFA Group G winners",
+      "qualification_date": "17 November 2025",
+      "total_times_qualified": "12",
+      "last_time_qualified": "2022",
+      "current_consecutive_appearances": "2",
+      "previous_best_performance": "Runners-up ( 1974 , 1978 , 2010 )",
+      "is_host": false,
+      "is_debutant": false,
+      "source": "https://en.wikipedia.org/wiki/2026_FIFA_World_Cup_qualification",
+      "api_football_team_id": "10",
+      "logo_url": "https://apiv3.apifootball.com/badges/10_netherlands.jpg",
+      "raw_names_seen": [
+        "Netherlands"
+      ]
+    },
+    {
+      "name": "Norway",
+      "fifa_code": "NOR",
+      "confederation": "UEFA",
+      "qualification_method": "UEFA Group I winners",
+      "qualification_date": "16 November 2025",
+      "total_times_qualified": "4",
+      "last_time_qualified": "1998",
+      "current_consecutive_appearances": "1",
+      "previous_best_performance": "Round of 16 ( 1998 )",
+      "is_host": false,
+      "is_debutant": false,
+      "source": "https://en.wikipedia.org/wiki/2026_FIFA_World_Cup_qualification",
+      "api_football_team_id": "692",
+      "logo_url": "https://apiv3.apifootball.com/badges/692_norway.jpg",
+      "raw_names_seen": [
+        "Norway"
+      ]
+    },
+    {
+      "name": "Portugal",
+      "fifa_code": "POR",
+      "confederation": "UEFA",
+      "qualification_method": "UEFA Group F winners",
+      "qualification_date": "16 November 2025",
+      "total_times_qualified": "9",
+      "last_time_qualified": "2022",
+      "current_consecutive_appearances": "7",
+      "previous_best_performance": "Third place ( 1966 )",
+      "is_host": false,
+      "is_debutant": false,
+      "source": "https://en.wikipedia.org/wiki/2026_FIFA_World_Cup_qualification",
+      "api_football_team_id": "23",
+      "logo_url": "https://apiv3.apifootball.com/badges/23_portugal.jpg",
+      "raw_names_seen": [
+        "Portugal"
+      ]
+    },
+    {
+      "name": "Scotland",
+      "fifa_code": "SCO",
+      "confederation": "UEFA",
+      "qualification_method": "UEFA Group C winners",
+      "qualification_date": "18 November 2025",
+      "total_times_qualified": "10",
+      "last_time_qualified": "1998",
+      "current_consecutive_appearances": "1",
+      "previous_best_performance": "Group stage ( 1954 , 1958 , 1974 , 1978 , 1982 , 1986 , 1990 , 1998 )",
+      "is_host": false,
+      "is_debutant": false,
+      "source": "https://en.wikipedia.org/wiki/2026_FIFA_World_Cup_qualification",
+      "api_football_team_id": "15",
+      "logo_url": "https://apiv3.apifootball.com/badges/15_scotland.jpg",
+      "raw_names_seen": [
+        "Scotland"
+      ]
+    },
+    {
+      "name": "Spain",
+      "fifa_code": "ESP",
+      "confederation": "UEFA",
+      "qualification_method": "UEFA Group E winners",
+      "qualification_date": "18 November 2025",
+      "total_times_qualified": "17",
+      "last_time_qualified": "2022",
+      "current_consecutive_appearances": "13",
+      "previous_best_performance": "Winners ( 2010 )",
+      "is_host": false,
+      "is_debutant": false,
+      "source": "https://en.wikipedia.org/wiki/2026_FIFA_World_Cup_qualification",
+      "api_football_team_id": "19",
+      "logo_url": "https://apiv3.apifootball.com/badges/19_spain.jpg",
+      "raw_names_seen": [
+        "Spain"
+      ]
+    },
+    {
+      "name": "Sweden",
+      "fifa_code": "SWE",
+      "confederation": "UEFA",
+      "qualification_method": "UEFA play-offs Path B winners",
+      "qualification_date": "31 March 2026",
+      "total_times_qualified": "13",
+      "last_time_qualified": "2018",
+      "current_consecutive_appearances": "1",
+      "previous_best_performance": "Runners-up ( 1958 )",
+      "is_host": false,
+      "is_debutant": false,
+      "source": "https://en.wikipedia.org/wiki/2026_FIFA_World_Cup_qualification",
+      "api_football_team_id": "17",
+      "logo_url": "https://apiv3.apifootball.com/badges/17_sweden.jpg",
+      "raw_names_seen": [
+        "Sweden"
+      ]
+    },
+    {
+      "name": "Switzerland",
+      "fifa_code": "SUI",
+      "confederation": "UEFA",
+      "qualification_method": "UEFA Group B winners",
+      "qualification_date": "18 November 2025",
+      "total_times_qualified": "13",
+      "last_time_qualified": "2022",
+      "current_consecutive_appearances": "6",
+      "previous_best_performance": "Quarter-finals ( 1934 , 1938 , 1954 )",
+      "is_host": false,
+      "is_debutant": false,
+      "source": "https://en.wikipedia.org/wiki/2026_FIFA_World_Cup_qualification",
+      "api_football_team_id": "2",
+      "logo_url": "https://apiv3.apifootball.com/badges/2_switzerland.jpg",
+      "raw_names_seen": [
+        "Switzerland"
+      ]
+    },
+    {
+      "name": "Turkey",
+      "fifa_code": "TUR",
+      "confederation": "UEFA",
+      "qualification_method": "UEFA play-offs Path C winners",
+      "qualification_date": "31 March 2026",
+      "total_times_qualified": "4",
+      "last_time_qualified": "2002",
+      "current_consecutive_appearances": "1",
+      "previous_best_performance": "Third place ( 2002 )",
+      "is_host": false,
+      "is_debutant": false,
+      "source": "https://en.wikipedia.org/wiki/2026_FIFA_World_Cup_qualification",
+      "api_football_team_id": "1",
+      "logo_url": "https://apiv3.apifootball.com/badges/1_turkiye.jpg",
+      "raw_names_seen": [
+        "Turkey",
+        "Türkiye"
+      ]
+    }
+  ]
+}

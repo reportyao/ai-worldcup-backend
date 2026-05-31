@@ -1,0 +1,1497 @@
+[
+  {
+    "label": "FIFA World Cup",
+    "tier": "international",
+    "priority": 1,
+    "league_id": "28",
+    "league_name": "World Cup",
+    "league_season": "2026",
+    "country_id": "8",
+    "country_name": "Worldcup",
+    "league_logo": "https://apiv3.apifootball.com/badges/logo_leagues/28_world-cup.png",
+    "country_logo": "",
+    "matched_candidates_count": 1,
+    "recommendation_reason": "与世界杯预测强相关，可补充国家队近期正式比赛、资格赛强弱关系与跨洲对比特征。",
+    "slug": "01-fifa-world-cup-28",
+    "date_from": "2026-01-01",
+    "date_to": "2026-12-31",
+    "actions": {
+      "teams": {
+        "action": "get_teams",
+        "status": "ok",
+        "http_status": 200,
+        "record_count": 48,
+        "file": "raw/01-fifa-world-cup-28/teams.json"
+      },
+      "standings": {
+        "action": "get_standings",
+        "status": "ok",
+        "http_status": 200,
+        "record_count": 60,
+        "file": "raw/01-fifa-world-cup-28/standings.json"
+      },
+      "events": {
+        "action": "get_events",
+        "status": "ok",
+        "http_status": 200,
+        "record_count": 72,
+        "file": "raw/01-fifa-world-cup-28/events.json"
+      },
+      "topscorers": {
+        "action": "get_topscorers",
+        "status": "ok",
+        "http_status": 200,
+        "record_count": 15,
+        "file": "raw/01-fifa-world-cup-28/topscorers.json"
+      },
+      "odds": {
+        "action": "get_odds",
+        "status": "api_error_or_empty",
+        "http_status": 200,
+        "record_count": 0,
+        "file": "raw/01-fifa-world-cup-28/odds.json"
+      }
+    },
+    "team_ids_count": 48,
+    "team_ids_sample": [
+      "1",
+      "2",
+      "6",
+      "9",
+      "10",
+      "13",
+      "14",
+      "15"
+    ]
+  },
+  {
+    "label": "UEFA World Cup Qualifiers",
+    "tier": "international",
+    "priority": 2,
+    "league_id": "24",
+    "league_name": "UEFA World Cup Qualifiers",
+    "league_season": "2026",
+    "country_id": "160",
+    "country_name": "Europe",
+    "league_logo": "https://apiv3.apifootball.com/badges/logo_leagues/24_wc-qualification-europe.png",
+    "country_logo": "https://apiv3.apifootball.com/badges/logo_country/160_europe.png",
+    "matched_candidates_count": 1,
+    "recommendation_reason": "与世界杯预测强相关，可补充国家队近期正式比赛、资格赛强弱关系与跨洲对比特征。",
+    "slug": "02-uefa-world-cup-qualifiers-24",
+    "date_from": "2023-01-01",
+    "date_to": "2026-12-31",
+    "actions": {
+      "teams": {
+        "action": "get_teams",
+        "status": "ok",
+        "http_status": 200,
+        "record_count": 54,
+        "file": "raw/02-uefa-world-cup-qualifiers-24/teams.json"
+      },
+      "standings": {
+        "action": "get_standings",
+        "status": "ok",
+        "http_status": 200,
+        "record_count": 54,
+        "file": "raw/02-uefa-world-cup-qualifiers-24/standings.json"
+      },
+      "events": {
+        "action": "get_events",
+        "status": "ok",
+        "http_status": 200,
+        "record_count": 204,
+        "file": "raw/02-uefa-world-cup-qualifiers-24/events.json"
+      },
+      "topscorers": {
+        "action": "get_topscorers",
+        "status": "ok",
+        "http_status": 200,
+        "record_count": 20,
+        "file": "raw/02-uefa-world-cup-qualifiers-24/topscorers.json"
+      },
+      "odds": {
+        "action": "get_odds",
+        "status": "api_error_or_empty",
+        "http_status": 200,
+        "record_count": 0,
+        "file": "raw/02-uefa-world-cup-qualifiers-24/odds.json"
+      }
+    },
+    "team_ids_count": 54,
+    "team_ids_sample": [
+      "1",
+      "2",
+      "3",
+      "4",
+      "6",
+      "7",
+      "8",
+      "9"
+    ]
+  },
+  {
+    "label": "CONMEBOL World Cup Qualifiers",
+    "tier": "international",
+    "priority": 3,
+    "league_id": "27",
+    "league_name": "CONMEBOL World Cup Qualifiers",
+    "league_season": "2026",
+    "country_id": "214",
+    "country_name": "South America",
+    "league_logo": "https://apiv3.apifootball.com/badges/logo_leagues/27_wc-qualification-south-america.png",
+    "country_logo": "",
+    "matched_candidates_count": 1,
+    "recommendation_reason": "与世界杯预测强相关，可补充国家队近期正式比赛、资格赛强弱关系与跨洲对比特征。",
+    "slug": "03-conmebol-world-cup-qualifiers-27",
+    "date_from": "2023-01-01",
+    "date_to": "2026-12-31",
+    "actions": {
+      "teams": {
+        "action": "get_teams",
+        "status": "ok",
+        "http_status": 200,
+        "record_count": 10,
+        "file": "raw/03-conmebol-world-cup-qualifiers-27/teams.json"
+      },
+      "standings": {
+        "action": "get_standings",
+        "status": "ok",
+        "http_status": 200,
+        "record_count": 10,
+        "file": "raw/03-conmebol-world-cup-qualifiers-27/standings.json"
+      },
+      "events": {
+        "action": "get_events",
+        "status": "ok",
+        "http_status": 200,
+        "record_count": 93,
+        "file": "raw/03-conmebol-world-cup-qualifiers-27/events.json"
+      },
+      "topscorers": {
+        "action": "get_topscorers",
+        "status": "ok",
+        "http_status": 200,
+        "record_count": 15,
+        "file": "raw/03-conmebol-world-cup-qualifiers-27/topscorers.json"
+      },
+      "odds": {
+        "action": "get_odds",
+        "status": "api_error_or_empty",
+        "http_status": 200,
+        "record_count": 0,
+        "file": "raw/03-conmebol-world-cup-qualifiers-27/odds.json"
+      }
+    },
+    "team_ids_count": 10,
+    "team_ids_sample": [
+      "528",
+      "531",
+      "532",
+      "533",
+      "534",
+      "535",
+      "536",
+      "537"
+    ]
+  },
+  {
+    "label": "AFC World Cup Qualifiers",
+    "tier": "international",
+    "priority": 4,
+    "league_id": "22",
+    "league_name": "AFC World Cup Qualifiers",
+    "league_season": "2026",
+    "country_id": "8",
+    "country_name": "Worldcup",
+    "league_logo": "https://apiv3.apifootball.com/badges/logo_leagues/22_wc-qualification-asia.png",
+    "country_logo": "",
+    "matched_candidates_count": 1,
+    "recommendation_reason": "与世界杯预测强相关，可补充国家队近期正式比赛、资格赛强弱关系与跨洲对比特征。",
+    "slug": "04-afc-world-cup-qualifiers-22",
+    "date_from": "2023-01-01",
+    "date_to": "2026-12-31",
+    "actions": {
+      "teams": {
+        "action": "get_teams",
+        "status": "ok",
+        "http_status": 200,
+        "record_count": 58,
+        "file": "raw/04-afc-world-cup-qualifiers-22/teams.json"
+      },
+      "standings": {
+        "action": "get_standings",
+        "status": "ok",
+        "http_status": 200,
+        "record_count": 84,
+        "file": "raw/04-afc-world-cup-qualifiers-22/standings.json"
+      },
+      "events": {
+        "action": "get_events",
+        "status": "ok",
+        "http_status": 200,
+        "record_count": 245,
+        "file": "raw/04-afc-world-cup-qualifiers-22/events.json"
+      },
+      "topscorers": {
+        "action": "get_topscorers",
+        "status": "ok",
+        "http_status": 200,
+        "record_count": 45,
+        "file": "raw/04-afc-world-cup-qualifiers-22/topscorers.json"
+      },
+      "odds": {
+        "action": "get_odds",
+        "status": "api_error_or_empty",
+        "http_status": 200,
+        "record_count": 0,
+        "file": "raw/04-afc-world-cup-qualifiers-22/odds.json"
+      }
+    },
+    "team_ids_count": 58,
+    "team_ids_sample": [
+      "339",
+      "340",
+      "341",
+      "342",
+      "343",
+      "344",
+      "345",
+      "346"
+    ]
+  },
+  {
+    "label": "CAF World Cup Qualifiers",
+    "tier": "international",
+    "priority": 5,
+    "league_id": "21",
+    "league_name": "CAF World Cup Qualifiers",
+    "league_season": "2026",
+    "country_id": "8",
+    "country_name": "Worldcup",
+    "league_logo": "https://apiv3.apifootball.com/badges/logo_leagues/21_wc-qualification-africa.png",
+    "country_logo": "",
+    "matched_candidates_count": 2,
+    "recommendation_reason": "与世界杯预测强相关，可补充国家队近期正式比赛、资格赛强弱关系与跨洲对比特征。",
+    "slug": "05-caf-world-cup-qualifiers-21",
+    "date_from": "2023-01-01",
+    "date_to": "2026-12-31",
+    "actions": {
+      "teams": {
+        "action": "get_teams",
+        "status": "ok",
+        "http_status": 200,
+        "record_count": 54,
+        "file": "raw/05-caf-world-cup-qualifiers-21/teams.json"
+      },
+      "standings": {
+        "action": "get_standings",
+        "status": "ok",
+        "http_status": 200,
+        "record_count": 126,
+        "file": "raw/05-caf-world-cup-qualifiers-21/standings.json"
+      },
+      "events": {
+        "action": "get_events",
+        "status": "ok",
+        "http_status": 200,
+        "record_count": 300,
+        "file": "raw/05-caf-world-cup-qualifiers-21/events.json"
+      },
+      "topscorers": {
+        "action": "get_topscorers",
+        "status": "ok",
+        "http_status": 200,
+        "record_count": 15,
+        "file": "raw/05-caf-world-cup-qualifiers-21/topscorers.json"
+      },
+      "odds": {
+        "action": "get_odds",
+        "status": "api_error_or_empty",
+        "http_status": 200,
+        "record_count": 0,
+        "file": "raw/05-caf-world-cup-qualifiers-21/odds.json"
+      }
+    },
+    "team_ids_count": 54,
+    "team_ids_sample": [
+      "530",
+      "610",
+      "611",
+      "612",
+      "613",
+      "614",
+      "615",
+      "616"
+    ]
+  },
+  {
+    "label": "Concacaf World Cup Qualifiers",
+    "tier": "international",
+    "priority": 6,
+    "league_id": "23",
+    "league_name": "Concacaf World Cup Qualifiers",
+    "league_season": "2026",
+    "country_id": "8",
+    "country_name": "Worldcup",
+    "league_logo": "https://apiv3.apifootball.com/badges/logo_leagues/23_wc-qualification-concacaf.png",
+    "country_logo": "",
+    "matched_candidates_count": 1,
+    "recommendation_reason": "与世界杯预测强相关，可补充国家队近期正式比赛、资格赛强弱关系与跨洲对比特征。",
+    "slug": "06-concacaf-world-cup-qualifiers-23",
+    "date_from": "2023-01-01",
+    "date_to": "2026-12-31",
+    "actions": {
+      "teams": {
+        "action": "get_teams",
+        "status": "ok",
+        "http_status": 200,
+        "record_count": 32,
+        "file": "raw/06-concacaf-world-cup-qualifiers-23/teams.json"
+      },
+      "standings": {
+        "action": "get_standings",
+        "status": "ok",
+        "http_status": 200,
+        "record_count": 54,
+        "file": "raw/06-concacaf-world-cup-qualifiers-23/standings.json"
+      },
+      "events": {
+        "action": "get_events",
+        "status": "ok",
+        "http_status": 200,
+        "record_count": 102,
+        "file": "raw/06-concacaf-world-cup-qualifiers-23/events.json"
+      },
+      "topscorers": {
+        "action": "get_topscorers",
+        "status": "ok",
+        "http_status": 200,
+        "record_count": 34,
+        "file": "raw/06-concacaf-world-cup-qualifiers-23/topscorers.json"
+      },
+      "odds": {
+        "action": "get_odds",
+        "status": "api_error_or_empty",
+        "http_status": 200,
+        "record_count": 0,
+        "file": "raw/06-concacaf-world-cup-qualifiers-23/odds.json"
+      }
+    },
+    "team_ids_count": 32,
+    "team_ids_sample": [
+      "514",
+      "515",
+      "516",
+      "517",
+      "518",
+      "519",
+      "520",
+      "521"
+    ]
+  },
+  {
+    "label": "OFC World Cup Qualifiers",
+    "tier": "international",
+    "priority": 7,
+    "league_id": "26",
+    "league_name": "OFC World Cup Qualifiers",
+    "league_season": "2026",
+    "country_id": "8",
+    "country_name": "Worldcup",
+    "league_logo": "https://apiv3.apifootball.com/badges/logo_leagues/26_wc-qualification-oceania.png",
+    "country_logo": "",
+    "matched_candidates_count": 1,
+    "recommendation_reason": "与世界杯预测强相关，可补充国家队近期正式比赛、资格赛强弱关系与跨洲对比特征。",
+    "slug": "07-ofc-world-cup-qualifiers-26",
+    "date_from": "2023-01-01",
+    "date_to": "2026-12-31",
+    "actions": {
+      "teams": {
+        "action": "get_teams",
+        "status": "ok",
+        "http_status": 200,
+        "record_count": 11,
+        "file": "raw/07-ofc-world-cup-qualifiers-26/teams.json"
+      },
+      "standings": {
+        "action": "get_standings",
+        "status": "api_error_or_empty",
+        "http_status": 200,
+        "record_count": 0,
+        "file": "raw/07-ofc-world-cup-qualifiers-26/standings.json"
+      },
+      "events": {
+        "action": "get_events",
+        "status": "ok",
+        "http_status": 200,
+        "record_count": 18,
+        "file": "raw/07-ofc-world-cup-qualifiers-26/events.json"
+      },
+      "topscorers": {
+        "action": "get_topscorers",
+        "status": "ok",
+        "http_status": 200,
+        "record_count": 24,
+        "file": "raw/07-ofc-world-cup-qualifiers-26/topscorers.json"
+      },
+      "odds": {
+        "action": "get_odds",
+        "status": "api_error_or_empty",
+        "http_status": 200,
+        "record_count": 0,
+        "file": "raw/07-ofc-world-cup-qualifiers-26/odds.json"
+      }
+    },
+    "team_ids_count": 11,
+    "team_ids_sample": [
+      "527",
+      "706",
+      "707",
+      "708",
+      "709",
+      "710",
+      "711",
+      "712"
+    ]
+  },
+  {
+    "label": "UEFA Champions League",
+    "tier": "europe_club",
+    "priority": 10,
+    "league_id": "3",
+    "league_name": "UEFA Champions League",
+    "league_season": "2025/2026",
+    "country_id": "160",
+    "country_name": "Europe",
+    "league_logo": "https://apiv3.apifootball.com/badges/logo_leagues/3_uefa-champions-league.png",
+    "country_logo": "https://apiv3.apifootball.com/badges/logo_country/160_europe.png",
+    "matched_candidates_count": 1,
+    "recommendation_reason": "欧战覆盖强队跨联赛交手，适合训练高强度比赛、淘汰赛和球队状态特征。",
+    "slug": "10-uefa-champions-league-3",
+    "date_from": "2025-07-01",
+    "date_to": "2026-06-30",
+    "actions": {
+      "teams": {
+        "action": "get_teams",
+        "status": "ok",
+        "http_status": 200,
+        "record_count": 82,
+        "file": "raw/10-uefa-champions-league-3/teams.json"
+      },
+      "standings": {
+        "action": "get_standings",
+        "status": "ok",
+        "http_status": 200,
+        "record_count": 36,
+        "file": "raw/10-uefa-champions-league-3/standings.json"
+      },
+      "events": {
+        "action": "get_events",
+        "status": "ok",
+        "http_status": 200,
+        "record_count": 281,
+        "file": "raw/10-uefa-champions-league-3/events.json"
+      },
+      "topscorers": {
+        "action": "get_topscorers",
+        "status": "ok",
+        "http_status": 200,
+        "record_count": 70,
+        "file": "raw/10-uefa-champions-league-3/topscorers.json"
+      },
+      "odds": {
+        "action": "get_odds",
+        "status": "api_error_or_empty",
+        "http_status": 200,
+        "record_count": 0,
+        "file": "raw/10-uefa-champions-league-3/odds.json"
+      }
+    },
+    "team_ids_count": 82,
+    "team_ids_sample": [
+      "72",
+      "73",
+      "74",
+      "76",
+      "79",
+      "80",
+      "82",
+      "83"
+    ]
+  },
+  {
+    "label": "UEFA Europa League",
+    "tier": "europe_club",
+    "priority": 11,
+    "league_id": "4",
+    "league_name": "UEFA Europa League",
+    "league_season": "2025/2026",
+    "country_id": "160",
+    "country_name": "Europe",
+    "league_logo": "https://apiv3.apifootball.com/badges/logo_leagues/4_uefa-europa-league.png",
+    "country_logo": "https://apiv3.apifootball.com/badges/logo_country/160_europe.png",
+    "matched_candidates_count": 1,
+    "recommendation_reason": "欧战覆盖强队跨联赛交手，适合训练高强度比赛、淘汰赛和球队状态特征。",
+    "slug": "11-uefa-europa-league-4",
+    "date_from": "2025-07-01",
+    "date_to": "2026-06-30",
+    "actions": {
+      "teams": {
+        "action": "get_teams",
+        "status": "ok",
+        "http_status": 200,
+        "record_count": 77,
+        "file": "raw/11-uefa-europa-league-4/teams.json"
+      },
+      "standings": {
+        "action": "get_standings",
+        "status": "ok",
+        "http_status": 200,
+        "record_count": 36,
+        "file": "raw/11-uefa-europa-league-4/standings.json"
+      },
+      "events": {
+        "action": "get_events",
+        "status": "ok",
+        "http_status": 200,
+        "record_count": 273,
+        "file": "raw/11-uefa-europa-league-4/events.json"
+      },
+      "topscorers": {
+        "action": "get_topscorers",
+        "status": "ok",
+        "http_status": 200,
+        "record_count": 70,
+        "file": "raw/11-uefa-europa-league-4/topscorers.json"
+      },
+      "odds": {
+        "action": "get_odds",
+        "status": "api_error_or_empty",
+        "http_status": 200,
+        "record_count": 0,
+        "file": "raw/11-uefa-europa-league-4/odds.json"
+      }
+    },
+    "team_ids_count": 77,
+    "team_ids_sample": [
+      "74",
+      "78",
+      "81",
+      "87",
+      "98",
+      "99",
+      "105",
+      "106"
+    ]
+  },
+  {
+    "label": "UEFA Conference League",
+    "tier": "europe_club",
+    "priority": 12,
+    "league_id": "683",
+    "league_name": "UEFA Conference League",
+    "league_season": "2025/2026",
+    "country_id": "160",
+    "country_name": "Europe",
+    "league_logo": "https://apiv3.apifootball.com/badges/logo_leagues/683_uefa-conference-league.png",
+    "country_logo": "https://apiv3.apifootball.com/badges/logo_country/160_europe.png",
+    "matched_candidates_count": 1,
+    "recommendation_reason": "欧战覆盖强队跨联赛交手，适合训练高强度比赛、淘汰赛和球队状态特征。",
+    "slug": "12-uefa-conference-league-683",
+    "date_from": "2025-07-01",
+    "date_to": "2026-06-30",
+    "actions": {
+      "teams": {
+        "action": "get_teams",
+        "status": "ok",
+        "http_status": 200,
+        "record_count": 164,
+        "file": "raw/12-uefa-conference-league-683/teams.json"
+      },
+      "standings": {
+        "action": "get_standings",
+        "status": "ok",
+        "http_status": 200,
+        "record_count": 72,
+        "file": "raw/12-uefa-conference-league-683/standings.json"
+      },
+      "events": {
+        "action": "get_events",
+        "status": "ok",
+        "http_status": 200,
+        "record_count": 409,
+        "file": "raw/12-uefa-conference-league-683/events.json"
+      },
+      "topscorers": {
+        "action": "get_topscorers",
+        "status": "ok",
+        "http_status": 200,
+        "record_count": 200,
+        "file": "raw/12-uefa-conference-league-683/topscorers.json"
+      },
+      "odds": {
+        "action": "get_odds",
+        "status": "api_error_or_empty",
+        "http_status": 200,
+        "record_count": 0,
+        "file": "raw/12-uefa-conference-league-683/odds.json"
+      }
+    },
+    "team_ids_count": 164,
+    "team_ids_sample": [
+      "78",
+      "98",
+      "103",
+      "107",
+      "113",
+      "116",
+      "118",
+      "120"
+    ]
+  },
+  {
+    "label": "Premier League",
+    "tier": "top5",
+    "priority": 20,
+    "league_id": "152",
+    "league_name": "Premier League",
+    "league_season": "2025/2026",
+    "country_id": "44",
+    "country_name": "England",
+    "league_logo": "https://apiv3.apifootball.com/badges/logo_leagues/152_premier-league.png",
+    "country_logo": "https://apiv3.apifootball.com/badges/logo_country/44_england.png",
+    "matched_candidates_count": 1,
+    "recommendation_reason": "欧洲五大联赛数据稳定、球队和球员质量高，是俱乐部预测模型的核心样本。",
+    "slug": "20-premier-league-152",
+    "date_from": "2025-07-01",
+    "date_to": "2026-06-30",
+    "actions": {
+      "teams": {
+        "action": "get_teams",
+        "status": "ok",
+        "http_status": 200,
+        "record_count": 20,
+        "file": "raw/20-premier-league-152/teams.json"
+      },
+      "standings": {
+        "action": "get_standings",
+        "status": "ok",
+        "http_status": 200,
+        "record_count": 20,
+        "file": "raw/20-premier-league-152/standings.json"
+      },
+      "events": {
+        "action": "get_events",
+        "status": "ok",
+        "http_status": 200,
+        "record_count": 388,
+        "file": "raw/20-premier-league-152/events.json"
+      },
+      "topscorers": {
+        "action": "get_topscorers",
+        "status": "ok",
+        "http_status": 200,
+        "record_count": 70,
+        "file": "raw/20-premier-league-152/topscorers.json"
+      },
+      "odds": {
+        "action": "get_odds",
+        "status": "api_error_or_empty",
+        "http_status": 200,
+        "record_count": 0,
+        "file": "raw/20-premier-league-152/odds.json"
+      }
+    },
+    "team_ids_count": 20,
+    "team_ids_sample": [
+      "80",
+      "84",
+      "88",
+      "102",
+      "141",
+      "164",
+      "3071",
+      "3073"
+    ]
+  },
+  {
+    "label": "La Liga",
+    "tier": "top5",
+    "priority": 21,
+    "league_id": "302",
+    "league_name": "La Liga",
+    "league_season": "2025/2026",
+    "country_id": "6",
+    "country_name": "Spain",
+    "league_logo": "https://apiv3.apifootball.com/badges/logo_leagues/302_la-liga.png",
+    "country_logo": "https://apiv3.apifootball.com/badges/logo_country/6_spain.png",
+    "matched_candidates_count": 1,
+    "recommendation_reason": "欧洲五大联赛数据稳定、球队和球员质量高，是俱乐部预测模型的核心样本。",
+    "slug": "21-la-liga-302",
+    "date_from": "2025-07-01",
+    "date_to": "2026-06-30",
+    "actions": {
+      "teams": {
+        "action": "get_teams",
+        "status": "ok",
+        "http_status": 200,
+        "record_count": 20,
+        "file": "raw/21-la-liga-302/teams.json"
+      },
+      "standings": {
+        "action": "get_standings",
+        "status": "ok",
+        "http_status": 200,
+        "record_count": 20,
+        "file": "raw/21-la-liga-302/standings.json"
+      },
+      "events": {
+        "action": "get_events",
+        "status": "ok",
+        "http_status": 200,
+        "record_count": 392,
+        "file": "raw/21-la-liga-302/events.json"
+      },
+      "topscorers": {
+        "action": "get_topscorers",
+        "status": "ok",
+        "http_status": 200,
+        "record_count": 70,
+        "file": "raw/21-la-liga-302/topscorers.json"
+      },
+      "odds": {
+        "action": "get_odds",
+        "status": "api_error_or_empty",
+        "http_status": 200,
+        "record_count": 0,
+        "file": "raw/21-la-liga-302/odds.json"
+      }
+    },
+    "team_ids_count": 20,
+    "team_ids_sample": [
+      "73",
+      "76",
+      "89",
+      "97",
+      "153",
+      "162",
+      "7258",
+      "7259"
+    ]
+  },
+  {
+    "label": "Serie A",
+    "tier": "top5",
+    "priority": 22,
+    "league_id": "207",
+    "league_name": "Serie A",
+    "league_season": "2025/2026",
+    "country_id": "5",
+    "country_name": "Italy",
+    "league_logo": "https://apiv3.apifootball.com/badges/logo_leagues/207_serie-a.png",
+    "country_logo": "https://apiv3.apifootball.com/badges/logo_country/5_italy.png",
+    "matched_candidates_count": 1,
+    "recommendation_reason": "欧洲五大联赛数据稳定、球队和球员质量高，是俱乐部预测模型的核心样本。",
+    "slug": "22-serie-a-207",
+    "date_from": "2025-07-01",
+    "date_to": "2026-06-30",
+    "actions": {
+      "teams": {
+        "action": "get_teams",
+        "status": "ok",
+        "http_status": 200,
+        "record_count": 20,
+        "file": "raw/22-serie-a-207/teams.json"
+      },
+      "standings": {
+        "action": "get_standings",
+        "status": "ok",
+        "http_status": 200,
+        "record_count": 20,
+        "file": "raw/22-serie-a-207/standings.json"
+      },
+      "events": {
+        "action": "get_events",
+        "status": "ok",
+        "http_status": 200,
+        "record_count": 381,
+        "file": "raw/22-serie-a-207/events.json"
+      },
+      "topscorers": {
+        "action": "get_topscorers",
+        "status": "ok",
+        "http_status": 200,
+        "record_count": 70,
+        "file": "raw/22-serie-a-207/topscorers.json"
+      },
+      "odds": {
+        "action": "get_odds",
+        "status": "api_error_or_empty",
+        "http_status": 200,
+        "record_count": 0,
+        "file": "raw/22-serie-a-207/odds.json"
+      }
+    },
+    "team_ids_count": 20,
+    "team_ids_sample": [
+      "79",
+      "85",
+      "93",
+      "96",
+      "139",
+      "152",
+      "159",
+      "4973"
+    ]
+  },
+  {
+    "label": "Bundesliga",
+    "tier": "top5",
+    "priority": 23,
+    "league_id": "175",
+    "league_name": "Bundesliga",
+    "league_season": "2025/2026",
+    "country_id": "4",
+    "country_name": "Germany",
+    "league_logo": "https://apiv3.apifootball.com/badges/logo_leagues/175_bundesliga.png",
+    "country_logo": "https://apiv3.apifootball.com/badges/logo_country/4_germany.png",
+    "matched_candidates_count": 1,
+    "recommendation_reason": "欧洲五大联赛数据稳定、球队和球员质量高，是俱乐部预测模型的核心样本。",
+    "slug": "23-bundesliga-175",
+    "date_from": "2025-07-01",
+    "date_to": "2026-06-30",
+    "actions": {
+      "teams": {
+        "action": "get_teams",
+        "status": "ok",
+        "http_status": 200,
+        "record_count": 19,
+        "file": "raw/23-bundesliga-175/teams.json"
+      },
+      "standings": {
+        "action": "get_standings",
+        "status": "ok",
+        "http_status": 200,
+        "record_count": 18,
+        "file": "raw/23-bundesliga-175/standings.json"
+      },
+      "events": {
+        "action": "get_events",
+        "status": "ok",
+        "http_status": 200,
+        "record_count": 324,
+        "file": "raw/23-bundesliga-175/events.json"
+      },
+      "topscorers": {
+        "action": "get_topscorers",
+        "status": "ok",
+        "http_status": 200,
+        "record_count": 70,
+        "file": "raw/23-bundesliga-175/topscorers.json"
+      },
+      "odds": {
+        "action": "get_odds",
+        "status": "api_error_or_empty",
+        "http_status": 200,
+        "record_count": 0,
+        "file": "raw/23-bundesliga-175/odds.json"
+      }
+    },
+    "team_ids_count": 19,
+    "team_ids_sample": [
+      "72",
+      "77",
+      "92",
+      "101",
+      "143",
+      "170",
+      "196",
+      "3912"
+    ]
+  },
+  {
+    "label": "Ligue 1",
+    "tier": "top5",
+    "priority": 24,
+    "league_id": "168",
+    "league_name": "Ligue 1",
+    "league_season": "2025/2026",
+    "country_id": "3",
+    "country_name": "France",
+    "league_logo": "https://apiv3.apifootball.com/badges/logo_leagues/168_ligue-1.png",
+    "country_logo": "https://apiv3.apifootball.com/badges/logo_country/3_france.png",
+    "matched_candidates_count": 1,
+    "recommendation_reason": "欧洲五大联赛数据稳定、球队和球员质量高，是俱乐部预测模型的核心样本。",
+    "slug": "24-ligue-1-168",
+    "date_from": "2025-07-01",
+    "date_to": "2026-06-30",
+    "actions": {
+      "teams": {
+        "action": "get_teams",
+        "status": "ok",
+        "http_status": 200,
+        "record_count": 21,
+        "file": "raw/24-ligue-1-168/teams.json"
+      },
+      "standings": {
+        "action": "get_standings",
+        "status": "ok",
+        "http_status": 200,
+        "record_count": 18,
+        "file": "raw/24-ligue-1-168/standings.json"
+      },
+      "events": {
+        "action": "get_events",
+        "status": "ok",
+        "http_status": 200,
+        "record_count": 311,
+        "file": "raw/24-ligue-1-168/events.json"
+      },
+      "topscorers": {
+        "action": "get_topscorers",
+        "status": "ok",
+        "http_status": 200,
+        "record_count": 70,
+        "file": "raw/24-ligue-1-168/topscorers.json"
+      },
+      "odds": {
+        "action": "get_odds",
+        "status": "api_error_or_empty",
+        "http_status": 200,
+        "record_count": 0,
+        "file": "raw/24-ligue-1-168/odds.json"
+      }
+    },
+    "team_ids_count": 21,
+    "team_ids_sample": [
+      "83",
+      "91",
+      "100",
+      "145",
+      "160",
+      "3794",
+      "3796",
+      "3797"
+    ]
+  },
+  {
+    "label": "MLS",
+    "tier": "americas",
+    "priority": 32,
+    "league_id": "332",
+    "league_name": "MLS",
+    "league_season": "2026",
+    "country_id": "114",
+    "country_name": "USA",
+    "league_logo": "https://apiv3.apifootball.com/badges/logo_leagues/332_mls.png",
+    "country_logo": "https://apiv3.apifootball.com/badges/logo_country/114_usa.png",
+    "matched_candidates_count": 1,
+    "recommendation_reason": "覆盖美洲主要联赛与洲际杯赛，可提升对南美、北美球队和世界杯参赛国球员状态的理解。",
+    "slug": "32-mls-332",
+    "date_from": "2026-01-01",
+    "date_to": "2026-12-31",
+    "actions": {
+      "teams": {
+        "action": "get_teams",
+        "status": "ok",
+        "http_status": 200,
+        "record_count": 32,
+        "file": "raw/32-mls-332/teams.json"
+      },
+      "standings": {
+        "action": "get_standings",
+        "status": "ok",
+        "http_status": 200,
+        "record_count": 30,
+        "file": "raw/32-mls-332/standings.json"
+      },
+      "events": {
+        "action": "get_events",
+        "status": "ok",
+        "http_status": 200,
+        "record_count": 511,
+        "file": "raw/32-mls-332/events.json"
+      },
+      "topscorers": {
+        "action": "get_topscorers",
+        "status": "ok",
+        "http_status": 200,
+        "record_count": 91,
+        "file": "raw/32-mls-332/topscorers.json"
+      },
+      "odds": {
+        "action": "get_odds",
+        "status": "api_error_or_empty",
+        "http_status": 200,
+        "record_count": 0,
+        "file": "raw/32-mls-332/odds.json"
+      }
+    },
+    "team_ids_count": 32,
+    "team_ids_sample": [
+      "281",
+      "287",
+      "289",
+      "290",
+      "293",
+      "297",
+      "299",
+      "302"
+    ]
+  },
+  {
+    "label": "Liga MX",
+    "tier": "americas",
+    "priority": 33,
+    "league_id": "235",
+    "league_name": "Liga MX",
+    "league_season": "2025/2026",
+    "country_id": "78",
+    "country_name": "Mexico",
+    "league_logo": "https://apiv3.apifootball.com/badges/logo_leagues/235_liga-mx.png",
+    "country_logo": "https://apiv3.apifootball.com/badges/logo_country/78_mexico.png",
+    "matched_candidates_count": 2,
+    "recommendation_reason": "覆盖美洲主要联赛与洲际杯赛，可提升对南美、北美球队和世界杯参赛国球员状态的理解。",
+    "slug": "33-liga-mx-235",
+    "date_from": "2025-07-01",
+    "date_to": "2026-06-30",
+    "actions": {
+      "teams": {
+        "action": "get_teams",
+        "status": "ok",
+        "http_status": 200,
+        "record_count": 18,
+        "file": "raw/33-liga-mx-235/teams.json"
+      },
+      "standings": {
+        "action": "get_standings",
+        "status": "ok",
+        "http_status": 200,
+        "record_count": 54,
+        "file": "raw/33-liga-mx-235/standings.json"
+      },
+      "events": {
+        "action": "get_events",
+        "status": "ok",
+        "http_status": 200,
+        "record_count": 337,
+        "file": "raw/33-liga-mx-235/events.json"
+      },
+      "topscorers": {
+        "action": "get_topscorers",
+        "status": "ok",
+        "http_status": 200,
+        "record_count": 95,
+        "file": "raw/33-liga-mx-235/topscorers.json"
+      },
+      "odds": {
+        "action": "get_odds",
+        "status": "api_error_or_empty",
+        "http_status": 200,
+        "record_count": 0,
+        "file": "raw/33-liga-mx-235/odds.json"
+      }
+    },
+    "team_ids_count": 18,
+    "team_ids_sample": [
+      "272",
+      "275",
+      "278",
+      "284",
+      "301",
+      "303",
+      "308",
+      "5347"
+    ]
+  },
+  {
+    "label": "Brazil Serie A",
+    "tier": "americas",
+    "priority": 34,
+    "league_id": "99",
+    "league_name": "Serie A",
+    "league_season": "2026",
+    "country_id": "27",
+    "country_name": "Brazil",
+    "league_logo": "https://apiv3.apifootball.com/badges/logo_leagues/99_serie-a.png",
+    "country_logo": "https://apiv3.apifootball.com/badges/logo_country/27_brazil.png",
+    "matched_candidates_count": 1,
+    "recommendation_reason": "覆盖美洲主要联赛与洲际杯赛，可提升对南美、北美球队和世界杯参赛国球员状态的理解。",
+    "slug": "34-brazil-serie-a-99",
+    "date_from": "2026-01-01",
+    "date_to": "2026-12-31",
+    "actions": {
+      "teams": {
+        "action": "get_teams",
+        "status": "ok",
+        "http_status": 200,
+        "record_count": 20,
+        "file": "raw/34-brazil-serie-a-99/teams.json"
+      },
+      "standings": {
+        "action": "get_standings",
+        "status": "ok",
+        "http_status": 200,
+        "record_count": 20,
+        "file": "raw/34-brazil-serie-a-99/standings.json"
+      },
+      "events": {
+        "action": "get_events",
+        "status": "ok",
+        "http_status": 200,
+        "record_count": 380,
+        "file": "raw/34-brazil-serie-a-99/events.json"
+      },
+      "topscorers": {
+        "action": "get_topscorers",
+        "status": "ok",
+        "http_status": 200,
+        "record_count": 70,
+        "file": "raw/34-brazil-serie-a-99/topscorers.json"
+      },
+      "odds": {
+        "action": "get_odds",
+        "status": "api_error_or_empty",
+        "http_status": 200,
+        "record_count": 0,
+        "file": "raw/34-brazil-serie-a-99/odds.json"
+      }
+    },
+    "team_ids_count": 20,
+    "team_ids_sample": [
+      "542",
+      "546",
+      "551",
+      "556",
+      "558",
+      "559",
+      "566",
+      "1735"
+    ]
+  },
+  {
+    "label": "Argentina Primera División",
+    "tier": "americas",
+    "priority": 35,
+    "league_id": "44",
+    "league_name": "Liga Profesional Argentina",
+    "league_season": "2026",
+    "country_id": "14",
+    "country_name": "Argentina",
+    "league_logo": "https://apiv3.apifootball.com/badges/logo_leagues/44_liga-profesional-argentina.png",
+    "country_logo": "https://apiv3.apifootball.com/badges/logo_country/14_argentina.png",
+    "matched_candidates_count": 1,
+    "recommendation_reason": "覆盖美洲主要联赛与洲际杯赛，可提升对南美、北美球队和世界杯参赛国球员状态的理解。",
+    "slug": "35-argentina-primera-divisi-n-44",
+    "date_from": "2026-01-01",
+    "date_to": "2026-12-31",
+    "actions": {
+      "teams": {
+        "action": "get_teams",
+        "status": "ok",
+        "http_status": 200,
+        "record_count": 30,
+        "file": "raw/35-argentina-primera-divisi-n-44/teams.json"
+      },
+      "standings": {
+        "action": "get_standings",
+        "status": "ok",
+        "http_status": 200,
+        "record_count": 60,
+        "file": "raw/35-argentina-primera-divisi-n-44/standings.json"
+      },
+      "events": {
+        "action": "get_events",
+        "status": "ok",
+        "http_status": 200,
+        "record_count": 495,
+        "file": "raw/35-argentina-primera-divisi-n-44/events.json"
+      },
+      "topscorers": {
+        "action": "get_topscorers",
+        "status": "ok",
+        "http_status": 200,
+        "record_count": 101,
+        "file": "raw/35-argentina-primera-divisi-n-44/topscorers.json"
+      },
+      "odds": {
+        "action": "get_odds",
+        "status": "api_error_or_empty",
+        "http_status": 200,
+        "record_count": 0,
+        "file": "raw/35-argentina-primera-divisi-n-44/odds.json"
+      }
+    },
+    "team_ids_count": 30,
+    "team_ids_sample": [
+      "549",
+      "554",
+      "563",
+      "568",
+      "570",
+      "574",
+      "925",
+      "927"
+    ]
+  },
+  {
+    "label": "AFC Champions League Elite",
+    "tier": "asia",
+    "priority": 40,
+    "league_id": "727",
+    "league_name": "AFC Champions League",
+    "league_season": "2025/2026",
+    "country_id": "2",
+    "country_name": "intl",
+    "league_logo": "https://apiv3.apifootball.com/badges/logo_leagues/727_afc-champions-league.png",
+    "country_logo": "https://apiv3.apifootball.com/badges/logo_country/2_intl.png",
+    "matched_candidates_count": 3,
+    "recommendation_reason": "覆盖亚洲高热度联赛与亚冠，有助于世界杯亚洲队、转会球员和区域强队状态建模。",
+    "slug": "40-afc-champions-league-elite-727",
+    "date_from": "2025-07-01",
+    "date_to": "2026-06-30",
+    "actions": {
+      "teams": {
+        "action": "get_teams",
+        "status": "ok",
+        "http_status": 200,
+        "record_count": 21,
+        "file": "raw/40-afc-champions-league-elite-727/teams.json"
+      },
+      "standings": {
+        "action": "get_standings",
+        "status": "ok",
+        "http_status": 200,
+        "record_count": 24,
+        "file": "raw/40-afc-champions-league-elite-727/standings.json"
+      },
+      "events": {
+        "action": "get_events",
+        "status": "api_error_or_empty",
+        "http_status": 200,
+        "record_count": 0,
+        "file": "raw/40-afc-champions-league-elite-727/events.json"
+      },
+      "topscorers": {
+        "action": "get_topscorers",
+        "status": "ok",
+        "http_status": 200,
+        "record_count": 137,
+        "file": "raw/40-afc-champions-league-elite-727/topscorers.json"
+      },
+      "odds": {
+        "action": "get_odds",
+        "status": "api_error_or_empty",
+        "http_status": 200,
+        "record_count": 0,
+        "file": "raw/40-afc-champions-league-elite-727/odds.json"
+      }
+    },
+    "team_ids_count": 21,
+    "team_ids_sample": [
+      "359",
+      "360",
+      "361",
+      "363",
+      "366",
+      "367",
+      "371",
+      "372"
+    ]
+  },
+  {
+    "label": "J1 League",
+    "tier": "asia",
+    "priority": 42,
+    "league_id": "209",
+    "league_name": "J1 League",
+    "league_season": "2026",
+    "country_id": "64",
+    "country_name": "Japan",
+    "league_logo": "https://apiv3.apifootball.com/badges/logo_leagues/209_j1-league.png",
+    "country_logo": "https://apiv3.apifootball.com/badges/logo_country/64_japan.png",
+    "matched_candidates_count": 1,
+    "recommendation_reason": "覆盖亚洲高热度联赛与亚冠，有助于世界杯亚洲队、转会球员和区域强队状态建模。",
+    "slug": "42-j1-league-209",
+    "date_from": "2026-01-01",
+    "date_to": "2026-12-31",
+    "actions": {
+      "teams": {
+        "action": "get_teams",
+        "status": "ok",
+        "http_status": 200,
+        "record_count": 20,
+        "file": "raw/42-j1-league-209/teams.json"
+      },
+      "standings": {
+        "action": "get_standings",
+        "status": "ok",
+        "http_status": 200,
+        "record_count": 40,
+        "file": "raw/42-j1-league-209/standings.json"
+      },
+      "events": {
+        "action": "get_events",
+        "status": "ok",
+        "http_status": 200,
+        "record_count": 200,
+        "file": "raw/42-j1-league-209/events.json"
+      },
+      "topscorers": {
+        "action": "get_topscorers",
+        "status": "ok",
+        "http_status": 200,
+        "record_count": 20,
+        "file": "raw/42-j1-league-209/topscorers.json"
+      },
+      "odds": {
+        "action": "get_odds",
+        "status": "api_error_or_empty",
+        "http_status": 200,
+        "record_count": 0,
+        "file": "raw/42-j1-league-209/odds.json"
+      }
+    },
+    "team_ids_count": 20,
+    "team_ids_sample": [
+      "380",
+      "383",
+      "387",
+      "411",
+      "415",
+      "417",
+      "5045",
+      "5046"
+    ]
+  },
+  {
+    "label": "K League 1",
+    "tier": "asia",
+    "priority": 43,
+    "league_id": "219",
+    "league_name": "K League 1",
+    "league_season": "2026",
+    "country_id": "68",
+    "country_name": "Korea Republic",
+    "league_logo": "https://apiv3.apifootball.com/badges/logo_leagues/219_k-league-1.png",
+    "country_logo": "https://apiv3.apifootball.com/badges/logo_country/68_korea-republic.png",
+    "matched_candidates_count": 1,
+    "recommendation_reason": "覆盖亚洲高热度联赛与亚冠，有助于世界杯亚洲队、转会球员和区域强队状态建模。",
+    "slug": "43-k-league-1-219",
+    "date_from": "2026-01-01",
+    "date_to": "2026-12-31",
+    "actions": {
+      "teams": {
+        "action": "get_teams",
+        "status": "ok",
+        "http_status": 200,
+        "record_count": 12,
+        "file": "raw/43-k-league-1-219/teams.json"
+      },
+      "standings": {
+        "action": "get_standings",
+        "status": "ok",
+        "http_status": 200,
+        "record_count": 12,
+        "file": "raw/43-k-league-1-219/standings.json"
+      },
+      "events": {
+        "action": "get_events",
+        "status": "ok",
+        "http_status": 200,
+        "record_count": 198,
+        "file": "raw/43-k-league-1-219/events.json"
+      },
+      "topscorers": {
+        "action": "get_topscorers",
+        "status": "ok",
+        "http_status": 200,
+        "record_count": 45,
+        "file": "raw/43-k-league-1-219/topscorers.json"
+      },
+      "odds": {
+        "action": "get_odds",
+        "status": "api_error_or_empty",
+        "http_status": 200,
+        "record_count": 0,
+        "file": "raw/43-k-league-1-219/odds.json"
+      }
+    },
+    "team_ids_count": 12,
+    "team_ids_sample": [
+      "377",
+      "379",
+      "389",
+      "396",
+      "5160",
+      "5163",
+      "5165",
+      "5166"
+    ]
+  },
+  {
+    "label": "Chinese Super League",
+    "tier": "asia",
+    "priority": 44,
+    "league_id": "118",
+    "league_name": "Chinese Super League",
+    "league_season": "2026",
+    "country_id": "302",
+    "country_name": "China PR",
+    "league_logo": "https://apiv3.apifootball.com/badges/logo_leagues/118_chinese-super-league.png",
+    "country_logo": "",
+    "matched_candidates_count": 1,
+    "recommendation_reason": "覆盖亚洲高热度联赛与亚冠，有助于世界杯亚洲队、转会球员和区域强队状态建模。",
+    "slug": "44-chinese-super-league-118",
+    "date_from": "2026-01-01",
+    "date_to": "2026-12-31",
+    "actions": {
+      "teams": {
+        "action": "get_teams",
+        "status": "ok",
+        "http_status": 200,
+        "record_count": 16,
+        "file": "raw/44-chinese-super-league-118/teams.json"
+      },
+      "standings": {
+        "action": "get_standings",
+        "status": "ok",
+        "http_status": 200,
+        "record_count": 16,
+        "file": "raw/44-chinese-super-league-118/standings.json"
+      },
+      "events": {
+        "action": "get_events",
+        "status": "ok",
+        "http_status": 200,
+        "record_count": 240,
+        "file": "raw/44-chinese-super-league-118/events.json"
+      },
+      "topscorers": {
+        "action": "get_topscorers",
+        "status": "ok",
+        "http_status": 200,
+        "record_count": 70,
+        "file": "raw/44-chinese-super-league-118/topscorers.json"
+      },
+      "odds": {
+        "action": "get_odds",
+        "status": "api_error_or_empty",
+        "http_status": 200,
+        "record_count": 0,
+        "file": "raw/44-chinese-super-league-118/odds.json"
+      }
+    },
+    "team_ids_count": 16,
+    "team_ids_sample": [
+      "375",
+      "381",
+      "2234",
+      "2236",
+      "2241",
+      "2242",
+      "2251",
+      "2255"
+    ]
+  }
+]

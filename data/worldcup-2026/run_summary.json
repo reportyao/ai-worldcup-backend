@@ -1,0 +1,214 @@
+{
+  "generated_at": "2026-05-31T11:59:53+00:00",
+  "expected_team_count": 48,
+  "actual_team_count": 48,
+  "team_count_ok": true,
+  "duplicate_names": [],
+  "missing_confederation": [],
+  "missing_fifa_code": [],
+  "counts_by_confederation": {
+    "CONCACAF": 6,
+    "AFC": 9,
+    "OFC": 1,
+    "CONMEBOL": 6,
+    "CAF": 10,
+    "UEFA": 16
+  },
+  "confederation_count_mismatches": {},
+  "hosts_ok": true,
+  "host_names": [
+    "Canada",
+    "Mexico",
+    "United States"
+  ],
+  "debutants_ok": true,
+  "debutant_names": [
+    "Cape Verde",
+    "Curaçao",
+    "Jordan",
+    "Uzbekistan"
+  ],
+  "apifootball_status": {
+    "provider": "apifootball.com",
+    "available": true,
+    "status": "ok",
+    "leagues_raw_file": "/home/ubuntu/worldcup-work/data/worldcup-2026/raw/apifootball_get_leagues.json",
+    "world_cup_league_candidates": [
+      {
+        "country_id": "214",
+        "country_name": "South America",
+        "league_id": "27",
+        "league_name": "CONMEBOL World Cup Qualifiers",
+        "league_season": "2026",
+        "league_logo": "https://apiv3.apifootball.com/badges/logo_leagues/27_wc-qualification-south-america.png",
+        "country_logo": ""
+      },
+      {
+        "country_id": "160",
+        "country_name": "Europe",
+        "league_id": "24",
+        "league_name": "UEFA World Cup Qualifiers",
+        "league_season": "2026",
+        "league_logo": "https://apiv3.apifootball.com/badges/logo_leagues/24_wc-qualification-europe.png",
+        "country_logo": "https://apiv3.apifootball.com/badges/logo_country/160_europe.png"
+      },
+      {
+        "country_id": "8",
+        "country_name": "Worldcup",
+        "league_id": "28",
+        "league_name": "World Cup",
+        "league_season": "2026",
+        "league_logo": "https://apiv3.apifootball.com/badges/logo_leagues/28_world-cup.png",
+        "country_logo": ""
+      },
+      {
+        "country_id": "8",
+        "country_name": "Worldcup",
+        "league_id": "19",
+        "league_name": "FIFA Intercontinental Cup",
+        "league_season": "2025",
+        "league_logo": "https://apiv3.apifootball.com/badges/logo_leagues/19_fifa-club-world-cup.png",
+        "country_logo": ""
+      },
+      {
+        "country_id": "8",
+        "country_name": "Worldcup",
+        "league_id": "22",
+        "league_name": "AFC World Cup Qualifiers",
+        "league_season": "2026",
+        "league_logo": "https://apiv3.apifootball.com/badges/logo_leagues/22_wc-qualification-asia.png",
+        "country_logo": ""
+      },
+      {
+        "country_id": "8",
+        "country_name": "Worldcup",
+        "league_id": "21",
+        "league_name": "CAF World Cup Qualifiers",
+        "league_season": "2026",
+        "league_logo": "https://apiv3.apifootball.com/badges/logo_leagues/21_wc-qualification-africa.png",
+        "country_logo": ""
+      },
+      {
+        "country_id": "2",
+        "country_name": "intl",
+        "league_id": "7555",
+        "league_name": "Concacaf Women's World Cup Qualifiers",
+        "league_season": "2026",
+        "league_logo": "",
+        "country_logo": "https://apiv3.apifootball.com/badges/logo_country/2_intl.png"
+      },
+      {
+        "country_id": "8",
+        "country_name": "Worldcup",
+        "league_id": "23",
+        "league_name": "Concacaf World Cup Qualifiers",
+        "league_season": "2026",
+        "league_logo": "https://apiv3.apifootball.com/badges/logo_leagues/23_wc-qualification-concacaf.png",
+        "country_logo": ""
+      },
+      {
+        "country_id": "133",
+        "country_name": "World",
+        "league_id": "8141",
+        "league_name": "FIFA Club World Cup",
+        "league_season": "2025",
+        "league_logo": "",
+        "country_logo": "https://apiv3.apifootball.com/badges/logo_country/133_world.png"
+      },
+      {
+        "country_id": "2",
+        "country_name": "intl",
+        "league_id": "8158",
+        "league_name": "FIFA Club World Cup Play-In",
+        "league_season": "2025",
+        "league_logo": "",
+        "country_logo": "https://apiv3.apifootball.com/badges/logo_country/2_intl.png"
+      },
+      {
+        "country_id": "2",
+        "country_name": "intl",
+        "league_id": "7997",
+        "league_name": "FIFA U17 Women's World Cup",
+        "league_season": "2025",
+        "league_logo": "",
+        "country_logo": "https://apiv3.apifootball.com/badges/logo_country/2_intl.png"
+      },
+      {
+        "country_id": "8",
+        "country_name": "Worldcup",
+        "league_id": "415",
+        "league_name": "FIFA U17 World Cup",
+        "league_season": "2026",
+        "league_logo": "https://apiv3.apifootball.com/badges/logo_leagues/415_u17-world-cup.png",
+        "country_logo": ""
+      },
+      {
+        "country_id": "2",
+        "country_name": "intl",
+        "league_id": "7548",
+        "league_name": "FIFA U20 Women's World Cup",
+        "league_season": "2024",
+        "league_logo": "",
+        "country_logo": "https://apiv3.apifootball.com/badges/logo_country/2_intl.png"
+      },
+      {
+        "country_id": "8",
+        "country_name": "Worldcup",
+        "league_id": "425",
+        "league_name": "FIFA U20 World Cup",
+        "league_season": "2025",
+        "league_logo": "",
+        "country_logo": ""
+      },
+      {
+        "country_id": "166",
+        "country_name": "World cup",
+        "league_id": "20",
+        "league_name": "FIFA Women's World Cup",
+        "league_season": "2023",
+        "league_logo": "https://apiv3.apifootball.com/badges/logo_leagues/20_women's-world-cup.png",
+        "country_logo": "https://apiv3.apifootball.com/badges/logo_country/166_world-cup.png"
+      },
+      {
+        "country_id": "8",
+        "country_name": "Worldcup",
+        "league_id": "26",
+        "league_name": "OFC World Cup Qualifiers",
+        "league_season": "2026",
+        "league_logo": "https://apiv3.apifootball.com/badges/logo_leagues/26_wc-qualification-oceania.png",
+        "country_logo": ""
+      },
+      {
+        "country_id": "8",
+        "country_name": "Worldcup",
+        "league_id": "717",
+        "league_name": "Women's Asian Cup Qualification",
+        "league_season": "2026",
+        "league_logo": "",
+        "country_logo": ""
+      }
+    ],
+    "selected_league": {
+      "country_id": "8",
+      "country_name": "Worldcup",
+      "league_id": "28",
+      "league_name": "World Cup",
+      "league_season": "2026",
+      "league_logo": "https://apiv3.apifootball.com/badges/logo_leagues/28_world-cup.png",
+      "country_logo": ""
+    },
+    "teams_raw_file": "/home/ubuntu/worldcup-work/data/worldcup-2026/raw/apifootball_get_teams_league_28.json",
+    "teams_count": 48
+  },
+  "api_sports_status": {
+    "provider": "api-football.com/api-sports",
+    "available": false,
+    "league": 1,
+    "season": 2026,
+    "status": "blocked_no_key",
+    "error": "HTTP 403: {'get': '', 'parameters': [], 'errors': {'token': 'Missing application key, Check our documentation on how to add your API key in headers.', 'error': '4xHe'}, 'results': 0, 'paging': {'current': 1, 'total': 1}, 'response': []}",
+    "raw_file": "/home/ubuntu/worldcup-work/data/worldcup-2026/raw/api_sports_teams_league_1_season_2026_no_key.json"
+  },
+  "api_sports_name_diff": null,
+  "apifootball_name_diff": []
+}

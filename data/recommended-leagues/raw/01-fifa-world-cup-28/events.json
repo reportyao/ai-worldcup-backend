@@ -1,0 +1,5160 @@
+{
+  "league": {
+    "label": "FIFA World Cup",
+    "tier": "international",
+    "priority": 1,
+    "league_id": "28",
+    "league_name": "World Cup",
+    "league_season": "2026",
+    "country_id": "8",
+    "country_name": "Worldcup",
+    "league_logo": "https://apiv3.apifootball.com/badges/logo_leagues/28_world-cup.png",
+    "country_logo": "",
+    "matched_candidates_count": 1,
+    "recommendation_reason": "与世界杯预测强相关，可补充国家队近期正式比赛、资格赛强弱关系与跨洲对比特征。"
+  },
+  "action": "get_events",
+  "name": "events",
+  "request_url_sanitized": "https://apiv3.apifootball.com/?action=get_events&APIkey=***&league_id=28&from=2026-01-01&to=2026-12-31",
+  "http_status": 200,
+  "fetched_at": "2026-05-31T12:09:09Z",
+  "data": [
+    {
+      "match_id": "710281",
+      "country_id": "8",
+      "country_name": "Worldcup",
+      "league_id": "28",
+      "league_name": "World Cup - World Championship",
+      "match_date": "2026-06-11",
+      "match_status": "Not Started",
+      "match_time": "21:00",
+      "match_hometeam_id": "511",
+      "match_hometeam_name": "Mexico",
+      "match_hometeam_score": "",
+      "match_awayteam_name": "South Africa",
+      "match_awayteam_id": "726",
+      "match_awayteam_score": "",
+      "match_hometeam_halftime_score": "",
+      "match_awayteam_halftime_score": "",
+      "match_hometeam_extra_score": "",
+      "match_awayteam_extra_score": "",
+      "match_hometeam_penalty_score": "",
+      "match_awayteam_penalty_score": "",
+      "match_hometeam_ft_score": "",
+      "match_awayteam_ft_score": "",
+      "match_hometeam_system": "",
+      "match_awayteam_system": "",
+      "match_live": "0",
+      "match_round": "1",
+      "match_stadium": "Estadio Banorte",
+      "match_referee": "",
+      "team_home_badge": "https://apiv3.apifootball.com/badges/511_mexico.jpg",
+      "team_away_badge": "https://apiv3.apifootball.com/badges/726_south-africa.jpg",
+      "league_logo": "https://apiv3.apifootball.com/badges/logo_leagues/28_world-cup.png",
+      "country_logo": "",
+      "league_year": "2026",
+      "fk_stage_key": "35026",
+      "stage_name": "World Championship",
+      "goalscorer": [],
+      "substitutions": {
+        "home": [],
+        "away": []
+      },
+      "cards": [],
+      "lineup": {
+        "home": {
+          "starting_lineups": [],
+          "substitutes": [],
+          "coach": [
+            {
+              "lineup_player": "Javier Aguirre",
+              "lineup_number": "",
+              "lineup_position": "",
+              "player_key": "3884291585"
+            }
+          ],
+          "missing_players": []
+        },
+        "away": {
+          "starting_lineups": [],
+          "substitutes": [],
+          "coach": [
+            {
+              "lineup_player": "Hugo Broos",
+              "lineup_number": "",
+              "lineup_position": "",
+              "player_key": "3832494679"
+            }
+          ],
+          "missing_players": []
+        }
+      },
+      "statistics": [],
+      "statistics_1half": []
+    },
+    {
+      "match_id": "763303",
+      "country_id": "8",
+      "country_name": "Worldcup",
+      "league_id": "28",
+      "league_name": "World Cup - World Championship",
+      "match_date": "2026-06-12",
+      "match_status": "Not Started",
+      "match_time": "04:00",
+      "match_hometeam_id": "651",
+      "match_hometeam_name": "South Korea",
+      "match_hometeam_score": "",
+      "match_awayteam_name": "Czech Republic",
+      "match_awayteam_id": "13",
+      "match_awayteam_score": "",
+      "match_hometeam_halftime_score": "",
+      "match_awayteam_halftime_score": "",
+      "match_hometeam_extra_score": "",
+      "match_awayteam_extra_score": "",
+      "match_hometeam_penalty_score": "",
+      "match_awayteam_penalty_score": "",
+      "match_hometeam_ft_score": "",
+      "match_awayteam_ft_score": "",
+      "match_hometeam_system": "",
+      "match_awayteam_system": "",
+      "match_live": "0",
+      "match_round": "1",
+      "match_stadium": "Estadio Akron",
+      "match_referee": "",
+      "team_home_badge": "https://apiv3.apifootball.com/badges/651_korea-republic.jpg",
+      "team_away_badge": "https://apiv3.apifootball.com/badges/13_czechia.jpg",
+      "league_logo": "https://apiv3.apifootball.com/badges/logo_leagues/28_world-cup.png",
+      "country_logo": "",
+      "league_year": "2026",
+      "fk_stage_key": "35026",
+      "stage_name": "World Championship",
+      "goalscorer": [],
+      "substitutions": {
+        "home": [],
+        "away": []
+      },
+      "cards": [],
+      "lineup": {
+        "home": {
+          "starting_lineups": [],
+          "substitutes": [],
+          "coach": [
+            {
+              "lineup_player": "Myung-Bo Hong",
+              "lineup_number": "",
+              "lineup_position": "",
+              "player_key": "717139633"
+            }
+          ],
+          "missing_players": []
+        },
+        "away": {
+          "starting_lineups": [],
+          "substitutes": [],
+          "coach": [
+            {
+              "lineup_player": "Ivan Hašek",
+              "lineup_number": "",
+              "lineup_position": "",
+              "player_key": "160233863"
+            }
+          ],
+          "missing_players": []
+        }
+      },
+      "statistics": [],
+      "statistics_1half": []
+    },
+    {
+      "match_id": "763304",
+      "country_id": "8",
+      "country_name": "Worldcup",
+      "league_id": "28",
+      "league_name": "World Cup - World Championship",
+      "match_date": "2026-06-12",
+      "match_status": "Not Started",
+      "match_time": "21:00",
+      "match_hometeam_id": "512",
+      "match_hometeam_name": "Canada",
+      "match_hometeam_score": "",
+      "match_awayteam_name": "Bosnia & Herzegovina",
+      "match_awayteam_id": "685",
+      "match_awayteam_score": "",
+      "match_hometeam_halftime_score": "",
+      "match_awayteam_halftime_score": "",
+      "match_hometeam_extra_score": "",
+      "match_awayteam_extra_score": "",
+      "match_hometeam_penalty_score": "",
+      "match_awayteam_penalty_score": "",
+      "match_hometeam_ft_score": "",
+      "match_awayteam_ft_score": "",
+      "match_hometeam_system": "",
+      "match_awayteam_system": "",
+      "match_live": "0",
+      "match_round": "1",
+      "match_stadium": "BMO Field",
+      "match_referee": "",
+      "team_home_badge": "https://apiv3.apifootball.com/badges/512_canada.jpg",
+      "team_away_badge": "https://apiv3.apifootball.com/badges/685_bosnia-herzegovina.jpg",
+      "league_logo": "https://apiv3.apifootball.com/badges/logo_leagues/28_world-cup.png",
+      "country_logo": "",
+      "league_year": "2026",
+      "fk_stage_key": "35026",
+      "stage_name": "World Championship",
+      "goalscorer": [],
+      "substitutions": {
+        "home": [],
+        "away": []
+      },
+      "cards": [],
+      "lineup": {
+        "home": {
+          "starting_lineups": [],
+          "substitutes": [],
+          "coach": [
+            {
+              "lineup_player": "Jesse Marsch",
+              "lineup_number": "",
+              "lineup_position": "",
+              "player_key": "2424481431"
+            }
+          ],
+          "missing_players": []
+        },
+        "away": {
+          "starting_lineups": [],
+          "substitutes": [],
+          "coach": [
+            {
+              "lineup_player": "Sergej Barbarez",
+              "lineup_number": "",
+              "lineup_position": "",
+              "player_key": "2190863571"
+            }
+          ],
+          "missing_players": []
+        }
+      },
+      "statistics": [],
+      "statistics_1half": []
+    },
+    {
+      "match_id": "710282",
+      "country_id": "8",
+      "country_name": "Worldcup",
+      "league_id": "28",
+      "league_name": "World Cup - World Championship",
+      "match_date": "2026-06-13",
+      "match_status": "Not Started",
+      "match_time": "03:00",
+      "match_hometeam_id": "523",
+      "match_hometeam_name": "USA",
+      "match_hometeam_score": "",
+      "match_awayteam_name": "Paraguay",
+      "match_awayteam_id": "537",
+      "match_awayteam_score": "",
+      "match_hometeam_halftime_score": "",
+      "match_awayteam_halftime_score": "",
+      "match_hometeam_extra_score": "",
+      "match_awayteam_extra_score": "",
+      "match_hometeam_penalty_score": "",
+      "match_awayteam_penalty_score": "",
+      "match_hometeam_ft_score": "",
+      "match_awayteam_ft_score": "",
+      "match_hometeam_system": "",
+      "match_awayteam_system": "",
+      "match_live": "0",
+      "match_round": "1",
+      "match_stadium": "SoFi Stadium",
+      "match_referee": "",
+      "team_home_badge": "https://apiv3.apifootball.com/badges/523_united-states.jpg",
+      "team_away_badge": "https://apiv3.apifootball.com/badges/537_paraguay.jpg",
+      "league_logo": "https://apiv3.apifootball.com/badges/logo_leagues/28_world-cup.png",
+      "country_logo": "",
+      "league_year": "2026",
+      "fk_stage_key": "35026",
+      "stage_name": "World Championship",
+      "goalscorer": [],
+      "substitutions": {
+        "home": [],
+        "away": []
+      },
+      "cards": [],
+      "lineup": {
+        "home": {
+          "starting_lineups": [],
+          "substitutes": [],
+          "coach": [
+            {
+              "lineup_player": "Mauricio Pochettino",
+              "lineup_number": "",
+              "lineup_position": "",
+              "player_key": "160167725"
+            }
+          ],
+          "missing_players": []
+        },
+        "away": {
+          "starting_lineups": [],
+          "substitutes": [],
+          "coach": [
+            {
+              "lineup_player": "Gustavo Julio Alfaro",
+              "lineup_number": "",
+              "lineup_position": "",
+              "player_key": "2274667774"
+            }
+          ],
+          "missing_players": []
+        }
+      },
+      "statistics": [],
+      "statistics_1half": []
+    },
+    {
+      "match_id": "710285",
+      "country_id": "8",
+      "country_name": "Worldcup",
+      "league_id": "28",
+      "league_name": "World Cup - World Championship",
+      "match_date": "2026-06-13",
+      "match_status": "Not Started",
+      "match_time": "21:00",
+      "match_hometeam_id": "538",
+      "match_hometeam_name": "Qatar",
+      "match_hometeam_score": "",
+      "match_awayteam_name": "Switzerland",
+      "match_awayteam_id": "2",
+      "match_awayteam_score": "",
+      "match_hometeam_halftime_score": "",
+      "match_awayteam_halftime_score": "",
+      "match_hometeam_extra_score": "",
+      "match_awayteam_extra_score": "",
+      "match_hometeam_penalty_score": "",
+      "match_awayteam_penalty_score": "",
+      "match_hometeam_ft_score": "",
+      "match_awayteam_ft_score": "",
+      "match_hometeam_system": "",
+      "match_awayteam_system": "",
+      "match_live": "0",
+      "match_round": "1",
+      "match_stadium": "",
+      "match_referee": "",
+      "team_home_badge": "https://apiv3.apifootball.com/badges/538_qatar.jpg",
+      "team_away_badge": "https://apiv3.apifootball.com/badges/2_switzerland.jpg",
+      "league_logo": "https://apiv3.apifootball.com/badges/logo_leagues/28_world-cup.png",
+      "country_logo": "",
+      "league_year": "2026",
+      "fk_stage_key": "35026",
+      "stage_name": "World Championship",
+      "goalscorer": [],
+      "substitutions": {
+        "home": [],
+        "away": []
+      },
+      "cards": [],
+      "lineup": {
+        "home": {
+          "starting_lineups": [],
+          "substitutes": [],
+          "coach": [
+            {
+              "lineup_player": "Julen Lopetegui Argote",
+              "lineup_number": "",
+              "lineup_position": "",
+              "player_key": "3721129887"
+            }
+          ],
+          "missing_players": []
+        },
+        "away": {
+          "starting_lineups": [],
+          "substitutes": [],
+          "coach": [
+            {
+              "lineup_player": "Murat Yakın",
+              "lineup_number": "",
+              "lineup_position": "",
+              "player_key": "1539947948"
+            }
+          ],
+          "missing_players": []
+        }
+      },
+      "statistics": [],
+      "statistics_1half": []
+    },
+    {
+      "match_id": "710286",
+      "country_id": "8",
+      "country_name": "Worldcup",
+      "league_id": "28",
+      "league_name": "World Cup - World Championship",
+      "match_date": "2026-06-14",
+      "match_status": "Not Started",
+      "match_time": "19:00",
+      "match_hometeam_id": "21",
+      "match_hometeam_name": "Germany",
+      "match_hometeam_score": "",
+      "match_awayteam_name": "Curacao",
+      "match_awayteam_id": "520",
+      "match_awayteam_score": "",
+      "match_hometeam_halftime_score": "",
+      "match_awayteam_halftime_score": "",
+      "match_hometeam_extra_score": "",
+      "match_awayteam_extra_score": "",
+      "match_hometeam_penalty_score": "",
+      "match_awayteam_penalty_score": "",
+      "match_hometeam_ft_score": "",
+      "match_awayteam_ft_score": "",
+      "match_hometeam_system": "",
+      "match_awayteam_system": "",
+      "match_live": "0",
+      "match_round": "1",
+      "match_stadium": "NRG Stadium",
+      "match_referee": "",
+      "team_home_badge": "https://apiv3.apifootball.com/badges/21_germany.jpg",
+      "team_away_badge": "https://apiv3.apifootball.com/badges/520_curacao.jpg",
+      "league_logo": "https://apiv3.apifootball.com/badges/logo_leagues/28_world-cup.png",
+      "country_logo": "",
+      "league_year": "2026",
+      "fk_stage_key": "35026",
+      "stage_name": "World Championship",
+      "goalscorer": [],
+      "substitutions": {
+        "home": [],
+        "away": []
+      },
+      "cards": [],
+      "lineup": {
+        "home": {
+          "starting_lineups": [],
+          "substitutes": [],
+          "coach": [
+            {
+              "lineup_player": "Julian Nagelsmann",
+              "lineup_number": "",
+              "lineup_position": "",
+              "player_key": "2087293693"
+            }
+          ],
+          "missing_players": []
+        },
+        "away": {
+          "starting_lineups": [],
+          "substitutes": [],
+          "coach": [
+            {
+              "lineup_player": "Fred Rutten",
+              "lineup_number": "",
+              "lineup_position": "",
+              "player_key": "104903935"
+            }
+          ],
+          "missing_players": []
+        }
+      },
+      "statistics": [],
+      "statistics_1half": []
+    },
+    {
+      "match_id": "710284",
+      "country_id": "8",
+      "country_name": "Worldcup",
+      "league_id": "28",
+      "league_name": "World Cup - World Championship",
+      "match_date": "2026-06-14",
+      "match_status": "Not Started",
+      "match_time": "03:00",
+      "match_hometeam_id": "515",
+      "match_hometeam_name": "Haiti",
+      "match_hometeam_score": "",
+      "match_awayteam_name": "Scotland",
+      "match_awayteam_id": "15",
+      "match_awayteam_score": "",
+      "match_hometeam_halftime_score": "",
+      "match_awayteam_halftime_score": "",
+      "match_hometeam_extra_score": "",
+      "match_awayteam_extra_score": "",
+      "match_hometeam_penalty_score": "",
+      "match_awayteam_penalty_score": "",
+      "match_hometeam_ft_score": "",
+      "match_awayteam_ft_score": "",
+      "match_hometeam_system": "",
+      "match_awayteam_system": "",
+      "match_live": "0",
+      "match_round": "1",
+      "match_stadium": "Gillette Stadium",
+      "match_referee": "",
+      "team_home_badge": "https://apiv3.apifootball.com/badges/515_haiti.jpg",
+      "team_away_badge": "https://apiv3.apifootball.com/badges/15_scotland.jpg",
+      "league_logo": "https://apiv3.apifootball.com/badges/logo_leagues/28_world-cup.png",
+      "country_logo": "",
+      "league_year": "2026",
+      "fk_stage_key": "35026",
+      "stage_name": "World Championship",
+      "goalscorer": [],
+      "substitutions": {
+        "home": [],
+        "away": []
+      },
+      "cards": [],
+      "lineup": {
+        "home": {
+          "starting_lineups": [],
+          "substitutes": [],
+          "coach": [
+            {
+              "lineup_player": "Sebastien Migne",
+              "lineup_number": "",
+              "lineup_position": "",
+              "player_key": "3057534565"
+            }
+          ],
+          "missing_players": []
+        },
+        "away": {
+          "starting_lineups": [],
+          "substitutes": [],
+          "coach": [
+            {
+              "lineup_player": "Stephen Clarke",
+              "lineup_number": "",
+              "lineup_position": "",
+              "player_key": "1288407825"
+            }
+          ],
+          "missing_players": []
+        }
+      },
+      "statistics": [],
+      "statistics_1half": []
+    },
+    {
+      "match_id": "763305",
+      "country_id": "8",
+      "country_name": "Worldcup",
+      "league_id": "28",
+      "league_name": "World Cup - World Championship",
+      "match_date": "2026-06-14",
+      "match_status": "Not Started",
+      "match_time": "06:00",
+      "match_hometeam_id": "529",
+      "match_hometeam_name": "Australia",
+      "match_hometeam_score": "",
+      "match_awayteam_name": "Turkey",
+      "match_awayteam_id": "1",
+      "match_awayteam_score": "",
+      "match_hometeam_halftime_score": "",
+      "match_awayteam_halftime_score": "",
+      "match_hometeam_extra_score": "",
+      "match_awayteam_extra_score": "",
+      "match_hometeam_penalty_score": "",
+      "match_awayteam_penalty_score": "",
+      "match_hometeam_ft_score": "",
+      "match_awayteam_ft_score": "",
+      "match_hometeam_system": "",
+      "match_awayteam_system": "",
+      "match_live": "0",
+      "match_round": "1",
+      "match_stadium": "BC Place",
+      "match_referee": "",
+      "team_home_badge": "https://apiv3.apifootball.com/badges/529_australia.jpg",
+      "team_away_badge": "https://apiv3.apifootball.com/badges/1_turkiye.jpg",
+      "league_logo": "https://apiv3.apifootball.com/badges/logo_leagues/28_world-cup.png",
+      "country_logo": "",
+      "league_year": "2026",
+      "fk_stage_key": "35026",
+      "stage_name": "World Championship",
+      "goalscorer": [],
+      "substitutions": {
+        "home": [],
+        "away": []
+      },
+      "cards": [],
+      "lineup": {
+        "home": {
+          "starting_lineups": [],
+          "substitutes": [],
+          "coach": [
+            {
+              "lineup_player": "Anthony Popović",
+              "lineup_number": "",
+              "lineup_position": "",
+              "player_key": "1148199747"
+            }
+          ],
+          "missing_players": []
+        },
+        "away": {
+          "starting_lineups": [],
+          "substitutes": [],
+          "coach": [
+            {
+              "lineup_player": "Vincenzo Montella",
+              "lineup_number": "",
+              "lineup_position": "",
+              "player_key": "2608760003"
+            }
+          ],
+          "missing_players": []
+        }
+      },
+      "statistics": [],
+      "statistics_1half": []
+    },
+    {
+      "match_id": "710283",
+      "country_id": "8",
+      "country_name": "Worldcup",
+      "league_id": "28",
+      "league_name": "World Cup - World Championship",
+      "match_date": "2026-06-14",
+      "match_status": "Not Started",
+      "match_time": "00:00",
+      "match_hometeam_id": "531",
+      "match_hometeam_name": "Brazil",
+      "match_hometeam_score": "",
+      "match_awayteam_name": "Morocco",
+      "match_awayteam_id": "717",
+      "match_awayteam_score": "",
+      "match_hometeam_halftime_score": "",
+      "match_awayteam_halftime_score": "",
+      "match_hometeam_extra_score": "",
+      "match_awayteam_extra_score": "",
+      "match_hometeam_penalty_score": "",
+      "match_awayteam_penalty_score": "",
+      "match_hometeam_ft_score": "",
+      "match_awayteam_ft_score": "",
+      "match_hometeam_system": "",
+      "match_awayteam_system": "",
+      "match_live": "0",
+      "match_round": "1",
+      "match_stadium": "MetLife Stadium",
+      "match_referee": "",
+      "team_home_badge": "https://apiv3.apifootball.com/badges/531_brazil.jpg",
+      "team_away_badge": "https://apiv3.apifootball.com/badges/717_morocco.jpg",
+      "league_logo": "https://apiv3.apifootball.com/badges/logo_leagues/28_world-cup.png",
+      "country_logo": "",
+      "league_year": "2026",
+      "fk_stage_key": "35026",
+      "stage_name": "World Championship",
+      "goalscorer": [],
+      "substitutions": {
+        "home": [],
+        "away": []
+      },
+      "cards": [],
+      "lineup": {
+        "home": {
+          "starting_lineups": [],
+          "substitutes": [],
+          "coach": [],
+          "missing_players": []
+        },
+        "away": {
+          "starting_lineups": [],
+          "substitutes": [],
+          "coach": [
+            {
+              "lineup_player": "Mohamed Ouahbi",
+              "lineup_number": "",
+              "lineup_position": "",
+              "player_key": "3519682997"
+            }
+          ],
+          "missing_players": []
+        }
+      },
+      "statistics": [],
+      "statistics_1half": []
+    },
+    {
+      "match_id": "710288",
+      "country_id": "8",
+      "country_name": "Worldcup",
+      "league_id": "28",
+      "league_name": "World Cup - World Championship",
+      "match_date": "2026-06-14",
+      "match_status": "Not Started",
+      "match_time": "22:00",
+      "match_hometeam_id": "10",
+      "match_hometeam_name": "Netherlands",
+      "match_hometeam_score": "",
+      "match_awayteam_name": "Japan",
+      "match_awayteam_id": "540",
+      "match_awayteam_score": "",
+      "match_hometeam_halftime_score": "",
+      "match_awayteam_halftime_score": "",
+      "match_hometeam_extra_score": "",
+      "match_awayteam_extra_score": "",
+      "match_hometeam_penalty_score": "",
+      "match_awayteam_penalty_score": "",
+      "match_hometeam_ft_score": "",
+      "match_awayteam_ft_score": "",
+      "match_hometeam_system": "",
+      "match_awayteam_system": "",
+      "match_live": "0",
+      "match_round": "1",
+      "match_stadium": "",
+      "match_referee": "",
+      "team_home_badge": "https://apiv3.apifootball.com/badges/10_netherlands.jpg",
+      "team_away_badge": "https://apiv3.apifootball.com/badges/540_japan.jpg",
+      "league_logo": "https://apiv3.apifootball.com/badges/logo_leagues/28_world-cup.png",
+      "country_logo": "",
+      "league_year": "2026",
+      "fk_stage_key": "35026",
+      "stage_name": "World Championship",
+      "goalscorer": [],
+      "substitutions": {
+        "home": [],
+        "away": []
+      },
+      "cards": [],
+      "lineup": {
+        "home": {
+          "starting_lineups": [],
+          "substitutes": [],
+          "coach": [
+            {
+              "lineup_player": "Ronald Koeman",
+              "lineup_number": "",
+              "lineup_position": "",
+              "player_key": "3400970579"
+            }
+          ],
+          "missing_players": []
+        },
+        "away": {
+          "starting_lineups": [],
+          "substitutes": [],
+          "coach": [
+            {
+              "lineup_player": "Hajime Moriyasu",
+              "lineup_number": "",
+              "lineup_position": "",
+              "player_key": "1940591306"
+            }
+          ],
+          "missing_players": []
+        }
+      },
+      "statistics": [],
+      "statistics_1half": []
+    },
+    {
+      "match_id": "763306",
+      "country_id": "8",
+      "country_name": "Worldcup",
+      "league_id": "28",
+      "league_name": "World Cup - World Championship",
+      "match_date": "2026-06-15",
+      "match_status": "Not Started",
+      "match_time": "04:00",
+      "match_hometeam_id": "17",
+      "match_hometeam_name": "Sweden",
+      "match_hometeam_score": "",
+      "match_awayteam_name": "Tunisia",
+      "match_awayteam_id": "719",
+      "match_awayteam_score": "",
+      "match_hometeam_halftime_score": "",
+      "match_awayteam_halftime_score": "",
+      "match_hometeam_extra_score": "",
+      "match_awayteam_extra_score": "",
+      "match_hometeam_penalty_score": "",
+      "match_awayteam_penalty_score": "",
+      "match_hometeam_ft_score": "",
+      "match_awayteam_ft_score": "",
+      "match_hometeam_system": "",
+      "match_awayteam_system": "",
+      "match_live": "0",
+      "match_round": "1",
+      "match_stadium": "Estadio BBVA",
+      "match_referee": "",
+      "team_home_badge": "https://apiv3.apifootball.com/badges/17_sweden.jpg",
+      "team_away_badge": "https://apiv3.apifootball.com/badges/719_tunisia.jpg",
+      "league_logo": "https://apiv3.apifootball.com/badges/logo_leagues/28_world-cup.png",
+      "country_logo": "",
+      "league_year": "2026",
+      "fk_stage_key": "35026",
+      "stage_name": "World Championship",
+      "goalscorer": [],
+      "substitutions": {
+        "home": [],
+        "away": []
+      },
+      "cards": [],
+      "lineup": {
+        "home": {
+          "starting_lineups": [],
+          "substitutes": [],
+          "coach": [
+            {
+              "lineup_player": "Jon Dahl Tomasson",
+              "lineup_number": "",
+              "lineup_position": "",
+              "player_key": "2828889354"
+            }
+          ],
+          "missing_players": []
+        },
+        "away": {
+          "starting_lineups": [],
+          "substitutes": [],
+          "coach": [],
+          "missing_players": []
+        }
+      },
+      "statistics": [],
+      "statistics_1half": []
+    },
+    {
+      "match_id": "710292",
+      "country_id": "8",
+      "country_name": "Worldcup",
+      "league_id": "28",
+      "league_name": "World Cup - World Championship",
+      "match_date": "2026-06-15",
+      "match_status": "Not Started",
+      "match_time": "18:00",
+      "match_hometeam_id": "19",
+      "match_hometeam_name": "Spain",
+      "match_hometeam_score": "",
+      "match_awayteam_name": "Cape Verde",
+      "match_awayteam_id": "732",
+      "match_awayteam_score": "",
+      "match_hometeam_halftime_score": "",
+      "match_awayteam_halftime_score": "",
+      "match_hometeam_extra_score": "",
+      "match_awayteam_extra_score": "",
+      "match_hometeam_penalty_score": "",
+      "match_awayteam_penalty_score": "",
+      "match_hometeam_ft_score": "",
+      "match_awayteam_ft_score": "",
+      "match_hometeam_system": "",
+      "match_awayteam_system": "",
+      "match_live": "0",
+      "match_round": "1",
+      "match_stadium": "Mercedes-Benz Stadium",
+      "match_referee": "",
+      "team_home_badge": "https://apiv3.apifootball.com/badges/19_spain.jpg",
+      "team_away_badge": "https://apiv3.apifootball.com/badges/732_cabo-verde.jpg",
+      "league_logo": "https://apiv3.apifootball.com/badges/logo_leagues/28_world-cup.png",
+      "country_logo": "",
+      "league_year": "2026",
+      "fk_stage_key": "35026",
+      "stage_name": "World Championship",
+      "goalscorer": [],
+      "substitutions": {
+        "home": [],
+        "away": []
+      },
+      "cards": [],
+      "lineup": {
+        "home": {
+          "starting_lineups": [],
+          "substitutes": [],
+          "coach": [
+            {
+              "lineup_player": "Luis de la Fuente Castillo",
+              "lineup_number": "",
+              "lineup_position": "",
+              "player_key": "2568996517"
+            }
+          ],
+          "missing_players": []
+        },
+        "away": {
+          "starting_lineups": [],
+          "substitutes": [],
+          "coach": [],
+          "missing_players": []
+        }
+      },
+      "statistics": [],
+      "statistics_1half": []
+    },
+    {
+      "match_id": "710289",
+      "country_id": "8",
+      "country_name": "Worldcup",
+      "league_id": "28",
+      "league_name": "World Cup - World Championship",
+      "match_date": "2026-06-15",
+      "match_status": "Not Started",
+      "match_time": "21:00",
+      "match_hometeam_id": "6",
+      "match_hometeam_name": "Belgium",
+      "match_hometeam_score": "",
+      "match_awayteam_name": "Egypt",
+      "match_awayteam_id": "716",
+      "match_awayteam_score": "",
+      "match_hometeam_halftime_score": "",
+      "match_awayteam_halftime_score": "",
+      "match_hometeam_extra_score": "",
+      "match_awayteam_extra_score": "",
+      "match_hometeam_penalty_score": "",
+      "match_awayteam_penalty_score": "",
+      "match_hometeam_ft_score": "",
+      "match_awayteam_ft_score": "",
+      "match_hometeam_system": "",
+      "match_awayteam_system": "",
+      "match_live": "0",
+      "match_round": "1",
+      "match_stadium": "Lumen Field",
+      "match_referee": "",
+      "team_home_badge": "https://apiv3.apifootball.com/badges/6_belgium.jpg",
+      "team_away_badge": "https://apiv3.apifootball.com/badges/716_egypt.jpg",
+      "league_logo": "https://apiv3.apifootball.com/badges/logo_leagues/28_world-cup.png",
+      "country_logo": "",
+      "league_year": "2026",
+      "fk_stage_key": "35026",
+      "stage_name": "World Championship",
+      "goalscorer": [],
+      "substitutions": {
+        "home": [],
+        "away": []
+      },
+      "cards": [],
+      "lineup": {
+        "home": {
+          "starting_lineups": [],
+          "substitutes": [],
+          "coach": [
+            {
+              "lineup_player": "Rudi Garcia",
+              "lineup_number": "",
+              "lineup_position": "",
+              "player_key": "3705263083"
+            }
+          ],
+          "missing_players": []
+        },
+        "away": {
+          "starting_lineups": [],
+          "substitutes": [],
+          "coach": [],
+          "missing_players": []
+        }
+      },
+      "statistics": [],
+      "statistics_1half": []
+    },
+    {
+      "match_id": "710287",
+      "country_id": "8",
+      "country_name": "Worldcup",
+      "league_id": "28",
+      "league_name": "World Cup - World Championship",
+      "match_date": "2026-06-15",
+      "match_status": "Not Started",
+      "match_time": "01:00",
+      "match_hometeam_id": "738",
+      "match_hometeam_name": "Ivory Coast",
+      "match_hometeam_score": "",
+      "match_awayteam_name": "Ecuador",
+      "match_awayteam_id": "541",
+      "match_awayteam_score": "",
+      "match_hometeam_halftime_score": "",
+      "match_awayteam_halftime_score": "",
+      "match_hometeam_extra_score": "",
+      "match_awayteam_extra_score": "",
+      "match_hometeam_penalty_score": "",
+      "match_awayteam_penalty_score": "",
+      "match_hometeam_ft_score": "",
+      "match_awayteam_ft_score": "",
+      "match_hometeam_system": "",
+      "match_awayteam_system": "",
+      "match_live": "0",
+      "match_round": "1",
+      "match_stadium": "Lincoln Financial Field",
+      "match_referee": "",
+      "team_home_badge": "https://apiv3.apifootball.com/badges/738_ivory-coast.jpg",
+      "team_away_badge": "https://apiv3.apifootball.com/badges/541_ecuador.jpg",
+      "league_logo": "https://apiv3.apifootball.com/badges/logo_leagues/28_world-cup.png",
+      "country_logo": "",
+      "league_year": "2026",
+      "fk_stage_key": "35026",
+      "stage_name": "World Championship",
+      "goalscorer": [],
+      "substitutions": {
+        "home": [],
+        "away": []
+      },
+      "cards": [],
+      "lineup": {
+        "home": {
+          "starting_lineups": [],
+          "substitutes": [],
+          "coach": [
+            {
+              "lineup_player": "Émerse Faé",
+              "lineup_number": "",
+              "lineup_position": "",
+              "player_key": "664682653"
+            }
+          ],
+          "missing_players": []
+        },
+        "away": {
+          "starting_lineups": [],
+          "substitutes": [],
+          "coach": [
+            {
+              "lineup_player": "Sebastián Andrés Beccacece",
+              "lineup_number": "",
+              "lineup_position": "",
+              "player_key": "1526765742"
+            }
+          ],
+          "missing_players": []
+        }
+      },
+      "statistics": [],
+      "statistics_1half": []
+    },
+    {
+      "match_id": "710291",
+      "country_id": "8",
+      "country_name": "Worldcup",
+      "league_id": "28",
+      "league_name": "World Cup - World Championship",
+      "match_date": "2026-06-16",
+      "match_status": "Not Started",
+      "match_time": "00:00",
+      "match_hometeam_id": "647",
+      "match_hometeam_name": "Saudi Arabia",
+      "match_hometeam_score": "",
+      "match_awayteam_name": "Uruguay",
+      "match_awayteam_id": "539",
+      "match_awayteam_score": "",
+      "match_hometeam_halftime_score": "",
+      "match_awayteam_halftime_score": "",
+      "match_hometeam_extra_score": "",
+      "match_awayteam_extra_score": "",
+      "match_hometeam_penalty_score": "",
+      "match_awayteam_penalty_score": "",
+      "match_hometeam_ft_score": "",
+      "match_awayteam_ft_score": "",
+      "match_hometeam_system": "",
+      "match_awayteam_system": "",
+      "match_live": "0",
+      "match_round": "1",
+      "match_stadium": "Hard Rock Stadium",
+      "match_referee": "",
+      "team_home_badge": "https://apiv3.apifootball.com/badges/647_saudi-arabia.jpg",
+      "team_away_badge": "https://apiv3.apifootball.com/badges/539_uruguay.jpg",
+      "league_logo": "https://apiv3.apifootball.com/badges/logo_leagues/28_world-cup.png",
+      "country_logo": "",
+      "league_year": "2026",
+      "fk_stage_key": "35026",
+      "stage_name": "World Championship",
+      "goalscorer": [],
+      "substitutions": {
+        "home": [],
+        "away": []
+      },
+      "cards": [],
+      "lineup": {
+        "home": {
+          "starting_lineups": [],
+          "substitutes": [],
+          "coach": [
+            {
+              "lineup_player": "Georgios Donis",
+              "lineup_number": "",
+              "lineup_position": "",
+              "player_key": "475723643"
+            }
+          ],
+          "missing_players": []
+        },
+        "away": {
+          "starting_lineups": [],
+          "substitutes": [],
+          "coach": [
+            {
+              "lineup_player": "Marcelo Alberto Bielsa Caldera",
+              "lineup_number": "",
+              "lineup_position": "",
+              "player_key": "195460154"
+            }
+          ],
+          "missing_players": []
+        }
+      },
+      "statistics": [],
+      "statistics_1half": []
+    },
+    {
+      "match_id": "710290",
+      "country_id": "8",
+      "country_name": "Worldcup",
+      "league_id": "28",
+      "league_name": "World Cup - World Championship",
+      "match_date": "2026-06-16",
+      "match_status": "Not Started",
+      "match_time": "03:00",
+      "match_hometeam_id": "644",
+      "match_hometeam_name": "Iran",
+      "match_hometeam_score": "",
+      "match_awayteam_name": "New Zealand",
+      "match_awayteam_id": "527",
+      "match_awayteam_score": "",
+      "match_hometeam_halftime_score": "",
+      "match_awayteam_halftime_score": "",
+      "match_hometeam_extra_score": "",
+      "match_awayteam_extra_score": "",
+      "match_hometeam_penalty_score": "",
+      "match_awayteam_penalty_score": "",
+      "match_hometeam_ft_score": "",
+      "match_awayteam_ft_score": "",
+      "match_hometeam_system": "",
+      "match_awayteam_system": "",
+      "match_live": "0",
+      "match_round": "1",
+      "match_stadium": "SoFi Stadium",
+      "match_referee": "",
+      "team_home_badge": "https://apiv3.apifootball.com/badges/644_ir-iran.jpg",
+      "team_away_badge": "https://apiv3.apifootball.com/badges/527_new-zealand.jpg",
+      "league_logo": "https://apiv3.apifootball.com/badges/logo_leagues/28_world-cup.png",
+      "country_logo": "",
+      "league_year": "2026",
+      "fk_stage_key": "35026",
+      "stage_name": "World Championship",
+      "goalscorer": [],
+      "substitutions": {
+        "home": [],
+        "away": []
+      },
+      "cards": [],
+      "lineup": {
+        "home": {
+          "starting_lineups": [],
+          "substitutes": [],
+          "coach": [
+            {
+              "lineup_player": "Amir Ghalenoei",
+              "lineup_number": "",
+              "lineup_position": "",
+              "player_key": "4117157808"
+            }
+          ],
+          "missing_players": []
+        },
+        "away": {
+          "starting_lineups": [],
+          "substitutes": [],
+          "coach": [
+            {
+              "lineup_player": "Darren Shaun Bazeley",
+              "lineup_number": "",
+              "lineup_position": "",
+              "player_key": "2553112031"
+            }
+          ],
+          "missing_players": []
+        }
+      },
+      "statistics": [],
+      "statistics_1half": []
+    },
+    {
+      "match_id": "710295",
+      "country_id": "8",
+      "country_name": "Worldcup",
+      "league_id": "28",
+      "league_name": "World Cup - World Championship",
+      "match_date": "2026-06-16",
+      "match_status": "Not Started",
+      "match_time": "21:00",
+      "match_hometeam_id": "22",
+      "match_hometeam_name": "France",
+      "match_hometeam_score": "",
+      "match_awayteam_name": "Senegal",
+      "match_awayteam_id": "720",
+      "match_awayteam_score": "",
+      "match_hometeam_halftime_score": "",
+      "match_awayteam_halftime_score": "",
+      "match_hometeam_extra_score": "",
+      "match_awayteam_extra_score": "",
+      "match_hometeam_penalty_score": "",
+      "match_awayteam_penalty_score": "",
+      "match_hometeam_ft_score": "",
+      "match_awayteam_ft_score": "",
+      "match_hometeam_system": "",
+      "match_awayteam_system": "",
+      "match_live": "0",
+      "match_round": "1",
+      "match_stadium": "MetLife Stadium",
+      "match_referee": "",
+      "team_home_badge": "https://apiv3.apifootball.com/badges/22_france.jpg",
+      "team_away_badge": "https://apiv3.apifootball.com/badges/720_senegal.jpg",
+      "league_logo": "https://apiv3.apifootball.com/badges/logo_leagues/28_world-cup.png",
+      "country_logo": "",
+      "league_year": "2026",
+      "fk_stage_key": "35026",
+      "stage_name": "World Championship",
+      "goalscorer": [],
+      "substitutions": {
+        "home": [],
+        "away": []
+      },
+      "cards": [],
+      "lineup": {
+        "home": {
+          "starting_lineups": [],
+          "substitutes": [],
+          "coach": [
+            {
+              "lineup_player": "Didier Claude Deschamps",
+              "lineup_number": "",
+              "lineup_position": "",
+              "player_key": "3580862400"
+            }
+          ],
+          "missing_players": []
+        },
+        "away": {
+          "starting_lineups": [],
+          "substitutes": [],
+          "coach": [
+            {
+              "lineup_player": "Bouna Thiaw Pape",
+              "lineup_number": "",
+              "lineup_position": "",
+              "player_key": "1178200003"
+            }
+          ],
+          "missing_players": []
+        }
+      },
+      "statistics": [],
+      "statistics_1half": []
+    },
+    {
+      "match_id": "763308",
+      "country_id": "8",
+      "country_name": "Worldcup",
+      "league_id": "28",
+      "league_name": "World Cup - World Championship",
+      "match_date": "2026-06-17",
+      "match_status": "Not Started",
+      "match_time": "19:00",
+      "match_hometeam_id": "23",
+      "match_hometeam_name": "Portugal",
+      "match_hometeam_score": "",
+      "match_awayteam_name": "D.R. Congo",
+      "match_awayteam_id": "728",
+      "match_awayteam_score": "",
+      "match_hometeam_halftime_score": "",
+      "match_awayteam_halftime_score": "",
+      "match_hometeam_extra_score": "",
+      "match_awayteam_extra_score": "",
+      "match_hometeam_penalty_score": "",
+      "match_awayteam_penalty_score": "",
+      "match_hometeam_ft_score": "",
+      "match_awayteam_ft_score": "",
+      "match_hometeam_system": "",
+      "match_awayteam_system": "",
+      "match_live": "0",
+      "match_round": "1",
+      "match_stadium": "NRG Stadium",
+      "match_referee": "",
+      "team_home_badge": "https://apiv3.apifootball.com/badges/23_portugal.jpg",
+      "team_away_badge": "https://apiv3.apifootball.com/badges/728_congo-dr.jpg",
+      "league_logo": "https://apiv3.apifootball.com/badges/logo_leagues/28_world-cup.png",
+      "country_logo": "",
+      "league_year": "2026",
+      "fk_stage_key": "35026",
+      "stage_name": "World Championship",
+      "goalscorer": [],
+      "substitutions": {
+        "home": [],
+        "away": []
+      },
+      "cards": [],
+      "lineup": {
+        "home": {
+          "starting_lineups": [],
+          "substitutes": [],
+          "coach": [
+            {
+              "lineup_player": "Roberto Martínez Montoliú",
+              "lineup_number": "",
+              "lineup_position": "",
+              "player_key": "351187002"
+            }
+          ],
+          "missing_players": []
+        },
+        "away": {
+          "starting_lineups": [],
+          "substitutes": [],
+          "coach": [
+            {
+              "lineup_player": "Sebastien Desabre",
+              "lineup_number": "",
+              "lineup_position": "",
+              "player_key": "3745813838"
+            }
+          ],
+          "missing_players": []
+        }
+      },
+      "statistics": [],
+      "statistics_1half": []
+    },
+    {
+      "match_id": "710296",
+      "country_id": "8",
+      "country_name": "Worldcup",
+      "league_id": "28",
+      "league_name": "World Cup - World Championship",
+      "match_date": "2026-06-17",
+      "match_status": "Not Started",
+      "match_time": "22:00",
+      "match_hometeam_id": "16",
+      "match_hometeam_name": "England",
+      "match_hometeam_score": "",
+      "match_awayteam_name": "Croatia",
+      "match_awayteam_id": "14",
+      "match_awayteam_score": "",
+      "match_hometeam_halftime_score": "",
+      "match_awayteam_halftime_score": "",
+      "match_hometeam_extra_score": "",
+      "match_awayteam_extra_score": "",
+      "match_hometeam_penalty_score": "",
+      "match_awayteam_penalty_score": "",
+      "match_hometeam_ft_score": "",
+      "match_awayteam_ft_score": "",
+      "match_hometeam_system": "",
+      "match_awayteam_system": "",
+      "match_live": "0",
+      "match_round": "1",
+      "match_stadium": "",
+      "match_referee": "",
+      "team_home_badge": "https://apiv3.apifootball.com/badges/16_england.jpg",
+      "team_away_badge": "https://apiv3.apifootball.com/badges/14_croatia.jpg",
+      "league_logo": "https://apiv3.apifootball.com/badges/logo_leagues/28_world-cup.png",
+      "country_logo": "",
+      "league_year": "2026",
+      "fk_stage_key": "35026",
+      "stage_name": "World Championship",
+      "goalscorer": [],
+      "substitutions": {
+        "home": [],
+        "away": []
+      },
+      "cards": [],
+      "lineup": {
+        "home": {
+          "starting_lineups": [],
+          "substitutes": [],
+          "coach": [
+            {
+              "lineup_player": "Thomas Tuchel",
+              "lineup_number": "",
+              "lineup_position": "",
+              "player_key": "1579268102"
+            }
+          ],
+          "missing_players": []
+        },
+        "away": {
+          "starting_lineups": [],
+          "substitutes": [],
+          "coach": [
+            {
+              "lineup_player": "Zlatko Dalić",
+              "lineup_number": "",
+              "lineup_position": "",
+              "player_key": "4084443150"
+            }
+          ],
+          "missing_players": []
+        }
+      },
+      "statistics": [],
+      "statistics_1half": []
+    },
+    {
+      "match_id": "710294",
+      "country_id": "8",
+      "country_name": "Worldcup",
+      "league_id": "28",
+      "league_name": "World Cup - World Championship",
+      "match_date": "2026-06-17",
+      "match_status": "Not Started",
+      "match_time": "06:00",
+      "match_hometeam_id": "9",
+      "match_hometeam_name": "Austria",
+      "match_hometeam_score": "",
+      "match_awayteam_name": "Jordan",
+      "match_awayteam_id": "641",
+      "match_awayteam_score": "",
+      "match_hometeam_halftime_score": "",
+      "match_awayteam_halftime_score": "",
+      "match_hometeam_extra_score": "",
+      "match_awayteam_extra_score": "",
+      "match_hometeam_penalty_score": "",
+      "match_awayteam_penalty_score": "",
+      "match_hometeam_ft_score": "",
+      "match_awayteam_ft_score": "",
+      "match_hometeam_system": "",
+      "match_awayteam_system": "",
+      "match_live": "0",
+      "match_round": "1",
+      "match_stadium": "",
+      "match_referee": "",
+      "team_home_badge": "https://apiv3.apifootball.com/badges/9_austria.jpg",
+      "team_away_badge": "https://apiv3.apifootball.com/badges/641_jordan.jpg",
+      "league_logo": "https://apiv3.apifootball.com/badges/logo_leagues/28_world-cup.png",
+      "country_logo": "",
+      "league_year": "2026",
+      "fk_stage_key": "35026",
+      "stage_name": "World Championship",
+      "goalscorer": [],
+      "substitutions": {
+        "home": [],
+        "away": []
+      },
+      "cards": [],
+      "lineup": {
+        "home": {
+          "starting_lineups": [],
+          "substitutes": [],
+          "coach": [
+            {
+              "lineup_player": "Ralf Dietrich Rangnick",
+              "lineup_number": "",
+              "lineup_position": "",
+              "player_key": "3615855830"
+            }
+          ],
+          "missing_players": []
+        },
+        "away": {
+          "starting_lineups": [],
+          "substitutes": [],
+          "coach": [
+            {
+              "lineup_player": "Jamal Sellami",
+              "lineup_number": "",
+              "lineup_position": "",
+              "player_key": "1221281344"
+            }
+          ],
+          "missing_players": []
+        }
+      },
+      "statistics": [],
+      "statistics_1half": []
+    },
+    {
+      "match_id": "763307",
+      "country_id": "8",
+      "country_name": "Worldcup",
+      "league_id": "28",
+      "league_name": "World Cup - World Championship",
+      "match_date": "2026-06-17",
+      "match_status": "Not Started",
+      "match_time": "00:00",
+      "match_hometeam_id": "642",
+      "match_hometeam_name": "Iraq",
+      "match_hometeam_score": "",
+      "match_awayteam_name": "Norway",
+      "match_awayteam_id": "692",
+      "match_awayteam_score": "",
+      "match_hometeam_halftime_score": "",
+      "match_awayteam_halftime_score": "",
+      "match_hometeam_extra_score": "",
+      "match_awayteam_extra_score": "",
+      "match_hometeam_penalty_score": "",
+      "match_awayteam_penalty_score": "",
+      "match_hometeam_ft_score": "",
+      "match_awayteam_ft_score": "",
+      "match_hometeam_system": "",
+      "match_awayteam_system": "",
+      "match_live": "0",
+      "match_round": "1",
+      "match_stadium": "Gillette Stadium",
+      "match_referee": "",
+      "team_home_badge": "https://apiv3.apifootball.com/badges/642_iraq.jpg",
+      "team_away_badge": "https://apiv3.apifootball.com/badges/692_norway.jpg",
+      "league_logo": "https://apiv3.apifootball.com/badges/logo_leagues/28_world-cup.png",
+      "country_logo": "",
+      "league_year": "2026",
+      "fk_stage_key": "35026",
+      "stage_name": "World Championship",
+      "goalscorer": [],
+      "substitutions": {
+        "home": [],
+        "away": []
+      },
+      "cards": [],
+      "lineup": {
+        "home": {
+          "starting_lineups": [],
+          "substitutes": [],
+          "coach": [
+            {
+              "lineup_player": "Graham Arnold",
+              "lineup_number": "",
+              "lineup_position": "",
+              "player_key": "435098993"
+            }
+          ],
+          "missing_players": []
+        },
+        "away": {
+          "starting_lineups": [],
+          "substitutes": [],
+          "coach": [
+            {
+              "lineup_player": "Ståle Solbakken",
+              "lineup_number": "",
+              "lineup_position": "",
+              "player_key": "3043324968"
+            }
+          ],
+          "missing_players": []
+        }
+      },
+      "statistics": [],
+      "statistics_1half": []
+    },
+    {
+      "match_id": "710293",
+      "country_id": "8",
+      "country_name": "Worldcup",
+      "league_id": "28",
+      "league_name": "World Cup - World Championship",
+      "match_date": "2026-06-17",
+      "match_status": "Not Started",
+      "match_time": "03:00",
+      "match_hometeam_id": "536",
+      "match_hometeam_name": "Argentina",
+      "match_hometeam_score": "",
+      "match_awayteam_name": "Algeria",
+      "match_awayteam_id": "734",
+      "match_awayteam_score": "",
+      "match_hometeam_halftime_score": "",
+      "match_awayteam_halftime_score": "",
+      "match_hometeam_extra_score": "",
+      "match_awayteam_extra_score": "",
+      "match_hometeam_penalty_score": "",
+      "match_awayteam_penalty_score": "",
+      "match_hometeam_ft_score": "",
+      "match_awayteam_ft_score": "",
+      "match_hometeam_system": "",
+      "match_awayteam_system": "",
+      "match_live": "0",
+      "match_round": "1",
+      "match_stadium": "Arrowhead Stadium",
+      "match_referee": "",
+      "team_home_badge": "https://apiv3.apifootball.com/badges/536_argentina.jpg",
+      "team_away_badge": "https://apiv3.apifootball.com/badges/734_algeria.jpg",
+      "league_logo": "https://apiv3.apifootball.com/badges/logo_leagues/28_world-cup.png",
+      "country_logo": "",
+      "league_year": "2026",
+      "fk_stage_key": "35026",
+      "stage_name": "World Championship",
+      "goalscorer": [],
+      "substitutions": {
+        "home": [],
+        "away": []
+      },
+      "cards": [],
+      "lineup": {
+        "home": {
+          "starting_lineups": [],
+          "substitutes": [],
+          "coach": [
+            {
+              "lineup_player": "Lionel Sebastián Scaloni",
+              "lineup_number": "",
+              "lineup_position": "",
+              "player_key": "3541025950"
+            }
+          ],
+          "missing_players": []
+        },
+        "away": {
+          "starting_lineups": [],
+          "substitutes": [],
+          "coach": [
+            {
+              "lineup_player": "Vladimir Petkovic",
+              "lineup_number": "",
+              "lineup_position": "",
+              "player_key": "1193159030"
+            }
+          ],
+          "missing_players": []
+        }
+      },
+      "statistics": [],
+      "statistics_1half": []
+    },
+    {
+      "match_id": "710297",
+      "country_id": "8",
+      "country_name": "Worldcup",
+      "league_id": "28",
+      "league_name": "World Cup - World Championship",
+      "match_date": "2026-06-18",
+      "match_status": "Not Started",
+      "match_time": "01:00",
+      "match_hometeam_id": "725",
+      "match_hometeam_name": "Ghana",
+      "match_hometeam_score": "",
+      "match_awayteam_name": "Panama",
+      "match_awayteam_id": "524",
+      "match_awayteam_score": "",
+      "match_hometeam_halftime_score": "",
+      "match_awayteam_halftime_score": "",
+      "match_hometeam_extra_score": "",
+      "match_awayteam_extra_score": "",
+      "match_hometeam_penalty_score": "",
+      "match_awayteam_penalty_score": "",
+      "match_hometeam_ft_score": "",
+      "match_awayteam_ft_score": "",
+      "match_hometeam_system": "",
+      "match_awayteam_system": "",
+      "match_live": "0",
+      "match_round": "1",
+      "match_stadium": "BMO Field",
+      "match_referee": "",
+      "team_home_badge": "https://apiv3.apifootball.com/badges/725_ghana.jpg",
+      "team_away_badge": "https://apiv3.apifootball.com/badges/524_panama.jpg",
+      "league_logo": "https://apiv3.apifootball.com/badges/logo_leagues/28_world-cup.png",
+      "country_logo": "",
+      "league_year": "2026",
+      "fk_stage_key": "35026",
+      "stage_name": "World Championship",
+      "goalscorer": [],
+      "substitutions": {
+        "home": [],
+        "away": []
+      },
+      "cards": [],
+      "lineup": {
+        "home": {
+          "starting_lineups": [],
+          "substitutes": [],
+          "coach": [],
+          "missing_players": []
+        },
+        "away": {
+          "starting_lineups": [],
+          "substitutes": [],
+          "coach": [
+            {
+              "lineup_player": "Thomas Christiansen",
+              "lineup_number": "",
+              "lineup_position": "",
+              "player_key": "3089594890"
+            }
+          ],
+          "missing_players": []
+        }
+      },
+      "statistics": [],
+      "statistics_1half": []
+    },
+    {
+      "match_id": "710298",
+      "country_id": "8",
+      "country_name": "Worldcup",
+      "league_id": "28",
+      "league_name": "World Cup - World Championship",
+      "match_date": "2026-06-18",
+      "match_status": "Not Started",
+      "match_time": "04:00",
+      "match_hometeam_id": "646",
+      "match_hometeam_name": "Uzbekistan",
+      "match_hometeam_score": "",
+      "match_awayteam_name": "Colombia",
+      "match_awayteam_id": "535",
+      "match_awayteam_score": "",
+      "match_hometeam_halftime_score": "",
+      "match_awayteam_halftime_score": "",
+      "match_hometeam_extra_score": "",
+      "match_awayteam_extra_score": "",
+      "match_hometeam_penalty_score": "",
+      "match_awayteam_penalty_score": "",
+      "match_hometeam_ft_score": "",
+      "match_awayteam_ft_score": "",
+      "match_hometeam_system": "",
+      "match_awayteam_system": "",
+      "match_live": "0",
+      "match_round": "1",
+      "match_stadium": "Estadio Banorte",
+      "match_referee": "",
+      "team_home_badge": "https://apiv3.apifootball.com/badges/646_uzbekistan.jpg",
+      "team_away_badge": "https://apiv3.apifootball.com/badges/535_colombia.jpg",
+      "league_logo": "https://apiv3.apifootball.com/badges/logo_leagues/28_world-cup.png",
+      "country_logo": "",
+      "league_year": "2026",
+      "fk_stage_key": "35026",
+      "stage_name": "World Championship",
+      "goalscorer": [],
+      "substitutions": {
+        "home": [],
+        "away": []
+      },
+      "cards": [],
+      "lineup": {
+        "home": {
+          "starting_lineups": [],
+          "substitutes": [],
+          "coach": [
+            {
+              "lineup_player": "Fabio Cannavaro",
+              "lineup_number": "",
+              "lineup_position": "",
+              "player_key": "1532327238"
+            }
+          ],
+          "missing_players": []
+        },
+        "away": {
+          "starting_lineups": [],
+          "substitutes": [],
+          "coach": [
+            {
+              "lineup_player": "Néstor Gabriel Lorenzo",
+              "lineup_number": "",
+              "lineup_position": "",
+              "player_key": "97283806"
+            }
+          ],
+          "missing_players": []
+        }
+      },
+      "statistics": [],
+      "statistics_1half": []
+    },
+    {
+      "match_id": "763310",
+      "country_id": "8",
+      "country_name": "Worldcup",
+      "league_id": "28",
+      "league_name": "World Cup - World Championship",
+      "match_date": "2026-06-18",
+      "match_status": "Not Started",
+      "match_time": "21:00",
+      "match_hometeam_id": "2",
+      "match_hometeam_name": "Switzerland",
+      "match_hometeam_score": "",
+      "match_awayteam_name": "Bosnia & Herzegovina",
+      "match_awayteam_id": "685",
+      "match_awayteam_score": "",
+      "match_hometeam_halftime_score": "",
+      "match_awayteam_halftime_score": "",
+      "match_hometeam_extra_score": "",
+      "match_awayteam_extra_score": "",
+      "match_hometeam_penalty_score": "",
+      "match_awayteam_penalty_score": "",
+      "match_hometeam_ft_score": "",
+      "match_awayteam_ft_score": "",
+      "match_hometeam_system": "",
+      "match_awayteam_system": "",
+      "match_live": "0",
+      "match_round": "2",
+      "match_stadium": "SoFi Stadium",
+      "match_referee": "",
+      "team_home_badge": "https://apiv3.apifootball.com/badges/2_switzerland.jpg",
+      "team_away_badge": "https://apiv3.apifootball.com/badges/685_bosnia-herzegovina.jpg",
+      "league_logo": "https://apiv3.apifootball.com/badges/logo_leagues/28_world-cup.png",
+      "country_logo": "",
+      "league_year": "2026",
+      "fk_stage_key": "35026",
+      "stage_name": "World Championship",
+      "goalscorer": [],
+      "substitutions": {
+        "home": [],
+        "away": []
+      },
+      "cards": [],
+      "lineup": {
+        "home": {
+          "starting_lineups": [],
+          "substitutes": [],
+          "coach": [
+            {
+              "lineup_player": "Murat Yakın",
+              "lineup_number": "",
+              "lineup_position": "",
+              "player_key": "1539947948"
+            }
+          ],
+          "missing_players": []
+        },
+        "away": {
+          "starting_lineups": [],
+          "substitutes": [],
+          "coach": [
+            {
+              "lineup_player": "Sergej Barbarez",
+              "lineup_number": "",
+              "lineup_position": "",
+              "player_key": "2190863571"
+            }
+          ],
+          "missing_players": []
+        }
+      },
+      "statistics": [],
+      "statistics_1half": []
+    },
+    {
+      "match_id": "763309",
+      "country_id": "8",
+      "country_name": "Worldcup",
+      "league_id": "28",
+      "league_name": "World Cup - World Championship",
+      "match_date": "2026-06-18",
+      "match_status": "Not Started",
+      "match_time": "18:00",
+      "match_hometeam_id": "13",
+      "match_hometeam_name": "Czech Republic",
+      "match_hometeam_score": "",
+      "match_awayteam_name": "South Africa",
+      "match_awayteam_id": "726",
+      "match_awayteam_score": "",
+      "match_hometeam_halftime_score": "",
+      "match_awayteam_halftime_score": "",
+      "match_hometeam_extra_score": "",
+      "match_awayteam_extra_score": "",
+      "match_hometeam_penalty_score": "",
+      "match_awayteam_penalty_score": "",
+      "match_hometeam_ft_score": "",
+      "match_awayteam_ft_score": "",
+      "match_hometeam_system": "",
+      "match_awayteam_system": "",
+      "match_live": "0",
+      "match_round": "2",
+      "match_stadium": "Mercedes-Benz Stadium",
+      "match_referee": "",
+      "team_home_badge": "https://apiv3.apifootball.com/badges/13_czechia.jpg",
+      "team_away_badge": "https://apiv3.apifootball.com/badges/726_south-africa.jpg",
+      "league_logo": "https://apiv3.apifootball.com/badges/logo_leagues/28_world-cup.png",
+      "country_logo": "",
+      "league_year": "2026",
+      "fk_stage_key": "35026",
+      "stage_name": "World Championship",
+      "goalscorer": [],
+      "substitutions": {
+        "home": [],
+        "away": []
+      },
+      "cards": [],
+      "lineup": {
+        "home": {
+          "starting_lineups": [],
+          "substitutes": [],
+          "coach": [
+            {
+              "lineup_player": "Ivan Hašek",
+              "lineup_number": "",
+              "lineup_position": "",
+              "player_key": "160233863"
+            }
+          ],
+          "missing_players": []
+        },
+        "away": {
+          "starting_lineups": [],
+          "substitutes": [],
+          "coach": [
+            {
+              "lineup_player": "Hugo Broos",
+              "lineup_number": "",
+              "lineup_position": "",
+              "player_key": "3832494679"
+            }
+          ],
+          "missing_players": []
+        }
+      },
+      "statistics": [],
+      "statistics_1half": []
+    },
+    {
+      "match_id": "710303",
+      "country_id": "8",
+      "country_name": "Worldcup",
+      "league_id": "28",
+      "league_name": "World Cup - World Championship",
+      "match_date": "2026-06-19",
+      "match_status": "Not Started",
+      "match_time": "21:00",
+      "match_hometeam_id": "523",
+      "match_hometeam_name": "USA",
+      "match_hometeam_score": "",
+      "match_awayteam_name": "Australia",
+      "match_awayteam_id": "529",
+      "match_awayteam_score": "",
+      "match_hometeam_halftime_score": "",
+      "match_awayteam_halftime_score": "",
+      "match_hometeam_extra_score": "",
+      "match_awayteam_extra_score": "",
+      "match_hometeam_penalty_score": "",
+      "match_awayteam_penalty_score": "",
+      "match_hometeam_ft_score": "",
+      "match_awayteam_ft_score": "",
+      "match_hometeam_system": "",
+      "match_awayteam_system": "",
+      "match_live": "0",
+      "match_round": "2",
+      "match_stadium": "Lumen Field",
+      "match_referee": "",
+      "team_home_badge": "https://apiv3.apifootball.com/badges/523_united-states.jpg",
+      "team_away_badge": "https://apiv3.apifootball.com/badges/529_australia.jpg",
+      "league_logo": "https://apiv3.apifootball.com/badges/logo_leagues/28_world-cup.png",
+      "country_logo": "",
+      "league_year": "2026",
+      "fk_stage_key": "35026",
+      "stage_name": "World Championship",
+      "goalscorer": [],
+      "substitutions": {
+        "home": [],
+        "away": []
+      },
+      "cards": [],
+      "lineup": {
+        "home": {
+          "starting_lineups": [],
+          "substitutes": [],
+          "coach": [
+            {
+              "lineup_player": "Mauricio Pochettino",
+              "lineup_number": "",
+              "lineup_position": "",
+              "player_key": "160167725"
+            }
+          ],
+          "missing_players": []
+        },
+        "away": {
+          "starting_lineups": [],
+          "substitutes": [],
+          "coach": [
+            {
+              "lineup_player": "Anthony Popović",
+              "lineup_number": "",
+              "lineup_position": "",
+              "player_key": "1148199747"
+            }
+          ],
+          "missing_players": []
+        }
+      },
+      "statistics": [],
+      "statistics_1half": []
+    },
+    {
+      "match_id": "710300",
+      "country_id": "8",
+      "country_name": "Worldcup",
+      "league_id": "28",
+      "league_name": "World Cup - World Championship",
+      "match_date": "2026-06-19",
+      "match_status": "Not Started",
+      "match_time": "03:00",
+      "match_hometeam_id": "511",
+      "match_hometeam_name": "Mexico",
+      "match_hometeam_score": "",
+      "match_awayteam_name": "South Korea",
+      "match_awayteam_id": "651",
+      "match_awayteam_score": "",
+      "match_hometeam_halftime_score": "",
+      "match_awayteam_halftime_score": "",
+      "match_hometeam_extra_score": "",
+      "match_awayteam_extra_score": "",
+      "match_hometeam_penalty_score": "",
+      "match_awayteam_penalty_score": "",
+      "match_hometeam_ft_score": "",
+      "match_awayteam_ft_score": "",
+      "match_hometeam_system": "",
+      "match_awayteam_system": "",
+      "match_live": "0",
+      "match_round": "2",
+      "match_stadium": "Estadio Akron",
+      "match_referee": "",
+      "team_home_badge": "https://apiv3.apifootball.com/badges/511_mexico.jpg",
+      "team_away_badge": "https://apiv3.apifootball.com/badges/651_korea-republic.jpg",
+      "league_logo": "https://apiv3.apifootball.com/badges/logo_leagues/28_world-cup.png",
+      "country_logo": "",
+      "league_year": "2026",
+      "fk_stage_key": "35026",
+      "stage_name": "World Championship",
+      "goalscorer": [],
+      "substitutions": {
+        "home": [],
+        "away": []
+      },
+      "cards": [],
+      "lineup": {
+        "home": {
+          "starting_lineups": [],
+          "substitutes": [],
+          "coach": [
+            {
+              "lineup_player": "Javier Aguirre",
+              "lineup_number": "",
+              "lineup_position": "",
+              "player_key": "3884291585"
+            }
+          ],
+          "missing_players": []
+        },
+        "away": {
+          "starting_lineups": [],
+          "substitutes": [],
+          "coach": [
+            {
+              "lineup_player": "Myung-Bo Hong",
+              "lineup_number": "",
+              "lineup_position": "",
+              "player_key": "717139633"
+            }
+          ],
+          "missing_players": []
+        }
+      },
+      "statistics": [],
+      "statistics_1half": []
+    },
+    {
+      "match_id": "710299",
+      "country_id": "8",
+      "country_name": "Worldcup",
+      "league_id": "28",
+      "league_name": "World Cup - World Championship",
+      "match_date": "2026-06-19",
+      "match_status": "Not Started",
+      "match_time": "00:00",
+      "match_hometeam_id": "512",
+      "match_hometeam_name": "Canada",
+      "match_hometeam_score": "",
+      "match_awayteam_name": "Qatar",
+      "match_awayteam_id": "538",
+      "match_awayteam_score": "",
+      "match_hometeam_halftime_score": "",
+      "match_awayteam_halftime_score": "",
+      "match_hometeam_extra_score": "",
+      "match_awayteam_extra_score": "",
+      "match_hometeam_penalty_score": "",
+      "match_awayteam_penalty_score": "",
+      "match_hometeam_ft_score": "",
+      "match_awayteam_ft_score": "",
+      "match_hometeam_system": "",
+      "match_awayteam_system": "",
+      "match_live": "0",
+      "match_round": "2",
+      "match_stadium": "BC Place",
+      "match_referee": "",
+      "team_home_badge": "https://apiv3.apifootball.com/badges/512_canada.jpg",
+      "team_away_badge": "https://apiv3.apifootball.com/badges/538_qatar.jpg",
+      "league_logo": "https://apiv3.apifootball.com/badges/logo_leagues/28_world-cup.png",
+      "country_logo": "",
+      "league_year": "2026",
+      "fk_stage_key": "35026",
+      "stage_name": "World Championship",
+      "goalscorer": [],
+      "substitutions": {
+        "home": [],
+        "away": []
+      },
+      "cards": [],
+      "lineup": {
+        "home": {
+          "starting_lineups": [],
+          "substitutes": [],
+          "coach": [
+            {
+              "lineup_player": "Jesse Marsch",
+              "lineup_number": "",
+              "lineup_position": "",
+              "player_key": "2424481431"
+            }
+          ],
+          "missing_players": []
+        },
+        "away": {
+          "starting_lineups": [],
+          "substitutes": [],
+          "coach": [
+            {
+              "lineup_player": "Julen Lopetegui Argote",
+              "lineup_number": "",
+              "lineup_position": "",
+              "player_key": "3721129887"
+            }
+          ],
+          "missing_players": []
+        }
+      },
+      "statistics": [],
+      "statistics_1half": []
+    },
+    {
+      "match_id": "710305",
+      "country_id": "8",
+      "country_name": "Worldcup",
+      "league_id": "28",
+      "league_name": "World Cup - World Championship",
+      "match_date": "2026-06-20",
+      "match_status": "Not Started",
+      "match_time": "22:00",
+      "match_hometeam_id": "21",
+      "match_hometeam_name": "Germany",
+      "match_hometeam_score": "",
+      "match_awayteam_name": "Ivory Coast",
+      "match_awayteam_id": "738",
+      "match_awayteam_score": "",
+      "match_hometeam_halftime_score": "",
+      "match_awayteam_halftime_score": "",
+      "match_hometeam_extra_score": "",
+      "match_awayteam_extra_score": "",
+      "match_hometeam_penalty_score": "",
+      "match_awayteam_penalty_score": "",
+      "match_hometeam_ft_score": "",
+      "match_awayteam_ft_score": "",
+      "match_hometeam_system": "",
+      "match_awayteam_system": "",
+      "match_live": "0",
+      "match_round": "2",
+      "match_stadium": "BMO Field",
+      "match_referee": "",
+      "team_home_badge": "https://apiv3.apifootball.com/badges/21_germany.jpg",
+      "team_away_badge": "https://apiv3.apifootball.com/badges/738_ivory-coast.jpg",
+      "league_logo": "https://apiv3.apifootball.com/badges/logo_leagues/28_world-cup.png",
+      "country_logo": "",
+      "league_year": "2026",
+      "fk_stage_key": "35026",
+      "stage_name": "World Championship",
+      "goalscorer": [],
+      "substitutions": {
+        "home": [],
+        "away": []
+      },
+      "cards": [],
+      "lineup": {
+        "home": {
+          "starting_lineups": [],
+          "substitutes": [],
+          "coach": [
+            {
+              "lineup_player": "Julian Nagelsmann",
+              "lineup_number": "",
+              "lineup_position": "",
+              "player_key": "2087293693"
+            }
+          ],
+          "missing_players": []
+        },
+        "away": {
+          "starting_lineups": [],
+          "substitutes": [],
+          "coach": [
+            {
+              "lineup_player": "Émerse Faé",
+              "lineup_number": "",
+              "lineup_position": "",
+              "player_key": "664682653"
+            }
+          ],
+          "missing_players": []
+        }
+      },
+      "statistics": [],
+      "statistics_1half": []
+    },
+    {
+      "match_id": "710302",
+      "country_id": "8",
+      "country_name": "Worldcup",
+      "league_id": "28",
+      "league_name": "World Cup - World Championship",
+      "match_date": "2026-06-20",
+      "match_status": "Not Started",
+      "match_time": "00:00",
+      "match_hometeam_id": "15",
+      "match_hometeam_name": "Scotland",
+      "match_hometeam_score": "",
+      "match_awayteam_name": "Morocco",
+      "match_awayteam_id": "717",
+      "match_awayteam_score": "",
+      "match_hometeam_halftime_score": "",
+      "match_awayteam_halftime_score": "",
+      "match_hometeam_extra_score": "",
+      "match_awayteam_extra_score": "",
+      "match_hometeam_penalty_score": "",
+      "match_awayteam_penalty_score": "",
+      "match_hometeam_ft_score": "",
+      "match_awayteam_ft_score": "",
+      "match_hometeam_system": "",
+      "match_awayteam_system": "",
+      "match_live": "0",
+      "match_round": "2",
+      "match_stadium": "Gillette Stadium",
+      "match_referee": "",
+      "team_home_badge": "https://apiv3.apifootball.com/badges/15_scotland.jpg",
+      "team_away_badge": "https://apiv3.apifootball.com/badges/717_morocco.jpg",
+      "league_logo": "https://apiv3.apifootball.com/badges/logo_leagues/28_world-cup.png",
+      "country_logo": "",
+      "league_year": "2026",
+      "fk_stage_key": "35026",
+      "stage_name": "World Championship",
+      "goalscorer": [],
+      "substitutions": {
+        "home": [],
+        "away": []
+      },
+      "cards": [],
+      "lineup": {
+        "home": {
+          "starting_lineups": [],
+          "substitutes": [],
+          "coach": [
+            {
+              "lineup_player": "Stephen Clarke",
+              "lineup_number": "",
+              "lineup_position": "",
+              "player_key": "1288407825"
+            }
+          ],
+          "missing_players": []
+        },
+        "away": {
+          "starting_lineups": [],
+          "substitutes": [],
+          "coach": [
+            {
+              "lineup_player": "Mohamed Ouahbi",
+              "lineup_number": "",
+              "lineup_position": "",
+              "player_key": "3519682997"
+            }
+          ],
+          "missing_players": []
+        }
+      },
+      "statistics": [],
+      "statistics_1half": []
+    },
+    {
+      "match_id": "710301",
+      "country_id": "8",
+      "country_name": "Worldcup",
+      "league_id": "28",
+      "league_name": "World Cup - World Championship",
+      "match_date": "2026-06-20",
+      "match_status": "Not Started",
+      "match_time": "02:30",
+      "match_hometeam_id": "531",
+      "match_hometeam_name": "Brazil",
+      "match_hometeam_score": "",
+      "match_awayteam_name": "Haiti",
+      "match_awayteam_id": "515",
+      "match_awayteam_score": "",
+      "match_hometeam_halftime_score": "",
+      "match_awayteam_halftime_score": "",
+      "match_hometeam_extra_score": "",
+      "match_awayteam_extra_score": "",
+      "match_hometeam_penalty_score": "",
+      "match_awayteam_penalty_score": "",
+      "match_hometeam_ft_score": "",
+      "match_awayteam_ft_score": "",
+      "match_hometeam_system": "",
+      "match_awayteam_system": "",
+      "match_live": "0",
+      "match_round": "2",
+      "match_stadium": "Lincoln Financial Field",
+      "match_referee": "",
+      "team_home_badge": "https://apiv3.apifootball.com/badges/531_brazil.jpg",
+      "team_away_badge": "https://apiv3.apifootball.com/badges/515_haiti.jpg",
+      "league_logo": "https://apiv3.apifootball.com/badges/logo_leagues/28_world-cup.png",
+      "country_logo": "",
+      "league_year": "2026",
+      "fk_stage_key": "35026",
+      "stage_name": "World Championship",
+      "goalscorer": [],
+      "substitutions": {
+        "home": [],
+        "away": []
+      },
+      "cards": [],
+      "lineup": {
+        "home": {
+          "starting_lineups": [],
+          "substitutes": [],
+          "coach": [],
+          "missing_players": []
+        },
+        "away": {
+          "starting_lineups": [],
+          "substitutes": [],
+          "coach": [
+            {
+              "lineup_player": "Sebastien Migne",
+              "lineup_number": "",
+              "lineup_position": "",
+              "player_key": "3057534565"
+            }
+          ],
+          "missing_players": []
+        }
+      },
+      "statistics": [],
+      "statistics_1half": []
+    },
+    {
+      "match_id": "763311",
+      "country_id": "8",
+      "country_name": "Worldcup",
+      "league_id": "28",
+      "league_name": "World Cup - World Championship",
+      "match_date": "2026-06-20",
+      "match_status": "Not Started",
+      "match_time": "05:00",
+      "match_hometeam_id": "1",
+      "match_hometeam_name": "Turkey",
+      "match_hometeam_score": "",
+      "match_awayteam_name": "Paraguay",
+      "match_awayteam_id": "537",
+      "match_awayteam_score": "",
+      "match_hometeam_halftime_score": "",
+      "match_awayteam_halftime_score": "",
+      "match_hometeam_extra_score": "",
+      "match_awayteam_extra_score": "",
+      "match_hometeam_penalty_score": "",
+      "match_awayteam_penalty_score": "",
+      "match_hometeam_ft_score": "",
+      "match_awayteam_ft_score": "",
+      "match_hometeam_system": "",
+      "match_awayteam_system": "",
+      "match_live": "0",
+      "match_round": "2",
+      "match_stadium": "",
+      "match_referee": "",
+      "team_home_badge": "https://apiv3.apifootball.com/badges/1_turkiye.jpg",
+      "team_away_badge": "https://apiv3.apifootball.com/badges/537_paraguay.jpg",
+      "league_logo": "https://apiv3.apifootball.com/badges/logo_leagues/28_world-cup.png",
+      "country_logo": "",
+      "league_year": "2026",
+      "fk_stage_key": "35026",
+      "stage_name": "World Championship",
+      "goalscorer": [],
+      "substitutions": {
+        "home": [],
+        "away": []
+      },
+      "cards": [],
+      "lineup": {
+        "home": {
+          "starting_lineups": [],
+          "substitutes": [],
+          "coach": [
+            {
+              "lineup_player": "Vincenzo Montella",
+              "lineup_number": "",
+              "lineup_position": "",
+              "player_key": "2608760003"
+            }
+          ],
+          "missing_players": []
+        },
+        "away": {
+          "starting_lineups": [],
+          "substitutes": [],
+          "coach": [
+            {
+              "lineup_player": "Gustavo Julio Alfaro",
+              "lineup_number": "",
+              "lineup_position": "",
+              "player_key": "2274667774"
+            }
+          ],
+          "missing_players": []
+        }
+      },
+      "statistics": [],
+      "statistics_1half": []
+    },
+    {
+      "match_id": "763312",
+      "country_id": "8",
+      "country_name": "Worldcup",
+      "league_id": "28",
+      "league_name": "World Cup - World Championship",
+      "match_date": "2026-06-20",
+      "match_status": "Not Started",
+      "match_time": "19:00",
+      "match_hometeam_id": "10",
+      "match_hometeam_name": "Netherlands",
+      "match_hometeam_score": "",
+      "match_awayteam_name": "Sweden",
+      "match_awayteam_id": "17",
+      "match_awayteam_score": "",
+      "match_hometeam_halftime_score": "",
+      "match_awayteam_halftime_score": "",
+      "match_hometeam_extra_score": "",
+      "match_awayteam_extra_score": "",
+      "match_hometeam_penalty_score": "",
+      "match_awayteam_penalty_score": "",
+      "match_hometeam_ft_score": "",
+      "match_awayteam_ft_score": "",
+      "match_hometeam_system": "",
+      "match_awayteam_system": "",
+      "match_live": "0",
+      "match_round": "2",
+      "match_stadium": "NRG Stadium",
+      "match_referee": "",
+      "team_home_badge": "https://apiv3.apifootball.com/badges/10_netherlands.jpg",
+      "team_away_badge": "https://apiv3.apifootball.com/badges/17_sweden.jpg",
+      "league_logo": "https://apiv3.apifootball.com/badges/logo_leagues/28_world-cup.png",
+      "country_logo": "",
+      "league_year": "2026",
+      "fk_stage_key": "35026",
+      "stage_name": "World Championship",
+      "goalscorer": [],
+      "substitutions": {
+        "home": [],
+        "away": []
+      },
+      "cards": [],
+      "lineup": {
+        "home": {
+          "starting_lineups": [],
+          "substitutes": [],
+          "coach": [
+            {
+              "lineup_player": "Ronald Koeman",
+              "lineup_number": "",
+              "lineup_position": "",
+              "player_key": "3400970579"
+            }
+          ],
+          "missing_players": []
+        },
+        "away": {
+          "starting_lineups": [],
+          "substitutes": [],
+          "coach": [
+            {
+              "lineup_player": "Jon Dahl Tomasson",
+              "lineup_number": "",
+              "lineup_position": "",
+              "player_key": "2828889354"
+            }
+          ],
+          "missing_players": []
+        }
+      },
+      "statistics": [],
+      "statistics_1half": []
+    },
+    {
+      "match_id": "710309",
+      "country_id": "8",
+      "country_name": "Worldcup",
+      "league_id": "28",
+      "league_name": "World Cup - World Championship",
+      "match_date": "2026-06-21",
+      "match_status": "Not Started",
+      "match_time": "18:00",
+      "match_hometeam_id": "19",
+      "match_hometeam_name": "Spain",
+      "match_hometeam_score": "",
+      "match_awayteam_name": "Saudi Arabia",
+      "match_awayteam_id": "647",
+      "match_awayteam_score": "",
+      "match_hometeam_halftime_score": "",
+      "match_awayteam_halftime_score": "",
+      "match_hometeam_extra_score": "",
+      "match_awayteam_extra_score": "",
+      "match_hometeam_penalty_score": "",
+      "match_awayteam_penalty_score": "",
+      "match_hometeam_ft_score": "",
+      "match_awayteam_ft_score": "",
+      "match_hometeam_system": "",
+      "match_awayteam_system": "",
+      "match_live": "0",
+      "match_round": "2",
+      "match_stadium": "Mercedes-Benz Stadium",
+      "match_referee": "",
+      "team_home_badge": "https://apiv3.apifootball.com/badges/19_spain.jpg",
+      "team_away_badge": "https://apiv3.apifootball.com/badges/647_saudi-arabia.jpg",
+      "league_logo": "https://apiv3.apifootball.com/badges/logo_leagues/28_world-cup.png",
+      "country_logo": "",
+      "league_year": "2026",
+      "fk_stage_key": "35026",
+      "stage_name": "World Championship",
+      "goalscorer": [],
+      "substitutions": {
+        "home": [],
+        "away": []
+      },
+      "cards": [],
+      "lineup": {
+        "home": {
+          "starting_lineups": [],
+          "substitutes": [],
+          "coach": [
+            {
+              "lineup_player": "Luis de la Fuente Castillo",
+              "lineup_number": "",
+              "lineup_position": "",
+              "player_key": "2568996517"
+            }
+          ],
+          "missing_players": []
+        },
+        "away": {
+          "starting_lineups": [],
+          "substitutes": [],
+          "coach": [
+            {
+              "lineup_player": "Herve Renard",
+              "lineup_number": "",
+              "lineup_position": "",
+              "player_key": "2588683732"
+            }
+          ],
+          "missing_players": []
+        }
+      },
+      "statistics": [],
+      "statistics_1half": []
+    },
+    {
+      "match_id": "710304",
+      "country_id": "8",
+      "country_name": "Worldcup",
+      "league_id": "28",
+      "league_name": "World Cup - World Championship",
+      "match_date": "2026-06-21",
+      "match_status": "Not Started",
+      "match_time": "02:00",
+      "match_hometeam_id": "541",
+      "match_hometeam_name": "Ecuador",
+      "match_hometeam_score": "",
+      "match_awayteam_name": "Curacao",
+      "match_awayteam_id": "520",
+      "match_awayteam_score": "",
+      "match_hometeam_halftime_score": "",
+      "match_awayteam_halftime_score": "",
+      "match_hometeam_extra_score": "",
+      "match_awayteam_extra_score": "",
+      "match_hometeam_penalty_score": "",
+      "match_awayteam_penalty_score": "",
+      "match_hometeam_ft_score": "",
+      "match_awayteam_ft_score": "",
+      "match_hometeam_system": "",
+      "match_awayteam_system": "",
+      "match_live": "0",
+      "match_round": "2",
+      "match_stadium": "Arrowhead Stadium",
+      "match_referee": "",
+      "team_home_badge": "https://apiv3.apifootball.com/badges/541_ecuador.jpg",
+      "team_away_badge": "https://apiv3.apifootball.com/badges/520_curacao.jpg",
+      "league_logo": "https://apiv3.apifootball.com/badges/logo_leagues/28_world-cup.png",
+      "country_logo": "",
+      "league_year": "2026",
+      "fk_stage_key": "35026",
+      "stage_name": "World Championship",
+      "goalscorer": [],
+      "substitutions": {
+        "home": [],
+        "away": []
+      },
+      "cards": [],
+      "lineup": {
+        "home": {
+          "starting_lineups": [],
+          "substitutes": [],
+          "coach": [
+            {
+              "lineup_player": "Sebastián Andrés Beccacece",
+              "lineup_number": "",
+              "lineup_position": "",
+              "player_key": "1526765742"
+            }
+          ],
+          "missing_players": []
+        },
+        "away": {
+          "starting_lineups": [],
+          "substitutes": [],
+          "coach": [],
+          "missing_players": []
+        }
+      },
+      "statistics": [],
+      "statistics_1half": []
+    },
+    {
+      "match_id": "710306",
+      "country_id": "8",
+      "country_name": "Worldcup",
+      "league_id": "28",
+      "league_name": "World Cup - World Championship",
+      "match_date": "2026-06-21",
+      "match_status": "Not Started",
+      "match_time": "06:00",
+      "match_hometeam_id": "719",
+      "match_hometeam_name": "Tunisia",
+      "match_hometeam_score": "",
+      "match_awayteam_name": "Japan",
+      "match_awayteam_id": "540",
+      "match_awayteam_score": "",
+      "match_hometeam_halftime_score": "",
+      "match_awayteam_halftime_score": "",
+      "match_hometeam_extra_score": "",
+      "match_awayteam_extra_score": "",
+      "match_hometeam_penalty_score": "",
+      "match_awayteam_penalty_score": "",
+      "match_hometeam_ft_score": "",
+      "match_awayteam_ft_score": "",
+      "match_hometeam_system": "",
+      "match_awayteam_system": "",
+      "match_live": "0",
+      "match_round": "2",
+      "match_stadium": "Estadio BBVA",
+      "match_referee": "",
+      "team_home_badge": "https://apiv3.apifootball.com/badges/719_tunisia.jpg",
+      "team_away_badge": "https://apiv3.apifootball.com/badges/540_japan.jpg",
+      "league_logo": "https://apiv3.apifootball.com/badges/logo_leagues/28_world-cup.png",
+      "country_logo": "",
+      "league_year": "2026",
+      "fk_stage_key": "35026",
+      "stage_name": "World Championship",
+      "goalscorer": [],
+      "substitutions": {
+        "home": [],
+        "away": []
+      },
+      "cards": [],
+      "lineup": {
+        "home": {
+          "starting_lineups": [],
+          "substitutes": [],
+          "coach": [],
+          "missing_players": []
+        },
+        "away": {
+          "starting_lineups": [],
+          "substitutes": [],
+          "coach": [
+            {
+              "lineup_player": "Hajime Moriyasu",
+              "lineup_number": "",
+              "lineup_position": "",
+              "player_key": "1940591306"
+            }
+          ],
+          "missing_players": []
+        }
+      },
+      "statistics": [],
+      "statistics_1half": []
+    },
+    {
+      "match_id": "710307",
+      "country_id": "8",
+      "country_name": "Worldcup",
+      "league_id": "28",
+      "league_name": "World Cup - World Championship",
+      "match_date": "2026-06-21",
+      "match_status": "Not Started",
+      "match_time": "21:00",
+      "match_hometeam_id": "6",
+      "match_hometeam_name": "Belgium",
+      "match_hometeam_score": "",
+      "match_awayteam_name": "Iran",
+      "match_awayteam_id": "644",
+      "match_awayteam_score": "",
+      "match_hometeam_halftime_score": "",
+      "match_awayteam_halftime_score": "",
+      "match_hometeam_extra_score": "",
+      "match_awayteam_extra_score": "",
+      "match_hometeam_penalty_score": "",
+      "match_awayteam_penalty_score": "",
+      "match_hometeam_ft_score": "",
+      "match_awayteam_ft_score": "",
+      "match_hometeam_system": "",
+      "match_awayteam_system": "",
+      "match_live": "0",
+      "match_round": "2",
+      "match_stadium": "SoFi Stadium",
+      "match_referee": "",
+      "team_home_badge": "https://apiv3.apifootball.com/badges/6_belgium.jpg",
+      "team_away_badge": "https://apiv3.apifootball.com/badges/644_ir-iran.jpg",
+      "league_logo": "https://apiv3.apifootball.com/badges/logo_leagues/28_world-cup.png",
+      "country_logo": "",
+      "league_year": "2026",
+      "fk_stage_key": "35026",
+      "stage_name": "World Championship",
+      "goalscorer": [],
+      "substitutions": {
+        "home": [],
+        "away": []
+      },
+      "cards": [],
+      "lineup": {
+        "home": {
+          "starting_lineups": [],
+          "substitutes": [],
+          "coach": [
+            {
+              "lineup_player": "Rudi Garcia",
+              "lineup_number": "",
+              "lineup_position": "",
+              "player_key": "3705263083"
+            }
+          ],
+          "missing_players": []
+        },
+        "away": {
+          "starting_lineups": [],
+          "substitutes": [],
+          "coach": [
+            {
+              "lineup_player": "Amir Ghalenoei",
+              "lineup_number": "",
+              "lineup_position": "",
+              "player_key": "4117157808"
+            }
+          ],
+          "missing_players": []
+        }
+      },
+      "statistics": [],
+      "statistics_1half": []
+    },
+    {
+      "match_id": "710308",
+      "country_id": "8",
+      "country_name": "Worldcup",
+      "league_id": "28",
+      "league_name": "World Cup - World Championship",
+      "match_date": "2026-06-22",
+      "match_status": "Not Started",
+      "match_time": "03:00",
+      "match_hometeam_id": "527",
+      "match_hometeam_name": "New Zealand",
+      "match_hometeam_score": "",
+      "match_awayteam_name": "Egypt",
+      "match_awayteam_id": "716",
+      "match_awayteam_score": "",
+      "match_hometeam_halftime_score": "",
+      "match_awayteam_halftime_score": "",
+      "match_hometeam_extra_score": "",
+      "match_awayteam_extra_score": "",
+      "match_hometeam_penalty_score": "",
+      "match_awayteam_penalty_score": "",
+      "match_hometeam_ft_score": "",
+      "match_awayteam_ft_score": "",
+      "match_hometeam_system": "",
+      "match_awayteam_system": "",
+      "match_live": "0",
+      "match_round": "2",
+      "match_stadium": "BC Place",
+      "match_referee": "",
+      "team_home_badge": "https://apiv3.apifootball.com/badges/527_new-zealand.jpg",
+      "team_away_badge": "https://apiv3.apifootball.com/badges/716_egypt.jpg",
+      "league_logo": "https://apiv3.apifootball.com/badges/logo_leagues/28_world-cup.png",
+      "country_logo": "",
+      "league_year": "2026",
+      "fk_stage_key": "35026",
+      "stage_name": "World Championship",
+      "goalscorer": [],
+      "substitutions": {
+        "home": [],
+        "away": []
+      },
+      "cards": [],
+      "lineup": {
+        "home": {
+          "starting_lineups": [],
+          "substitutes": [],
+          "coach": [
+            {
+              "lineup_player": "Darren Shaun Bazeley",
+              "lineup_number": "",
+              "lineup_position": "",
+              "player_key": "2553112031"
+            }
+          ],
+          "missing_players": []
+        },
+        "away": {
+          "starting_lineups": [],
+          "substitutes": [],
+          "coach": [],
+          "missing_players": []
+        }
+      },
+      "statistics": [],
+      "statistics_1half": []
+    },
+    {
+      "match_id": "763313",
+      "country_id": "8",
+      "country_name": "Worldcup",
+      "league_id": "28",
+      "league_name": "World Cup - World Championship",
+      "match_date": "2026-06-22",
+      "match_status": "Not Started",
+      "match_time": "23:00",
+      "match_hometeam_id": "22",
+      "match_hometeam_name": "France",
+      "match_hometeam_score": "",
+      "match_awayteam_name": "Iraq",
+      "match_awayteam_id": "642",
+      "match_awayteam_score": "",
+      "match_hometeam_halftime_score": "",
+      "match_awayteam_halftime_score": "",
+      "match_hometeam_extra_score": "",
+      "match_awayteam_extra_score": "",
+      "match_hometeam_penalty_score": "",
+      "match_awayteam_penalty_score": "",
+      "match_hometeam_ft_score": "",
+      "match_awayteam_ft_score": "",
+      "match_hometeam_system": "",
+      "match_awayteam_system": "",
+      "match_live": "0",
+      "match_round": "2",
+      "match_stadium": "Lincoln Financial Field",
+      "match_referee": "",
+      "team_home_badge": "https://apiv3.apifootball.com/badges/22_france.jpg",
+      "team_away_badge": "https://apiv3.apifootball.com/badges/642_iraq.jpg",
+      "league_logo": "https://apiv3.apifootball.com/badges/logo_leagues/28_world-cup.png",
+      "country_logo": "",
+      "league_year": "2026",
+      "fk_stage_key": "35026",
+      "stage_name": "World Championship",
+      "goalscorer": [],
+      "substitutions": {
+        "home": [],
+        "away": []
+      },
+      "cards": [],
+      "lineup": {
+        "home": {
+          "starting_lineups": [],
+          "substitutes": [],
+          "coach": [
+            {
+              "lineup_player": "Didier Claude Deschamps",
+              "lineup_number": "",
+              "lineup_position": "",
+              "player_key": "3580862400"
+            }
+          ],
+          "missing_players": []
+        },
+        "away": {
+          "starting_lineups": [],
+          "substitutes": [],
+          "coach": [
+            {
+              "lineup_player": "Graham Arnold",
+              "lineup_number": "",
+              "lineup_position": "",
+              "player_key": "435098993"
+            }
+          ],
+          "missing_players": []
+        }
+      },
+      "statistics": [],
+      "statistics_1half": []
+    },
+    {
+      "match_id": "710311",
+      "country_id": "8",
+      "country_name": "Worldcup",
+      "league_id": "28",
+      "league_name": "World Cup - World Championship",
+      "match_date": "2026-06-22",
+      "match_status": "Not Started",
+      "match_time": "19:00",
+      "match_hometeam_id": "536",
+      "match_hometeam_name": "Argentina",
+      "match_hometeam_score": "",
+      "match_awayteam_name": "Austria",
+      "match_awayteam_id": "9",
+      "match_awayteam_score": "",
+      "match_hometeam_halftime_score": "",
+      "match_awayteam_halftime_score": "",
+      "match_hometeam_extra_score": "",
+      "match_awayteam_extra_score": "",
+      "match_hometeam_penalty_score": "",
+      "match_awayteam_penalty_score": "",
+      "match_hometeam_ft_score": "",
+      "match_awayteam_ft_score": "",
+      "match_hometeam_system": "",
+      "match_awayteam_system": "",
+      "match_live": "0",
+      "match_round": "2",
+      "match_stadium": "",
+      "match_referee": "",
+      "team_home_badge": "https://apiv3.apifootball.com/badges/536_argentina.jpg",
+      "team_away_badge": "https://apiv3.apifootball.com/badges/9_austria.jpg",
+      "league_logo": "https://apiv3.apifootball.com/badges/logo_leagues/28_world-cup.png",
+      "country_logo": "",
+      "league_year": "2026",
+      "fk_stage_key": "35026",
+      "stage_name": "World Championship",
+      "goalscorer": [],
+      "substitutions": {
+        "home": [],
+        "away": []
+      },
+      "cards": [],
+      "lineup": {
+        "home": {
+          "starting_lineups": [],
+          "substitutes": [],
+          "coach": [
+            {
+              "lineup_player": "Lionel Sebastián Scaloni",
+              "lineup_number": "",
+              "lineup_position": "",
+              "player_key": "3541025950"
+            }
+          ],
+          "missing_players": []
+        },
+        "away": {
+          "starting_lineups": [],
+          "substitutes": [],
+          "coach": [
+            {
+              "lineup_player": "Ralf Dietrich Rangnick",
+              "lineup_number": "",
+              "lineup_position": "",
+              "player_key": "3615855830"
+            }
+          ],
+          "missing_players": []
+        }
+      },
+      "statistics": [],
+      "statistics_1half": []
+    },
+    {
+      "match_id": "710310",
+      "country_id": "8",
+      "country_name": "Worldcup",
+      "league_id": "28",
+      "league_name": "World Cup - World Championship",
+      "match_date": "2026-06-22",
+      "match_status": "Not Started",
+      "match_time": "00:00",
+      "match_hometeam_id": "539",
+      "match_hometeam_name": "Uruguay",
+      "match_hometeam_score": "",
+      "match_awayteam_name": "Cape Verde",
+      "match_awayteam_id": "732",
+      "match_awayteam_score": "",
+      "match_hometeam_halftime_score": "",
+      "match_awayteam_halftime_score": "",
+      "match_hometeam_extra_score": "",
+      "match_awayteam_extra_score": "",
+      "match_hometeam_penalty_score": "",
+      "match_awayteam_penalty_score": "",
+      "match_hometeam_ft_score": "",
+      "match_awayteam_ft_score": "",
+      "match_hometeam_system": "",
+      "match_awayteam_system": "",
+      "match_live": "0",
+      "match_round": "2",
+      "match_stadium": "Hard Rock Stadium",
+      "match_referee": "",
+      "team_home_badge": "https://apiv3.apifootball.com/badges/539_uruguay.jpg",
+      "team_away_badge": "https://apiv3.apifootball.com/badges/732_cabo-verde.jpg",
+      "league_logo": "https://apiv3.apifootball.com/badges/logo_leagues/28_world-cup.png",
+      "country_logo": "",
+      "league_year": "2026",
+      "fk_stage_key": "35026",
+      "stage_name": "World Championship",
+      "goalscorer": [],
+      "substitutions": {
+        "home": [],
+        "away": []
+      },
+      "cards": [],
+      "lineup": {
+        "home": {
+          "starting_lineups": [],
+          "substitutes": [],
+          "coach": [
+            {
+              "lineup_player": "Marcelo Alberto Bielsa Caldera",
+              "lineup_number": "",
+              "lineup_position": "",
+              "player_key": "195460154"
+            }
+          ],
+          "missing_players": []
+        },
+        "away": {
+          "starting_lineups": [],
+          "substitutes": [],
+          "coach": [],
+          "missing_players": []
+        }
+      },
+      "statistics": [],
+      "statistics_1half": []
+    },
+    {
+      "match_id": "710316",
+      "country_id": "8",
+      "country_name": "Worldcup",
+      "league_id": "28",
+      "league_name": "World Cup - World Championship",
+      "match_date": "2026-06-23",
+      "match_status": "Not Started",
+      "match_time": "19:00",
+      "match_hometeam_id": "23",
+      "match_hometeam_name": "Portugal",
+      "match_hometeam_score": "",
+      "match_awayteam_name": "Uzbekistan",
+      "match_awayteam_id": "646",
+      "match_awayteam_score": "",
+      "match_hometeam_halftime_score": "",
+      "match_awayteam_halftime_score": "",
+      "match_hometeam_extra_score": "",
+      "match_awayteam_extra_score": "",
+      "match_hometeam_penalty_score": "",
+      "match_awayteam_penalty_score": "",
+      "match_hometeam_ft_score": "",
+      "match_awayteam_ft_score": "",
+      "match_hometeam_system": "",
+      "match_awayteam_system": "",
+      "match_live": "0",
+      "match_round": "2",
+      "match_stadium": "NRG Stadium",
+      "match_referee": "",
+      "team_home_badge": "https://apiv3.apifootball.com/badges/23_portugal.jpg",
+      "team_away_badge": "https://apiv3.apifootball.com/badges/646_uzbekistan.jpg",
+      "league_logo": "https://apiv3.apifootball.com/badges/logo_leagues/28_world-cup.png",
+      "country_logo": "",
+      "league_year": "2026",
+      "fk_stage_key": "35026",
+      "stage_name": "World Championship",
+      "goalscorer": [],
+      "substitutions": {
+        "home": [],
+        "away": []
+      },
+      "cards": [],
+      "lineup": {
+        "home": {
+          "starting_lineups": [],
+          "substitutes": [],
+          "coach": [
+            {
+              "lineup_player": "Roberto Martínez Montoliú",
+              "lineup_number": "",
+              "lineup_position": "",
+              "player_key": "351187002"
+            }
+          ],
+          "missing_players": []
+        },
+        "away": {
+          "starting_lineups": [],
+          "substitutes": [],
+          "coach": [
+            {
+              "lineup_player": "Fabio Cannavaro",
+              "lineup_number": "",
+              "lineup_position": "",
+              "player_key": "1532327238"
+            }
+          ],
+          "missing_players": []
+        }
+      },
+      "statistics": [],
+      "statistics_1half": []
+    },
+    {
+      "match_id": "710314",
+      "country_id": "8",
+      "country_name": "Worldcup",
+      "league_id": "28",
+      "league_name": "World Cup - World Championship",
+      "match_date": "2026-06-23",
+      "match_status": "Not Started",
+      "match_time": "22:00",
+      "match_hometeam_id": "16",
+      "match_hometeam_name": "England",
+      "match_hometeam_score": "",
+      "match_awayteam_name": "Ghana",
+      "match_awayteam_id": "725",
+      "match_awayteam_score": "",
+      "match_hometeam_halftime_score": "",
+      "match_awayteam_halftime_score": "",
+      "match_hometeam_extra_score": "",
+      "match_awayteam_extra_score": "",
+      "match_hometeam_penalty_score": "",
+      "match_awayteam_penalty_score": "",
+      "match_hometeam_ft_score": "",
+      "match_awayteam_ft_score": "",
+      "match_hometeam_system": "",
+      "match_awayteam_system": "",
+      "match_live": "0",
+      "match_round": "2",
+      "match_stadium": "Gillette Stadium",
+      "match_referee": "",
+      "team_home_badge": "https://apiv3.apifootball.com/badges/16_england.jpg",
+      "team_away_badge": "https://apiv3.apifootball.com/badges/725_ghana.jpg",
+      "league_logo": "https://apiv3.apifootball.com/badges/logo_leagues/28_world-cup.png",
+      "country_logo": "",
+      "league_year": "2026",
+      "fk_stage_key": "35026",
+      "stage_name": "World Championship",
+      "goalscorer": [],
+      "substitutions": {
+        "home": [],
+        "away": []
+      },
+      "cards": [],
+      "lineup": {
+        "home": {
+          "starting_lineups": [],
+          "substitutes": [],
+          "coach": [
+            {
+              "lineup_player": "Thomas Tuchel",
+              "lineup_number": "",
+              "lineup_position": "",
+              "player_key": "1579268102"
+            }
+          ],
+          "missing_players": []
+        },
+        "away": {
+          "starting_lineups": [],
+          "substitutes": [],
+          "coach": [],
+          "missing_players": []
+        }
+      },
+      "statistics": [],
+      "statistics_1half": []
+    },
+    {
+      "match_id": "710313",
+      "country_id": "8",
+      "country_name": "Worldcup",
+      "league_id": "28",
+      "league_name": "World Cup - World Championship",
+      "match_date": "2026-06-23",
+      "match_status": "Not Started",
+      "match_time": "02:00",
+      "match_hometeam_id": "692",
+      "match_hometeam_name": "Norway",
+      "match_hometeam_score": "",
+      "match_awayteam_name": "Senegal",
+      "match_awayteam_id": "720",
+      "match_awayteam_score": "",
+      "match_hometeam_halftime_score": "",
+      "match_awayteam_halftime_score": "",
+      "match_hometeam_extra_score": "",
+      "match_awayteam_extra_score": "",
+      "match_hometeam_penalty_score": "",
+      "match_awayteam_penalty_score": "",
+      "match_hometeam_ft_score": "",
+      "match_awayteam_ft_score": "",
+      "match_hometeam_system": "",
+      "match_awayteam_system": "",
+      "match_live": "0",
+      "match_round": "2",
+      "match_stadium": "MetLife Stadium",
+      "match_referee": "",
+      "team_home_badge": "https://apiv3.apifootball.com/badges/692_norway.jpg",
+      "team_away_badge": "https://apiv3.apifootball.com/badges/720_senegal.jpg",
+      "league_logo": "https://apiv3.apifootball.com/badges/logo_leagues/28_world-cup.png",
+      "country_logo": "",
+      "league_year": "2026",
+      "fk_stage_key": "35026",
+      "stage_name": "World Championship",
+      "goalscorer": [],
+      "substitutions": {
+        "home": [],
+        "away": []
+      },
+      "cards": [],
+      "lineup": {
+        "home": {
+          "starting_lineups": [],
+          "substitutes": [],
+          "coach": [
+            {
+              "lineup_player": "Ståle Solbakken",
+              "lineup_number": "",
+              "lineup_position": "",
+              "player_key": "3043324968"
+            }
+          ],
+          "missing_players": []
+        },
+        "away": {
+          "starting_lineups": [],
+          "substitutes": [],
+          "coach": [
+            {
+              "lineup_player": "Bouna Thiaw Pape",
+              "lineup_number": "",
+              "lineup_position": "",
+              "player_key": "1178200003"
+            }
+          ],
+          "missing_players": []
+        }
+      },
+      "statistics": [],
+      "statistics_1half": []
+    },
+    {
+      "match_id": "710312",
+      "country_id": "8",
+      "country_name": "Worldcup",
+      "league_id": "28",
+      "league_name": "World Cup - World Championship",
+      "match_date": "2026-06-23",
+      "match_status": "Not Started",
+      "match_time": "05:00",
+      "match_hometeam_id": "641",
+      "match_hometeam_name": "Jordan",
+      "match_hometeam_score": "",
+      "match_awayteam_name": "Algeria",
+      "match_awayteam_id": "734",
+      "match_awayteam_score": "",
+      "match_hometeam_halftime_score": "",
+      "match_awayteam_halftime_score": "",
+      "match_hometeam_extra_score": "",
+      "match_awayteam_extra_score": "",
+      "match_hometeam_penalty_score": "",
+      "match_awayteam_penalty_score": "",
+      "match_hometeam_ft_score": "",
+      "match_awayteam_ft_score": "",
+      "match_hometeam_system": "",
+      "match_awayteam_system": "",
+      "match_live": "0",
+      "match_round": "2",
+      "match_stadium": "",
+      "match_referee": "",
+      "team_home_badge": "https://apiv3.apifootball.com/badges/641_jordan.jpg",
+      "team_away_badge": "https://apiv3.apifootball.com/badges/734_algeria.jpg",
+      "league_logo": "https://apiv3.apifootball.com/badges/logo_leagues/28_world-cup.png",
+      "country_logo": "",
+      "league_year": "2026",
+      "fk_stage_key": "35026",
+      "stage_name": "World Championship",
+      "goalscorer": [],
+      "substitutions": {
+        "home": [],
+        "away": []
+      },
+      "cards": [],
+      "lineup": {
+        "home": {
+          "starting_lineups": [],
+          "substitutes": [],
+          "coach": [
+            {
+              "lineup_player": "Jamal Sellami",
+              "lineup_number": "",
+              "lineup_position": "",
+              "player_key": "1221281344"
+            }
+          ],
+          "missing_players": []
+        },
+        "away": {
+          "starting_lineups": [],
+          "substitutes": [],
+          "coach": [
+            {
+              "lineup_player": "Vladimir Petkovic",
+              "lineup_number": "",
+              "lineup_position": "",
+              "player_key": "1193159030"
+            }
+          ],
+          "missing_players": []
+        }
+      },
+      "statistics": [],
+      "statistics_1half": []
+    },
+    {
+      "match_id": "710315",
+      "country_id": "8",
+      "country_name": "Worldcup",
+      "league_id": "28",
+      "league_name": "World Cup - World Championship",
+      "match_date": "2026-06-24",
+      "match_status": "Not Started",
+      "match_time": "01:00",
+      "match_hometeam_id": "524",
+      "match_hometeam_name": "Panama",
+      "match_hometeam_score": "",
+      "match_awayteam_name": "Croatia",
+      "match_awayteam_id": "14",
+      "match_awayteam_score": "",
+      "match_hometeam_halftime_score": "",
+      "match_awayteam_halftime_score": "",
+      "match_hometeam_extra_score": "",
+      "match_awayteam_extra_score": "",
+      "match_hometeam_penalty_score": "",
+      "match_awayteam_penalty_score": "",
+      "match_hometeam_ft_score": "",
+      "match_awayteam_ft_score": "",
+      "match_hometeam_system": "",
+      "match_awayteam_system": "",
+      "match_live": "0",
+      "match_round": "2",
+      "match_stadium": "BMO Field",
+      "match_referee": "",
+      "team_home_badge": "https://apiv3.apifootball.com/badges/524_panama.jpg",
+      "team_away_badge": "https://apiv3.apifootball.com/badges/14_croatia.jpg",
+      "league_logo": "https://apiv3.apifootball.com/badges/logo_leagues/28_world-cup.png",
+      "country_logo": "",
+      "league_year": "2026",
+      "fk_stage_key": "35026",
+      "stage_name": "World Championship",
+      "goalscorer": [],
+      "substitutions": {
+        "home": [],
+        "away": []
+      },
+      "cards": [],
+      "lineup": {
+        "home": {
+          "starting_lineups": [],
+          "substitutes": [],
+          "coach": [
+            {
+              "lineup_player": "Thomas Christiansen",
+              "lineup_number": "",
+              "lineup_position": "",
+              "player_key": "3089594890"
+            }
+          ],
+          "missing_players": []
+        },
+        "away": {
+          "starting_lineups": [],
+          "substitutes": [],
+          "coach": [
+            {
+              "lineup_player": "Zlatko Dalić",
+              "lineup_number": "",
+              "lineup_position": "",
+              "player_key": "4084443150"
+            }
+          ],
+          "missing_players": []
+        }
+      },
+      "statistics": [],
+      "statistics_1half": []
+    },
+    {
+      "match_id": "763314",
+      "country_id": "8",
+      "country_name": "Worldcup",
+      "league_id": "28",
+      "league_name": "World Cup - World Championship",
+      "match_date": "2026-06-24",
+      "match_status": "Not Started",
+      "match_time": "04:00",
+      "match_hometeam_id": "535",
+      "match_hometeam_name": "Colombia",
+      "match_hometeam_score": "",
+      "match_awayteam_name": "D.R. Congo",
+      "match_awayteam_id": "728",
+      "match_awayteam_score": "",
+      "match_hometeam_halftime_score": "",
+      "match_awayteam_halftime_score": "",
+      "match_hometeam_extra_score": "",
+      "match_awayteam_extra_score": "",
+      "match_hometeam_penalty_score": "",
+      "match_awayteam_penalty_score": "",
+      "match_hometeam_ft_score": "",
+      "match_awayteam_ft_score": "",
+      "match_hometeam_system": "",
+      "match_awayteam_system": "",
+      "match_live": "0",
+      "match_round": "2",
+      "match_stadium": "Estadio Akron",
+      "match_referee": "",
+      "team_home_badge": "https://apiv3.apifootball.com/badges/535_colombia.jpg",
+      "team_away_badge": "https://apiv3.apifootball.com/badges/728_congo-dr.jpg",
+      "league_logo": "https://apiv3.apifootball.com/badges/logo_leagues/28_world-cup.png",
+      "country_logo": "",
+      "league_year": "2026",
+      "fk_stage_key": "35026",
+      "stage_name": "World Championship",
+      "goalscorer": [],
+      "substitutions": {
+        "home": [],
+        "away": []
+      },
+      "cards": [],
+      "lineup": {
+        "home": {
+          "starting_lineups": [],
+          "substitutes": [],
+          "coach": [
+            {
+              "lineup_player": "Néstor Gabriel Lorenzo",
+              "lineup_number": "",
+              "lineup_position": "",
+              "player_key": "97283806"
+            }
+          ],
+          "missing_players": []
+        },
+        "away": {
+          "starting_lineups": [],
+          "substitutes": [],
+          "coach": [
+            {
+              "lineup_player": "Sebastien Desabre",
+              "lineup_number": "",
+              "lineup_position": "",
+              "player_key": "3745813838"
+            }
+          ],
+          "missing_players": []
+        }
+      },
+      "statistics": [],
+      "statistics_1half": []
+    },
+    {
+      "match_id": "710320",
+      "country_id": "8",
+      "country_name": "Worldcup",
+      "league_id": "28",
+      "league_name": "World Cup - World Championship",
+      "match_date": "2026-06-24",
+      "match_status": "Not Started",
+      "match_time": "21:00",
+      "match_hometeam_id": "2",
+      "match_hometeam_name": "Switzerland",
+      "match_hometeam_score": "",
+      "match_awayteam_name": "Canada",
+      "match_awayteam_id": "512",
+      "match_awayteam_score": "",
+      "match_hometeam_halftime_score": "",
+      "match_awayteam_halftime_score": "",
+      "match_hometeam_extra_score": "",
+      "match_awayteam_extra_score": "",
+      "match_hometeam_penalty_score": "",
+      "match_awayteam_penalty_score": "",
+      "match_hometeam_ft_score": "",
+      "match_awayteam_ft_score": "",
+      "match_hometeam_system": "",
+      "match_awayteam_system": "",
+      "match_live": "0",
+      "match_round": "3",
+      "match_stadium": "BC Place",
+      "match_referee": "",
+      "team_home_badge": "https://apiv3.apifootball.com/badges/2_switzerland.jpg",
+      "team_away_badge": "https://apiv3.apifootball.com/badges/512_canada.jpg",
+      "league_logo": "https://apiv3.apifootball.com/badges/logo_leagues/28_world-cup.png",
+      "country_logo": "",
+      "league_year": "2026",
+      "fk_stage_key": "35026",
+      "stage_name": "World Championship",
+      "goalscorer": [],
+      "substitutions": {
+        "home": [],
+        "away": []
+      },
+      "cards": [],
+      "lineup": {
+        "home": {
+          "starting_lineups": [],
+          "substitutes": [],
+          "coach": [
+            {
+              "lineup_player": "Murat Yakın",
+              "lineup_number": "",
+              "lineup_position": "",
+              "player_key": "1539947948"
+            }
+          ],
+          "missing_players": []
+        },
+        "away": {
+          "starting_lineups": [],
+          "substitutes": [],
+          "coach": [
+            {
+              "lineup_player": "Jesse Marsch",
+              "lineup_number": "",
+              "lineup_position": "",
+              "player_key": "2424481431"
+            }
+          ],
+          "missing_players": []
+        }
+      },
+      "statistics": [],
+      "statistics_1half": []
+    },
+    {
+      "match_id": "763315",
+      "country_id": "8",
+      "country_name": "Worldcup",
+      "league_id": "28",
+      "league_name": "World Cup - World Championship",
+      "match_date": "2026-06-24",
+      "match_status": "Not Started",
+      "match_time": "21:00",
+      "match_hometeam_id": "685",
+      "match_hometeam_name": "Bosnia & Herzegovina",
+      "match_hometeam_score": "",
+      "match_awayteam_name": "Qatar",
+      "match_awayteam_id": "538",
+      "match_awayteam_score": "",
+      "match_hometeam_halftime_score": "",
+      "match_awayteam_halftime_score": "",
+      "match_hometeam_extra_score": "",
+      "match_awayteam_extra_score": "",
+      "match_hometeam_penalty_score": "",
+      "match_awayteam_penalty_score": "",
+      "match_hometeam_ft_score": "",
+      "match_awayteam_ft_score": "",
+      "match_hometeam_system": "",
+      "match_awayteam_system": "",
+      "match_live": "0",
+      "match_round": "3",
+      "match_stadium": "Lumen Field",
+      "match_referee": "",
+      "team_home_badge": "https://apiv3.apifootball.com/badges/685_bosnia-herzegovina.jpg",
+      "team_away_badge": "https://apiv3.apifootball.com/badges/538_qatar.jpg",
+      "league_logo": "https://apiv3.apifootball.com/badges/logo_leagues/28_world-cup.png",
+      "country_logo": "",
+      "league_year": "2026",
+      "fk_stage_key": "35026",
+      "stage_name": "World Championship",
+      "goalscorer": [],
+      "substitutions": {
+        "home": [],
+        "away": []
+      },
+      "cards": [],
+      "lineup": {
+        "home": {
+          "starting_lineups": [],
+          "substitutes": [],
+          "coach": [
+            {
+              "lineup_player": "Sergej Barbarez",
+              "lineup_number": "",
+              "lineup_position": "",
+              "player_key": "2190863571"
+            }
+          ],
+          "missing_players": []
+        },
+        "away": {
+          "starting_lineups": [],
+          "substitutes": [],
+          "coach": [
+            {
+              "lineup_player": "Julen Lopetegui Argote",
+              "lineup_number": "",
+              "lineup_position": "",
+              "player_key": "3721129887"
+            }
+          ],
+          "missing_players": []
+        }
+      },
+      "statistics": [],
+      "statistics_1half": []
+    },
+    {
+      "match_id": "763316",
+      "country_id": "8",
+      "country_name": "Worldcup",
+      "league_id": "28",
+      "league_name": "World Cup - World Championship",
+      "match_date": "2026-06-25",
+      "match_status": "Not Started",
+      "match_time": "03:00",
+      "match_hometeam_id": "13",
+      "match_hometeam_name": "Czech Republic",
+      "match_hometeam_score": "",
+      "match_awayteam_name": "Mexico",
+      "match_awayteam_id": "511",
+      "match_awayteam_score": "",
+      "match_hometeam_halftime_score": "",
+      "match_awayteam_halftime_score": "",
+      "match_hometeam_extra_score": "",
+      "match_awayteam_extra_score": "",
+      "match_hometeam_penalty_score": "",
+      "match_awayteam_penalty_score": "",
+      "match_hometeam_ft_score": "",
+      "match_awayteam_ft_score": "",
+      "match_hometeam_system": "",
+      "match_awayteam_system": "",
+      "match_live": "0",
+      "match_round": "3",
+      "match_stadium": "Estadio Azteca",
+      "match_referee": "",
+      "team_home_badge": "https://apiv3.apifootball.com/badges/13_czechia.jpg",
+      "team_away_badge": "https://apiv3.apifootball.com/badges/511_mexico.jpg",
+      "league_logo": "https://apiv3.apifootball.com/badges/logo_leagues/28_world-cup.png",
+      "country_logo": "",
+      "league_year": "2026",
+      "fk_stage_key": "35026",
+      "stage_name": "World Championship",
+      "goalscorer": [],
+      "substitutions": {
+        "home": [],
+        "away": []
+      },
+      "cards": [],
+      "lineup": {
+        "home": {
+          "starting_lineups": [],
+          "substitutes": [],
+          "coach": [
+            {
+              "lineup_player": "Ivan Hašek",
+              "lineup_number": "",
+              "lineup_position": "",
+              "player_key": "160233863"
+            }
+          ],
+          "missing_players": []
+        },
+        "away": {
+          "starting_lineups": [],
+          "substitutes": [],
+          "coach": [
+            {
+              "lineup_player": "Javier Aguirre",
+              "lineup_number": "",
+              "lineup_position": "",
+              "player_key": "3884291585"
+            }
+          ],
+          "missing_players": []
+        }
+      },
+      "statistics": [],
+      "statistics_1half": []
+    },
+    {
+      "match_id": "710317",
+      "country_id": "8",
+      "country_name": "Worldcup",
+      "league_id": "28",
+      "league_name": "World Cup - World Championship",
+      "match_date": "2026-06-25",
+      "match_status": "Not Started",
+      "match_time": "00:00",
+      "match_hometeam_id": "717",
+      "match_hometeam_name": "Morocco",
+      "match_hometeam_score": "",
+      "match_awayteam_name": "Haiti",
+      "match_awayteam_id": "515",
+      "match_awayteam_score": "",
+      "match_hometeam_halftime_score": "",
+      "match_awayteam_halftime_score": "",
+      "match_hometeam_extra_score": "",
+      "match_awayteam_extra_score": "",
+      "match_hometeam_penalty_score": "",
+      "match_awayteam_penalty_score": "",
+      "match_hometeam_ft_score": "",
+      "match_awayteam_ft_score": "",
+      "match_hometeam_system": "",
+      "match_awayteam_system": "",
+      "match_live": "0",
+      "match_round": "3",
+      "match_stadium": "Mercedes-Benz Stadium",
+      "match_referee": "",
+      "team_home_badge": "https://apiv3.apifootball.com/badges/717_morocco.jpg",
+      "team_away_badge": "https://apiv3.apifootball.com/badges/515_haiti.jpg",
+      "league_logo": "https://apiv3.apifootball.com/badges/logo_leagues/28_world-cup.png",
+      "country_logo": "",
+      "league_year": "2026",
+      "fk_stage_key": "35026",
+      "stage_name": "World Championship",
+      "goalscorer": [],
+      "substitutions": {
+        "home": [],
+        "away": []
+      },
+      "cards": [],
+      "lineup": {
+        "home": {
+          "starting_lineups": [],
+          "substitutes": [],
+          "coach": [
+            {
+              "lineup_player": "Mohamed Ouahbi",
+              "lineup_number": "",
+              "lineup_position": "",
+              "player_key": "3519682997"
+            }
+          ],
+          "missing_players": []
+        },
+        "away": {
+          "starting_lineups": [],
+          "substitutes": [],
+          "coach": [
+            {
+              "lineup_player": "Sebastien Migne",
+              "lineup_number": "",
+              "lineup_position": "",
+              "player_key": "3057534565"
+            }
+          ],
+          "missing_players": []
+        }
+      },
+      "statistics": [],
+      "statistics_1half": []
+    },
+    {
+      "match_id": "710318",
+      "country_id": "8",
+      "country_name": "Worldcup",
+      "league_id": "28",
+      "league_name": "World Cup - World Championship",
+      "match_date": "2026-06-25",
+      "match_status": "Not Started",
+      "match_time": "00:00",
+      "match_hometeam_id": "15",
+      "match_hometeam_name": "Scotland",
+      "match_hometeam_score": "",
+      "match_awayteam_name": "Brazil",
+      "match_awayteam_id": "531",
+      "match_awayteam_score": "",
+      "match_hometeam_halftime_score": "",
+      "match_awayteam_halftime_score": "",
+      "match_hometeam_extra_score": "",
+      "match_awayteam_extra_score": "",
+      "match_hometeam_penalty_score": "",
+      "match_awayteam_penalty_score": "",
+      "match_hometeam_ft_score": "",
+      "match_awayteam_ft_score": "",
+      "match_hometeam_system": "",
+      "match_awayteam_system": "",
+      "match_live": "0",
+      "match_round": "3",
+      "match_stadium": "Hard Rock Stadium",
+      "match_referee": "",
+      "team_home_badge": "https://apiv3.apifootball.com/badges/15_scotland.jpg",
+      "team_away_badge": "https://apiv3.apifootball.com/badges/531_brazil.jpg",
+      "league_logo": "https://apiv3.apifootball.com/badges/logo_leagues/28_world-cup.png",
+      "country_logo": "",
+      "league_year": "2026",
+      "fk_stage_key": "35026",
+      "stage_name": "World Championship",
+      "goalscorer": [],
+      "substitutions": {
+        "home": [],
+        "away": []
+      },
+      "cards": [],
+      "lineup": {
+        "home": {
+          "starting_lineups": [],
+          "substitutes": [],
+          "coach": [
+            {
+              "lineup_player": "Stephen Clarke",
+              "lineup_number": "",
+              "lineup_position": "",
+              "player_key": "1288407825"
+            }
+          ],
+          "missing_players": []
+        },
+        "away": {
+          "starting_lineups": [],
+          "substitutes": [],
+          "coach": [],
+          "missing_players": []
+        }
+      },
+      "statistics": [],
+      "statistics_1half": []
+    },
+    {
+      "match_id": "710319",
+      "country_id": "8",
+      "country_name": "Worldcup",
+      "league_id": "28",
+      "league_name": "World Cup - World Championship",
+      "match_date": "2026-06-25",
+      "match_status": "Not Started",
+      "match_time": "03:00",
+      "match_hometeam_id": "726",
+      "match_hometeam_name": "South Africa",
+      "match_hometeam_score": "",
+      "match_awayteam_name": "South Korea",
+      "match_awayteam_id": "651",
+      "match_awayteam_score": "",
+      "match_hometeam_halftime_score": "",
+      "match_awayteam_halftime_score": "",
+      "match_hometeam_extra_score": "",
+      "match_awayteam_extra_score": "",
+      "match_hometeam_penalty_score": "",
+      "match_awayteam_penalty_score": "",
+      "match_hometeam_ft_score": "",
+      "match_awayteam_ft_score": "",
+      "match_hometeam_system": "",
+      "match_awayteam_system": "",
+      "match_live": "0",
+      "match_round": "3",
+      "match_stadium": "Estadio BBVA",
+      "match_referee": "",
+      "team_home_badge": "https://apiv3.apifootball.com/badges/726_south-africa.jpg",
+      "team_away_badge": "https://apiv3.apifootball.com/badges/651_korea-republic.jpg",
+      "league_logo": "https://apiv3.apifootball.com/badges/logo_leagues/28_world-cup.png",
+      "country_logo": "",
+      "league_year": "2026",
+      "fk_stage_key": "35026",
+      "stage_name": "World Championship",
+      "goalscorer": [],
+      "substitutions": {
+        "home": [],
+        "away": []
+      },
+      "cards": [],
+      "lineup": {
+        "home": {
+          "starting_lineups": [],
+          "substitutes": [],
+          "coach": [
+            {
+              "lineup_player": "Hugo Broos",
+              "lineup_number": "",
+              "lineup_position": "",
+              "player_key": "3832494679"
+            }
+          ],
+          "missing_players": []
+        },
+        "away": {
+          "starting_lineups": [],
+          "substitutes": [],
+          "coach": [
+            {
+              "lineup_player": "Myung-Bo Hong",
+              "lineup_number": "",
+              "lineup_position": "",
+              "player_key": "717139633"
+            }
+          ],
+          "missing_players": []
+        }
+      },
+      "statistics": [],
+      "statistics_1half": []
+    },
+    {
+      "match_id": "710321",
+      "country_id": "8",
+      "country_name": "Worldcup",
+      "league_id": "28",
+      "league_name": "World Cup - World Championship",
+      "match_date": "2026-06-25",
+      "match_status": "Not Started",
+      "match_time": "22:00",
+      "match_hometeam_id": "520",
+      "match_hometeam_name": "Curacao",
+      "match_hometeam_score": "",
+      "match_awayteam_name": "Ivory Coast",
+      "match_awayteam_id": "738",
+      "match_awayteam_score": "",
+      "match_hometeam_halftime_score": "",
+      "match_awayteam_halftime_score": "",
+      "match_hometeam_extra_score": "",
+      "match_awayteam_extra_score": "",
+      "match_hometeam_penalty_score": "",
+      "match_awayteam_penalty_score": "",
+      "match_hometeam_ft_score": "",
+      "match_awayteam_ft_score": "",
+      "match_hometeam_system": "",
+      "match_awayteam_system": "",
+      "match_live": "0",
+      "match_round": "3",
+      "match_stadium": "Lincoln Financial Field",
+      "match_referee": "",
+      "team_home_badge": "https://apiv3.apifootball.com/badges/520_curacao.jpg",
+      "team_away_badge": "https://apiv3.apifootball.com/badges/738_ivory-coast.jpg",
+      "league_logo": "https://apiv3.apifootball.com/badges/logo_leagues/28_world-cup.png",
+      "country_logo": "",
+      "league_year": "2026",
+      "fk_stage_key": "35026",
+      "stage_name": "World Championship",
+      "goalscorer": [],
+      "substitutions": {
+        "home": [],
+        "away": []
+      },
+      "cards": [],
+      "lineup": {
+        "home": {
+          "starting_lineups": [],
+          "substitutes": [],
+          "coach": [],
+          "missing_players": []
+        },
+        "away": {
+          "starting_lineups": [],
+          "substitutes": [],
+          "coach": [
+            {
+              "lineup_player": "Émerse Faé",
+              "lineup_number": "",
+              "lineup_position": "",
+              "player_key": "664682653"
+            }
+          ],
+          "missing_players": []
+        }
+      },
+      "statistics": [],
+      "statistics_1half": []
+    },
+    {
+      "match_id": "710322",
+      "country_id": "8",
+      "country_name": "Worldcup",
+      "league_id": "28",
+      "league_name": "World Cup - World Championship",
+      "match_date": "2026-06-25",
+      "match_status": "Not Started",
+      "match_time": "22:00",
+      "match_hometeam_id": "541",
+      "match_hometeam_name": "Ecuador",
+      "match_hometeam_score": "",
+      "match_awayteam_name": "Germany",
+      "match_awayteam_id": "21",
+      "match_awayteam_score": "",
+      "match_hometeam_halftime_score": "",
+      "match_awayteam_halftime_score": "",
+      "match_hometeam_extra_score": "",
+      "match_awayteam_extra_score": "",
+      "match_hometeam_penalty_score": "",
+      "match_awayteam_penalty_score": "",
+      "match_hometeam_ft_score": "",
+      "match_awayteam_ft_score": "",
+      "match_hometeam_system": "",
+      "match_awayteam_system": "",
+      "match_live": "0",
+      "match_round": "3",
+      "match_stadium": "MetLife Stadium",
+      "match_referee": "",
+      "team_home_badge": "https://apiv3.apifootball.com/badges/541_ecuador.jpg",
+      "team_away_badge": "https://apiv3.apifootball.com/badges/21_germany.jpg",
+      "league_logo": "https://apiv3.apifootball.com/badges/logo_leagues/28_world-cup.png",
+      "country_logo": "",
+      "league_year": "2026",
+      "fk_stage_key": "35026",
+      "stage_name": "World Championship",
+      "goalscorer": [],
+      "substitutions": {
+        "home": [],
+        "away": []
+      },
+      "cards": [],
+      "lineup": {
+        "home": {
+          "starting_lineups": [],
+          "substitutes": [],
+          "coach": [
+            {
+              "lineup_player": "Sebastián Andrés Beccacece",
+              "lineup_number": "",
+              "lineup_position": "",
+              "player_key": "1526765742"
+            }
+          ],
+          "missing_players": []
+        },
+        "away": {
+          "starting_lineups": [],
+          "substitutes": [],
+          "coach": [
+            {
+              "lineup_player": "Julian Nagelsmann",
+              "lineup_number": "",
+              "lineup_position": "",
+              "player_key": "2087293693"
+            }
+          ],
+          "missing_players": []
+        }
+      },
+      "statistics": [],
+      "statistics_1half": []
+    },
+    {
+      "match_id": "763319",
+      "country_id": "8",
+      "country_name": "Worldcup",
+      "league_id": "28",
+      "league_name": "World Cup - World Championship",
+      "match_date": "2026-06-26",
+      "match_status": "Not Started",
+      "match_time": "21:00",
+      "match_hometeam_id": "720",
+      "match_hometeam_name": "Senegal",
+      "match_hometeam_score": "",
+      "match_awayteam_name": "Iraq",
+      "match_awayteam_id": "642",
+      "match_awayteam_score": "",
+      "match_hometeam_halftime_score": "",
+      "match_awayteam_halftime_score": "",
+      "match_hometeam_extra_score": "",
+      "match_awayteam_extra_score": "",
+      "match_hometeam_penalty_score": "",
+      "match_awayteam_penalty_score": "",
+      "match_hometeam_ft_score": "",
+      "match_awayteam_ft_score": "",
+      "match_hometeam_system": "",
+      "match_awayteam_system": "",
+      "match_live": "0",
+      "match_round": "3",
+      "match_stadium": "BMO Field",
+      "match_referee": "",
+      "team_home_badge": "https://apiv3.apifootball.com/badges/720_senegal.jpg",
+      "team_away_badge": "https://apiv3.apifootball.com/badges/642_iraq.jpg",
+      "league_logo": "https://apiv3.apifootball.com/badges/logo_leagues/28_world-cup.png",
+      "country_logo": "",
+      "league_year": "2026",
+      "fk_stage_key": "35026",
+      "stage_name": "World Championship",
+      "goalscorer": [],
+      "substitutions": {
+        "home": [],
+        "away": []
+      },
+      "cards": [],
+      "lineup": {
+        "home": {
+          "starting_lineups": [],
+          "substitutes": [],
+          "coach": [
+            {
+              "lineup_player": "Bouna Thiaw Pape",
+              "lineup_number": "",
+              "lineup_position": "",
+              "player_key": "1178200003"
+            }
+          ],
+          "missing_players": []
+        },
+        "away": {
+          "starting_lineups": [],
+          "substitutes": [],
+          "coach": [
+            {
+              "lineup_player": "Graham Arnold",
+              "lineup_number": "",
+              "lineup_position": "",
+              "player_key": "435098993"
+            }
+          ],
+          "missing_players": []
+        }
+      },
+      "statistics": [],
+      "statistics_1half": []
+    },
+    {
+      "match_id": "763318",
+      "country_id": "8",
+      "country_name": "Worldcup",
+      "league_id": "28",
+      "league_name": "World Cup - World Championship",
+      "match_date": "2026-06-26",
+      "match_status": "Not Started",
+      "match_time": "04:00",
+      "match_hometeam_id": "1",
+      "match_hometeam_name": "Turkey",
+      "match_hometeam_score": "",
+      "match_awayteam_name": "USA",
+      "match_awayteam_id": "523",
+      "match_awayteam_score": "",
+      "match_hometeam_halftime_score": "",
+      "match_awayteam_halftime_score": "",
+      "match_hometeam_extra_score": "",
+      "match_awayteam_extra_score": "",
+      "match_hometeam_penalty_score": "",
+      "match_awayteam_penalty_score": "",
+      "match_hometeam_ft_score": "",
+      "match_awayteam_ft_score": "",
+      "match_hometeam_system": "",
+      "match_awayteam_system": "",
+      "match_live": "0",
+      "match_round": "3",
+      "match_stadium": "SoFi Stadium",
+      "match_referee": "",
+      "team_home_badge": "https://apiv3.apifootball.com/badges/1_turkiye.jpg",
+      "team_away_badge": "https://apiv3.apifootball.com/badges/523_united-states.jpg",
+      "league_logo": "https://apiv3.apifootball.com/badges/logo_leagues/28_world-cup.png",
+      "country_logo": "",
+      "league_year": "2026",
+      "fk_stage_key": "35026",
+      "stage_name": "World Championship",
+      "goalscorer": [],
+      "substitutions": {
+        "home": [],
+        "away": []
+      },
+      "cards": [],
+      "lineup": {
+        "home": {
+          "starting_lineups": [],
+          "substitutes": [],
+          "coach": [
+            {
+              "lineup_player": "Vincenzo Montella",
+              "lineup_number": "",
+              "lineup_position": "",
+              "player_key": "2608760003"
+            }
+          ],
+          "missing_players": []
+        },
+        "away": {
+          "starting_lineups": [],
+          "substitutes": [],
+          "coach": [
+            {
+              "lineup_player": "Mauricio Pochettino",
+              "lineup_number": "",
+              "lineup_position": "",
+              "player_key": "160167725"
+            }
+          ],
+          "missing_players": []
+        }
+      },
+      "statistics": [],
+      "statistics_1half": []
+    },
+    {
+      "match_id": "763317",
+      "country_id": "8",
+      "country_name": "Worldcup",
+      "league_id": "28",
+      "league_name": "World Cup - World Championship",
+      "match_date": "2026-06-26",
+      "match_status": "Not Started",
+      "match_time": "01:00",
+      "match_hometeam_id": "540",
+      "match_hometeam_name": "Japan",
+      "match_hometeam_score": "",
+      "match_awayteam_name": "Sweden",
+      "match_awayteam_id": "17",
+      "match_awayteam_score": "",
+      "match_hometeam_halftime_score": "",
+      "match_awayteam_halftime_score": "",
+      "match_hometeam_extra_score": "",
+      "match_awayteam_extra_score": "",
+      "match_hometeam_penalty_score": "",
+      "match_awayteam_penalty_score": "",
+      "match_hometeam_ft_score": "",
+      "match_awayteam_ft_score": "",
+      "match_hometeam_system": "",
+      "match_awayteam_system": "",
+      "match_live": "0",
+      "match_round": "3",
+      "match_stadium": "",
+      "match_referee": "",
+      "team_home_badge": "https://apiv3.apifootball.com/badges/540_japan.jpg",
+      "team_away_badge": "https://apiv3.apifootball.com/badges/17_sweden.jpg",
+      "league_logo": "https://apiv3.apifootball.com/badges/logo_leagues/28_world-cup.png",
+      "country_logo": "",
+      "league_year": "2026",
+      "fk_stage_key": "35026",
+      "stage_name": "World Championship",
+      "goalscorer": [],
+      "substitutions": {
+        "home": [],
+        "away": []
+      },
+      "cards": [],
+      "lineup": {
+        "home": {
+          "starting_lineups": [],
+          "substitutes": [],
+          "coach": [
+            {
+              "lineup_player": "Hajime Moriyasu",
+              "lineup_number": "",
+              "lineup_position": "",
+              "player_key": "1940591306"
+            }
+          ],
+          "missing_players": []
+        },
+        "away": {
+          "starting_lineups": [],
+          "substitutes": [],
+          "coach": [
+            {
+              "lineup_player": "Jon Dahl Tomasson",
+              "lineup_number": "",
+              "lineup_position": "",
+              "player_key": "2828889354"
+            }
+          ],
+          "missing_players": []
+        }
+      },
+      "statistics": [],
+      "statistics_1half": []
+    },
+    {
+      "match_id": "710328",
+      "country_id": "8",
+      "country_name": "Worldcup",
+      "league_id": "28",
+      "league_name": "World Cup - World Championship",
+      "match_date": "2026-06-26",
+      "match_status": "Not Started",
+      "match_time": "21:00",
+      "match_hometeam_id": "692",
+      "match_hometeam_name": "Norway",
+      "match_hometeam_score": "",
+      "match_awayteam_name": "France",
+      "match_awayteam_id": "22",
+      "match_awayteam_score": "",
+      "match_hometeam_halftime_score": "",
+      "match_awayteam_halftime_score": "",
+      "match_hometeam_extra_score": "",
+      "match_awayteam_extra_score": "",
+      "match_hometeam_penalty_score": "",
+      "match_awayteam_penalty_score": "",
+      "match_hometeam_ft_score": "",
+      "match_awayteam_ft_score": "",
+      "match_hometeam_system": "",
+      "match_awayteam_system": "",
+      "match_live": "0",
+      "match_round": "3",
+      "match_stadium": "Gillette Stadium",
+      "match_referee": "",
+      "team_home_badge": "https://apiv3.apifootball.com/badges/692_norway.jpg",
+      "team_away_badge": "https://apiv3.apifootball.com/badges/22_france.jpg",
+      "league_logo": "https://apiv3.apifootball.com/badges/logo_leagues/28_world-cup.png",
+      "country_logo": "",
+      "league_year": "2026",
+      "fk_stage_key": "35026",
+      "stage_name": "World Championship",
+      "goalscorer": [],
+      "substitutions": {
+        "home": [],
+        "away": []
+      },
+      "cards": [],
+      "lineup": {
+        "home": {
+          "starting_lineups": [],
+          "substitutes": [],
+          "coach": [
+            {
+              "lineup_player": "Ståle Solbakken",
+              "lineup_number": "",
+              "lineup_position": "",
+              "player_key": "3043324968"
+            }
+          ],
+          "missing_players": []
+        },
+        "away": {
+          "starting_lineups": [],
+          "substitutes": [],
+          "coach": [
+            {
+              "lineup_player": "Didier Claude Deschamps",
+              "lineup_number": "",
+              "lineup_position": "",
+              "player_key": "3580862400"
+            }
+          ],
+          "missing_players": []
+        }
+      },
+      "statistics": [],
+      "statistics_1half": []
+    },
+    {
+      "match_id": "710323",
+      "country_id": "8",
+      "country_name": "Worldcup",
+      "league_id": "28",
+      "league_name": "World Cup - World Championship",
+      "match_date": "2026-06-26",
+      "match_status": "Not Started",
+      "match_time": "04:00",
+      "match_hometeam_id": "537",
+      "match_hometeam_name": "Paraguay",
+      "match_hometeam_score": "",
+      "match_awayteam_name": "Australia",
+      "match_awayteam_id": "529",
+      "match_awayteam_score": "",
+      "match_hometeam_halftime_score": "",
+      "match_awayteam_halftime_score": "",
+      "match_hometeam_extra_score": "",
+      "match_awayteam_extra_score": "",
+      "match_hometeam_penalty_score": "",
+      "match_awayteam_penalty_score": "",
+      "match_hometeam_ft_score": "",
+      "match_awayteam_ft_score": "",
+      "match_hometeam_system": "",
+      "match_awayteam_system": "",
+      "match_live": "0",
+      "match_round": "3",
+      "match_stadium": "",
+      "match_referee": "",
+      "team_home_badge": "https://apiv3.apifootball.com/badges/537_paraguay.jpg",
+      "team_away_badge": "https://apiv3.apifootball.com/badges/529_australia.jpg",
+      "league_logo": "https://apiv3.apifootball.com/badges/logo_leagues/28_world-cup.png",
+      "country_logo": "",
+      "league_year": "2026",
+      "fk_stage_key": "35026",
+      "stage_name": "World Championship",
+      "goalscorer": [],
+      "substitutions": {
+        "home": [],
+        "away": []
+      },
+      "cards": [],
+      "lineup": {
+        "home": {
+          "starting_lineups": [],
+          "substitutes": [],
+          "coach": [
+            {
+              "lineup_player": "Gustavo Julio Alfaro",
+              "lineup_number": "",
+              "lineup_position": "",
+              "player_key": "2274667774"
+            }
+          ],
+          "missing_players": []
+        },
+        "away": {
+          "starting_lineups": [],
+          "substitutes": [],
+          "coach": [
+            {
+              "lineup_player": "Anthony Popović",
+              "lineup_number": "",
+              "lineup_position": "",
+              "player_key": "1148199747"
+            }
+          ],
+          "missing_players": []
+        }
+      },
+      "statistics": [],
+      "statistics_1half": []
+    },
+    {
+      "match_id": "710324",
+      "country_id": "8",
+      "country_name": "Worldcup",
+      "league_id": "28",
+      "league_name": "World Cup - World Championship",
+      "match_date": "2026-06-26",
+      "match_status": "Not Started",
+      "match_time": "01:00",
+      "match_hometeam_id": "719",
+      "match_hometeam_name": "Tunisia",
+      "match_hometeam_score": "",
+      "match_awayteam_name": "Netherlands",
+      "match_awayteam_id": "10",
+      "match_awayteam_score": "",
+      "match_hometeam_halftime_score": "",
+      "match_awayteam_halftime_score": "",
+      "match_hometeam_extra_score": "",
+      "match_awayteam_extra_score": "",
+      "match_hometeam_penalty_score": "",
+      "match_awayteam_penalty_score": "",
+      "match_hometeam_ft_score": "",
+      "match_awayteam_ft_score": "",
+      "match_hometeam_system": "",
+      "match_awayteam_system": "",
+      "match_live": "0",
+      "match_round": "3",
+      "match_stadium": "Arrowhead Stadium",
+      "match_referee": "",
+      "team_home_badge": "https://apiv3.apifootball.com/badges/719_tunisia.jpg",
+      "team_away_badge": "https://apiv3.apifootball.com/badges/10_netherlands.jpg",
+      "league_logo": "https://apiv3.apifootball.com/badges/logo_leagues/28_world-cup.png",
+      "country_logo": "",
+      "league_year": "2026",
+      "fk_stage_key": "35026",
+      "stage_name": "World Championship",
+      "goalscorer": [],
+      "substitutions": {
+        "home": [],
+        "away": []
+      },
+      "cards": [],
+      "lineup": {
+        "home": {
+          "starting_lineups": [],
+          "substitutes": [],
+          "coach": [],
+          "missing_players": []
+        },
+        "away": {
+          "starting_lineups": [],
+          "substitutes": [],
+          "coach": [
+            {
+              "lineup_player": "Ronald Koeman",
+              "lineup_number": "",
+              "lineup_position": "",
+              "player_key": "3400970579"
+            }
+          ],
+          "missing_players": []
+        }
+      },
+      "statistics": [],
+      "statistics_1half": []
+    },
+    {
+      "match_id": "710334",
+      "country_id": "8",
+      "country_name": "Worldcup",
+      "league_id": "28",
+      "league_name": "World Cup - World Championship",
+      "match_date": "2026-06-27",
+      "match_status": "Not Started",
+      "match_time": "23:00",
+      "match_hometeam_id": "524",
+      "match_hometeam_name": "Panama",
+      "match_hometeam_score": "",
+      "match_awayteam_name": "England",
+      "match_awayteam_id": "16",
+      "match_awayteam_score": "",
+      "match_hometeam_halftime_score": "",
+      "match_awayteam_halftime_score": "",
+      "match_hometeam_extra_score": "",
+      "match_awayteam_extra_score": "",
+      "match_hometeam_penalty_score": "",
+      "match_awayteam_penalty_score": "",
+      "match_hometeam_ft_score": "",
+      "match_awayteam_ft_score": "",
+      "match_hometeam_system": "",
+      "match_awayteam_system": "",
+      "match_live": "0",
+      "match_round": "3",
+      "match_stadium": "MetLife Stadium",
+      "match_referee": "",
+      "team_home_badge": "https://apiv3.apifootball.com/badges/524_panama.jpg",
+      "team_away_badge": "https://apiv3.apifootball.com/badges/16_england.jpg",
+      "league_logo": "https://apiv3.apifootball.com/badges/logo_leagues/28_world-cup.png",
+      "country_logo": "",
+      "league_year": "2026",
+      "fk_stage_key": "35026",
+      "stage_name": "World Championship",
+      "goalscorer": [],
+      "substitutions": {
+        "home": [],
+        "away": []
+      },
+      "cards": [],
+      "lineup": {
+        "home": {
+          "starting_lineups": [],
+          "substitutes": [],
+          "coach": [
+            {
+              "lineup_player": "Thomas Christiansen",
+              "lineup_number": "",
+              "lineup_position": "",
+              "player_key": "3089594890"
+            }
+          ],
+          "missing_players": []
+        },
+        "away": {
+          "starting_lineups": [],
+          "substitutes": [],
+          "coach": [
+            {
+              "lineup_player": "Thomas Tuchel",
+              "lineup_number": "",
+              "lineup_position": "",
+              "player_key": "1579268102"
+            }
+          ],
+          "missing_players": []
+        }
+      },
+      "statistics": [],
+      "statistics_1half": []
+    },
+    {
+      "match_id": "710325",
+      "country_id": "8",
+      "country_name": "Worldcup",
+      "league_id": "28",
+      "league_name": "World Cup - World Championship",
+      "match_date": "2026-06-27",
+      "match_status": "Not Started",
+      "match_time": "02:00",
+      "match_hometeam_id": "732",
+      "match_hometeam_name": "Cape Verde",
+      "match_hometeam_score": "",
+      "match_awayteam_name": "Saudi Arabia",
+      "match_awayteam_id": "647",
+      "match_awayteam_score": "",
+      "match_hometeam_halftime_score": "",
+      "match_awayteam_halftime_score": "",
+      "match_hometeam_extra_score": "",
+      "match_awayteam_extra_score": "",
+      "match_hometeam_penalty_score": "",
+      "match_awayteam_penalty_score": "",
+      "match_hometeam_ft_score": "",
+      "match_awayteam_ft_score": "",
+      "match_hometeam_system": "",
+      "match_awayteam_system": "",
+      "match_live": "0",
+      "match_round": "3",
+      "match_stadium": "NRG Stadium",
+      "match_referee": "",
+      "team_home_badge": "https://apiv3.apifootball.com/badges/732_cabo-verde.jpg",
+      "team_away_badge": "https://apiv3.apifootball.com/badges/647_saudi-arabia.jpg",
+      "league_logo": "https://apiv3.apifootball.com/badges/logo_leagues/28_world-cup.png",
+      "country_logo": "",
+      "league_year": "2026",
+      "fk_stage_key": "35026",
+      "stage_name": "World Championship",
+      "goalscorer": [],
+      "substitutions": {
+        "home": [],
+        "away": []
+      },
+      "cards": [],
+      "lineup": {
+        "home": {
+          "starting_lineups": [],
+          "substitutes": [],
+          "coach": [],
+          "missing_players": []
+        },
+        "away": {
+          "starting_lineups": [],
+          "substitutes": [],
+          "coach": [
+            {
+              "lineup_player": "Herve Renard",
+              "lineup_number": "",
+              "lineup_position": "",
+              "player_key": "2588683732"
+            }
+          ],
+          "missing_players": []
+        }
+      },
+      "statistics": [],
+      "statistics_1half": []
+    },
+    {
+      "match_id": "710326",
+      "country_id": "8",
+      "country_name": "Worldcup",
+      "league_id": "28",
+      "league_name": "World Cup - World Championship",
+      "match_date": "2026-06-27",
+      "match_status": "Not Started",
+      "match_time": "05:00",
+      "match_hometeam_id": "716",
+      "match_hometeam_name": "Egypt",
+      "match_hometeam_score": "",
+      "match_awayteam_name": "Iran",
+      "match_awayteam_id": "644",
+      "match_awayteam_score": "",
+      "match_hometeam_halftime_score": "",
+      "match_awayteam_halftime_score": "",
+      "match_hometeam_extra_score": "",
+      "match_awayteam_extra_score": "",
+      "match_hometeam_penalty_score": "",
+      "match_awayteam_penalty_score": "",
+      "match_hometeam_ft_score": "",
+      "match_awayteam_ft_score": "",
+      "match_hometeam_system": "",
+      "match_awayteam_system": "",
+      "match_live": "0",
+      "match_round": "3",
+      "match_stadium": "Lumen Field",
+      "match_referee": "",
+      "team_home_badge": "https://apiv3.apifootball.com/badges/716_egypt.jpg",
+      "team_away_badge": "https://apiv3.apifootball.com/badges/644_ir-iran.jpg",
+      "league_logo": "https://apiv3.apifootball.com/badges/logo_leagues/28_world-cup.png",
+      "country_logo": "",
+      "league_year": "2026",
+      "fk_stage_key": "35026",
+      "stage_name": "World Championship",
+      "goalscorer": [],
+      "substitutions": {
+        "home": [],
+        "away": []
+      },
+      "cards": [],
+      "lineup": {
+        "home": {
+          "starting_lineups": [],
+          "substitutes": [],
+          "coach": [],
+          "missing_players": []
+        },
+        "away": {
+          "starting_lineups": [],
+          "substitutes": [],
+          "coach": [
+            {
+              "lineup_player": "Amir Ghalenoei",
+              "lineup_number": "",
+              "lineup_position": "",
+              "player_key": "4117157808"
+            }
+          ],
+          "missing_players": []
+        }
+      },
+      "statistics": [],
+      "statistics_1half": []
+    },
+    {
+      "match_id": "710327",
+      "country_id": "8",
+      "country_name": "Worldcup",
+      "league_id": "28",
+      "league_name": "World Cup - World Championship",
+      "match_date": "2026-06-27",
+      "match_status": "Not Started",
+      "match_time": "05:00",
+      "match_hometeam_id": "527",
+      "match_hometeam_name": "New Zealand",
+      "match_hometeam_score": "",
+      "match_awayteam_name": "Belgium",
+      "match_awayteam_id": "6",
+      "match_awayteam_score": "",
+      "match_hometeam_halftime_score": "",
+      "match_awayteam_halftime_score": "",
+      "match_hometeam_extra_score": "",
+      "match_awayteam_extra_score": "",
+      "match_hometeam_penalty_score": "",
+      "match_awayteam_penalty_score": "",
+      "match_hometeam_ft_score": "",
+      "match_awayteam_ft_score": "",
+      "match_hometeam_system": "",
+      "match_awayteam_system": "",
+      "match_live": "0",
+      "match_round": "3",
+      "match_stadium": "BC Place",
+      "match_referee": "",
+      "team_home_badge": "https://apiv3.apifootball.com/badges/527_new-zealand.jpg",
+      "team_away_badge": "https://apiv3.apifootball.com/badges/6_belgium.jpg",
+      "league_logo": "https://apiv3.apifootball.com/badges/logo_leagues/28_world-cup.png",
+      "country_logo": "",
+      "league_year": "2026",
+      "fk_stage_key": "35026",
+      "stage_name": "World Championship",
+      "goalscorer": [],
+      "substitutions": {
+        "home": [],
+        "away": []
+      },
+      "cards": [],
+      "lineup": {
+        "home": {
+          "starting_lineups": [],
+          "substitutes": [],
+          "coach": [
+            {
+              "lineup_player": "Darren Shaun Bazeley",
+              "lineup_number": "",
+              "lineup_position": "",
+              "player_key": "2553112031"
+            }
+          ],
+          "missing_players": []
+        },
+        "away": {
+          "starting_lineups": [],
+          "substitutes": [],
+          "coach": [
+            {
+              "lineup_player": "Rudi Garcia",
+              "lineup_number": "",
+              "lineup_position": "",
+              "player_key": "3705263083"
+            }
+          ],
+          "missing_players": []
+        }
+      },
+      "statistics": [],
+      "statistics_1half": []
+    },
+    {
+      "match_id": "710329",
+      "country_id": "8",
+      "country_name": "Worldcup",
+      "league_id": "28",
+      "league_name": "World Cup - World Championship",
+      "match_date": "2026-06-27",
+      "match_status": "Not Started",
+      "match_time": "02:00",
+      "match_hometeam_id": "539",
+      "match_hometeam_name": "Uruguay",
+      "match_hometeam_score": "",
+      "match_awayteam_name": "Spain",
+      "match_awayteam_id": "19",
+      "match_awayteam_score": "",
+      "match_hometeam_halftime_score": "",
+      "match_awayteam_halftime_score": "",
+      "match_hometeam_extra_score": "",
+      "match_awayteam_extra_score": "",
+      "match_hometeam_penalty_score": "",
+      "match_awayteam_penalty_score": "",
+      "match_hometeam_ft_score": "",
+      "match_awayteam_ft_score": "",
+      "match_hometeam_system": "",
+      "match_awayteam_system": "",
+      "match_live": "0",
+      "match_round": "3",
+      "match_stadium": "Estadio Akron",
+      "match_referee": "",
+      "team_home_badge": "https://apiv3.apifootball.com/badges/539_uruguay.jpg",
+      "team_away_badge": "https://apiv3.apifootball.com/badges/19_spain.jpg",
+      "league_logo": "https://apiv3.apifootball.com/badges/logo_leagues/28_world-cup.png",
+      "country_logo": "",
+      "league_year": "2026",
+      "fk_stage_key": "35026",
+      "stage_name": "World Championship",
+      "goalscorer": [],
+      "substitutions": {
+        "home": [],
+        "away": []
+      },
+      "cards": [],
+      "lineup": {
+        "home": {
+          "starting_lineups": [],
+          "substitutes": [],
+          "coach": [
+            {
+              "lineup_player": "Marcelo Alberto Bielsa Caldera",
+              "lineup_number": "",
+              "lineup_position": "",
+              "player_key": "195460154"
+            }
+          ],
+          "missing_players": []
+        },
+        "away": {
+          "starting_lineups": [],
+          "substitutes": [],
+          "coach": [
+            {
+              "lineup_player": "Luis de la Fuente Castillo",
+              "lineup_number": "",
+              "lineup_position": "",
+              "player_key": "2568996517"
+            }
+          ],
+          "missing_players": []
+        }
+      },
+      "statistics": [],
+      "statistics_1half": []
+    },
+    {
+      "match_id": "710332",
+      "country_id": "8",
+      "country_name": "Worldcup",
+      "league_id": "28",
+      "league_name": "World Cup - World Championship",
+      "match_date": "2026-06-27",
+      "match_status": "Not Started",
+      "match_time": "23:00",
+      "match_hometeam_id": "14",
+      "match_hometeam_name": "Croatia",
+      "match_hometeam_score": "",
+      "match_awayteam_name": "Ghana",
+      "match_awayteam_id": "725",
+      "match_awayteam_score": "",
+      "match_hometeam_halftime_score": "",
+      "match_awayteam_halftime_score": "",
+      "match_hometeam_extra_score": "",
+      "match_awayteam_extra_score": "",
+      "match_hometeam_penalty_score": "",
+      "match_awayteam_penalty_score": "",
+      "match_hometeam_ft_score": "",
+      "match_awayteam_ft_score": "",
+      "match_hometeam_system": "",
+      "match_awayteam_system": "",
+      "match_live": "0",
+      "match_round": "3",
+      "match_stadium": "Lincoln Financial Field",
+      "match_referee": "",
+      "team_home_badge": "https://apiv3.apifootball.com/badges/14_croatia.jpg",
+      "team_away_badge": "https://apiv3.apifootball.com/badges/725_ghana.jpg",
+      "league_logo": "https://apiv3.apifootball.com/badges/logo_leagues/28_world-cup.png",
+      "country_logo": "",
+      "league_year": "2026",
+      "fk_stage_key": "35026",
+      "stage_name": "World Championship",
+      "goalscorer": [],
+      "substitutions": {
+        "home": [],
+        "away": []
+      },
+      "cards": [],
+      "lineup": {
+        "home": {
+          "starting_lineups": [],
+          "substitutes": [],
+          "coach": [
+            {
+              "lineup_player": "Zlatko Dalić",
+              "lineup_number": "",
+              "lineup_position": "",
+              "player_key": "4084443150"
+            }
+          ],
+          "missing_players": []
+        },
+        "away": {
+          "starting_lineups": [],
+          "substitutes": [],
+          "coach": [],
+          "missing_players": []
+        }
+      },
+      "statistics": [],
+      "statistics_1half": []
+    },
+    {
+      "match_id": "710330",
+      "country_id": "8",
+      "country_name": "Worldcup",
+      "league_id": "28",
+      "league_name": "World Cup - World Championship",
+      "match_date": "2026-06-28",
+      "match_status": "Not Started",
+      "match_time": "04:00",
+      "match_hometeam_id": "734",
+      "match_hometeam_name": "Algeria",
+      "match_hometeam_score": "",
+      "match_awayteam_name": "Austria",
+      "match_awayteam_id": "9",
+      "match_awayteam_score": "",
+      "match_hometeam_halftime_score": "",
+      "match_awayteam_halftime_score": "",
+      "match_hometeam_extra_score": "",
+      "match_awayteam_extra_score": "",
+      "match_hometeam_penalty_score": "",
+      "match_awayteam_penalty_score": "",
+      "match_hometeam_ft_score": "",
+      "match_awayteam_ft_score": "",
+      "match_hometeam_system": "",
+      "match_awayteam_system": "",
+      "match_live": "0",
+      "match_round": "3",
+      "match_stadium": "Arrowhead Stadium",
+      "match_referee": "",
+      "team_home_badge": "https://apiv3.apifootball.com/badges/734_algeria.jpg",
+      "team_away_badge": "https://apiv3.apifootball.com/badges/9_austria.jpg",
+      "league_logo": "https://apiv3.apifootball.com/badges/logo_leagues/28_world-cup.png",
+      "country_logo": "",
+      "league_year": "2026",
+      "fk_stage_key": "35026",
+      "stage_name": "World Championship",
+      "goalscorer": [],
+      "substitutions": {
+        "home": [],
+        "away": []
+      },
+      "cards": [],
+      "lineup": {
+        "home": {
+          "starting_lineups": [],
+          "substitutes": [],
+          "coach": [
+            {
+              "lineup_player": "Vladimir Petkovic",
+              "lineup_number": "",
+              "lineup_position": "",
+              "player_key": "1193159030"
+            }
+          ],
+          "missing_players": []
+        },
+        "away": {
+          "starting_lineups": [],
+          "substitutes": [],
+          "coach": [
+            {
+              "lineup_player": "Ralf Dietrich Rangnick",
+              "lineup_number": "",
+              "lineup_position": "",
+              "player_key": "3615855830"
+            }
+          ],
+          "missing_players": []
+        }
+      },
+      "statistics": [],
+      "statistics_1half": []
+    },
+    {
+      "match_id": "710331",
+      "country_id": "8",
+      "country_name": "Worldcup",
+      "league_id": "28",
+      "league_name": "World Cup - World Championship",
+      "match_date": "2026-06-28",
+      "match_status": "Not Started",
+      "match_time": "01:30",
+      "match_hometeam_id": "535",
+      "match_hometeam_name": "Colombia",
+      "match_hometeam_score": "",
+      "match_awayteam_name": "Portugal",
+      "match_awayteam_id": "23",
+      "match_awayteam_score": "",
+      "match_hometeam_halftime_score": "",
+      "match_awayteam_halftime_score": "",
+      "match_hometeam_extra_score": "",
+      "match_awayteam_extra_score": "",
+      "match_hometeam_penalty_score": "",
+      "match_awayteam_penalty_score": "",
+      "match_hometeam_ft_score": "",
+      "match_awayteam_ft_score": "",
+      "match_hometeam_system": "",
+      "match_awayteam_system": "",
+      "match_live": "0",
+      "match_round": "3",
+      "match_stadium": "Hard Rock Stadium",
+      "match_referee": "",
+      "team_home_badge": "https://apiv3.apifootball.com/badges/535_colombia.jpg",
+      "team_away_badge": "https://apiv3.apifootball.com/badges/23_portugal.jpg",
+      "league_logo": "https://apiv3.apifootball.com/badges/logo_leagues/28_world-cup.png",
+      "country_logo": "",
+      "league_year": "2026",
+      "fk_stage_key": "35026",
+      "stage_name": "World Championship",
+      "goalscorer": [],
+      "substitutions": {
+        "home": [],
+        "away": []
+      },
+      "cards": [],
+      "lineup": {
+        "home": {
+          "starting_lineups": [],
+          "substitutes": [],
+          "coach": [
+            {
+              "lineup_player": "Néstor Gabriel Lorenzo",
+              "lineup_number": "",
+              "lineup_position": "",
+              "player_key": "97283806"
+            }
+          ],
+          "missing_players": []
+        },
+        "away": {
+          "starting_lineups": [],
+          "substitutes": [],
+          "coach": [
+            {
+              "lineup_player": "Roberto Martínez Montoliú",
+              "lineup_number": "",
+              "lineup_position": "",
+              "player_key": "351187002"
+            }
+          ],
+          "missing_players": []
+        }
+      },
+      "statistics": [],
+      "statistics_1half": []
+    },
+    {
+      "match_id": "710333",
+      "country_id": "8",
+      "country_name": "Worldcup",
+      "league_id": "28",
+      "league_name": "World Cup - World Championship",
+      "match_date": "2026-06-28",
+      "match_status": "Not Started",
+      "match_time": "04:00",
+      "match_hometeam_id": "641",
+      "match_hometeam_name": "Jordan",
+      "match_hometeam_score": "",
+      "match_awayteam_name": "Argentina",
+      "match_awayteam_id": "536",
+      "match_awayteam_score": "",
+      "match_hometeam_halftime_score": "",
+      "match_awayteam_halftime_score": "",
+      "match_hometeam_extra_score": "",
+      "match_awayteam_extra_score": "",
+      "match_hometeam_penalty_score": "",
+      "match_awayteam_penalty_score": "",
+      "match_hometeam_ft_score": "",
+      "match_awayteam_ft_score": "",
+      "match_hometeam_system": "",
+      "match_awayteam_system": "",
+      "match_live": "0",
+      "match_round": "3",
+      "match_stadium": "",
+      "match_referee": "",
+      "team_home_badge": "https://apiv3.apifootball.com/badges/641_jordan.jpg",
+      "team_away_badge": "https://apiv3.apifootball.com/badges/536_argentina.jpg",
+      "league_logo": "https://apiv3.apifootball.com/badges/logo_leagues/28_world-cup.png",
+      "country_logo": "",
+      "league_year": "2026",
+      "fk_stage_key": "35026",
+      "stage_name": "World Championship",
+      "goalscorer": [],
+      "substitutions": {
+        "home": [],
+        "away": []
+      },
+      "cards": [],
+      "lineup": {
+        "home": {
+          "starting_lineups": [],
+          "substitutes": [],
+          "coach": [
+            {
+              "lineup_player": "Jamal Sellami",
+              "lineup_number": "",
+              "lineup_position": "",
+              "player_key": "1221281344"
+            }
+          ],
+          "missing_players": []
+        },
+        "away": {
+          "starting_lineups": [],
+          "substitutes": [],
+          "coach": [
+            {
+              "lineup_player": "Lionel Sebastián Scaloni",
+              "lineup_number": "",
+              "lineup_position": "",
+              "player_key": "3541025950"
+            }
+          ],
+          "missing_players": []
+        }
+      },
+      "statistics": [],
+      "statistics_1half": []
+    },
+    {
+      "match_id": "763320",
+      "country_id": "8",
+      "country_name": "Worldcup",
+      "league_id": "28",
+      "league_name": "World Cup - World Championship",
+      "match_date": "2026-06-28",
+      "match_status": "Not Started",
+      "match_time": "01:30",
+      "match_hometeam_id": "728",
+      "match_hometeam_name": "D.R. Congo",
+      "match_hometeam_score": "",
+      "match_awayteam_name": "Uzbekistan",
+      "match_awayteam_id": "646",
+      "match_awayteam_score": "",
+      "match_hometeam_halftime_score": "",
+      "match_awayteam_halftime_score": "",
+      "match_hometeam_extra_score": "",
+      "match_awayteam_extra_score": "",
+      "match_hometeam_penalty_score": "",
+      "match_awayteam_penalty_score": "",
+      "match_hometeam_ft_score": "",
+      "match_awayteam_ft_score": "",
+      "match_hometeam_system": "",
+      "match_awayteam_system": "",
+      "match_live": "0",
+      "match_round": "3",
+      "match_stadium": "Mercedes-Benz Stadium",
+      "match_referee": "",
+      "team_home_badge": "https://apiv3.apifootball.com/badges/728_congo-dr.jpg",
+      "team_away_badge": "https://apiv3.apifootball.com/badges/646_uzbekistan.jpg",
+      "league_logo": "https://apiv3.apifootball.com/badges/logo_leagues/28_world-cup.png",
+      "country_logo": "",
+      "league_year": "2026",
+      "fk_stage_key": "35026",
+      "stage_name": "World Championship",
+      "goalscorer": [],
+      "substitutions": {
+        "home": [],
+        "away": []
+      },
+      "cards": [],
+      "lineup": {
+        "home": {
+          "starting_lineups": [],
+          "substitutes": [],
+          "coach": [
+            {
+              "lineup_player": "Sebastien Desabre",
+              "lineup_number": "",
+              "lineup_position": "",
+              "player_key": "3745813838"
+            }
+          ],
+          "missing_players": []
+        },
+        "away": {
+          "starting_lineups": [],
+          "substitutes": [],
+          "coach": [
+            {
+              "lineup_player": "Fabio Cannavaro",
+              "lineup_number": "",
+              "lineup_position": "",
+              "player_key": "1532327238"
+            }
+          ],
+          "missing_players": []
+        }
+      },
+      "statistics": [],
+      "statistics_1half": []
+    }
+  ]
+}

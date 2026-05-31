@@ -1,0 +1,24 @@
+[
+  {
+    "label": "Copa Libertadores",
+    "tier": "americas",
+    "patterns": [
+      "Copa Libertadores"
+    ]
+  },
+  {
+    "label": "Copa Sudamericana",
+    "tier": "americas",
+    "patterns": [
+      "Copa Sudamericana"
+    ]
+  },
+  {
+    "label": "Saudi Pro League",
+    "tier": "asia",
+    "patterns": [
+      "Pro League",
+      "Professional League"
+    ]
+  }
+]

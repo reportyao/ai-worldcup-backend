@@ -1,0 +1,25 @@
+{
+  "league": {
+    "label": "Ligue 1",
+    "tier": "top5",
+    "priority": 24,
+    "league_id": "168",
+    "league_name": "Ligue 1",
+    "league_season": "2025/2026",
+    "country_id": "3",
+    "country_name": "France",
+    "league_logo": "https://apiv3.apifootball.com/badges/logo_leagues/168_ligue-1.png",
+    "country_logo": "https://apiv3.apifootball.com/badges/logo_country/3_france.png",
+    "matched_candidates_count": 1,
+    "recommendation_reason": "欧洲五大联赛数据稳定、球队和球员质量高，是俱乐部预测模型的核心样本。"
+  },
+  "action": "get_odds",
+  "name": "odds",
+  "request_url_sanitized": "https://apiv3.apifootball.com/?action=get_odds&APIkey=***&league_id=168&from=2025-07-01&to=2026-06-30",
+  "http_status": 200,
+  "fetched_at": "2026-05-31T12:12:04Z",
+  "data": {
+    "error": 201,
+    "message": "Date interval is to long! (Maximum 5 days)"
+  }
+}

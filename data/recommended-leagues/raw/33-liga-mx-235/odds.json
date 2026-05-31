@@ -1,0 +1,25 @@
+{
+  "league": {
+    "label": "Liga MX",
+    "tier": "americas",
+    "priority": 33,
+    "league_id": "235",
+    "league_name": "Liga MX",
+    "league_season": "2025/2026",
+    "country_id": "78",
+    "country_name": "Mexico",
+    "league_logo": "https://apiv3.apifootball.com/badges/logo_leagues/235_liga-mx.png",
+    "country_logo": "https://apiv3.apifootball.com/badges/logo_country/78_mexico.png",
+    "matched_candidates_count": 2,
+    "recommendation_reason": "覆盖美洲主要联赛与洲际杯赛，可提升对南美、北美球队和世界杯参赛国球员状态的理解。"
+  },
+  "action": "get_odds",
+  "name": "odds",
+  "request_url_sanitized": "https://apiv3.apifootball.com/?action=get_odds&APIkey=***&league_id=235&from=2025-07-01&to=2026-06-30",
+  "http_status": 200,
+  "fetched_at": "2026-05-31T12:12:26Z",
+  "data": {
+    "error": 201,
+    "message": "Date interval is to long! (Maximum 5 days)"
+  }
+}

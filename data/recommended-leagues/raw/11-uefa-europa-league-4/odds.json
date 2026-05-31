@@ -1,0 +1,25 @@
+{
+  "league": {
+    "label": "UEFA Europa League",
+    "tier": "europe_club",
+    "priority": 11,
+    "league_id": "4",
+    "league_name": "UEFA Europa League",
+    "league_season": "2025/2026",
+    "country_id": "160",
+    "country_name": "Europe",
+    "league_logo": "https://apiv3.apifootball.com/badges/logo_leagues/4_uefa-europa-league.png",
+    "country_logo": "https://apiv3.apifootball.com/badges/logo_country/160_europe.png",
+    "matched_candidates_count": 1,
+    "recommendation_reason": "欧战覆盖强队跨联赛交手，适合训练高强度比赛、淘汰赛和球队状态特征。"
+  },
+  "action": "get_odds",
+  "name": "odds",
+  "request_url_sanitized": "https://apiv3.apifootball.com/?action=get_odds&APIkey=***&league_id=4&from=2025-07-01&to=2026-06-30",
+  "http_status": 200,
+  "fetched_at": "2026-05-31T12:10:43Z",
+  "data": {
+    "error": 201,
+    "message": "Date interval is to long! (Maximum 5 days)"
+  }
+}

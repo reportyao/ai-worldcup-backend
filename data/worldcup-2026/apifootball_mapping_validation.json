@@ -1,0 +1,26 @@
+{
+  "apifootball_raw_count": 48,
+  "standardized_count": 48,
+  "standardized_with_apifootball_team_key": 48,
+  "missing_raw_teams_in_standardized": [],
+  "standardized_teams_not_matched_to_raw": [],
+  "first_standardized_item": {
+    "name": "Australia",
+    "fifa_code": "AUS",
+    "confederation": "AFC",
+    "qualification_method": "AFC third round Group C runners-up",
+    "qualification_date": "10 June 2025",
+    "total_times_qualified": "7",
+    "last_time_qualified": "2022",
+    "current_consecutive_appearances": "6",
+    "previous_best_performance": "Round of 16 ( 2006 , 2022 )",
+    "is_host": false,
+    "is_debutant": false,
+    "source": "https://en.wikipedia.org/wiki/2026_FIFA_World_Cup_qualification",
+    "api_football_team_id": "529",
+    "logo_url": "https://apiv3.apifootball.com/badges/529_australia.jpg",
+    "raw_names_seen": [
+      "Australia"
+    ]
+  }
+}

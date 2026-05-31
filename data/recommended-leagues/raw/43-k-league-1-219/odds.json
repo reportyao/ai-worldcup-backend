@@ -1,0 +1,25 @@
+{
+  "league": {
+    "label": "K League 1",
+    "tier": "asia",
+    "priority": 43,
+    "league_id": "219",
+    "league_name": "K League 1",
+    "league_season": "2026",
+    "country_id": "68",
+    "country_name": "Korea Republic",
+    "league_logo": "https://apiv3.apifootball.com/badges/logo_leagues/219_k-league-1.png",
+    "country_logo": "https://apiv3.apifootball.com/badges/logo_country/68_korea-republic.png",
+    "matched_candidates_count": 1,
+    "recommendation_reason": "覆盖亚洲高热度联赛与亚冠，有助于世界杯亚洲队、转会球员和区域强队状态建模。"
+  },
+  "action": "get_odds",
+  "name": "odds",
+  "request_url_sanitized": "https://apiv3.apifootball.com/?action=get_odds&APIkey=***&league_id=219&from=2026-01-01&to=2026-12-31",
+  "http_status": 200,
+  "fetched_at": "2026-05-31T12:13:12Z",
+  "data": {
+    "error": 201,
+    "message": "Date interval is to long! (Maximum 5 days)"
+  }
+}

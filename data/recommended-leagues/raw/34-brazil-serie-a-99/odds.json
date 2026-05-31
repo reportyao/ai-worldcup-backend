@@ -1,0 +1,25 @@
+{
+  "league": {
+    "label": "Brazil Serie A",
+    "tier": "americas",
+    "priority": 34,
+    "league_id": "99",
+    "league_name": "Serie A",
+    "league_season": "2026",
+    "country_id": "27",
+    "country_name": "Brazil",
+    "league_logo": "https://apiv3.apifootball.com/badges/logo_leagues/99_serie-a.png",
+    "country_logo": "https://apiv3.apifootball.com/badges/logo_country/27_brazil.png",
+    "matched_candidates_count": 1,
+    "recommendation_reason": "覆盖美洲主要联赛与洲际杯赛，可提升对南美、北美球队和世界杯参赛国球员状态的理解。"
+  },
+  "action": "get_odds",
+  "name": "odds",
+  "request_url_sanitized": "https://apiv3.apifootball.com/?action=get_odds&APIkey=***&league_id=99&from=2026-01-01&to=2026-12-31",
+  "http_status": 200,
+  "fetched_at": "2026-05-31T12:12:35Z",
+  "data": {
+    "error": 201,
+    "message": "Date interval is to long! (Maximum 5 days)"
+  }
+}
