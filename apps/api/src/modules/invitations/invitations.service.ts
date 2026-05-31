@@ -47,14 +47,19 @@ export class InvitationsService {
     }
 
     // 首次生成固定码（带重试防碰撞）
-    let code: string;
-    let attempts = 0;
-    while (true) {
-      code = this.createUniqueCode();
-      const existing = await this.prisma.user.findUnique({ where: { inviteCode: code } });
-      if (!existing) break;
-      attempts++;
-      if (attempts > 10) throw new BadRequestException('生成邀请码失败，请重试');
+    const maxAttempts = 10;
+    let code: string | undefined;
+    for (let attempts = 0; attempts < maxAttempts; attempts++) {
+      const candidate = this.createUniqueCode();
+      const existing = await this.prisma.user.findUnique({ where: { inviteCode: candidate } });
+      if (!existing) {
+        code = candidate;
+        break;
+      }
+    }
+
+    if (!code) {
+      throw new BadRequestException('生成邀请码失败，请重试');
     }
 
     await this.prisma.user.update({

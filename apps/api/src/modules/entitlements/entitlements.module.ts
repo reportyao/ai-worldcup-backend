@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { forwardRef, Module } from '@nestjs/common';
 
 import { AuthModule } from '../auth/auth.module.js';
 
@@ -10,7 +10,7 @@ import { EntitlementsController } from './entitlements.controller.js';
  * T5-01: AccessService 实现权益判断核心逻辑。
  */
 @Module({
-  imports: [AuthModule],
+  imports: [forwardRef(() => AuthModule)],
   controllers: [EntitlementsController],
   providers: [AccessService],
   exports: [AccessService],
