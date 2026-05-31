@@ -1,10 +1,11 @@
 import { createHash, createHmac, timingSafeEqual } from 'node:crypto';
 
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import { Injectable, UnauthorizedException, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import type { Guest, Locale, User } from '@prisma/client';
 
 import { PrismaService } from '../../prisma/prisma.service.js';
+import { InvitationsService } from '../invitations/invitations.service.js';
 
 import type { GuestIdentifyDto, WechatLoginDto } from './auth.schemas.js';
 
@@ -30,9 +31,12 @@ export interface RequestMeta {
 
 @Injectable()
 export class AuthService {
+  private readonly logger = new Logger(AuthService.name);
+
   constructor(
     private readonly prisma: PrismaService,
     private readonly configService: ConfigService,
+    private readonly invitationsService: InvitationsService,
   ) {}
 
   async identifyGuest(dto: GuestIdentifyDto, meta: RequestMeta) {
@@ -92,6 +96,18 @@ export class AuthService {
 
       return savedUser;
     });
+
+    // ─── 邀请码自动绑定逻辑 ───
+    // 如果登录元数据中携带了邀请码，且用户是新用户（或者尚未被邀请过），自动尝试绑定
+    if (meta.inviteCode) {
+      try {
+        await this.invitationsService.acceptInvitation(meta.inviteCode, user.id);
+        this.logger.log(`Auto-bound invite code ${meta.inviteCode} for user ${user.id} during login`);
+      } catch (err) {
+        // 自动绑定失败不影响登录流程，可能是已绑定过或邀请码无效
+        this.logger.debug(`Auto-bind invite code failed: ${(err as Error).message}`);
+      }
+    }
 
     return {
       user: this.toUserProfile(user),

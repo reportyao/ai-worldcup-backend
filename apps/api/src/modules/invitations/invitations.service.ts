@@ -2,15 +2,12 @@ import {
   BadRequestException,
   Injectable,
   Logger,
-  NotFoundException,
 } from '@nestjs/common';
 import { randomBytes } from 'node:crypto';
 
 import { PrismaService } from '../../prisma/prisma.service.js';
 import { AccessService } from '../entitlements/access.service.js';
 
-/** 邀请码有效期（天） */
-const INVITATION_EXPIRY_DAYS = 30;
 /** 每日最多获得的邀请奖励数 */
 const MAX_DAILY_INVITE_REWARDS = 3;
 
@@ -24,38 +21,59 @@ export class InvitationsService {
   ) {}
 
   /**
-   * 为用户生成邀请码。每个用户可以有多个有效邀请码。
+   * 获取或创建用户的固定邀请码（每用户唯一，永久有效）。
+   * 首次调用自动生成，后续调用直接返回已有的码。
    */
-  async generateInviteCode(userId: string): Promise<{
+  async getOrCreateMyCode(userId: string): Promise<{
     code: string;
-    expiresAt: string;
     shareUrl: string;
   }> {
-    const code = this.createUniqueCode();
-    const expiresAt = new Date();
-    expiresAt.setDate(expiresAt.getDate() + INVITATION_EXPIRY_DAYS);
-
-    await this.prisma.invitation.create({
-      data: {
-        inviterId: userId,
-        code,
-        status: 'PENDING',
-        expiresAt,
-      },
+    // 先查询用户是否已有固定邀请码
+    const user = await this.prisma.user.findUnique({
+      where: { id: userId },
+      select: { inviteCode: true },
     });
 
-    this.logger.log(`Generated invite code ${code} for user ${userId}`);
+    if (!user) {
+      throw new BadRequestException('用户不存在');
+    }
+
+    if (user.inviteCode) {
+      // 已有固定码，直接返回
+      return {
+        code: user.inviteCode,
+        shareUrl: `/invite/${user.inviteCode}`,
+      };
+    }
+
+    // 首次生成固定码（带重试防碰撞）
+    let code: string;
+    let attempts = 0;
+    while (true) {
+      code = this.createUniqueCode();
+      const existing = await this.prisma.user.findUnique({ where: { inviteCode: code } });
+      if (!existing) break;
+      attempts++;
+      if (attempts > 10) throw new BadRequestException('生成邀请码失败，请重试');
+    }
+
+    await this.prisma.user.update({
+      where: { id: userId },
+      data: { inviteCode: code },
+    });
+
+    this.logger.log(`Generated fixed invite code ${code} for user ${userId}`);
 
     return {
       code,
-      expiresAt: expiresAt.toISOString(),
       shareUrl: `/invite/${code}`,
     };
   }
 
   /**
    * 接受邀请码（被邀请人调用）。
-   * 归因逻辑：记录被邀请人，发放邀请奖励给邀请人。
+   * 固定码逻辑：通过 inviteCode 找到邀请人，创建一条新的邀请记录。
+   * 每个用户只能被邀请一次（inviteeId 唯一约束保证）。
    */
   async acceptInvitation(
     code: string,
@@ -65,38 +83,23 @@ export class InvitationsService {
     message: string;
     rewardGranted: boolean;
   }> {
-    const invitation = await this.prisma.invitation.findUnique({
-      where: { code },
+    // 通过固定码找到邀请人
+    const inviter = await this.prisma.user.findUnique({
+      where: { inviteCode: code },
+      select: { id: true },
     });
 
-    if (!invitation) {
-      throw new NotFoundException('邀请码不存在');
+    if (!inviter) {
+      throw new BadRequestException('邀请码不存在或已失效');
     }
 
-    if (invitation.status !== 'PENDING') {
-      throw new BadRequestException(
-        invitation.status === 'ACCEPTED'
-          ? '该邀请码已被使用'
-          : '该邀请码已过期',
-      );
-    }
-
-    if (new Date() > invitation.expiresAt) {
-      // 标记过期
-      await this.prisma.invitation.update({
-        where: { id: invitation.id },
-        data: { status: 'EXPIRED' },
-      });
-      throw new BadRequestException('该邀请码已过期');
-    }
-
-    if (invitation.inviterId === inviteeId) {
+    if (inviter.id === inviteeId) {
       throw new BadRequestException('不能使用自己的邀请码');
     }
 
-    // 检查被邀请人是否已经使用过邀请码
+    // 检查被邀请人是否已经使用过邀请码（inviteeId 全局唯一）
     const existingAccepted = await this.prisma.invitation.findFirst({
-      where: { inviteeId, status: 'ACCEPTED' },
+      where: { inviteeId },
     });
     if (existingAccepted) {
       throw new BadRequestException('你已经使用过邀请码了');
@@ -104,19 +107,20 @@ export class InvitationsService {
 
     // 执行接受操作（事务）
     const result = await this.prisma.$transaction(async (tx) => {
-      // 更新邀请记录
-      await tx.invitation.update({
-        where: { id: invitation.id },
+      // 创建一条新的邀请记录
+      const invitation = await tx.invitation.create({
         data: {
+          inviterId: inviter.id,
+          code,
           inviteeId,
           status: 'ACCEPTED',
           acceptedAt: new Date(),
         },
       });
 
-      // 尝试发放邀请奖励给邀请人
+      // 发放邀请奖励给邀请人
       const rewardResult = await this.accessService.grantInviteReward(
-        invitation.inviterId,
+        inviter.id,
         invitation.id,
       );
 
@@ -127,26 +131,32 @@ export class InvitationsService {
         });
       }
 
+      // 同时给被邀请人也发放奖励
+      await this.accessService.grantInviteReward(inviteeId, invitation.id);
+
       return { rewardGranted: rewardResult.granted, reason: rewardResult.reason };
     });
 
     this.logger.log(
-      `Invitation ${code} accepted by user ${inviteeId}, reward granted: ${result.rewardGranted}`,
+      `Fixed invite code ${code} accepted by user ${inviteeId}, inviter reward granted: ${result.rewardGranted}`,
     );
 
     return {
       success: true,
       message: result.rewardGranted
-        ? '邀请码使用成功！邀请人已获得奖励'
-        : `邀请码使用成功！${result.reason === 'DAILY_INVITE_REWARD_LIMIT_REACHED' ? '邀请人今日奖励已达上限' : ''}`,
+        ? '邀请成功！双方各获得 1 次免费解锁'
+        : `邀请成功！${result.reason === 'DAILY_INVITE_REWARD_LIMIT_REACHED' ? '邀请人今日奖励已达上限' : ''}`,
       rewardGranted: result.rewardGranted,
     };
   }
 
   /**
-   * 获取用户的邀请列表
+   * 获取用户的邀请统计和历史
    */
   async getMyInvitations(userId: string) {
+    // 确保用户有固定邀请码
+    const { code } = await this.getOrCreateMyCode(userId);
+
     const invitations = await this.prisma.invitation.findMany({
       where: { inviterId: userId },
       orderBy: { createdAt: 'desc' },
@@ -165,18 +175,18 @@ export class InvitationsService {
     });
 
     return {
+      myCode: code,
+      shareUrl: `/invite/${code}`,
       invitations: invitations.map((inv) => ({
         id: inv.id,
         code: inv.code,
         status: inv.status,
         inviteeId: inv.inviteeId,
-        expiresAt: inv.expiresAt.toISOString(),
         acceptedAt: inv.acceptedAt?.toISOString() ?? null,
         rewardGranted: inv.rewardGranted,
         createdAt: inv.createdAt.toISOString(),
       })),
       stats: {
-        totalSent: invitations.length,
         totalAccepted: invitations.filter((i) => i.status === 'ACCEPTED').length,
         todayRewardsGranted,
         maxDailyRewards: MAX_DAILY_INVITE_REWARDS,
@@ -191,21 +201,19 @@ export class InvitationsService {
   async validateCode(code: string): Promise<{
     valid: boolean;
     inviterNickname: string | null;
-    expiresAt: string | null;
   }> {
-    const invitation = await this.prisma.invitation.findUnique({
-      where: { code },
-      include: { inviter: { select: { nickname: true } } },
+    const inviter = await this.prisma.user.findUnique({
+      where: { inviteCode: code },
+      select: { nickname: true },
     });
 
-    if (!invitation || invitation.status !== 'PENDING' || new Date() > invitation.expiresAt) {
-      return { valid: false, inviterNickname: null, expiresAt: null };
+    if (!inviter) {
+      return { valid: false, inviterNickname: null };
     }
 
     return {
       valid: true,
-      inviterNickname: invitation.inviter.nickname,
-      expiresAt: invitation.expiresAt.toISOString(),
+      inviterNickname: inviter.nickname,
     };
   }
 

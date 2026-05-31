@@ -369,6 +369,8 @@ model User {
   /// 从哪个游客升级而来
   guestId       String?   @unique
   guest         Guest?    @relation(fields: [guestId], references: [id])
+  /// 用户固定邀请码（全局唯一，首次自动生成，不可更改）
+  inviteCode    String?   @unique
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
 
@@ -442,21 +444,19 @@ model UserPrediction {
   @@index([guestId, submittedAt])
 }
 
-/// 邀请记录
+/// 邀请记录（固定码多次使用模式：每次被邀请人使用固定码，创建一条新记录）
 model Invitation {
   id            String           @id @default(cuid())
   /// 邀请人
   inviterId     String
   inviter       User             @relation("Inviter", fields: [inviterId], references: [id])
-  /// 邀请码（唯一，用于分享链接）
-  code          String           @unique
-  /// 被邀请人（接受邀请后填充）
+  /// 邀请人的固定邀请码快照（冗余存储，便于查询）
+  code          String
+  /// 被邀请人（每条记录对应一个被邀请人，不再唯一约束）
   inviteeId     String?          @unique
   invitee       User?            @relation("Invitee", fields: [inviteeId], references: [id])
   /// 邀请状态
   status        InvitationStatus @default(PENDING)
-  /// 邀请过期时间
-  expiresAt     DateTime
   /// 接受时间
   acceptedAt    DateTime?
   /// 邀请奖励是否已发放
@@ -466,7 +466,7 @@ model Invitation {
 
   @@index([inviterId, status])
   @@index([code])
-  @@index([expiresAt, status])
+  @@index([inviteeId])
 }
 
 /// 权益记录（每条记录代表一次可用的付费/免费权益）

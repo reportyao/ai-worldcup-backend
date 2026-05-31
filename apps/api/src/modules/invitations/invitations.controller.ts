@@ -21,18 +21,19 @@ export class InvitationsController {
   ) {}
 
   /**
-   * POST /invitations/generate
-   * 生成邀请码（需要登录）
+   * GET /invitations/my-code
+   * 获取或自动创建用户的固定邀请码（需要登录）
    */
-  @Post('generate')
-  async generate(@Req() req: Request) {
+  @Get('my-code')
+  async myCode(@Req() req: Request) {
     const userId = await this.requireUserId(req);
-    return this.invitationsService.generateInviteCode(userId);
+    return this.invitationsService.getOrCreateMyCode(userId);
   }
 
   /**
    * POST /invitations/accept
-   * 接受邀请码（需要登录）
+   * 接受邀请码（被邀请人调用，需要登录）
+   * 固定码逻辑：通过邀请码找到邀请人，创建新的邀请记录
    */
   @Post('accept')
   async accept(@Req() req: Request, @Body() body: { code: string }) {
@@ -45,7 +46,7 @@ export class InvitationsController {
 
   /**
    * GET /invitations/mine
-   * 获取我的邀请列表（需要登录）
+   * 获取我的邀请统计和历史（需要登录）
    */
   @Get('mine')
   async mine(@Req() req: Request) {
