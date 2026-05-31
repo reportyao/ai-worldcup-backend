@@ -46,6 +46,36 @@ async function registerPredictionScheduler(): Promise<void> {
   logger.info({ queue: QueueName.PredictionGenerator }, 'prediction scheduler registered');
 }
 
+async function registerDataSyncSchedulers(): Promise<void> {
+  const queue = new Queue(QueueName.DataSync, { connection: createConnection() });
+  queues.push(queue);
+  await queue.add(
+    'sync-football-fixtures',
+    { scope: 'FIXTURES', enqueuePredictions: true },
+    {
+      repeat: { pattern: process.env.DATA_REFRESH_CRON_FIXTURES ?? '0 */6 * * *' },
+      jobId: 'data-sync-fixtures-repeat',
+      attempts: 2,
+      backoff: { type: 'exponential', delay: 60_000 },
+      removeOnComplete: 50,
+      removeOnFail: 100,
+    },
+  );
+  await queue.add(
+    'sync-football-live-scores',
+    { scope: 'LIVE_SCORES', enqueuePredictions: false },
+    {
+      repeat: { pattern: process.env.DATA_REFRESH_CRON_LIVE ?? '*/2 * * * *' },
+      jobId: 'data-sync-live-repeat',
+      attempts: 2,
+      backoff: { type: 'exponential', delay: 30_000 },
+      removeOnComplete: 50,
+      removeOnFail: 100,
+    },
+  );
+  logger.info({ queue: QueueName.DataSync }, 'data-sync schedulers registered');
+}
+
 function registerWorker(
   name: QueueName,
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -72,6 +102,7 @@ async function main(): Promise<void> {
   logger.info({ redisUrl }, 'starting AI Worldcup worker');
 
   await registerPredictionScheduler();
+  await registerDataSyncSchedulers();
   registerWorker(QueueName.PredictionGenerator, processPredictionGenerator);
   registerWorker(QueueName.DataSync, processDataSync);
   registerWorker(QueueName.PostMatchReview, processReviewGenerator);

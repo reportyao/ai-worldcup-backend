@@ -22,6 +22,8 @@ import {
   AdminCompetitionCreateSchema,
   AdminCompetitionListQuerySchema,
   AdminCompetitionUpdateSchema,
+  AdminFootballDataSyncLogQuerySchema,
+  AdminFootballDataSyncSchema,
   AdminMatchCreateSchema,
   AdminMatchImportSchema,
   AdminMatchListQuerySchema,
@@ -42,6 +44,8 @@ import {
   type AdminCompetitionCreateDto,
   type AdminCompetitionListQuery,
   type AdminCompetitionUpdateDto,
+  type AdminFootballDataSyncDto,
+  type AdminFootballDataSyncLogQuery,
   type AdminMatchCreateDto,
   type AdminMatchImportDto,
   type AdminMatchListQuery,
@@ -142,6 +146,26 @@ export class AdminController {
     @Body(new ZodValidationPipe(AdminMatchImportSchema)) dto: AdminMatchImportDto,
   ) {
     return this.adminService.importMatches(dto, this.adminService.getRequestMeta(req));
+  }
+
+  @Get('football-data/provider/leagues')
+  listFootballDataProviderLeagues() {
+    return this.adminService.listFootballDataProviderLeagues();
+  }
+
+  @Get('football-data/sync-logs')
+  listFootballDataSyncLogs(
+    @Query(new ZodValidationPipe(AdminFootballDataSyncLogQuerySchema)) query: AdminFootballDataSyncLogQuery,
+  ) {
+    return this.adminService.listFootballDataSyncLogs(query);
+  }
+
+  @Post('football-data/sync')
+  triggerFootballDataSync(
+    @Req() req: Request,
+    @Body(new ZodValidationPipe(AdminFootballDataSyncSchema)) dto: AdminFootballDataSyncDto,
+  ) {
+    return this.adminService.triggerFootballDataSync(dto, this.adminService.getRequestMeta(req));
   }
 
 

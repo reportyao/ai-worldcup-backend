@@ -7,7 +7,8 @@
 ## 主要功能
 
 *   **用户与认证**：支持游客模式、微信登录，管理用户身份和会话。
-*   **赛事与比赛管理**：提供赛事、球队、比赛数据的 CRUD 操作，支持赛程导入和赛果更新。
+*   **赛事与比赛管理**：提供赛事、球队、比赛数据的 CRUD 操作，支持赛程导入、API-Football 多联赛同步和赛果更新。
+*   **足球数据同步**：支持通过 API-Football 同步联赛元数据、球队、未来赛程和实时比分，并记录每次同步的参数、状态和摘要。
 *   **AI 预测生产线**：
     *   集成多种 AI 模型（如通过 NEXUS AI 中转站接入的 Gemini、Claude 等）。
     *   支持 24 小时前（自动触发）和 2 小时前（管理员选择触发）两阶段预测。
@@ -68,16 +69,39 @@
     ```bash
     npx prisma migrate dev --name init
     ```
-6.  **启动开发服务器**：
+6.  **配置 API-Football（可选）**：
+    若需要启用自动足球数据同步，请在 `.env` 中补充 API-Football 访问参数和默认联赛列表。`API_FOOTBALL_DEFAULT_LEAGUES` 使用逗号分隔的联赛 ID，Worker 会基于这些联赛执行定时赛程与实时比分同步。
+    ```env
+    API_FOOTBALL_BASE_URL="https://v3.football.api-sports.io"
+    API_FOOTBALL_KEY="your-api-football-key"
+    API_FOOTBALL_DEFAULT_LEAGUES="39,140,135,78,61"
+    FOOTBALL_DATA_FIXTURE_SYNC_CRON="0 */6 * * *"
+    FOOTBALL_DATA_LIVE_SYNC_CRON="*/10 * * * *"
+    FOOTBALL_DATA_SYNC_SEASON="2026"
+    ```
+7.  **启动开发服务器**：
     ```bash
     npm run start:dev
     ```
     API 服务将在 `http://localhost:3000` 启动。
-7.  **启动 Worker 进程**：
+8.  **启动 Worker 进程**：
     ```bash
     npm run start:worker
     ```
-    Worker 进程负责处理预测任务队列。
+    Worker 进程负责处理预测任务队列、API-Football 定时同步和同步后预测入队。
+
+## API-Football 数据同步
+
+后台管理接口新增 `/admin/football-data/provider/leagues`、`/admin/football-data/sync-logs` 与 `/admin/football-data/sync` 三类能力。管理员可以先读取后端配置中的默认联赛，再按 `LEAGUES`、`TEAMS`、`FIXTURES` 或 `LIVE_SCORES` 范围触发同步。同步任务会写入 `FootballDataSyncLog`，其中保存提供方、同步范围、请求参数、运行状态、错误消息和写入摘要，便于审计与故障排查。
+
+| 同步范围 | 主要作用 | 是否建议开启预测入队 |
+| --- | --- | --- |
+| `LEAGUES` | 根据 API-Football 联赛与赛季信息维护本地赛事。 | 否 |
+| `TEAMS` | 同步所选联赛的球队基础资料与外部 ID。 | 否 |
+| `FIXTURES` | 同步日期范围内的未来赛程、比赛状态和比分。 | 是 |
+| `LIVE_SCORES` | 高频刷新正在进行比赛的状态和比分。 | 否 |
+
+Worker 启动时会注册两类重复任务：未来赛程同步任务使用 `FOOTBALL_DATA_FIXTURE_SYNC_CRON`，实时比分同步任务使用 `FOOTBALL_DATA_LIVE_SYNC_CRON`。若 `API_FOOTBALL_KEY` 或默认联赛列表未配置，相关任务会安全跳过，不影响预测队列和其他业务队列运行。
 
 ## 贡献
 

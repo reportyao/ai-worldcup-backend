@@ -31,6 +31,12 @@ const EnvSchema = z.object({
   AI_ANTHROPIC_API_KEY: z.string().min(1).optional(),
   AI_ANTHROPIC_BASE_URL: z.string().url().optional(),
   AI_ALLOW_MOCK: z.coerce.boolean().default(false),
+
+  API_FOOTBALL_KEY: z.string().min(1).optional(),
+  API_FOOTBALL_BASE_URL: z.string().url().default('https://apiv3.apifootball.com/'),
+  API_FOOTBALL_LEAGUE_IDS: z.string().min(1).optional(),
+  DATA_REFRESH_CRON_FIXTURES: z.string().default('0 */6 * * *'),
+  DATA_REFRESH_CRON_LIVE: z.string().default('*/2 * * * *'),
   PREDICTION_SCHEDULER_WINDOW_MINUTES: z.coerce.number().int().min(1).max(120).default(10),
 
   // T6: Share & i18n

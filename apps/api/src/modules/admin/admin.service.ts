@@ -22,6 +22,7 @@ import { read, utils } from 'xlsx';
 import { PrismaService } from '../../prisma/prisma.service.js';
 import { PredictionPipelineService } from '../prediction-pipeline/prediction-pipeline.service.js';
 import { ConsensusService } from '../consensus/consensus.service.js';
+import { FootballDataSyncService } from '../football-data/football-data-sync.service.js';
 
 import type {
   AdminAiModelCreateDto,
@@ -32,6 +33,8 @@ import type {
   AdminCompetitionCreateDto,
   AdminCompetitionListQuery,
   AdminCompetitionUpdateDto,
+  AdminFootballDataSyncDto,
+  AdminFootballDataSyncLogQuery,
   AdminMatchCreateDto,
   AdminMatchImportDto,
   AdminMatchListQuery,
@@ -71,6 +74,7 @@ export class AdminService {
     private readonly prisma: PrismaService,
     private readonly predictionPipeline: PredictionPipelineService,
     private readonly consensusService: ConsensusService,
+    private readonly footballDataSync: FootballDataSyncService,
   ) {}
 
   getRequestMeta(req: Request): RequestMeta {
@@ -416,6 +420,35 @@ export class AdminService {
       summary,
     );
     return summary;
+  }
+
+  listFootballDataProviderLeagues() {
+    return this.footballDataSync.listProviderLeagues();
+  }
+
+  listFootballDataSyncLogs(query: AdminFootballDataSyncLogQuery) {
+    return this.footballDataSync.listSyncLogs(query);
+  }
+
+  async triggerFootballDataSync(dto: AdminFootballDataSyncDto, meta: RequestMeta) {
+    const result = await this.footballDataSync.sync({
+      scope: dto.scope,
+      leagueIds: dto.leagueIds,
+      season: dto.season ?? undefined,
+      from: dto.from,
+      to: dto.to,
+      dryRun: dto.dryRun,
+      enqueuePredictions: dto.enqueuePredictions,
+    });
+    await this.writeAudit(
+      meta,
+      dto.dryRun ? 'FOOTBALL_DATA_SYNC_DRY_RUN' : 'FOOTBALL_DATA_SYNC',
+      'FootballDataSyncLog',
+      result.log.id,
+      null,
+      result,
+    );
+    return result;
   }
 
 

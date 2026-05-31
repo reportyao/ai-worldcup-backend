@@ -217,6 +217,24 @@ model Match {
   @@index([matchday])
 }
 
+/// 第三方足球数据同步运行日志（API-Football 等）
+model FootballDataSyncLog {
+  id           String   @id @default(cuid())
+  provider     String   @default("api-football")
+  scope        String
+  status       String   @default("RUNNING")
+  params       Json?
+  summary      Json?
+  errorMessage String?
+  startedAt    DateTime @default(now())
+  finishedAt   DateTime?
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  @@index([provider, scope, startedAt])
+  @@index([status, startedAt])
+}
+
 // ─────────────────────────────────────────────────────────────────────────────
 // T1-02: AiModel / PredictionTask / ModelPrediction
 // ─────────────────────────────────────────────────────────────────────────────

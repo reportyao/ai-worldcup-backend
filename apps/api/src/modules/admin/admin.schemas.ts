@@ -129,6 +129,23 @@ export const AdminMatchImportSchema = z.object({
 });
 export type AdminMatchImportDto = z.infer<typeof AdminMatchImportSchema>;
 
+export const AdminFootballDataSyncSchema = z.object({
+  scope: z.enum(['LEAGUES', 'TEAMS', 'FIXTURES', 'LIVE_SCORES', 'STANDINGS']).default('FIXTURES'),
+  leagueIds: z.array(z.coerce.number().int().positive()).optional(),
+  season: optionalTrimmedString,
+  from: z.string().regex(/^\d{4}-\d{2}-\d{2}$/).optional(),
+  to: z.string().regex(/^\d{4}-\d{2}-\d{2}$/).optional(),
+  dryRun: z.coerce.boolean().default(false),
+  enqueuePredictions: z.coerce.boolean().default(false),
+});
+export type AdminFootballDataSyncDto = z.infer<typeof AdminFootballDataSyncSchema>;
+
+export const AdminFootballDataSyncLogQuerySchema = PaginationQuerySchema.extend({
+  scope: z.enum(['LEAGUES', 'TEAMS', 'FIXTURES', 'LIVE_SCORES', 'STANDINGS']).optional(),
+  status: z.enum(['RUNNING', 'SUCCEEDED', 'PARTIAL_SUCCESS', 'FAILED']).optional(),
+});
+export type AdminFootballDataSyncLogQuery = z.infer<typeof AdminFootballDataSyncLogQuerySchema>;
+
 export const AdminAuditLogListQuerySchema = PaginationQuerySchema.extend({
   action: z.string().trim().optional(),
   targetType: z.string().trim().optional(),
