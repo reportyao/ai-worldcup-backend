@@ -375,7 +375,8 @@ async function callOpenAI(
     {
       model: model.modelId,
       temperature: getNumberConfig(model.config, 'temperature', 0.35),
-      max_tokens: getNumberConfig(model.config, 'maxTokens', 1800),
+      max_tokens: getNumberConfig(model.config, 'maxTokens', 4096),
+      stream: false,
       response_format: { type: 'json_object' },
       messages: [
         { role: 'system', content: prompt.systemPrompt },
