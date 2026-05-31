@@ -74,7 +74,7 @@ function getRuntimeConfig() {
     googleBaseUrl: process.env.AI_GOOGLE_BASE_URL,
     anthropicApiKey: process.env.AI_ANTHROPIC_API_KEY,
     anthropicBaseUrl: process.env.AI_ANTHROPIC_BASE_URL,
-    allowMock: process.env.AI_ALLOW_MOCK === 'true' || process.env.NODE_ENV !== 'production',
+    allowMock: process.env.AI_ALLOW_MOCK === 'true',
   };
 }
 
