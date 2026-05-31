@@ -456,9 +456,13 @@ export async function generateStructuredPrediction(
   let rawOutput: string;
   let usage: ProviderUsage = {};
 
+  // If model config has a baseUrl (e.g. ainb.plus proxy), always use OpenAI-compatible path
+  const hasProxyBaseUrl = !!getStringConfig(model.config, 'baseUrl');
+
   if (provider === 'mock' || runtime.allowMock === true) {
     rawOutput = buildMockPrediction(model, match);
-  } else if (provider === 'openai') {
+  } else if (provider === 'openai' || hasProxyBaseUrl) {
+    // All models with a custom baseUrl (proxy/gateway) use OpenAI-compatible chat/completions
     ({ rawOutput, usage } = await callOpenAI(model, prompt, runtime));
   } else if (provider === 'google') {
     ({ rawOutput, usage } = await callGoogle(model, prompt, runtime));
