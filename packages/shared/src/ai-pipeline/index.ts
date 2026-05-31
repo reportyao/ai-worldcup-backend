@@ -246,18 +246,27 @@ export function buildPredictionPrompt(
 }
 
 function extractJsonObject(rawOutput: string): unknown {
+  // Strip all markdown code fences (including mid-text ones)
   const stripped = rawOutput
     .trim()
-    .replace(/^```(?:json)?/i, '')
-    .replace(/```$/i, '')
+    .replace(/```(?:json)?\s*/gi, '')
+    .replace(/```/g, '')
     .trim();
   try {
     return JSON.parse(stripped);
   } catch {
+    // Fallback: find the outermost { ... } block
     const start = stripped.indexOf('{');
     const end = stripped.lastIndexOf('}');
     if (start >= 0 && end > start) {
-      return JSON.parse(stripped.slice(start, end + 1));
+      try {
+        return JSON.parse(stripped.slice(start, end + 1));
+      } catch {
+        // Try to fix common issues: trailing commas
+        const cleaned = stripped.slice(start, end + 1)
+          .replace(/,\s*([}\]])/g, '$1');
+        return JSON.parse(cleaned);
+      }
     }
     throw new Error('AI output is not valid JSON');
   }
