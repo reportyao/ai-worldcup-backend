@@ -1,7 +1,7 @@
 import { PredictionVersion } from '@prisma/client';
 import { describe, expect, it } from 'vitest';
 
-import { PredictionGeneratorPayloadSchema } from './prediction-generator.job.js';
+import { PREDICTION_SCHEDULES, PredictionGeneratorPayloadSchema } from './prediction-generator.job.js';
 
 describe('PredictionGeneratorPayloadSchema', () => {
   it('parses a valid direct payload with default trigger and rerun flag', () => {
@@ -26,5 +26,18 @@ describe('PredictionGeneratorPayloadSchema', () => {
         version: 'BOGUS',
       }),
     ).toThrow();
+  });
+});
+
+describe('PREDICTION_SCHEDULES', () => {
+  it('automatically schedules both 24h and 2h prediction windows', () => {
+    expect(PREDICTION_SCHEDULES.map((schedule) => schedule.version)).toEqual([
+      PredictionVersion.T_MINUS_24H,
+      PredictionVersion.T_MINUS_2H,
+    ]);
+    expect(PREDICTION_SCHEDULES.map((schedule) => schedule.targetMs)).toEqual([
+      24 * 60 * 60 * 1000,
+      2 * 60 * 60 * 1000,
+    ]);
   });
 });

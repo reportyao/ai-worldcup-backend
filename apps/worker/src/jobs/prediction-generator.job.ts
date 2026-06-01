@@ -63,6 +63,11 @@ type PredictionTaskResult =
   | { ok: true; mode: 'SCHEDULE_DUE'; enqueued: number }
   | { ok: true; mode: 'GENERATE'; taskId: string; successCount: number; failureCount: number };
 
+export const PREDICTION_SCHEDULES = [
+  { version: PredictionVersion.T_MINUS_24H, targetMs: 24 * 60 * 60 * 1000 },
+  { version: PredictionVersion.T_MINUS_2H, targetMs: 2 * 60 * 60 * 1000 },
+] as const;
+
 function getRuntimeConfig() {
   return {
     timeoutMs: Number(process.env.AI_GATEWAY_TIMEOUT_MS ?? 30_000),
@@ -138,9 +143,7 @@ function getSchedulerQueue(): Queue {
 
 async function scheduleDuePredictions(windowMinutes: number): Promise<PredictionTaskResult> {
   const now = new Date();
-  const windows = [
-    { version: PredictionVersion.T_MINUS_24H, targetMs: 24 * 60 * 60 * 1000 },
-  ];
+  const windows = PREDICTION_SCHEDULES;
   let enqueued = 0;
   const queue = getSchedulerQueue();
 
