@@ -248,6 +248,8 @@ export function buildPredictionPrompt(
           handicapTrend: '让球/节奏倾向，不能构成投注建议',
           handicapWinLossDraw: 'HOME_WIN',
           overUnderTrend: '大小球倾向，说明节奏和总进球区间，但不构成投注建议',
+          overUnderResult: 'OVER',
+          halfFullTime: 'HOME_HOME',
           likelyScores: [{ home: 2, away: 1, weight: 0.28 }],
           goalsRange: { min: 1, max: 4, expectation: 2.6 },
           cornersRange: { min: 7, max: 12 },
@@ -366,6 +368,8 @@ function buildMockPrediction(model: AiGatewayModelConfig, match: AiGatewayMatchC
       handicapTrend: '节奏倾向主队主动推进，但不构成投注建议。',
       handicapWinLossDraw: personaBias,
       overUnderTrend: '总进球倾向 2-3 球区间，需防守门员状态和早段进球改变节奏。',
+      overUnderResult: 'OVER',
+      halfFullTime: personaBias === 'HOME_WIN' ? 'HOME_HOME' : 'DRAW_AWAY',
       likelyScores: [
         { home: personaBias === 'HOME_WIN' ? 2 : 1, away: personaBias === 'AWAY_WIN' ? 2 : 1, weight: 0.32 },
         { home: 1, away: 1, weight: 0.24 },

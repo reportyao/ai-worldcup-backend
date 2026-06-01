@@ -86,6 +86,12 @@ export const StructuredPredictionSchema = z.object({
     handicapTrend: z.string().optional(),
     handicapWinLossDraw: z.enum(['HOME_WIN', 'DRAW', 'AWAY_WIN']).optional(),
     overUnderTrend: z.string().optional(),
+    overUnderResult: z.enum(['OVER', 'UNDER', 'EQUAL']).optional(),
+    halfFullTime: z.enum([
+      'HOME_HOME', 'HOME_DRAW', 'HOME_AWAY',
+      'DRAW_HOME', 'DRAW_DRAW', 'DRAW_AWAY',
+      'AWAY_HOME', 'AWAY_DRAW', 'AWAY_AWAY',
+    ]).optional(),
     likelyScores: z
       .array(
         z.object({
@@ -186,6 +192,8 @@ export type Team = z.infer<typeof TeamSchema>;
 export const MatchSummarySchema = z.object({
   id: z.string(),
   competitionId: z.string(),
+  competitionName: z.string().optional(),
+  competitionPriority: z.string().optional(),
   homeTeam: TeamSchema,
   awayTeam: TeamSchema,
   kickoffAt: z.string(),
@@ -194,6 +202,11 @@ export const MatchSummarySchema = z.object({
   stage: z.string().nullable(),
   homeScore: z.number().int().nullable(),
   awayScore: z.number().int().nullable(),
+  homeHalfScore: z.number().int().nullable().optional(),
+  awayHalfScore: z.number().int().nullable().optional(),
+  consensusLevel: z.nativeEnum(ConsensusLevel).nullable().optional(),
+  modelCount: z.number().int().optional(),
+  tag: z.string().nullable().optional(),
 });
 export type MatchSummaryType = z.infer<typeof MatchSummarySchema>;
 

@@ -11,6 +11,9 @@ import { logger } from '../logger.js';
  * 复盘结构包含：赛果摘要、模型原预测、命中项、错误项、关键偏差原因、
  * 是否低估/高估某一方、可改进提示。
  *
+ * 5维度命中判定：胜负平、让球胜负平、大小球、比分、半全场
+ * 任一命中即为"红单"。
+ *
  * 幂等键: review:{matchId}:{modelId}
  */
 
@@ -23,6 +26,9 @@ export type ReviewGeneratorPayload = z.infer<typeof ReviewGeneratorPayloadSchema
 
 interface PredictionConclusion {
   winLossDraw?: 'HOME_WIN' | 'DRAW' | 'AWAY_WIN';
+  handicapWinLossDraw?: 'HOME_WIN' | 'DRAW' | 'AWAY_WIN';
+  overUnderResult?: 'OVER' | 'UNDER' | 'EQUAL';
+  halfFullTime?: string;
   likelyScores?: Array<{ home: number; away: number }>;
   goalsRange?: { min: number; max: number };
   winProbability?: { home: number; draw: number; away: number };
@@ -44,6 +50,9 @@ interface ReviewStructuredOutput {
     predictedResult: string;
     predictedScores: string[];
     goalsRange: string;
+    handicapResult: string;
+    overUnderResult: string;
+    halfFullTime: string;
   };
   hits: string[];
   misses: string[];
@@ -53,15 +62,71 @@ interface ReviewStructuredOutput {
   grade: 'A' | 'B' | 'C' | 'D' | 'F';
 }
 
-interface AccuracyJson {
+export interface AccuracyJson {
   winDrawLossCorrect: boolean;
+  handicapCorrect: boolean;
+  overUnderCorrect: boolean;
   scoreExact: boolean;
+  halfFullCorrect: boolean;
   goalRangeHit: boolean;
+  anyHit: boolean;
   actualResult: 'HOME_WIN' | 'DRAW' | 'AWAY_WIN';
   predictedResult: string | null;
+  predictedHandicap: string | null;
+  predictedOverUnder: string | null;
+  predictedHalfFull: string | null;
 }
 
 const prisma = new PrismaClient();
+
+/**
+ * 根据让球盘口计算让球后的胜负平结果
+ */
+function computeHandicapResult(
+  homeScore: number,
+  awayScore: number,
+  handicapLine: number | null,
+): 'HOME_WIN' | 'DRAW' | 'AWAY_WIN' | null {
+  if (handicapLine == null) return null;
+  const adjustedHome = homeScore + handicapLine;
+  if (adjustedHome > awayScore) return 'HOME_WIN';
+  if (adjustedHome < awayScore) return 'AWAY_WIN';
+  return 'DRAW';
+}
+
+/**
+ * 根据大小球盘口计算大小球结果
+ */
+function computeOverUnderResult(
+  homeScore: number,
+  awayScore: number,
+  overUnderLine: number | null,
+): 'OVER' | 'UNDER' | 'EQUAL' | null {
+  if (overUnderLine == null) return null;
+  const totalGoals = homeScore + awayScore;
+  if (totalGoals > overUnderLine) return 'OVER';
+  if (totalGoals < overUnderLine) return 'UNDER';
+  return 'EQUAL';
+}
+
+/**
+ * 根据半场和全场比分计算半全场结果
+ */
+function computeHalfFullTime(
+  homeHalfScore: number | null,
+  awayHalfScore: number | null,
+  homeScore: number,
+  awayScore: number,
+): string | null {
+  if (homeHalfScore == null || awayHalfScore == null) return null;
+
+  const halfResult = homeHalfScore > awayHalfScore ? 'HOME' :
+    homeHalfScore < awayHalfScore ? 'AWAY' : 'DRAW';
+  const fullResult = homeScore > awayScore ? 'HOME' :
+    homeScore < awayScore ? 'AWAY' : 'DRAW';
+
+  return `${halfResult}_${fullResult}`;
+}
 
 export async function processReviewGenerator(job: Job<unknown>): Promise<{ ok: true; reviewCount: number }> {
   const payload = ReviewGeneratorPayloadSchema.parse(job.data);
@@ -93,6 +158,22 @@ export async function processReviewGenerator(job: Job<unknown>): Promise<{ ok: t
   } else {
     actualResult = 'DRAW';
   }
+
+  // 计算实际让球结果
+  const actualHandicapResult = computeHandicapResult(
+    match.homeScore, match.awayScore, match.handicapLine ?? null,
+  );
+
+  // 计算实际大小球结果
+  const actualOverUnderResult = computeOverUnderResult(
+    match.homeScore, match.awayScore, match.overUnderLine ?? null,
+  );
+
+  // 计算实际半全场结果
+  const actualHalfFullTime = computeHalfFullTime(
+    match.homeHalfScore ?? null, match.awayHalfScore ?? null,
+    match.homeScore, match.awayScore,
+  );
 
   // 获取所有成功的模型预测
   const predictions = await prisma.modelPrediction.findMany({
@@ -156,21 +237,47 @@ export async function processReviewGenerator(job: Job<unknown>): Promise<{ ok: t
         actualHomeScore: match.homeScore,
         actualAwayScore: match.awayScore,
         actualResult,
+        actualHandicapResult,
+        actualOverUnderResult,
+        actualHalfFullTime,
         prediction: output,
       });
 
-      // 计算准确性
+      // 计算5维度准确性
+      const winDrawLossCorrect = conclusion?.winLossDraw === actualResult;
+      const handicapCorrect = actualHandicapResult != null && conclusion?.handicapWinLossDraw != null
+        ? conclusion.handicapWinLossDraw === actualHandicapResult
+        : false;
+      const overUnderCorrect = actualOverUnderResult != null && conclusion?.overUnderResult != null
+        ? conclusion.overUnderResult === actualOverUnderResult
+        : false;
+      const scoreExact = conclusion?.likelyScores?.some(
+        (s) => s.home === match.homeScore && s.away === match.awayScore,
+      ) ?? false;
+      const halfFullCorrect = actualHalfFullTime != null && conclusion?.halfFullTime != null
+        ? conclusion.halfFullTime === actualHalfFullTime
+        : false;
+      const goalRangeHit = conclusion?.goalsRange
+        ? (match.homeScore! + match.awayScore!) >= conclusion.goalsRange.min &&
+          (match.homeScore! + match.awayScore!) <= conclusion.goalsRange.max
+        : false;
+
+      // 任一命中即为红单
+      const anyHit = winDrawLossCorrect || handicapCorrect || overUnderCorrect || scoreExact || halfFullCorrect;
+
       const accuracyJson: AccuracyJson = {
-        winDrawLossCorrect: conclusion?.winLossDraw === actualResult,
-        scoreExact: conclusion?.likelyScores?.some(
-          (s) => s.home === match.homeScore && s.away === match.awayScore,
-        ) ?? false,
-        goalRangeHit: conclusion?.goalsRange
-          ? (match.homeScore + match.awayScore) >= conclusion.goalsRange.min &&
-            (match.homeScore + match.awayScore) <= conclusion.goalsRange.max
-          : false,
+        winDrawLossCorrect,
+        handicapCorrect,
+        overUnderCorrect,
+        scoreExact,
+        halfFullCorrect,
+        goalRangeHit,
+        anyHit,
         actualResult,
         predictedResult: conclusion?.winLossDraw ?? null,
+        predictedHandicap: conclusion?.handicapWinLossDraw ?? null,
+        predictedOverUnder: conclusion?.overUnderResult ?? null,
+        predictedHalfFull: conclusion?.halfFullTime ?? null,
       };
 
       // 更新为 PUBLISHED
@@ -185,7 +292,7 @@ export async function processReviewGenerator(job: Job<unknown>): Promise<{ ok: t
       });
 
       reviewCount++;
-      logger.info({ matchId, aiModelId, grade: reviewOutput.grade }, 'review-generator: review published');
+      logger.info({ matchId, aiModelId, grade: reviewOutput.grade, anyHit }, 'review-generator: review published');
     } catch (error) {
       const errorMsg = error instanceof Error ? error.message : String(error);
       logger.error({ matchId, aiModelId, error: errorMsg }, 'review-generator: failed to generate review');
@@ -216,7 +323,6 @@ export async function processReviewGenerator(job: Job<unknown>): Promise<{ ok: t
 
 /**
  * 根据预测和赛果生成结构化复盘。
- * 本阶段使用规则引擎生成，后续可接入 LLM 生成更丰富的复盘。
  */
 function generateReview(params: {
   homeTeamName: string;
@@ -224,9 +330,16 @@ function generateReview(params: {
   actualHomeScore: number;
   actualAwayScore: number;
   actualResult: 'HOME_WIN' | 'DRAW' | 'AWAY_WIN';
+  actualHandicapResult: 'HOME_WIN' | 'DRAW' | 'AWAY_WIN' | null;
+  actualOverUnderResult: 'OVER' | 'UNDER' | 'EQUAL' | null;
+  actualHalfFullTime: string | null;
   prediction: StructuredPredictionOutput;
 }): ReviewStructuredOutput {
-  const { homeTeamName, awayTeamName, actualHomeScore, actualAwayScore, actualResult, prediction } = params;
+  const {
+    homeTeamName, awayTeamName, actualHomeScore, actualAwayScore,
+    actualResult, actualHandicapResult, actualOverUnderResult, actualHalfFullTime,
+    prediction,
+  } = params;
   const conclusion = prediction?.conclusion;
 
   const resultLabel = (r: string) => {
@@ -234,6 +347,15 @@ function generateReview(params: {
       case 'HOME_WIN': return `${homeTeamName}胜`;
       case 'AWAY_WIN': return `${awayTeamName}胜`;
       case 'DRAW': return '平局';
+      default: return r;
+    }
+  };
+
+  const overUnderLabel = (r: string) => {
+    switch (r) {
+      case 'OVER': return '大球';
+      case 'UNDER': return '小球';
+      case 'EQUAL': return '走水';
       default: return r;
     }
   };
@@ -247,18 +369,41 @@ function generateReview(params: {
   const goalsRange = conclusion?.goalsRange
     ? `${conclusion.goalsRange.min}-${conclusion.goalsRange.max}球`
     : '未预测';
+  const handicapResult = conclusion?.handicapWinLossDraw ?? '未预测';
+  const overUnderResult = conclusion?.overUnderResult ?? '未预测';
+  const halfFullTime = conclusion?.halfFullTime ?? '未预测';
 
   // 命中项
   const hits: string[] = [];
   const misses: string[] = [];
 
+  // 1. 胜平负
   const wdlCorrect = conclusion?.winLossDraw === actualResult;
   if (wdlCorrect) {
-    hits.push(`胜平负判断正确：预测${resultLabel(predictedResult)}，实际${resultLabel(actualResult)}`);
+    hits.push(`胜平负命中：预测${resultLabel(predictedResult)}，实际${resultLabel(actualResult)}`);
   } else {
-    misses.push(`胜平负判断错误：预测${resultLabel(predictedResult)}，实际${resultLabel(actualResult)}`);
+    misses.push(`胜平负错误：预测${resultLabel(predictedResult)}，实际${resultLabel(actualResult)}`);
   }
 
+  // 2. 让球胜负平
+  if (actualHandicapResult != null && conclusion?.handicapWinLossDraw) {
+    if (conclusion.handicapWinLossDraw === actualHandicapResult) {
+      hits.push(`让球命中：预测${resultLabel(conclusion.handicapWinLossDraw)}，实际${resultLabel(actualHandicapResult)}`);
+    } else {
+      misses.push(`让球错误：预测${resultLabel(conclusion.handicapWinLossDraw)}，实际${resultLabel(actualHandicapResult)}`);
+    }
+  }
+
+  // 3. 大小球
+  if (actualOverUnderResult != null && conclusion?.overUnderResult) {
+    if (conclusion.overUnderResult === actualOverUnderResult) {
+      hits.push(`大小球命中：预测${overUnderLabel(conclusion.overUnderResult)}，实际${overUnderLabel(actualOverUnderResult)}`);
+    } else {
+      misses.push(`大小球错误：预测${overUnderLabel(conclusion.overUnderResult)}，实际${overUnderLabel(actualOverUnderResult)}`);
+    }
+  }
+
+  // 4. 比分
   const scoreExact = conclusion?.likelyScores?.some(
     (s) => s.home === actualHomeScore && s.away === actualAwayScore,
   ) ?? false;
@@ -268,6 +413,16 @@ function generateReview(params: {
     misses.push(`比分未命中：预测${predictedScores.join('/')}，实际${actualScore}`);
   }
 
+  // 5. 半全场
+  if (actualHalfFullTime != null && conclusion?.halfFullTime) {
+    if (conclusion.halfFullTime === actualHalfFullTime) {
+      hits.push(`半全场命中：${conclusion.halfFullTime}`);
+    } else {
+      misses.push(`半全场错误：预测${conclusion.halfFullTime}，实际${actualHalfFullTime}`);
+    }
+  }
+
+  // 进球区间（辅助维度，不计入红单判定）
   const totalGoals = actualHomeScore + actualAwayScore;
   const goalRangeHit = conclusion?.goalsRange
     ? totalGoals >= conclusion.goalsRange.min && totalGoals <= conclusion.goalsRange.max
@@ -325,13 +480,13 @@ function generateReview(params: {
     improvementTips.push('本场预测全面偏差，建议复盘数据源质量');
   }
 
-  // 评分
+  // 评分：基于5维度命中数
+  const hitCount = hits.length;
   let grade: 'A' | 'B' | 'C' | 'D' | 'F';
-  const score = (wdlCorrect ? 3 : 0) + (scoreExact ? 3 : 0) + (goalRangeHit ? 1 : 0);
-  if (score >= 6) grade = 'A';
-  else if (score >= 4) grade = 'B';
-  else if (score >= 3) grade = 'C';
-  else if (score >= 1) grade = 'D';
+  if (hitCount >= 5) grade = 'A';
+  else if (hitCount >= 4) grade = 'B';
+  else if (hitCount >= 3) grade = 'C';
+  else if (hitCount >= 1) grade = 'D';
   else grade = 'F';
 
   return {
@@ -342,6 +497,9 @@ function generateReview(params: {
       predictedResult: resultLabel(predictedResult),
       predictedScores,
       goalsRange,
+      handicapResult: typeof handicapResult === 'string' ? handicapResult : resultLabel(handicapResult),
+      overUnderResult: typeof overUnderResult === 'string' ? overUnderResult : overUnderLabel(overUnderResult),
+      halfFullTime,
     },
     hits,
     misses,

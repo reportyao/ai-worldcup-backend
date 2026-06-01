@@ -210,6 +210,14 @@ model Match {
   homeScore     Int?
   /// 客队进球数（比赛结束后填充）
   awayScore     Int?
+  /// 主队半场进球数
+  homeHalfScore Int?
+  /// 客队半场进球数
+  awayHalfScore Int?
+  /// 让球盘口（如 -0.5, -1, +0.5）
+  handicapLine  Float?
+  /// 大小球盘口（如 2.5, 3.0）
+  overUnderLine Float?
   /// 外部数据源 ID
   externalId    String?     @unique
   createdAt     DateTime    @default(now())
@@ -695,8 +703,19 @@ model ModelScorecard {
   winDrawLossCorrect Int      @default(0)
   scoreExact         Int      @default(0)
   goalRangeHit       Int      @default(0)
+  /// 让球命中数
+  handicapCorrect    Int      @default(0)
+  /// 大小球命中数
+  overUnderCorrect   Int      @default(0)
+  /// 半全场命中数
+  halfFullCorrect    Int      @default(0)
+  /// 综合红单（5维度中任一命中即计红）
+  anyHit             Int      @default(0)
+  /// 综合红单率 = anyHit / totalMatches
+  hitRate            Float    @default(0)
+  /// 胜平负命中率（保留向后兼容）
   winRate            Float    @default(0)
-  /// 近10场结果序列，如 "WWLWDWWLWW"
+  /// 近10场结果序列，如 "RRMRRRRRMR" (R=红, M=黑)
   recentForm         String?
   lastMatchId        String?
   updatedAt          DateTime @updatedAt

@@ -58,6 +58,11 @@ export interface ScorecardStatsPayload {
   winDrawLossCorrect: number;
   scoreExact: number;
   goalRangeHit: number;
+  handicapCorrect: number;
+  overUnderCorrect: number;
+  halfFullCorrect: number;
+  anyHit: number;
+  hitRate: number;
   winRate: number;
   recentForm: string;
 }
@@ -69,6 +74,8 @@ export interface LeaderboardEntry {
   persona: string;
   totalMatches: number;
   winRate: number;
+  hitRate: number;
+  anyHit: number;
   recentForm: string;
 }
 
@@ -194,13 +201,13 @@ export class ReviewsService {
   }
 
   /**
-   * 获取所有模型的排行榜。
+   * 获取所有模型的排行榜（按综合红单率降序）。
    */
   async getLeaderboard(): Promise<LeaderboardEntry[]> {
     const scorecards = await this.prisma.modelScorecard.findMany({
       where: { scopeType: 'OVERALL' },
       include: { aiModel: true },
-      orderBy: { winRate: 'desc' },
+      orderBy: { hitRate: 'desc' },
     });
 
     return scorecards.map((sc, index) => ({
@@ -210,6 +217,8 @@ export class ReviewsService {
       persona: sc.aiModel.persona,
       totalMatches: sc.totalMatches,
       winRate: sc.winRate,
+      hitRate: sc.hitRate,
+      anyHit: sc.anyHit,
       recentForm: sc.recentForm ?? '',
     }));
   }
@@ -219,6 +228,11 @@ export class ReviewsService {
     winDrawLossCorrect: number;
     scoreExact: number;
     goalRangeHit: number;
+    handicapCorrect: number;
+    overUnderCorrect: number;
+    halfFullCorrect: number;
+    anyHit: number;
+    hitRate: number;
     winRate: number;
     recentForm: string | null;
   }): ScorecardStatsPayload {
@@ -227,6 +241,11 @@ export class ReviewsService {
       winDrawLossCorrect: scorecard.winDrawLossCorrect,
       scoreExact: scorecard.scoreExact,
       goalRangeHit: scorecard.goalRangeHit,
+      handicapCorrect: scorecard.handicapCorrect,
+      overUnderCorrect: scorecard.overUnderCorrect,
+      halfFullCorrect: scorecard.halfFullCorrect,
+      anyHit: scorecard.anyHit,
+      hitRate: scorecard.hitRate,
       winRate: scorecard.winRate,
       recentForm: scorecard.recentForm ?? '',
     };

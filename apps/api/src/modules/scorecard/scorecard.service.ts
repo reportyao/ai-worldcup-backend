@@ -23,12 +23,20 @@ export interface ScorecardStats {
   winDrawLossCorrect: number;
   scoreExact: number;
   goalRangeHit: number;
+  handicapCorrect: number;
+  overUnderCorrect: number;
+  halfFullCorrect: number;
+  anyHit: number;
+  hitRate: number;
   winRate: number;
   recentForm: string;
 }
 
 interface PredictionConclusion {
   winLossDraw?: 'HOME_WIN' | 'DRAW' | 'AWAY_WIN';
+  handicapWinLossDraw?: 'HOME_WIN' | 'DRAW' | 'AWAY_WIN';
+  overUnderResult?: 'OVER' | 'UNDER' | 'EQUAL';
+  halfFullTime?: string;
   likelyScores?: Array<{ home: number; away: number }>;
   goalsRange?: { min: number; max: number };
 }
@@ -55,6 +63,10 @@ export class ScorecardService {
         competitionId: true,
         homeScore: true,
         awayScore: true,
+        homeHalfScore: true,
+        awayHalfScore: true,
+        handicapLine: true,
+        overUnderLine: true,
         status: true,
       },
     });
@@ -84,11 +96,25 @@ export class ScorecardService {
 
     const results: ScorecardUpdateResult[] = [];
 
+    // 计算实际赛果维度
+    let actualResult: 'HOME_WIN' | 'DRAW' | 'AWAY_WIN';
+    if (match.homeScore > match.awayScore) actualResult = 'HOME_WIN';
+    else if (match.homeScore < match.awayScore) actualResult = 'AWAY_WIN';
+    else actualResult = 'DRAW';
+
+    const actualHandicap = this.computeHandicapResult(match.homeScore, match.awayScore, match.handicapLine);
+    const actualOU = this.computeOverUnderResult(match.homeScore, match.awayScore, match.overUnderLine);
+    const actualHF = this.computeHalfFullTime(match.homeHalfScore, match.awayHalfScore, match.homeScore, match.awayScore);
+
     for (const [aiModelId, prediction] of modelPredictions) {
       const accuracy = this.evaluateAccuracy(
         prediction.structuredOutput as unknown as StructuredPredictionOutput,
         match.homeScore,
         match.awayScore,
+        actualResult,
+        actualHandicap,
+        actualOU,
+        actualHF,
       );
 
       // 更新三个维度的战绩
@@ -151,40 +177,60 @@ export class ScorecardService {
     }));
   }
 
+  private computeHandicapResult(homeScore: number, awayScore: number, handicapLine: number | null): 'HOME_WIN' | 'DRAW' | 'AWAY_WIN' | null {
+    if (handicapLine == null) return null;
+    const adjusted = homeScore + handicapLine;
+    if (adjusted > awayScore) return 'HOME_WIN';
+    if (adjusted < awayScore) return 'AWAY_WIN';
+    return 'DRAW';
+  }
+
+  private computeOverUnderResult(homeScore: number, awayScore: number, line: number | null): 'OVER' | 'UNDER' | 'EQUAL' | null {
+    if (line == null) return null;
+    const total = homeScore + awayScore;
+    if (total > line) return 'OVER';
+    if (total < line) return 'UNDER';
+    return 'EQUAL';
+  }
+
+  private computeHalfFullTime(homeHalf: number | null, awayHalf: number | null, homeScore: number, awayScore: number): string | null {
+    if (homeHalf == null || awayHalf == null) return null;
+    const half = homeHalf > awayHalf ? 'HOME' : homeHalf < awayHalf ? 'AWAY' : 'DRAW';
+    const full = homeScore > awayScore ? 'HOME' : homeScore < awayScore ? 'AWAY' : 'DRAW';
+    return `${half}_${full}`;
+  }
+
   private evaluateAccuracy(
     output: StructuredPredictionOutput,
     actualHomeScore: number,
     actualAwayScore: number,
-  ): { winDrawLossCorrect: boolean; scoreExact: boolean; goalRangeHit: boolean } {
+    actualResult: 'HOME_WIN' | 'DRAW' | 'AWAY_WIN',
+    actualHandicap: 'HOME_WIN' | 'DRAW' | 'AWAY_WIN' | null,
+    actualOU: 'OVER' | 'UNDER' | 'EQUAL' | null,
+    actualHF: string | null,
+  ): { winDrawLossCorrect: boolean; handicapCorrect: boolean; overUnderCorrect: boolean; scoreExact: boolean; halfFullCorrect: boolean; goalRangeHit: boolean; anyHit: boolean } {
     const conclusion = output?.conclusion;
     if (!conclusion) {
-      return { winDrawLossCorrect: false, scoreExact: false, goalRangeHit: false };
-    }
-
-    // 判断实际胜平负
-    let actualResult: 'HOME_WIN' | 'DRAW' | 'AWAY_WIN';
-    if (actualHomeScore > actualAwayScore) {
-      actualResult = 'HOME_WIN';
-    } else if (actualHomeScore < actualAwayScore) {
-      actualResult = 'AWAY_WIN';
-    } else {
-      actualResult = 'DRAW';
+      return { winDrawLossCorrect: false, handicapCorrect: false, overUnderCorrect: false, scoreExact: false, halfFullCorrect: false, goalRangeHit: false, anyHit: false };
     }
 
     const winDrawLossCorrect = conclusion.winLossDraw === actualResult;
-
-    // 判断比分命中
+    const handicapCorrect = actualHandicap != null && conclusion.handicapWinLossDraw != null
+      ? conclusion.handicapWinLossDraw === actualHandicap : false;
+    const overUnderCorrect = actualOU != null && conclusion.overUnderResult != null
+      ? conclusion.overUnderResult === actualOU : false;
     const scoreExact = conclusion.likelyScores?.some(
       (s) => s.home === actualHomeScore && s.away === actualAwayScore,
     ) ?? false;
-
-    // 判断进球区间命中
+    const halfFullCorrect = actualHF != null && conclusion.halfFullTime != null
+      ? conclusion.halfFullTime === actualHF : false;
     const totalGoals = actualHomeScore + actualAwayScore;
     const goalRangeHit = conclusion.goalsRange
       ? totalGoals >= conclusion.goalsRange.min && totalGoals <= conclusion.goalsRange.max
       : false;
+    const anyHit = winDrawLossCorrect || handicapCorrect || overUnderCorrect || scoreExact || halfFullCorrect;
 
-    return { winDrawLossCorrect, scoreExact, goalRangeHit };
+    return { winDrawLossCorrect, handicapCorrect, overUnderCorrect, scoreExact, halfFullCorrect, goalRangeHit, anyHit };
   }
 
   private async updateScorecardScope(
@@ -192,7 +238,7 @@ export class ScorecardService {
     scopeType: string,
     scopeId: string | null,
     matchId: string,
-    accuracy: { winDrawLossCorrect: boolean; scoreExact: boolean; goalRangeHit: boolean },
+    accuracy: { winDrawLossCorrect: boolean; handicapCorrect: boolean; overUnderCorrect: boolean; scoreExact: boolean; halfFullCorrect: boolean; goalRangeHit: boolean; anyHit: boolean },
   ): Promise<ScorecardStats> {
     const existing = await this.prisma.modelScorecard.findFirst({
       where: { aiModelId, scopeType, scopeId },
@@ -202,55 +248,42 @@ export class ScorecardService {
     const newWDLCorrect = (existing?.winDrawLossCorrect ?? 0) + (accuracy.winDrawLossCorrect ? 1 : 0);
     const newScoreExact = (existing?.scoreExact ?? 0) + (accuracy.scoreExact ? 1 : 0);
     const newGoalRangeHit = (existing?.goalRangeHit ?? 0) + (accuracy.goalRangeHit ? 1 : 0);
+    const newHandicapCorrect = (existing?.handicapCorrect ?? 0) + (accuracy.handicapCorrect ? 1 : 0);
+    const newOverUnderCorrect = (existing?.overUnderCorrect ?? 0) + (accuracy.overUnderCorrect ? 1 : 0);
+    const newHalfFullCorrect = (existing?.halfFullCorrect ?? 0) + (accuracy.halfFullCorrect ? 1 : 0);
+    const newAnyHit = (existing?.anyHit ?? 0) + (accuracy.anyHit ? 1 : 0);
+    const newHitRate = newTotal > 0 ? newAnyHit / newTotal : 0;
     const newWinRate = newTotal > 0 ? newWDLCorrect / newTotal : 0;
 
-    // 更新 recentForm
-    const formChar = accuracy.winDrawLossCorrect ? 'W' : 'L';
+    const formChar = accuracy.anyHit ? 'R' : 'M';
     const existingForm = existing?.recentForm ?? '';
     const newForm = (existingForm + formChar).slice(-10);
 
-    if (existing) {
-      await this.prisma.modelScorecard.update({
-        where: { id: existing.id },
-        data: {
-          totalMatches: newTotal,
-          winDrawLossCorrect: newWDLCorrect,
-          scoreExact: newScoreExact,
-          goalRangeHit: newGoalRangeHit,
-          winRate: newWinRate,
-          recentForm: newForm,
-          lastMatchId: matchId,
-        },
-      });
-    } else {
-      await this.prisma.modelScorecard.create({
-        data: {
-          aiModelId,
-          scopeType,
-          scopeId,
-          totalMatches: newTotal,
-          winDrawLossCorrect: newWDLCorrect,
-          scoreExact: newScoreExact,
-          goalRangeHit: newGoalRangeHit,
-          winRate: newWinRate,
-          recentForm: newForm,
-          lastMatchId: matchId,
-        },
-      });
-    }
-
-    return {
+    const data = {
       totalMatches: newTotal,
       winDrawLossCorrect: newWDLCorrect,
       scoreExact: newScoreExact,
       goalRangeHit: newGoalRangeHit,
+      handicapCorrect: newHandicapCorrect,
+      overUnderCorrect: newOverUnderCorrect,
+      halfFullCorrect: newHalfFullCorrect,
+      anyHit: newAnyHit,
+      hitRate: newHitRate,
       winRate: newWinRate,
       recentForm: newForm,
+      lastMatchId: matchId,
     };
+
+    if (existing) {
+      await this.prisma.modelScorecard.update({ where: { id: existing.id }, data });
+    } else {
+      await this.prisma.modelScorecard.create({ data: { aiModelId, scopeType, scopeId, ...data } });
+    }
+
+    return data;
   }
 
   private async updateRecent10(aiModelId: string, matchId: string): Promise<ScorecardStats> {
-    // 获取该模型最近10场已完成比赛的预测
     const recentPredictions = await this.prisma.modelPrediction.findMany({
       where: {
         aiModelId,
@@ -271,25 +304,42 @@ export class ScorecardService {
     let wdlCorrect = 0;
     let scoreExact = 0;
     let goalRangeHit = 0;
+    let handicapCorrectCount = 0;
+    let overUnderCorrectCount = 0;
+    let halfFullCorrectCount = 0;
+    let anyHitCount = 0;
     let form = '';
 
     for (const pred of recentPredictions) {
-      const match = pred.predictionTask.match;
-      if (match.homeScore == null || match.awayScore == null) continue;
+      const m = pred.predictionTask.match;
+      if (m.homeScore == null || m.awayScore == null) continue;
+
+      let actualResult: 'HOME_WIN' | 'DRAW' | 'AWAY_WIN';
+      if (m.homeScore > m.awayScore) actualResult = 'HOME_WIN';
+      else if (m.homeScore < m.awayScore) actualResult = 'AWAY_WIN';
+      else actualResult = 'DRAW';
+
+      const actualHandicap = this.computeHandicapResult(m.homeScore, m.awayScore, m.handicapLine);
+      const actualOU = this.computeOverUnderResult(m.homeScore, m.awayScore, m.overUnderLine);
+      const actualHF = this.computeHalfFullTime(m.homeHalfScore, m.awayHalfScore, m.homeScore, m.awayScore);
 
       const accuracy = this.evaluateAccuracy(
         pred.structuredOutput as unknown as StructuredPredictionOutput,
-        match.homeScore,
-        match.awayScore,
+        m.homeScore, m.awayScore, actualResult, actualHandicap, actualOU, actualHF,
       );
 
       if (accuracy.winDrawLossCorrect) wdlCorrect++;
       if (accuracy.scoreExact) scoreExact++;
       if (accuracy.goalRangeHit) goalRangeHit++;
-      form += accuracy.winDrawLossCorrect ? 'W' : 'L';
+      if (accuracy.handicapCorrect) handicapCorrectCount++;
+      if (accuracy.overUnderCorrect) overUnderCorrectCount++;
+      if (accuracy.halfFullCorrect) halfFullCorrectCount++;
+      if (accuracy.anyHit) anyHitCount++;
+      form += accuracy.anyHit ? 'R' : 'M';
     }
 
     const totalMatches = recentPredictions.length;
+    const hitRate = totalMatches > 0 ? anyHitCount / totalMatches : 0;
     const winRate = totalMatches > 0 ? wdlCorrect / totalMatches : 0;
 
     const existing = await this.prisma.modelScorecard.findFirst({
@@ -301,23 +351,23 @@ export class ScorecardService {
       winDrawLossCorrect: wdlCorrect,
       scoreExact,
       goalRangeHit,
+      handicapCorrect: handicapCorrectCount,
+      overUnderCorrect: overUnderCorrectCount,
+      halfFullCorrect: halfFullCorrectCount,
+      anyHit: anyHitCount,
+      hitRate,
       winRate,
       recentForm: form,
       lastMatchId: matchId,
     };
 
     if (existing) {
-      await this.prisma.modelScorecard.update({
-        where: { id: existing.id },
-        data,
-      });
+      await this.prisma.modelScorecard.update({ where: { id: existing.id }, data });
     } else {
-      await this.prisma.modelScorecard.create({
-        data: { aiModelId, scopeType: 'RECENT_10', scopeId: null, ...data },
-      });
+      await this.prisma.modelScorecard.create({ data: { aiModelId, scopeType: 'RECENT_10', scopeId: null, ...data } });
     }
 
-    return { ...data };
+    return data;
   }
 
   private toStats(scorecard: {
@@ -325,6 +375,11 @@ export class ScorecardService {
     winDrawLossCorrect: number;
     scoreExact: number;
     goalRangeHit: number;
+    handicapCorrect: number;
+    overUnderCorrect: number;
+    halfFullCorrect: number;
+    anyHit: number;
+    hitRate: number;
     winRate: number;
     recentForm: string | null;
   }): ScorecardStats {
@@ -333,6 +388,11 @@ export class ScorecardService {
       winDrawLossCorrect: scorecard.winDrawLossCorrect,
       scoreExact: scorecard.scoreExact,
       goalRangeHit: scorecard.goalRangeHit,
+      handicapCorrect: scorecard.handicapCorrect,
+      overUnderCorrect: scorecard.overUnderCorrect,
+      halfFullCorrect: scorecard.halfFullCorrect,
+      anyHit: scorecard.anyHit,
+      hitRate: scorecard.hitRate,
       winRate: scorecard.winRate,
       recentForm: scorecard.recentForm ?? '',
     };

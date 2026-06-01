@@ -110,6 +110,32 @@ export const ModelPersona = {
 export type ModelPersona = (typeof ModelPersona)[keyof typeof ModelPersona];
 
 /**
+ * 大小球结果
+ */
+export const OverUnderResult = {
+  OVER: 'OVER',
+  UNDER: 'UNDER',
+  EQUAL: 'EQUAL',
+} as const;
+export type OverUnderResult = (typeof OverUnderResult)[keyof typeof OverUnderResult];
+
+/**
+ * 半全场结果（半场_全场）
+ */
+export const HalfFullTime = {
+  HOME_HOME: 'HOME_HOME',
+  HOME_DRAW: 'HOME_DRAW',
+  HOME_AWAY: 'HOME_AWAY',
+  DRAW_HOME: 'DRAW_HOME',
+  DRAW_DRAW: 'DRAW_DRAW',
+  DRAW_AWAY: 'DRAW_AWAY',
+  AWAY_HOME: 'AWAY_HOME',
+  AWAY_DRAW: 'AWAY_DRAW',
+  AWAY_AWAY: 'AWAY_AWAY',
+} as const;
+export type HalfFullTime = (typeof HalfFullTime)[keyof typeof HalfFullTime];
+
+/**
  * 定价层级对应的价格（美分）
  */
 export const PassTierPriceCents: Record<string, number> = {

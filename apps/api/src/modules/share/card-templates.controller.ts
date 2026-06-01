@@ -210,10 +210,14 @@ export class CardTemplatesController {
     const accuracyJson = review.accuracyJson as Record<string, unknown> | null;
     const structuredOutput = review.structuredOutput as Record<string, unknown> | null;
 
-    // 判断封神还是打脸
+    // 判断封神还是打脸：5维度中任一命中即为红单（GLORY）
+    const anyHit = (accuracyJson?.anyHit as boolean) ?? false;
     const winDrawLossCorrect = (accuracyJson?.winDrawLossCorrect as boolean) ?? false;
+    const handicapCorrect = (accuracyJson?.handicapCorrect as boolean) ?? false;
+    const overUnderCorrect = (accuracyJson?.overUnderCorrect as boolean) ?? false;
     const scoreExact = (accuracyJson?.scoreExact as boolean) ?? false;
-    const reviewType: 'GLORY' | 'SHAME' = winDrawLossCorrect ? 'GLORY' : 'SHAME';
+    const halfFullCorrect = (accuracyJson?.halfFullCorrect as boolean) ?? false;
+    const reviewType: 'GLORY' | 'SHAME' = anyHit ? 'GLORY' : 'SHAME';
 
     // 提取命中项和错误项
     const hitItems: string[] = [];
@@ -224,13 +228,20 @@ export class CardTemplatesController {
     } else {
       missItems.push(resolvedLocale === 'en' ? 'Win/Draw/Loss wrong' : '胜平负错误');
     }
+    if (handicapCorrect) {
+      hitItems.push(resolvedLocale === 'en' ? 'Handicap correct' : '让球命中');
+    }
+    if (overUnderCorrect) {
+      hitItems.push(resolvedLocale === 'en' ? 'Over/Under correct' : '大小球命中');
+    }
     if (scoreExact) {
       hitItems.push(resolvedLocale === 'en' ? 'Exact score hit' : '比分精准命中');
     }
+    if (halfFullCorrect) {
+      hitItems.push(resolvedLocale === 'en' ? 'Half/Full-time correct' : '半全场命中');
+    }
     if (accuracyJson?.goalRangeHit) {
       hitItems.push(resolvedLocale === 'en' ? 'Goal range correct' : '进球区间命中');
-    } else {
-      missItems.push(resolvedLocale === 'en' ? 'Goal range missed' : '进球区间错误');
     }
 
     const homeShort = match.homeTeam.shortName ?? match.homeTeam.code;
