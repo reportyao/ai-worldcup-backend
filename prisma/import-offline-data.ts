@@ -285,35 +285,48 @@ async function importMatches(
     const awayScore = toNullableInt(event.match_awayteam_score);
 
     const existing = await prisma.match.findUnique({ where: { externalId } });
-    await prisma.match.upsert({
-      where: { externalId },
-      update: {
-        kickoffAt,
-        status,
-        matchday,
-        stage,
-        homeScore,
-        awayScore,
-        competition: { connect: { id: competitionId } },
-        homeTeam: { connect: { id: homeTeamId } },
-        awayTeam: { connect: { id: awayTeamId } },
-      },
-      create: {
-        kickoffAt,
-        status,
-        matchday,
-        stage,
-        homeScore,
-        awayScore,
-        externalId,
-        competition: { connect: { id: competitionId } },
-        homeTeam: { connect: { id: homeTeamId } },
-        awayTeam: { connect: { id: awayTeamId } },
-      },
-    });
-
-    if (existing) updated++;
-    else created++;
+    try {
+      await prisma.match.upsert({
+        where: { externalId },
+        update: {
+          kickoffAt,
+          status,
+          matchday,
+          stage,
+          homeScore,
+          awayScore,
+          competition: { connect: { id: competitionId } },
+          homeTeam: { connect: { id: homeTeamId } },
+          awayTeam: { connect: { id: awayTeamId } },
+        },
+        create: {
+          kickoffAt,
+          status,
+          matchday,
+          stage,
+          homeScore,
+          awayScore,
+          externalId,
+          competition: { connect: { id: competitionId } },
+          homeTeam: { connect: { id: homeTeamId } },
+          awayTeam: { connect: { id: awayTeamId } },
+        },
+      });
+      if (existing) updated++;
+      else created++;
+    } catch (err: unknown) {
+      // Handle duplicate composite key (same teams + kickoff already exists with different externalId)
+      if (err && typeof err === 'object' && 'code' in err && (err as { code: string }).code === 'P2002') {
+        // Try to update by composite key instead
+        await prisma.match.updateMany({
+          where: { competitionId, homeTeamId, awayTeamId, kickoffAt },
+          data: { status, matchday, stage, homeScore, awayScore, externalId },
+        });
+        updated++;
+      } else {
+        throw err;
+      }
+    }
   }
 
   console.log(`  ✓ Matches: ${created} created, ${updated} updated, ${skipped} skipped`);
