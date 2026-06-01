@@ -1,4 +1,6 @@
-import { Queue, Worker } from 'bullmq';
+import 'dotenv/config';
+
+import { Job, Queue, Worker } from 'bullmq';
 import { Redis } from 'ioredis';
 
 import { processConsensusCalculator } from './jobs/consensus-calculator.job.js';
@@ -10,6 +12,28 @@ import { processScorecardUpdate } from './jobs/scorecard-update.job.js';
 import { processTranslation } from './jobs/translation.job.js';
 import { logger } from './logger.js';
 import { QueueName } from './queues.js';
+
+function normalizeEnvironment(env: NodeJS.ProcessEnv): void {
+  const aliases: Array<[canonical: string, legacy: string]> = [
+    ['WECHAT_MP_APPID', 'WECHAT_APP_ID'],
+    ['WECHAT_MP_SECRET', 'WECHAT_APP_SECRET'],
+    ['WECHAT_PAY_MCHID', 'WECHAT_PAY_MCH_ID'],
+    ['WECHAT_PAY_SERIAL_NO', 'WECHAT_PAY_CERT_SERIAL_NO'],
+    ['AI_OPENAI_API_KEY', 'OPENAI_API_KEY'],
+    ['AI_OPENAI_BASE_URL', 'OPENAI_BASE_URL'],
+    ['AI_OPENAI_BASE_URL', 'AI_PROVIDER_BASE_URL'],
+    ['AI_GATEWAY_BASE_URL', 'AI_PROVIDER_BASE_URL'],
+  ];
+
+  for (const [canonical, legacy] of aliases) {
+    const canonicalValue = env[canonical];
+    const legacyValue = env[legacy];
+    if (!canonicalValue && legacyValue) env[canonical] = legacyValue;
+    if (!legacyValue && env[canonical]) env[legacy] = env[canonical];
+  }
+}
+
+normalizeEnvironment(process.env);
 
 const redisUrl = process.env.REDIS_URL ?? 'redis://localhost:6379/0';
 
@@ -66,6 +90,11 @@ async function registerFeatureComputeScheduler(): Promise<void> {
 }
 
 async function registerDataSyncSchedulers(): Promise<void> {
+  if (!process.env.API_FOOTBALL_KEY) {
+    logger.warn('API_FOOTBALL_KEY is not configured; data-sync schedulers will not be registered');
+    return;
+  }
+
   const queue = new Queue(QueueName.DataSync, { connection: createConnection() });
   queues.push(queue);
   await queue.add(
@@ -97,8 +126,7 @@ async function registerDataSyncSchedulers(): Promise<void> {
 
 function registerWorker(
   name: QueueName,
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  processor: (job: any) => Promise<unknown>,
+  processor: (job: Job) => Promise<unknown>,
 ): void {
   const w = new Worker(name, processor, {
     connection: createConnection(),

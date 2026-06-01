@@ -17,6 +17,7 @@
     "@ai-worldcup/shared": "workspace:*",
     "@prisma/client": "^5.16.1",
     "bullmq": "^5.10.4",
+    "dotenv": "^16.4.5",
     "ioredis": "5.10.1",
     "pino": "^9.2.0",
     "pino-pretty": "^11.2.1",

@@ -424,7 +424,9 @@ export class PaymentsService {
       mchid: mchId,
       description: 'AI World Cup Pass',
       out_trade_no: orderId,
-      notify_url: notifyUrl ?? `${this.configService.get<string>('PUBLIC_BASE_URL')}/payments/wechat/notify`,
+      notify_url:
+        notifyUrl ??
+        `${(this.configService.get<string>('PUBLIC_BASE_URL') ?? '').replace(/\/$/, '')}/api/payments/wechat/notify`,
       amount: {
         total: amountCents,
         currency: 'CNY',

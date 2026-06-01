@@ -1,5 +1,4 @@
-import type {
-  Prisma} from '@prisma/client';
+import type { Prisma } from '@prisma/client';
 import {
   CompetitionType,
   MatchStatus,
@@ -104,6 +103,14 @@ type SyncSummary = {
 export async function processDataSync(job: Job<unknown>): Promise<{ ok: true; summary: SyncSummary }> {
   const options = normalizeOptions(DataSyncPayloadSchema.parse(job.data));
   const summary = createSummary(options);
+
+  if (!process.env.API_FOOTBALL_KEY) {
+    summary.errorCount += 1;
+    summary.errors.push({ message: 'API_FOOTBALL_KEY is not configured; data sync skipped' });
+    logger.warn({ jobId: job.id, payload: options }, 'data-sync skipped because API_FOOTBALL_KEY is not configured');
+    return { ok: true, summary };
+  }
+
   const log = await prisma.footballDataSyncLog.create({
     data: {
       provider: 'api-football',
