@@ -8,8 +8,8 @@ import {
 } from '@nestjs/common';
 import type { Request, Response } from 'express';
 
-import type { PrismaService } from '../../prisma/prisma.service.js';
-import type { AuthService } from '../auth/auth.service.js';
+import { PrismaService } from '../../prisma/prisma.service.js';
+import { AuthService } from '../auth/auth.service.js';
 
 import {
   buildCardCacheKey,

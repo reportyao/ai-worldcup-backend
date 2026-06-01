@@ -1,10 +1,10 @@
 import type { CanActivate, ExecutionContext } from '@nestjs/common';
 import { Injectable } from '@nestjs/common';
-import type { Reflector } from '@nestjs/core';
+import { Reflector } from '@nestjs/core';
 import type { Request } from 'express';
 
 import { ADMIN_PUBLIC_ROUTE_KEY } from './admin-auth.metadata.js';
-import type { AdminService } from './admin.service.js';
+import { AdminService } from './admin.service.js';
 
 @Injectable()
 export class AdminAuthGuard implements CanActivate {

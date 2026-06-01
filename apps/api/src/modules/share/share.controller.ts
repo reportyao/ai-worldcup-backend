@@ -8,9 +8,9 @@ import {
 } from '@nestjs/common';
 import type { Request, Response } from 'express';
 
-import type { AuthService } from '../auth/auth.service.js';
+import { AuthService } from '../auth/auth.service.js';
 
-import type { ShareService } from './share.service.js';
+import { ShareService } from './share.service.js';
 
 @Controller('share')
 export class ShareController {

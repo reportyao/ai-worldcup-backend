@@ -1,12 +1,12 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
-import type { ConfigService } from '@nestjs/config';
+import { ConfigService } from '@nestjs/config';
 import { CompetitionType, MatchStatus, PredictionTrigger, PredictionVersion, Prisma } from '@prisma/client';
 
 import type { AppConfig } from '../../config/configuration.js';
-import type { PrismaService } from '../../prisma/prisma.service.js';
-import type { PredictionPipelineService } from '../prediction-pipeline/prediction-pipeline.service.js';
+import { PrismaService } from '../../prisma/prisma.service.js';
+import { PredictionPipelineService } from '../prediction-pipeline/prediction-pipeline.service.js';
 
-import type { ApiFootballClient } from './api-football.client.js';
+import { ApiFootballClient } from './api-football.client.js';
 import type {
   ApiFootballFixture,
   ApiFootballLeague,

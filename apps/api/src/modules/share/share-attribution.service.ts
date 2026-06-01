@@ -2,7 +2,7 @@ import { randomBytes, createHash } from 'crypto';
 
 import { Injectable, Logger } from '@nestjs/common';
 
-import type { PrismaService } from '../../prisma/prisma.service.js';
+import { PrismaService } from '../../prisma/prisma.service.js';
 
 /**
  * T6-02: 小程序码与分享归因服务

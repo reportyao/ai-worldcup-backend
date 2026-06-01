@@ -9,11 +9,11 @@ import {
   NotFoundException,
   UnauthorizedException,
 } from '@nestjs/common';
-import type { ConfigService } from '@nestjs/config';
+import { ConfigService } from '@nestjs/config';
 import type { OrderStatus, PaymentChannel, Prisma } from '@prisma/client';
 
-import type { PrismaService } from '../../prisma/prisma.service.js';
-import type { AccessService } from '../entitlements/access.service.js';
+import { PrismaService } from '../../prisma/prisma.service.js';
+import { AccessService } from '../entitlements/access.service.js';
 
 /** Pass 定价（分） */
 const PASS_TIER_PRICE_CNY: Record<string, number> = {

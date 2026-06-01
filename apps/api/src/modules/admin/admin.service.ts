@@ -7,7 +7,7 @@ import {
   NotFoundException,
   UnauthorizedException,
 } from '@nestjs/common';
-import type { ConfigService } from '@nestjs/config';
+import { ConfigService } from '@nestjs/config';
 import type {
   CompetitionType,
   MatchStatus,
@@ -24,10 +24,10 @@ import type { Request } from 'express';
 import { read, utils } from 'xlsx';
 
 import type { AppConfig } from '../../config/configuration.js';
-import type { PrismaService } from '../../prisma/prisma.service.js';
-import type { ConsensusService } from '../consensus/consensus.service.js';
-import type { FootballDataSyncService } from '../football-data/football-data-sync.service.js';
-import type { PredictionPipelineService } from '../prediction-pipeline/prediction-pipeline.service.js';
+import { PrismaService } from '../../prisma/prisma.service.js';
+import { ConsensusService } from '../consensus/consensus.service.js';
+import { FootballDataSyncService } from '../football-data/football-data-sync.service.js';
+import { PredictionPipelineService } from '../prediction-pipeline/prediction-pipeline.service.js';
 
 import type {
   AdminAiModelCreateDto,

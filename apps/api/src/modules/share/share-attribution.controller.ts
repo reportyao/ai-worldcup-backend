@@ -9,9 +9,9 @@ import {
 } from '@nestjs/common';
 import type { Request } from 'express';
 
-import type { AuthService } from '../auth/auth.service.js';
+import { AuthService } from '../auth/auth.service.js';
 
-import type { ShareAttributionService } from './share-attribution.service.js';
+import { ShareAttributionService } from './share-attribution.service.js';
 
 /**
  * T6-02: 小程序码与分享归因 Controller

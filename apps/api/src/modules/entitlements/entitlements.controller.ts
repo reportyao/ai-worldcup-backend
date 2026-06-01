@@ -1,9 +1,9 @@
 import { Body, Controller, Get, Post, Query, Req } from '@nestjs/common';
 import type { Request } from 'express';
 
-import type { AuthService } from '../auth/auth.service.js';
+import { AuthService } from '../auth/auth.service.js';
 
-import type { AccessService } from './access.service.js';
+import { AccessService } from './access.service.js';
 
 @Controller('entitlements')
 export class EntitlementsController {

@@ -9,9 +9,9 @@ import {
 } from '@nestjs/common';
 import type { Request } from 'express';
 
-import type { AuthService } from '../auth/auth.service.js';
+import { AuthService } from '../auth/auth.service.js';
 
-import type { InvitationsService } from './invitations.service.js';
+import { InvitationsService } from './invitations.service.js';
 
 @Controller('invitations')
 export class InvitationsController {

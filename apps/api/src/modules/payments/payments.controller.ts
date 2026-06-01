@@ -11,9 +11,10 @@ import {
 } from '@nestjs/common';
 import type { Request, Response } from 'express';
 
-import type { AuthService } from '../auth/auth.service.js';
+import { AuthService } from '../auth/auth.service.js';
 
-import type { CreateOrderDto, WechatNotifyPayload , PaymentsService } from './payments.service.js';
+import { PaymentsService } from './payments.service.js';
+import type { CreateOrderDto, WechatNotifyPayload } from './payments.service.js';
 
 @Controller('payments')
 export class PaymentsController {

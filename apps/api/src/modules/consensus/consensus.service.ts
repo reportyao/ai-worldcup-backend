@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { ConsensusLevel } from '@prisma/client';
 
-import type { PrismaService } from '../../prisma/prisma.service.js';
+import { PrismaService } from '../../prisma/prisma.service.js';
 
 /**
  * T4-01: AI 共识指数计算与观点聚合服务

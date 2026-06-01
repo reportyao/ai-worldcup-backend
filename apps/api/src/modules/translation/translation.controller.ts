@@ -7,7 +7,7 @@ import {
   Query,
 } from '@nestjs/common';
 
-import type { TranslationService } from './translation.service.js';
+import { TranslationService } from './translation.service.js';
 
 /**
  * T6-05: AI 内容翻译 Controller

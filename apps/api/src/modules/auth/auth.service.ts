@@ -1,10 +1,10 @@
 import { createHash, createHmac, timingSafeEqual } from 'node:crypto';
 
 import { Inject, Injectable, Logger, UnauthorizedException, forwardRef } from '@nestjs/common';
-import type { ConfigService } from '@nestjs/config';
+import { ConfigService } from '@nestjs/config';
 import type { Guest, Locale, User } from '@prisma/client';
 
-import type { PrismaService } from '../../prisma/prisma.service.js';
+import { PrismaService } from '../../prisma/prisma.service.js';
 import { InvitationsService } from '../invitations/invitations.service.js';
 
 import type { GuestIdentifyDto, WechatLoginDto } from './auth.schemas.js';
