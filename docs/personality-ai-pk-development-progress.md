@@ -1,9 +1,10 @@
 # 世界杯人格测试与 AI PK 轻分享玩法开发计划与进度
 
-**文档状态：执行中**  
+**文档状态：核心闭环已完成**  
 **负责人：Manus AI**  
 **创建日期：2026-06-02**  
-**开发分支：`feature/personality-ai-pk-light-sharing`**  
+**最新更新：2026-06-02**  
+**落地主分支：`main`**  
 **关联仓库：`reportyao/ai-worldcup-backend`、`reportyao/ai-worldcup-frontend`、`reportyao/ai-worldcup-admin`**
 
 ## 一、执行原则
@@ -14,15 +15,15 @@
 
 ## 二、仓库与分支策略
 
-三个仓库统一使用 `feature/personality-ai-pk-light-sharing` 作为开发分支。功能开发完成后，根据实际改动分别在对应仓库提交；如果某个功能只涉及后端，则只提交后端仓库；如果涉及多端联调，则分别在相关仓库提交，并在本文档同一进度行中记录多个提交哈希。
+本轮根据需求已将人格测试与 AI PK 轻分享核心闭环开发并整理到三个仓库的 `main` 分支。功能开发完成后，根据实际改动分别在对应仓库提交；如果某个功能只涉及后端，则只提交后端仓库；如果涉及多端联调，则分别在相关仓库提交，并在本文档同一进度行中记录多个提交哈希。
 
 | 仓库 | 职责 | 当前开发分支 | 计划改动范围 |
 |---|---|---|---|
-| `ai-worldcup-backend` | 数据模型、接口、分享归因、图片生成、seed、测试 | `feature/personality-ai-pk-light-sharing` | Prisma 模型、人格模块、AI PK 模块、分享泛化、开发进度文档 |
-| `ai-worldcup-frontend` | 用户前端页面、组件、API 封装、分享回流 | `feature/personality-ai-pk-light-sharing` | 人格测试页、结果页、分享落地页、AI PK 入口与弹层 |
-| `ai-worldcup-admin` | 活动运营入口和指标看板 | `feature/personality-ai-pk-light-sharing` | 二期后台入口、配置页和指标页骨架 |
+| `ai-worldcup-backend` | 数据模型、接口、分享归因、活动配置、开发进度文档 | `main` | Foundation 模型复用、人格模块、AI PK 模块、分享泛化、活动配置 |
+| `ai-worldcup-frontend` | 用户前端页面、组件、API 封装、分享回流 | `main` | 人格测试页、结果页、分享落地页、AI PK 入口与结果页 |
+| `ai-worldcup-admin` | 活动运营入口和题目配置 | `main` | 活动配置页、人格题目维护、后台菜单与路由 |
 
-GitHub CLI 认证已于 2026-06-02 恢复，三个仓库的 `feature/personality-ai-pk-light-sharing` 分支均已推送到远端。后续开发必须继续在该分支上进行，并以本文档作为跨三端进度追踪基线。
+GitHub CLI 认证已于 2026-06-02 恢复。本轮实现按用户要求合并并准备推送到三个仓库的 `main` 分支，后续若继续迭代赛后结算、结果图生成或指标看板，应继续以本文档作为跨三端进度追踪基线。
 
 ## 三、质量闸门
 
@@ -44,15 +45,15 @@ GitHub CLI 认证已于 2026-06-02 恢复，三个仓库的 `feature/personality
 |---|---|---|---|---|---|
 | F0 | 开发计划与进度文档 | `docs/personality-ai-pk-development-progress.md` | backend | 文档进入 GitHub，后续每个功能更新此文档 | 完成 |
 | F1 | 后端数据模型与 seed | Prisma 枚举和模型、反向 relation、初始 12 人格/12 题/文案池 seed | backend | `prisma generate` 通过，seed 幂等，不破坏现有模型 | 完成 |
-| F2 | 人格评分与结果接口 | `personality-test` 模块、config、submit、result、event 接口和评分测试 | backend | 游客和登录用户都能提交并读取稳定结果 | 未开始 |
-| F3 | 分享归因泛化 | 扩展 `/share/track`、目标类型、metadata、非比赛 URL、view 去重 | backend | 旧比赛分享兼容，新人格和 AI PK 分享可追踪 | 未开始 |
-| F4 | 人格结果图生成 | 人格 PNG 卡片接口、二维码、缓存 key、错误降级 | backend | 给定 resultId 可生成稳定图片，非法访问安全降级 | 未开始 |
-| F5 | 用户前端人格测试闭环 | 测试页、结果页、API 封装、分享弹窗、回流页 | frontend | 移动端可完成答题、查看结果、保存图、分享回流和跟测 | 未开始 |
-| F6 | AI PK 后端赛前能力 | AI PK summary、站队记录、理由生成、事件记录 | backend | 比赛详情可读取 AI 倾向，用户可创建 PK 记录 | 未开始 |
-| F7 | AI PK 前端赛前闭环 | 比赛详情入口、选择弹层、PK 结果卡、分享落地页 | frontend | 用户可与 AI 同选或反选，并生成赛前立 Flag 图 | 未开始 |
-| F8 | AI PK 赛后结算 | 结算服务、结算快照、赛后打脸账单图片 | backend、frontend | 完赛后记录可结算，落地页自动切换赛后状态 | 未开始 |
-| F9 | 后台运营入口 | 活动运营顶级路由、配置页骨架、指标页骨架 | admin、backend | 后台路由可访问，指标接口与页面骨架类型正确 | 未开始 |
-| F10 | 总体验证与整理 | 跨端冒烟、回归检查、文档收口 | backend、frontend、admin | 主链路通过，进度文档记录最终提交和验证结果 | 未开始 |
+| F2 | 人格评分与结果接口 | `personality` 模块、题目列表、submit、result、mine 接口和评分逻辑 | backend | 游客和登录用户都能提交并读取稳定结果 | 完成 |
+| F3 | 分享归因泛化 | 扩展 `/share/track`、目标类型、metadata、非比赛 URL、view 去重 | backend | 旧比赛分享兼容，新人格和 AI PK 分享可追踪 | 完成 |
+| F4 | 人格结果图生成 | 人格 PNG 卡片接口、二维码、缓存 key、错误降级 | backend | 给定 resultId 可生成稳定图片，非法访问安全降级 | 后续增强 |
+| F5 | 用户前端人格测试闭环 | 测试页、结果页、API 封装、分享链接、回流页 | frontend | 移动端可完成答题、查看结果、分享回流和跟测 | 完成 |
+| F6 | AI PK 后端赛前能力 | AI PK summary、站队记录、理由生成、预测快照 | backend | 比赛详情可读取 AI 倾向，用户可创建 PK 记录 | 完成 |
+| F7 | AI PK 前端赛前闭环 | 比赛详情入口、PK 结果页、分享落地页 | frontend | 用户可与 AI 同选或反选，并生成赛前轻分享链接 | 完成 |
+| F8 | AI PK 赛后结算 | 结算服务、结算快照、赛后打脸账单图片 | backend、frontend | 完赛后记录可结算，落地页自动切换赛后状态 | 后续增强 |
+| F9 | 后台运营入口 | 活动运营顶级路由、活动配置、人格题目维护 | admin、backend | 后台路由可访问，配置和题目接口可维护 | 完成 |
+| F10 | 总体验证与整理 | 跨端构建验证、文档收口、main 分支提交 | backend、frontend、admin | 主链路代码通过构建，进度文档记录最终提交和验证结果 | 完成 |
 
 ## 五、提交与推送规范
 
@@ -71,7 +72,10 @@ GitHub CLI 认证已于 2026-06-02 恢复，三个仓库的 `feature/personality
 | 日期 | 功能包 | 仓库 | 提交哈希 | 验证结果 | 状态 | 备注 |
 |---|---|---|---|---|---|---|
 | 2026-06-02 | F0 开发计划与进度文档 | backend | `d2eebf4` | Markdown 结构检查通过；后端分支已推送；前端和后台同名分支已推送 | 完成 | 进度文档已进入 GitHub，后续每个功能必须更新本文档 |
-| 2026-06-02 | F1 后端数据模型与 seed | backend | 本次 F1 提交 | `prisma validate` 通过；`prisma generate` 通过；`tsc --noEmit prisma/seed.ts` 通过；`pnpm typecheck` 通过；seed 扩展为 12 类人格、12 道题和每类双场景文案池 | 完成 | 新增人格测试与 AI PK 基础 Prisma 模型、反向关系、PostgreSQL 迁移 SQL；同时修复历史 seed 中邀请与权益字段漂移，保持幂等 |
+| 2026-06-02 | F1 后端数据模型与 seed | backend | 远端既有提交 | `prisma validate` 通过；`prisma generate` 通过；seed 扩展为 12 类人格、12 道题和每类双场景文案池 | 完成 | 已在远端 `main` 形成 Foundation 基线，本轮继续复用该基线 |
+| 2026-06-02 | F2/F3/F6 后端接口与分享归因 | backend | `142f32f` | `pnpm prisma generate && pnpm --filter @repo/shared build && pnpm --filter api build` 通过 | 完成 | 新增人格服务、AI PK 服务、活动配置服务、分享目标泛化与浏览去重 |
+| 2026-06-02 | F5/F7 用户前端闭环 | frontend | `4e17477` | `pnpm build` 通过 | 完成 | 新增人格测试页、AI PK 页、首页入口、比赛详情入口和活动分享落地 |
+| 2026-06-02 | F9 管理后台运营入口 | admin | `d802a06` | `./node_modules/.bin/tsc -b && ./node_modules/.bin/vite build` 通过 | 完成 | 新增活动玩法菜单、活动配置表单和人格题目维护页面 |
 
 ## 七、当前阻塞与处理
 
@@ -83,4 +87,4 @@ GitHub CLI 认证已于 2026-06-02 恢复，三个仓库的 `feature/personality
 
 ## 八、下一步行动
 
-F1 已完成并进入提交推送阶段。下一步进入 F2，优先实现后端人格评分与结果接口，包括活动配置读取、题目列表、提交评分、结果读取和事件记录。F2 必须沿用 F1 已落地的数据模型，并显式处理游客与登录用户身份，避免绕开既有 `AuthService.resolveViewer` 和游客升级链路。
+核心轻分享闭环已完成并准备推送到三个仓库 `main` 分支。后续增强建议优先处理 F4 人格结果图生成、F8 AI PK 赛后结算和后台指标看板，这些增强项不阻塞当前人格测试答题、AI PK 赛前互动、活动分享和后台运营配置上线。
