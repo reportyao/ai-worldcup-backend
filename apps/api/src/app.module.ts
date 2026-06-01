@@ -19,7 +19,10 @@ import { RequestIdMiddleware } from './common/request-id.middleware.js';
 import { ResponseInterceptor } from './common/response.interceptor.js';
 import { loadConfig } from './config/configuration.js';
 import { AdminModule } from './modules/admin/admin.module.js';
+import { ActivityModule } from './modules/activity/activity.module.js';
 import { AiGatewayModule } from './modules/ai-gateway/ai-gateway.module.js';
+import { AiPkModule } from './modules/ai-pk/ai-pk.module.js';
+import { PersonalityModule } from './modules/personality/personality.module.js';
 import { AuthModule } from './modules/auth/auth.module.js';
 import { ConsensusModule } from './modules/consensus/consensus.module.js';
 import { EntitlementsModule } from './modules/entitlements/entitlements.module.js';
@@ -53,6 +56,9 @@ import { PrismaModule } from './prisma/prisma.module.js';
     PredictionPipelineModule,
     HealthModule,
     AdminModule,
+    ActivityModule,
+    PersonalityModule,
+    AiPkModule,
     AuthModule,
     MatchesModule,
     PredictionsModule,

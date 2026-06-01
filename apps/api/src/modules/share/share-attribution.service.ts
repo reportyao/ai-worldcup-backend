@@ -1,6 +1,7 @@
 import { randomBytes, createHash } from 'crypto';
 
 import { Injectable, Logger } from '@nestjs/common';
+import { Prisma } from '@prisma/client';
 
 import { PrismaService } from '../../prisma/prisma.service.js';
 
@@ -27,6 +28,8 @@ export class ShareAttributionService {
     userId?: string;
     guestId?: string;
     matchId?: string;
+    targetType?: string;
+    targetId?: string;
     channel?: string;
     templateType?: string;
     inviteCode?: string;
@@ -36,21 +39,23 @@ export class ShareAttributionService {
     shareUrl: string;
     inviteCode: string | null;
   }> {
-    const { userId, guestId, matchId, channel, templateType, inviteCode } = params;
+    const { userId, guestId, matchId, targetType, targetId, channel, templateType, inviteCode } = params;
 
     // 生成唯一 scene 值（最长 32 字符）
-    const sceneValue = this.generateSceneValue(userId ?? guestId ?? 'anon', matchId);
+    const sceneValue = this.generateSceneValue(userId ?? guestId ?? 'anon', targetId ?? matchId);
 
     const track = await this.prisma.shareTrack.create({
       data: {
         userId,
         guestId,
         matchId,
+        targetType,
+        targetId,
         channel: channel ?? 'WECHAT_MINIPROGRAM',
-        templateType: templateType ?? 'PREDICTION',
+        templateType: templateType ?? (targetType ? targetType.toUpperCase() : 'PREDICTION'),
         inviteCode,
         sceneValue,
-        shareUrl: this.buildShareUrl(sceneValue, matchId),
+        shareUrl: this.buildShareUrl(sceneValue, matchId, targetType, targetId),
       },
     });
 
@@ -271,15 +276,35 @@ export class ShareAttributionService {
   /**
    * 记录分享浏览（scene 被扫描时调用）
    */
-  async recordView(sceneValue: string): Promise<void> {
+  async recordView(sceneValue: string, viewerFingerprint?: string): Promise<{ counted: boolean }> {
     const track = await this.prisma.shareTrack.findUnique({
       where: { sceneValue },
     });
-    if (track) {
-      await this.prisma.shareTrack.update({
-        where: { id: track.id },
-        data: { viewCount: { increment: 1 } },
+    if (!track) return { counted: false };
+
+    const windowKey = new Date().toISOString().slice(0, 10);
+    const viewerHash = this.hashViewer(`${sceneValue}:${viewerFingerprint ?? 'anonymous'}`);
+
+    try {
+      await this.prisma.$transaction(async (tx) => {
+        await tx.shareViewEvent.create({
+          data: {
+            shareTrackId: track.id,
+            viewerHash,
+            windowKey,
+          },
+        });
+        await tx.shareTrack.update({
+          where: { id: track.id },
+          data: { viewCount: { increment: 1 } },
+        });
       });
+      return { counted: true };
+    } catch (error) {
+      if (error instanceof Prisma.PrismaClientKnownRequestError && error.code === 'P2002') {
+        return { counted: false };
+      }
+      throw error;
     }
   }
 
@@ -342,11 +367,18 @@ export class ShareAttributionService {
   /**
    * 构建分享 URL
    */
-  private buildShareUrl(sceneValue: string, matchId?: string): string {
+  private buildShareUrl(sceneValue: string, matchId?: string, targetType?: string, targetId?: string): string {
     const baseUrl = process.env.H5_BASE_URL ?? 'https://h5.example.com';
+    if (targetType && targetId) {
+      return `${baseUrl}/share/${targetType}/${targetId}?scene=${sceneValue}`;
+    }
     if (matchId) {
       return `${baseUrl}/share/${matchId}?scene=${sceneValue}`;
     }
     return `${baseUrl}/share?scene=${sceneValue}`;
+  }
+
+  private hashViewer(value: string): string {
+    return createHash('sha256').update(value).digest('hex');
   }
 }

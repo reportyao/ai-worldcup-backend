@@ -127,6 +127,13 @@ enum PassTier {
   TIER_3
 }
 
+enum ActivityStatus {
+  DRAFT
+  ACTIVE
+  PAUSED
+  ARCHIVED
+}
+
 enum PersonalityQuestionType {
   SINGLE_CHOICE
 }
@@ -808,6 +815,23 @@ model AdminAuditLog {
 // T6: Share Attribution & i18n Content Translation
 // ─────────────────────────────────────────────────────────────────────────────
 
+/// 轻量活动配置：用于人格测试与 AI PK 活动开关、文案和运营参数
+model ActivityConfig {
+  id        String         @id @default(cuid())
+  key       String         @unique
+  type      String
+  title     String
+  status    ActivityStatus @default(ACTIVE)
+  startsAt  DateTime?
+  endsAt    DateTime?
+  config    Json?
+  createdAt DateTime       @default(now())
+  updatedAt DateTime       @updatedAt
+
+  @@index([type, status])
+  @@index([status, startsAt, endsAt])
+}
+
 /// 分享追踪：记录每次分享行为（小程序码、链接分享等）
 model ShareTrack {
   id           String   @id @default(cuid())
@@ -829,6 +853,10 @@ model ShareTrack {
   shareUrl     String?
   /// 小程序码图片 URL
   qrcodeUrl    String?
+  /// 泛化分享目标类型：MATCH | PERSONALITY_RESULT | AI_PK_SESSION | ACTIVITY
+  targetType   String?
+  /// 泛化分享目标 ID
+  targetId     String?
   /// 浏览次数
   viewCount    Int      @default(0)
   /// 绑定次数（通过此分享注册的用户数）
@@ -839,11 +867,29 @@ model ShareTrack {
   updatedAt    DateTime @updatedAt
 
   attributions ShareAttribution[]
+  viewEvents   ShareViewEvent[]
 
   @@index([userId, createdAt])
   @@index([matchId])
+  @@index([targetType, targetId])
   @@index([inviteCode])
   @@index([sceneValue])
+}
+
+/// 分享浏览去重事件：同一分享在同一时间窗口内的同一访客只计一次 PV
+model ShareViewEvent {
+  id           String     @id @default(cuid())
+  shareTrackId String
+  shareTrack   ShareTrack @relation(fields: [shareTrackId], references: [id], onDelete: Cascade)
+  viewerHash   String
+  windowKey    String
+  ipAddress    String?
+  userAgent    String?
+  createdAt    DateTime   @default(now())
+
+  @@unique([shareTrackId, viewerHash, windowKey])
+  @@index([shareTrackId, createdAt])
+  @@index([viewerHash, createdAt])
 }
 
 /// 分享归因绑定：新用户通过分享链接注册后的归因记录

@@ -40,6 +40,8 @@ export class ShareAttributionController {
     @Body()
     body: {
       matchId?: string;
+      targetType?: string;
+      targetId?: string;
       channel?: string;
       templateType?: string;
       inviteCode?: string;
@@ -50,6 +52,8 @@ export class ShareAttributionController {
       userId: viewer.userId ?? undefined,
       guestId: viewer.guestId ?? undefined,
       matchId: body.matchId,
+      targetType: body.targetType,
+      targetId: body.targetId,
       channel: body.channel,
       templateType: body.templateType,
       inviteCode: body.inviteCode,
@@ -121,12 +125,17 @@ export class ShareAttributionController {
    * 记录分享浏览（用户扫描小程序码后前端调用）
    */
   @Post('view')
-  async recordView(@Body() body: { sceneValue: string }) {
+  async recordView(
+    @Req() req: Request,
+    @Body() body: { sceneValue: string; viewerId?: string },
+  ) {
     if (!body.sceneValue) {
       return { success: false, message: 'sceneValue is required' };
     }
-    await this.attributionService.recordView(body.sceneValue);
-    return { success: true };
+    const viewerFingerprint = body.viewerId
+      ?? `${req.ip ?? ''}:${req.headers['user-agent'] ?? ''}`;
+    const result = await this.attributionService.recordView(body.sceneValue, viewerFingerprint);
+    return { success: true, counted: result.counted };
   }
 
   /**
