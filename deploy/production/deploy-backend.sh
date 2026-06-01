@@ -16,30 +16,54 @@ env_value() {
   grep -E "^${key}=" .env 2>/dev/null | tail -n 1 | cut -d= -f2-
 }
 
-ensure_direct_url() {
+has_env_value() {
+  local key="$1"
+  grep -Eq "^${key}=." .env 2>/dev/null
+}
+
+set_env_value() {
+  local key="$1"
+  local value="$2"
+  local tmp
+  tmp="$(mktemp)"
+  awk -v key="$key" -v value="$value" '
+    BEGIN { updated = 0 }
+    $0 ~ "^" key "=" { print key "=" value; updated = 1; next }
+    { print }
+    END { if (updated == 0) print key "=" value }
+  ' .env > "$tmp"
+  cat "$tmp" > .env
+  rm -f "$tmp"
+  chmod 600 .env
+}
+
+ensure_production_env() {
   if [ ! -f .env ]; then
     return
   fi
 
   local database_url
   database_url="$(env_value DATABASE_URL)"
-  if [ -z "$database_url" ]; then
-    return
+  if [ -n "$database_url" ] && ! has_env_value DIRECT_URL; then
+    set_env_value DIRECT_URL "$database_url"
+    log "Backfilled DIRECT_URL from DATABASE_URL in existing .env."
   fi
 
-  if ! grep -Eq '^DIRECT_URL=.' .env; then
-    local tmp
-    tmp="$(mktemp)"
-    awk -v value="$database_url" '
-      BEGIN { updated = 0 }
-      /^DIRECT_URL=/ { print "DIRECT_URL=" value; updated = 1; next }
-      { print }
-      END { if (updated == 0) print "DIRECT_URL=" value }
-    ' .env > "$tmp"
-    cat "$tmp" > .env
-    rm -f "$tmp"
-    chmod 600 .env
-    log "Backfilled DIRECT_URL from DATABASE_URL in existing .env."
+  local jwt_secret
+  jwt_secret="$(env_value JWT_SECRET)"
+  if [ -z "$jwt_secret" ] || [ "$jwt_secret" = "dev_jwt_secret_change_me_in_prod" ]; then
+    set_env_value JWT_SECRET "$(random_hex)"
+    log "Backfilled JWT_SECRET in existing .env."
+  fi
+
+  if ! has_env_value ADMIN_SESSION_SECRET; then
+    set_env_value ADMIN_SESSION_SECRET "$(random_hex)"
+    log "Backfilled ADMIN_SESSION_SECRET in existing .env."
+  fi
+
+  if ! has_env_value ADMIN_PASSWORD && ! has_env_value ADMIN_PASSWORD_SHA256; then
+    set_env_value ADMIN_PASSWORD "ChangeMe_$(random_hex | cut -c1-12)!"
+    log "Backfilled ADMIN_PASSWORD in existing .env; rotate it after deployment."
   fi
 }
 
@@ -96,7 +120,7 @@ ENVEOF
   chmod 600 .env
   log "Created default .env. Please rotate ADMIN_PASSWORD and fill real production secrets after first deployment."
 fi
-ensure_direct_url
+ensure_production_env
 
 if command -v docker >/dev/null 2>&1 && [ -f docker-compose.yml ]; then
   # Keep infrastructure startup idempotent. On existing servers, PostgreSQL/Redis
@@ -139,10 +163,22 @@ cp deploy/production/ecosystem.config.cjs "$DEPLOY_DIR/ecosystem.config.cjs"
 run pm2 startOrReload "$DEPLOY_DIR/ecosystem.config.cjs" --update-env
 run pm2 save
 
-sleep 3
-health_body="$(curl -fsS "http://127.0.0.1:$API_PORT/health")"
-if ! printf '%s' "$health_body" | grep -q '"status":"ok"'; then
-  log "Backend health check did not return ok: $health_body"
-  exit 1
-fi
-log "Backend deployed and health check passed."
+health_body=""
+for attempt in $(seq 1 10); do
+  if health_body="$(curl -fsS "http://127.0.0.1:$API_PORT/health" 2>/dev/null)"; then
+    if printf '%s' "$health_body" | grep -q '"status":"ok"'; then
+      log "Backend deployed and health check passed."
+      exit 0
+    fi
+    log "Backend health check returned non-ok response on attempt $attempt: $health_body"
+  else
+    log "Backend health check could not reach 127.0.0.1:$API_PORT on attempt $attempt."
+  fi
+  sleep 3
+done
+
+log "Backend health check failed after retries. Recent PM2/API logs:"
+pm2 status || true
+pm2 logs ai-worldcup-api --lines 80 --nostream || true
+tail -n 80 "$LOG_DIR/ai-worldcup-api.err.log" 2>/dev/null || true
+exit 1

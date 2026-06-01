@@ -28,7 +28,30 @@ env_value() {
   grep -E "^${key}=" "$env_file" 2>/dev/null | tail -n 1 | cut -d= -f2-
 }
 
-ensure_direct_url() {
+has_env_value() {
+  local env_file="$1"
+  local key="$2"
+  grep -Eq "^${key}=." "$env_file" 2>/dev/null
+}
+
+set_env_value() {
+  local env_file="$1"
+  local key="$2"
+  local value="$3"
+  local tmp
+  tmp="$(mktemp)"
+  awk -v key="$key" -v value="$value" '
+    BEGIN { updated = 0 }
+    $0 ~ "^" key "=" { print key "=" value; updated = 1; next }
+    { print }
+    END { if (updated == 0) print key "=" value }
+  ' "$env_file" > "$tmp"
+  cat "$tmp" > "$env_file"
+  rm -f "$tmp"
+  chmod 600 "$env_file"
+}
+
+ensure_production_env() {
   local env_file="$1"
   if [ ! -f "$env_file" ]; then
     return
@@ -36,23 +59,26 @@ ensure_direct_url() {
 
   local database_url
   database_url="$(env_value "$env_file" DATABASE_URL)"
-  if [ -z "$database_url" ]; then
-    return
+  if [ -n "$database_url" ] && ! has_env_value "$env_file" DIRECT_URL; then
+    set_env_value "$env_file" DIRECT_URL "$database_url"
+    log "Backfilled backend DIRECT_URL from DATABASE_URL in existing .env."
   fi
 
-  if ! grep -Eq '^DIRECT_URL=.' "$env_file"; then
-    local tmp
-    tmp="$(mktemp)"
-    awk -v value="$database_url" '
-      BEGIN { updated = 0 }
-      /^DIRECT_URL=/ { print "DIRECT_URL=" value; updated = 1; next }
-      { print }
-      END { if (updated == 0) print "DIRECT_URL=" value }
-    ' "$env_file" > "$tmp"
-    cat "$tmp" > "$env_file"
-    rm -f "$tmp"
-    chmod 600 "$env_file"
-    log "Backfilled backend DIRECT_URL from DATABASE_URL in existing .env."
+  local jwt_secret
+  jwt_secret="$(env_value "$env_file" JWT_SECRET)"
+  if [ -z "$jwt_secret" ] || [ "$jwt_secret" = "dev_jwt_secret_change_me_in_prod" ]; then
+    set_env_value "$env_file" JWT_SECRET "$(random_hex)"
+    log "Backfilled backend JWT_SECRET in existing .env."
+  fi
+
+  if ! has_env_value "$env_file" ADMIN_SESSION_SECRET; then
+    set_env_value "$env_file" ADMIN_SESSION_SECRET "$(random_hex)"
+    log "Backfilled backend ADMIN_SESSION_SECRET in existing .env."
+  fi
+
+  if ! has_env_value "$env_file" ADMIN_PASSWORD && ! has_env_value "$env_file" ADMIN_PASSWORD_SHA256; then
+    set_env_value "$env_file" ADMIN_PASSWORD "ChangeMe_$(random_hex | cut -c1-12)!"
+    log "Backfilled backend ADMIN_PASSWORD in existing .env; rotate it after deployment."
   fi
 }
 
@@ -192,7 +218,7 @@ ENVEOF
     chmod 600 "$env_file"
     log "Created default backend .env. Please rotate ADMIN_PASSWORD and fill real WeChat/AI/payment secrets before public launch."
   fi
-  ensure_direct_url "$env_file"
+  ensure_production_env "$env_file"
 }
 
 start_infra() {

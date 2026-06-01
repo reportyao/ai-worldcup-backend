@@ -15,6 +15,16 @@ const ENV_ALIASES: Array<[canonical: string, legacy: string]> = [
  * 启动期环境变量校验：缺少强制变量时直接 fail-fast，避免运行时再爆。
  * 第三方密钥保持可选；生产环境会强制基础数据库、认证和管理端密钥。
  */
+const BooleanEnvSchema = z.preprocess((value) => {
+  if (typeof value !== 'string') return value;
+
+  const normalized = value.trim().toLowerCase();
+  if (['true', '1', 'yes', 'y', 'on'].includes(normalized)) return true;
+  if (['false', '0', 'no', 'n', 'off'].includes(normalized)) return false;
+
+  return value;
+}, z.boolean());
+
 const EnvSchema = z.object({
   NODE_ENV: z
     .enum(['development', 'test', 'production'])
@@ -49,7 +59,7 @@ const EnvSchema = z.object({
   AI_GOOGLE_BASE_URL: z.string().url().optional(),
   AI_ANTHROPIC_API_KEY: z.string().min(1).optional(),
   AI_ANTHROPIC_BASE_URL: z.string().url().optional(),
-  AI_ALLOW_MOCK: z.coerce.boolean().default(false),
+  AI_ALLOW_MOCK: BooleanEnvSchema.default(false),
 
   API_FOOTBALL_KEY: z.string().min(1).optional(),
   API_FOOTBALL_BASE_URL: z.string().url().default('https://apiv3.apifootball.com/'),
