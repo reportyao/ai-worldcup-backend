@@ -20,7 +20,7 @@ async function bootstrap(): Promise<void> {
   });
   app.set('trust proxy', 1);
   app.enableShutdownHooks();
-  app.setGlobalPrefix('api', { exclude: ['health'] });
+  app.setGlobalPrefix('api', { exclude: ['health', 'api/health'] });
 
   await app.listen(config.API_PORT, '0.0.0.0');
   const logger = new Logger('Bootstrap');

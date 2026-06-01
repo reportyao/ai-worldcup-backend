@@ -1,28 +1,33 @@
+import { createHash, createHmac, timingSafeEqual } from 'node:crypto';
+
+import { DomainError, ErrorCode } from '@ai-worldcup/shared';
 import {
   BadRequestException,
   Injectable,
   NotFoundException,
+  UnauthorizedException,
 } from '@nestjs/common';
+import type { ConfigService } from '@nestjs/config';
 import type {
   CompetitionType,
   MatchStatus,
+  ModelPersona,
 } from '@prisma/client';
 import {
-  ModelPersona,
   PredictionTaskStatus,
   PredictionTrigger,
   PredictionVersion,
   PromptTemplateStatus,
   Prisma,
 } from '@prisma/client';
-import { DomainError, ErrorCode } from '@ai-worldcup/shared';
 import type { Request } from 'express';
 import { read, utils } from 'xlsx';
 
-import { PrismaService } from '../../prisma/prisma.service.js';
-import { PredictionPipelineService } from '../prediction-pipeline/prediction-pipeline.service.js';
-import { ConsensusService } from '../consensus/consensus.service.js';
-import { FootballDataSyncService } from '../football-data/football-data-sync.service.js';
+import type { AppConfig } from '../../config/configuration.js';
+import type { PrismaService } from '../../prisma/prisma.service.js';
+import type { ConsensusService } from '../consensus/consensus.service.js';
+import type { FootballDataSyncService } from '../football-data/football-data-sync.service.js';
+import type { PredictionPipelineService } from '../prediction-pipeline/prediction-pipeline.service.js';
 
 import type {
   AdminAiModelCreateDto,
@@ -35,6 +40,7 @@ import type {
   AdminCompetitionUpdateDto,
   AdminFootballDataSyncDto,
   AdminFootballDataSyncLogQuery,
+  AdminLoginDto,
   AdminMatchCreateDto,
   AdminMatchImportDto,
   AdminMatchListQuery,
@@ -47,6 +53,18 @@ import type {
   AdminPromptTemplateUpdateDto,
   AdminModelPredictionUpdateDto,
 } from './admin.schemas.js';
+
+interface RequestWithAdmin extends Request {
+  adminMeta?: RequestMeta;
+}
+
+interface AdminTokenPayload {
+  typ: 'admin';
+  email: string;
+  name: string;
+  iat: number;
+  exp: number;
+}
 
 interface RequestMeta {
   adminEmail: string;
@@ -75,24 +93,171 @@ export class AdminService {
     private readonly predictionPipeline: PredictionPipelineService,
     private readonly consensusService: ConsensusService,
     private readonly footballDataSync: FootballDataSyncService,
+    private readonly config: ConfigService<AppConfig, true>,
   ) {}
 
-  getRequestMeta(req: Request): RequestMeta {
-    const rawEmail = req.header('x-admin-email')?.trim();
-    const rawName = req.header('x-admin-name')?.trim();
-    // 前端使用 encodeURIComponent 编码以支持中文，这里做对应解码
-    const safeDecodeHeader = (val: string | undefined): string | undefined => {
-      if (!val || val.length === 0) return undefined;
-      try { return decodeURIComponent(val); } catch { return val; }
+  async login(dto: AdminLoginDto) {
+    const configuredEmail = this.config.get('ADMIN_EMAIL', { infer: true });
+    const adminEmail = dto.email?.trim().toLowerCase() || configuredEmail.toLowerCase();
+
+    if (adminEmail !== configuredEmail.toLowerCase()) {
+      throw new UnauthorizedException('Invalid administrator credentials');
+    }
+    if (!this.verifyAdminPassword(dto.password)) {
+      throw new UnauthorizedException('Invalid administrator credentials');
+    }
+
+    const admin = {
+      email: configuredEmail,
+      name: this.config.get('ADMIN_NAME', { infer: true }),
     };
-    const headerEmail = safeDecodeHeader(rawEmail);
-    const headerName = safeDecodeHeader(rawName);
     return {
-      adminEmail: headerEmail && headerEmail.length > 0 ? headerEmail : 'phase1-admin@local',
-      adminName: headerName && headerName.length > 0 ? headerName : 'Phase 1 Admin',
+      token: this.signAdminToken(admin.email, admin.name),
+      admin,
+      expiresIn: this.config.get('ADMIN_SESSION_TTL_SECONDS', { infer: true }),
+    };
+  }
+
+  getCurrentAdmin(req: Request) {
+    const meta = this.getRequestMeta(req);
+    return {
+      email: meta.adminEmail,
+      name: meta.adminName,
+    };
+  }
+
+  getRequestMeta(req: Request): RequestMeta {
+    const request = req as RequestWithAdmin;
+    if (request.adminMeta) return request.adminMeta;
+
+    const token = this.extractBearerToken(req);
+    const payload = token ? this.verifyAdminToken(token) : null;
+    if (!payload) {
+      throw new UnauthorizedException('Admin authorization required');
+    }
+
+    const meta: RequestMeta = {
+      adminEmail: payload.email,
+      adminName: payload.name,
       ipAddress: req.ip,
       userAgent: req.header('user-agent') ?? undefined,
     };
+    request.adminMeta = meta;
+    return meta;
+  }
+
+  async getDashboard() {
+    const [
+      totalCompetitions,
+      totalMatches,
+      totalTeams,
+      totalModels,
+      totalPredictionTasks,
+      recentMatches,
+      recentTasks,
+    ] = await this.prisma.$transaction([
+      this.prisma.competition.count(),
+      this.prisma.match.count(),
+      this.prisma.team.count(),
+      this.prisma.aiModel.count(),
+      this.prisma.predictionTask.count(),
+      this.prisma.match.findMany({
+        include: MATCH_INCLUDE,
+        orderBy: [{ kickoffAt: 'desc' }, { createdAt: 'desc' }],
+        take: 5,
+      }),
+      this.prisma.predictionTask.findMany({
+        include: {
+          match: {
+            include: {
+              competition: true,
+              homeTeam: true,
+              awayTeam: true,
+            },
+          },
+        },
+        orderBy: [{ updatedAt: 'desc' }, { createdAt: 'desc' }],
+        take: 5,
+      }),
+    ]);
+
+    return {
+      totalCompetitions,
+      totalMatches,
+      totalTeams,
+      totalModels,
+      totalPredictionTasks,
+      recentMatches,
+      recentTasks,
+    };
+  }
+
+  private verifyAdminPassword(password: string): boolean {
+    const plain = this.config.get('ADMIN_PASSWORD', { infer: true });
+    const sha256 = this.config.get('ADMIN_PASSWORD_SHA256', { infer: true });
+
+    if (plain) return this.safeEqual(password, plain);
+    if (sha256) {
+      const digest = createHash('sha256').update(password).digest('hex');
+      return this.safeEqual(digest.toLowerCase(), sha256.toLowerCase());
+    }
+
+    if (this.config.get('NODE_ENV', { infer: true }) !== 'production') {
+      return this.safeEqual(password, 'admin123456');
+    }
+
+    throw new UnauthorizedException('Administrator password is not configured');
+  }
+
+  private signAdminToken(email: string, name: string): string {
+    const now = Math.floor(Date.now() / 1000);
+    const payload: AdminTokenPayload = {
+      typ: 'admin',
+      email,
+      name,
+      iat: now,
+      exp: now + this.config.get('ADMIN_SESSION_TTL_SECONDS', { infer: true }),
+    };
+    const body = Buffer.from(JSON.stringify(payload)).toString('base64url');
+    const sig = createHmac('sha256', this.adminSessionSecret()).update(body).digest('base64url');
+    return `${body}.${sig}`;
+  }
+
+  private verifyAdminToken(token: string): AdminTokenPayload | null {
+    const [body, sig] = token.split('.');
+    if (!body || !sig) return null;
+
+    const expected = createHmac('sha256', this.adminSessionSecret()).update(body).digest('base64url');
+    if (!this.safeEqual(sig, expected)) return null;
+
+    try {
+      const payload = JSON.parse(Buffer.from(body, 'base64url').toString('utf8')) as AdminTokenPayload;
+      const now = Math.floor(Date.now() / 1000);
+      if (payload.typ !== 'admin' || !payload.email || !payload.name || payload.exp <= now) return null;
+      return payload;
+    } catch {
+      return null;
+    }
+  }
+
+  private extractBearerToken(req: Request): string | null {
+    const auth = req.header('authorization');
+    if (!auth?.startsWith('Bearer ')) return null;
+    const token = auth.slice('Bearer '.length).trim();
+    return token.length > 0 ? token : null;
+  }
+
+  private adminSessionSecret(): string {
+    return (
+      this.config.get('ADMIN_SESSION_SECRET', { infer: true }) ??
+      this.config.get('JWT_SECRET', { infer: true })
+    );
+  }
+
+  private safeEqual(left: string, right: string): boolean {
+    const leftBuffer = Buffer.from(left);
+    const rightBuffer = Buffer.from(right);
+    return leftBuffer.length === rightBuffer.length && timingSafeEqual(leftBuffer, rightBuffer);
   }
 
   async listCompetitions(query: AdminCompetitionListQuery) {

@@ -1,5 +1,5 @@
-import { z } from 'zod';
 import { StructuredPredictionSchema } from '@ai-worldcup/shared';
+import { z } from 'zod';
 
 const nullableDateInput = z
   .union([z.string().datetime(), z.string().regex(/^\d{4}-\d{2}-\d{2}$/), z.literal(''), z.null()])
@@ -10,6 +10,13 @@ const optionalTrimmedString = z
   .union([z.string().trim(), z.literal(''), z.null()])
   .optional()
   .transform((value) => (value === '' ? null : value));
+
+
+export const AdminLoginSchema = z.object({
+  email: z.string().trim().email().optional(),
+  password: z.string().min(1).max(256),
+});
+export type AdminLoginDto = z.infer<typeof AdminLoginSchema>;
 
 export const PaginationQuerySchema = z.object({
   page: z.coerce.number().int().min(1).default(1),

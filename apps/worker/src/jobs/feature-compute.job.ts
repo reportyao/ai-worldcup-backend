@@ -1,13 +1,13 @@
-import type { Job } from 'bullmq';
-import { PrismaClient } from '@prisma/client';
-import { z } from 'zod';
-
 import {
   computeMatchFeatures,
   FEATURE_VERSION,
   type HistoricalMatch,
   type MatchContext,
 } from '@ai-worldcup/shared';
+import { PrismaClient } from '@prisma/client';
+import type { Job } from 'bullmq';
+import { z } from 'zod';
+
 import { logger } from '../logger.js';
 
 /**

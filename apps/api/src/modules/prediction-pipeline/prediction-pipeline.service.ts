@@ -1,9 +1,10 @@
-import { BadRequestException, Inject, Injectable, OnModuleDestroy } from '@nestjs/common';
+import { ErrorCode } from '@ai-worldcup/shared';
+import type { OnModuleDestroy } from '@nestjs/common';
+import { BadRequestException, Inject, Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { PredictionTaskStatus } from '@prisma/client';
-import { Queue } from 'bullmq';
-import { ErrorCode } from '@ai-worldcup/shared';
 import type { PredictionTrigger, PredictionVersion } from '@prisma/client';
+import { Queue } from 'bullmq';
 
 import { PrismaService } from '../../prisma/prisma.service.js';
 import { QueueName } from '../../queues.js';

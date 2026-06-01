@@ -1,5 +1,5 @@
-import type { Job } from 'bullmq';
 import { PrismaClient } from '@prisma/client';
+import type { Job } from 'bullmq';
 import { z } from 'zod';
 
 import { logger } from '../logger.js';
@@ -157,7 +157,6 @@ export async function processReviewGenerator(job: Job<unknown>): Promise<{ ok: t
         actualAwayScore: match.awayScore,
         actualResult,
         prediction: output,
-        modelName: prediction.aiModel.displayName,
       });
 
       // 计算准确性
@@ -226,9 +225,8 @@ function generateReview(params: {
   actualAwayScore: number;
   actualResult: 'HOME_WIN' | 'DRAW' | 'AWAY_WIN';
   prediction: StructuredPredictionOutput;
-  modelName: string;
 }): ReviewStructuredOutput {
-  const { homeTeamName, awayTeamName, actualHomeScore, actualAwayScore, actualResult, prediction, modelName } = params;
+  const { homeTeamName, awayTeamName, actualHomeScore, actualAwayScore, actualResult, prediction } = params;
   const conclusion = prediction?.conclusion;
 
   const resultLabel = (r: string) => {

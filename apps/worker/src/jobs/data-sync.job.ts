@@ -1,9 +1,10 @@
+import type {
+  Prisma} from '@prisma/client';
 import {
   CompetitionType,
   MatchStatus,
   PredictionTrigger,
   PredictionVersion,
-  Prisma,
   PrismaClient,
 } from '@prisma/client';
 import type { Job } from 'bullmq';

@@ -1,8 +1,9 @@
-import { createCanvas, loadImage } from 'canvas';
-import type { CanvasRenderingContext2D } from 'canvas';
 import { createHash } from 'node:crypto';
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
+
+import type { CanvasRenderingContext2D, Image } from 'canvas';
+import { createCanvas, loadImage } from 'canvas';
 
 /**
  * 预测卡渲染数据
@@ -181,7 +182,7 @@ function drawText(
 /**
  * 尝试加载远程图片，失败时返回 null
  */
-async function tryLoadImage(url: string | null): Promise<import('canvas').Image | null> {
+async function tryLoadImage(url: string | null): Promise<Image | null> {
   if (!url) return null;
   try {
     const img = await loadImage(url);

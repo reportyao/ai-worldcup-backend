@@ -1,6 +1,6 @@
 import { Controller, Get, Param, NotFoundException } from '@nestjs/common';
 
-import { ReviewsService } from './reviews.service.js';
+import type { ReviewsService } from './reviews.service.js';
 
 /**
  * T4-03/T4-04/T4-05: 复盘与战绩 API

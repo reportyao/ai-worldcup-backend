@@ -1,11 +1,11 @@
 import { Inject, Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
-import { MatchStatus, PredictionTaskStatus } from '@prisma/client';
-import type { Match, UserPrediction } from '@prisma/client';
+import { MatchStatus } from '@prisma/client';
+import type { Match, UserPrediction , PredictionTaskStatus } from '@prisma/client';
 
 import { PrismaService } from '../../prisma/prisma.service.js';
 import { AuthService } from '../auth/auth.service.js';
 import type { RequestMeta } from '../auth/auth.service.js';
-import { AccessService } from '../entitlements/access.service.js';
+import type { AccessService } from '../entitlements/access.service.js';
 
 import type { MatchListQueryDto, UserPredictionSubmitDto } from './matches.schemas.js';
 

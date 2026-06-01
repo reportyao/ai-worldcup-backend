@@ -1,5 +1,5 @@
-import type { Job } from 'bullmq';
 import { PrismaClient, ConsensusLevel } from '@prisma/client';
+import type { Job } from 'bullmq';
 import { z } from 'zod';
 
 import { logger } from '../logger.js';

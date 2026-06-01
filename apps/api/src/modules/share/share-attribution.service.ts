@@ -1,11 +1,8 @@
-import {
-  BadRequestException,
-  Injectable,
-  Logger,
-  NotFoundException,
-} from '@nestjs/common';
 import { randomBytes, createHash } from 'crypto';
-import { PrismaService } from '../../prisma/prisma.service.js';
+
+import { Injectable, Logger } from '@nestjs/common';
+
+import type { PrismaService } from '../../prisma/prisma.service.js';
 
 /**
  * T6-02: 小程序码与分享归因服务
@@ -238,7 +235,7 @@ export class ShareAttributionService {
     }
 
     // 创建归因记录并更新分享追踪
-    const attribution = await this.prisma.$transaction(async (tx) => {
+    await this.prisma.$transaction(async (tx) => {
       const attr = await tx.shareAttribution.create({
         data: {
           shareTrackId: shareTrack!.id,

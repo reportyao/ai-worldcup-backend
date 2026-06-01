@@ -1,10 +1,11 @@
 import { Injectable, Logger, NotFoundException } from '@nestjs/common';
 
-import { PrismaService } from '../../prisma/prisma.service.js';
+import type { PrismaService } from '../../prisma/prisma.service.js';
 
+import type {
+  PredictionCardData} from './share-image.renderer.js';
 import {
   buildCacheKey,
-  PredictionCardData,
   readFromCache,
   renderPredictionCard,
   writeToCache,

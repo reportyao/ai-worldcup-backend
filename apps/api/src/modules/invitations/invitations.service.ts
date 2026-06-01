@@ -1,12 +1,13 @@
+import { randomBytes } from 'node:crypto';
+
 import {
   BadRequestException,
   Injectable,
   Logger,
 } from '@nestjs/common';
-import { randomBytes } from 'node:crypto';
 
-import { PrismaService } from '../../prisma/prisma.service.js';
-import { AccessService } from '../entitlements/access.service.js';
+import type { PrismaService } from '../../prisma/prisma.service.js';
+import type { AccessService } from '../entitlements/access.service.js';
 
 /** 每日最多获得的邀请奖励数 */
 const MAX_DAILY_INVITE_REWARDS = 3;

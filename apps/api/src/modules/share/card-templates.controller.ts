@@ -1,15 +1,16 @@
 import {
   Controller,
   Get,
-  NotFoundException,
   Param,
   Query,
   Req,
   Res,
 } from '@nestjs/common';
 import type { Request, Response } from 'express';
-import { PrismaService } from '../../prisma/prisma.service.js';
-import { AuthService } from '../auth/auth.service.js';
+
+import type { PrismaService } from '../../prisma/prisma.service.js';
+import type { AuthService } from '../auth/auth.service.js';
+
 import {
   buildCardCacheKey,
   isContentSafe,

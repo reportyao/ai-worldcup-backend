@@ -1,4 +1,6 @@
-import type { OrderStatus, PaymentChannel, Prisma } from '@prisma/client';
+
+import { createDecipheriv, createSign, randomUUID } from 'node:crypto';
+import { readFileSync } from 'node:fs';
 
 import {
   BadRequestException,
@@ -7,12 +9,11 @@ import {
   NotFoundException,
   UnauthorizedException,
 } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
-import { createDecipheriv, createHash, createHmac, createSign, randomUUID } from 'node:crypto';
-import { readFileSync } from 'node:fs';
+import type { ConfigService } from '@nestjs/config';
+import type { OrderStatus, PaymentChannel, Prisma } from '@prisma/client';
 
-import { PrismaService } from '../../prisma/prisma.service.js';
-import { AccessService } from '../entitlements/access.service.js';
+import type { PrismaService } from '../../prisma/prisma.service.js';
+import type { AccessService } from '../entitlements/access.service.js';
 
 /** Pass 定价（分） */
 const PASS_TIER_PRICE_CNY: Record<string, number> = {

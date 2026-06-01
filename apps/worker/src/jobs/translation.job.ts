@@ -13,6 +13,7 @@
 import { PrismaClient } from '@prisma/client';
 import type { Job } from 'bullmq';
 import { z } from 'zod';
+
 import { logger } from '../logger.js';
 
 const prisma = new PrismaClient();
@@ -27,7 +28,6 @@ const TranslationPayloadSchema = z.object({
   batchLimit: z.coerce.number().int().min(1).max(50).default(10),
 });
 
-type TranslationPayload = z.infer<typeof TranslationPayloadSchema>;
 
 // ─── Main Processor ─────────────────────────────────────────────────────────
 

@@ -1,11 +1,11 @@
-import { Inject, Injectable } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
 import {
   generateStructuredPrediction,
   type AiGatewayMatchContext,
   type AiGatewayModelConfig,
+  type PredictionVersion,
 } from '@ai-worldcup/shared';
-import type { PredictionVersion } from '@ai-worldcup/shared';
+import { Inject, Injectable } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 
 @Injectable()
 export class AiGatewayService {

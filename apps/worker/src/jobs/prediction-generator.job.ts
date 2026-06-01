@@ -1,13 +1,4 @@
 import {
-  ConsensusLevel,
-  ModelPersona,
-  PredictionTaskStatus,
-  PredictionTrigger,
-  PredictionVersion,
-  PrismaClient,
-  type AiModel,
-} from '@prisma/client';
-import {
   buildFailureStructuredOutput,
   computeConsensusSummary,
   generateStructuredPrediction,
@@ -16,6 +7,14 @@ import {
   type ExternalPromptTemplate,
   type StructuredPrediction,
 } from '@ai-worldcup/shared';
+import {
+  PredictionTaskStatus,
+  PredictionTrigger,
+  PredictionVersion,
+  PrismaClient,
+  type AiModel,
+  type ModelPersona,
+} from '@prisma/client';
 import type { Job } from 'bullmq';
 import { Queue } from 'bullmq';
 import { Redis } from 'ioredis';

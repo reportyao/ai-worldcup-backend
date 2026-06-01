@@ -13,10 +13,11 @@
  * - 动态字号防溢出
  */
 
-import { createCanvas } from 'canvas';
 import { createHash } from 'crypto';
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'fs';
 import { join } from 'path';
+
+import { createCanvas } from 'canvas';
 
 // Canvas context type alias for convenience
 type Ctx2D = ReturnType<ReturnType<typeof createCanvas>['getContext']>;

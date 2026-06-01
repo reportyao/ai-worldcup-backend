@@ -22,6 +22,13 @@ const EnvSchema = z.object({
   JWT_ACCESS_TTL: z.string().default('2h'),
   JWT_REFRESH_TTL: z.string().default('30d'),
 
+  ADMIN_EMAIL: z.string().email().default('admin@ai-worldcup.local'),
+  ADMIN_NAME: z.string().min(1).default('AI WorldCup Admin'),
+  ADMIN_PASSWORD: z.string().min(8).optional(),
+  ADMIN_PASSWORD_SHA256: z.string().regex(/^[a-f0-9]{64}$/i).optional(),
+  ADMIN_SESSION_SECRET: z.string().min(16).optional(),
+  ADMIN_SESSION_TTL_SECONDS: z.coerce.number().int().min(300).max(2_592_000).default(86_400),
+
   AI_GATEWAY_BASE_URL: z.string().url().optional(),
   AI_GATEWAY_TIMEOUT_MS: z.coerce.number().int().min(1_000).max(120_000).default(30_000),
   AI_OPENAI_API_KEY: z.string().min(1).optional(),

@@ -8,11 +8,14 @@ import {
   Post,
   Query,
   Req,
+  UseGuards,
 } from '@nestjs/common';
 import type { Request } from 'express';
 
 import { ZodValidationPipe } from '../../common/zod-validation.pipe.js';
 
+import { AdminAuthGuard } from './admin-auth.guard.js';
+import { AdminPublic } from './admin-auth.metadata.js';
 import {
   AdminAiModelCreateSchema,
   AdminAiModelListQuerySchema,
@@ -24,6 +27,7 @@ import {
   AdminCompetitionUpdateSchema,
   AdminFootballDataSyncLogQuerySchema,
   AdminFootballDataSyncSchema,
+  AdminLoginSchema,
   AdminMatchCreateSchema,
   AdminMatchImportSchema,
   AdminMatchListQuerySchema,
@@ -46,6 +50,7 @@ import {
   type AdminCompetitionUpdateDto,
   type AdminFootballDataSyncDto,
   type AdminFootballDataSyncLogQuery,
+  type AdminLoginDto,
   type AdminMatchCreateDto,
   type AdminMatchImportDto,
   type AdminMatchListQuery,
@@ -58,11 +63,29 @@ import {
   type AdminPromptTemplateUpdateDto,
   type AdminModelPredictionUpdateDto,
 } from './admin.schemas.js';
-import { AdminService } from './admin.service.js';
+import type { AdminService } from './admin.service.js';
 
 @Controller('admin')
+@UseGuards(AdminAuthGuard)
 export class AdminController {
   constructor(private readonly adminService: AdminService) {}
+
+
+  @AdminPublic()
+  @Post('login')
+  login(@Body(new ZodValidationPipe(AdminLoginSchema)) dto: AdminLoginDto) {
+    return this.adminService.login(dto);
+  }
+
+  @Get('me')
+  getCurrentAdmin(@Req() req: Request) {
+    return this.adminService.getCurrentAdmin(req);
+  }
+
+  @Get('dashboard')
+  getDashboard() {
+    return this.adminService.getDashboard();
+  }
 
   @Get('competitions')
   listCompetitions(
