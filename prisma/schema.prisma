@@ -127,6 +127,42 @@ enum PassTier {
   TIER_3
 }
 
+enum PersonalityQuestionType {
+  SINGLE_CHOICE
+}
+
+enum PersonalityResultEventType {
+  VIEW_RESULT
+  CHANGE_SUBTITLE
+  CHANGE_SKIN
+  SAVE_IMAGE
+  SHARE_CLICK
+  CTA_CLICK
+  FRIEND_VOTE
+}
+
+enum AiPkPick {
+  HOME_WIN
+  DRAW
+  AWAY_WIN
+}
+
+enum AiPkSettlementStatus {
+  PENDING
+  USER_HIT_AI_MISS
+  USER_MISS_AI_HIT
+  BOTH_HIT
+  BOTH_MISS
+  VOID
+}
+
+enum AiPkEventType {
+  SAVE_IMAGE
+  SHARE_CLICK
+  CHANGE_REASON
+  CTA_CLICK
+}
+
 // ─────────────────────────────────────────────────────────────────────────────
 // T1-01: Competition / Team / Match
 // ─────────────────────────────────────────────────────────────────────────────
@@ -221,6 +257,7 @@ model Match {
   shareTracks     ShareTrack[]
   unlocks         MatchUnlock[]
   matchFeatures   MatchFeature[]
+  aiPkRecords     AiPkRecord[]
 
   @@unique([competitionId, homeTeamId, awayTeamId, kickoffAt])
   @@index([competitionId, kickoffAt])
@@ -358,6 +395,7 @@ model PredictionTask {
 
   predictions  ModelPrediction[]
   modelReviews ModelReview[]
+  aiPkRecords  AiPkRecord[]
 
   /// 同一场比赛同一版本只能有一个任务
   @@unique([matchId, version])
@@ -453,12 +491,14 @@ model User {
   entitlements        Entitlement[]
   matchUnlocks        MatchUnlock[]
   orders              Order[]
-  sentInvitations     Invitation[]       @relation("Inviter")
-  receivedInvitation  Invitation?        @relation("Invitee")
+  sentInvitations     Invitation[]            @relation("Inviter")
+  receivedInvitation  Invitation?             @relation("Invitee")
   userPredictions     UserPrediction[]
   shareTracks         ShareTrack[]
-  shareAttributions   ShareAttribution[] @relation("AttributedUser")
-  inviterAttributions ShareAttribution[] @relation("Inviter_Attribution")
+  shareAttributions   ShareAttribution[]      @relation("AttributedUser")
+  inviterAttributions ShareAttribution[]      @relation("Inviter_Attribution")
+  personalityResults  PersonalityTestResult[]
+  aiPkRecords         AiPkRecord[]
 
   @@index([isPassActive])
   @@index([createdAt])
@@ -483,11 +523,13 @@ model Guest {
   updatedAt     DateTime @updatedAt
 
   /// 游客升级为注册用户后的关联
-  user            User?
-  entitlements    Entitlement[]
-  matchUnlocks    MatchUnlock[]
-  userPredictions UserPrediction[]
-  shareTracks     ShareTrack[]
+  user               User?
+  entitlements       Entitlement[]
+  matchUnlocks       MatchUnlock[]
+  userPredictions    UserPrediction[]
+  shareTracks        ShareTrack[]
+  personalityResults PersonalityTestResult[]
+  aiPkRecords        AiPkRecord[]
 
   @@index([fingerprint])
   @@index([createdAt])
@@ -835,4 +877,211 @@ model ContentTranslation {
   @@unique([sourceType, sourceId, locale])
   @@index([status])
   @@index([sourceType, sourceId])
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// F1: Personality Test & AI PK Light Sharing
+// ─────────────────────────────────────────────────────────────────────────────
+
+/// 人格测试活动版本。用于隔离周期性重测、文案池、皮肤和 A/B 配置。
+model PersonalityActivity {
+  id            String    @id @default(cuid())
+  code          String    @unique
+  name          String
+  configVersion Int       @default(1)
+  startsAt      DateTime?
+  endsAt        DateTime?
+  isActive      Boolean   @default(true)
+  settings      Json?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  types     PersonalityType[]
+  questions PersonalityQuestion[]
+  results   PersonalityTestResult[]
+
+  @@index([isActive, startsAt, endsAt])
+}
+
+/// 人格类型定义。不同活动下 code 可复用，展示与评分快照由结果表固化。
+model PersonalityType {
+  id          String              @id @default(cuid())
+  activityId  String
+  activity    PersonalityActivity @relation(fields: [activityId], references: [id], onDelete: Cascade)
+  code        String
+  name        String
+  shortName   String?
+  description String
+  traits      Json?
+  indices     Json?
+  defaultCta  Json?
+  rarity      String?
+  themeColor  String?
+  sortOrder   Int                 @default(0)
+  isActive    Boolean             @default(true)
+  createdAt   DateTime            @default(now())
+  updatedAt   DateTime            @updatedAt
+
+  subtitles PersonalitySubtitle[]
+  results   PersonalityTestResult[]
+
+  @@unique([activityId, code])
+  @@index([activityId, isActive, sortOrder])
+}
+
+/// 人格结果副标题池。运营可按人格类型配置多条分享文案。
+model PersonalitySubtitle {
+  id            String          @id @default(cuid())
+  personalityId String
+  personality   PersonalityType @relation(fields: [personalityId], references: [id], onDelete: Cascade)
+  content       String
+  scene         String?
+  safetyLevel   String?
+  weight        Int             @default(1)
+  isActive      Boolean         @default(true)
+  createdAt     DateTime        @default(now())
+  updatedAt     DateTime        @updatedAt
+
+  @@index([personalityId, isActive])
+}
+
+/// 人格测试题目。评分权重保存在 options JSON 中，由后端校验和计算。
+model PersonalityQuestion {
+  id         String                  @id @default(cuid())
+  activityId String
+  activity   PersonalityActivity     @relation(fields: [activityId], references: [id], onDelete: Cascade)
+  code       String
+  title      String
+  subtitle   String?
+  type       PersonalityQuestionType @default(SINGLE_CHOICE)
+  options    Json
+  sortOrder  Int                     @default(0)
+  isActive   Boolean                 @default(true)
+  createdAt  DateTime                @default(now())
+  updatedAt  DateTime                @updatedAt
+
+  @@unique([activityId, code])
+  @@index([activityId, isActive, sortOrder])
+}
+
+/// 人格测试结果。保存活动版本、答案、评分、文案、皮肤和分享所需快照。
+model PersonalityTestResult {
+  id                  String              @id @default(cuid())
+  activityId          String
+  activity            PersonalityActivity @relation(fields: [activityId], references: [id])
+  activityVersion     Int
+  userId              String?
+  user                User?               @relation(fields: [userId], references: [id])
+  guestId             String?
+  guest               Guest?              @relation(fields: [guestId], references: [id])
+  personalityId       String
+  personality         PersonalityType     @relation(fields: [personalityId], references: [id])
+  answers             Json
+  scoreBreakdown      Json
+  selectedSubtitleId  String?
+  subtitleVersion     Int                 @default(1)
+  selectedSkin        String              @default("CLASSIC_DARK")
+  sameCountSnapshot   Int                 @default(0)
+  totalCountSnapshot  Int                 @default(0)
+  rarityLabelSnapshot String?
+  resultSummary       Json?
+  inviteCode          String?
+  ownerTokenHash      String?
+  clientRequestId     String?
+  ipAddress           String?
+  userAgent           String?
+  createdAt           DateTime            @default(now())
+  updatedAt           DateTime            @updatedAt
+
+  events      PersonalityResultEvent[]
+  friendVotes PersonalityFriendVote[]
+
+  @@index([activityId, createdAt])
+  @@index([userId, createdAt])
+  @@index([guestId, createdAt])
+  @@index([personalityId, createdAt])
+  @@index([clientRequestId])
+}
+
+/// 人格结果轻事件。用于结果页互动、分享点击、保存图片和 CTA 指标。
+model PersonalityResultEvent {
+  id        String                     @id @default(cuid())
+  resultId  String
+  result    PersonalityTestResult      @relation(fields: [resultId], references: [id], onDelete: Cascade)
+  type      PersonalityResultEventType
+  metadata  Json?
+  createdAt DateTime                   @default(now())
+
+  @@index([resultId, type, createdAt])
+  @@index([type, createdAt])
+}
+
+/// 好友审判轻事件。支持公开分享页的轻量投票，不要求强登录。
+model PersonalityFriendVote {
+  id           String                @id @default(cuid())
+  resultId     String
+  result       PersonalityTestResult @relation(fields: [resultId], references: [id], onDelete: Cascade)
+  sceneValue   String?
+  voteType     String
+  voterUserId  String?
+  voterGuestId String?
+  fingerprint  String?
+  createdAt    DateTime              @default(now())
+
+  @@index([resultId, voteType, createdAt])
+  @@index([sceneValue, createdAt])
+}
+
+/// AI PK 站队记录。读取已发布或可展示 AI 共识并保存快照，不在站队时实时调用大模型。
+model AiPkRecord {
+  id                 String               @id @default(cuid())
+  matchId            String
+  match              Match                @relation(fields: [matchId], references: [id], onDelete: Cascade)
+  userId             String?
+  user               User?                @relation(fields: [userId], references: [id])
+  guestId            String?
+  guest              Guest?               @relation(fields: [guestId], references: [id])
+  userPick           AiPkPick
+  aiPick             AiPkPick
+  aiConfidence       Float?
+  predictionTaskId   String?
+  predictionTask     PredictionTask?      @relation(fields: [predictionTaskId], references: [id])
+  aiSummarySnapshot  Json?
+  reasonText         String?
+  reasonTemplateCode String?
+  reasonVersion      Int                  @default(1)
+  settlementStatus   AiPkSettlementStatus @default(PENDING)
+  settlementSnapshot Json?
+  settledAt          DateTime?
+  inviteCode         String?
+  ownerTokenHash     String?
+  clientRequestId    String?
+  ipAddress          String?
+  userAgent          String?
+  createdAt          DateTime             @default(now())
+  updatedAt          DateTime             @updatedAt
+
+  events AiPkEvent[]
+
+  @@unique([matchId, userId])
+  @@unique([matchId, guestId])
+  @@index([matchId, createdAt])
+  @@index([userId, createdAt])
+  @@index([guestId, createdAt])
+  @@index([settlementStatus, createdAt])
+  @@index([predictionTaskId])
+  @@index([clientRequestId])
+}
+
+/// AI PK 轻事件。用于保存图片、分享点击、换一句理由和 CTA 指标。
+model AiPkEvent {
+  id        String        @id @default(cuid())
+  recordId  String
+  record    AiPkRecord    @relation(fields: [recordId], references: [id], onDelete: Cascade)
+  type      AiPkEventType
+  metadata  Json?
+  createdAt DateTime      @default(now())
+
+  @@index([recordId, type, createdAt])
+  @@index([type, createdAt])
 }

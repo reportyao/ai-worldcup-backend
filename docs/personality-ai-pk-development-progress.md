@@ -42,8 +42,8 @@ GitHub CLI 认证已于 2026-06-02 恢复，三个仓库的 `feature/personality
 
 | 顺序 | 功能包 | 主要产物 | 涉及仓库 | 验收口径 | 状态 |
 |---|---|---|---|---|---|
-| F0 | 开发计划与进度文档 | `docs/personality-ai-pk-development-progress.md` | backend | 文档进入 GitHub，后续每个功能更新此文档 | 进行中 |
-| F1 | 后端数据模型与 seed | Prisma 枚举和模型、反向 relation、初始 12 人格/12 题/文案池 seed | backend | `prisma generate` 通过，seed 幂等，不破坏现有模型 | 未开始 |
+| F0 | 开发计划与进度文档 | `docs/personality-ai-pk-development-progress.md` | backend | 文档进入 GitHub，后续每个功能更新此文档 | 完成 |
+| F1 | 后端数据模型与 seed | Prisma 枚举和模型、反向 relation、初始 12 人格/12 题/文案池 seed | backend | `prisma generate` 通过，seed 幂等，不破坏现有模型 | 完成 |
 | F2 | 人格评分与结果接口 | `personality-test` 模块、config、submit、result、event 接口和评分测试 | backend | 游客和登录用户都能提交并读取稳定结果 | 未开始 |
 | F3 | 分享归因泛化 | 扩展 `/share/track`、目标类型、metadata、非比赛 URL、view 去重 | backend | 旧比赛分享兼容，新人格和 AI PK 分享可追踪 | 未开始 |
 | F4 | 人格结果图生成 | 人格 PNG 卡片接口、二维码、缓存 key、错误降级 | backend | 给定 resultId 可生成稳定图片，非法访问安全降级 | 未开始 |
@@ -71,6 +71,7 @@ GitHub CLI 认证已于 2026-06-02 恢复，三个仓库的 `feature/personality
 | 日期 | 功能包 | 仓库 | 提交哈希 | 验证结果 | 状态 | 备注 |
 |---|---|---|---|---|---|---|
 | 2026-06-02 | F0 开发计划与进度文档 | backend | `d2eebf4` | Markdown 结构检查通过；后端分支已推送；前端和后台同名分支已推送 | 完成 | 进度文档已进入 GitHub，后续每个功能必须更新本文档 |
+| 2026-06-02 | F1 后端数据模型与 seed | backend | 本次 F1 提交 | `prisma validate` 通过；`prisma generate` 通过；`tsc --noEmit prisma/seed.ts` 通过；`pnpm typecheck` 通过；seed 扩展为 12 类人格、12 道题和每类双场景文案池 | 完成 | 新增人格测试与 AI PK 基础 Prisma 模型、反向关系、PostgreSQL 迁移 SQL；同时修复历史 seed 中邀请与权益字段漂移，保持幂等 |
 
 ## 七、当前阻塞与处理
 
@@ -82,4 +83,4 @@ GitHub CLI 认证已于 2026-06-02 恢复，三个仓库的 `feature/personality
 
 ## 八、下一步行动
 
-下一步进入 F1，优先改造后端 Prisma 模型和 seed，因为它是人格结果、AI PK 记录、分享图片和前端页面的共同契约。F1 完成后需要提交并推送后端仓库，同时再次更新本文档的进度记录。
+F1 已完成并进入提交推送阶段。下一步进入 F2，优先实现后端人格评分与结果接口，包括活动配置读取、题目列表、提交评分、结果读取和事件记录。F2 必须沿用 F1 已落地的数据模型，并显式处理游客与登录用户身份，避免绕开既有 `AuthService.resolveViewer` 和游客升级链路。
