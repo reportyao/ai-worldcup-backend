@@ -11,6 +11,38 @@ log() { printf '[%s] %s\n' "$(date '+%Y-%m-%d %H:%M:%S')" "$*"; }
 run() { log "+ $*"; "$@"; }
 random_hex() { openssl rand -hex 32 2>/dev/null || date +%s%N | sha256sum | awk '{print $1}'; }
 
+env_value() {
+  local key="$1"
+  grep -E "^${key}=" .env 2>/dev/null | tail -n 1 | cut -d= -f2-
+}
+
+ensure_direct_url() {
+  if [ ! -f .env ]; then
+    return
+  fi
+
+  local database_url
+  database_url="$(env_value DATABASE_URL)"
+  if [ -z "$database_url" ]; then
+    return
+  fi
+
+  if ! grep -Eq '^DIRECT_URL=.' .env; then
+    local tmp
+    tmp="$(mktemp)"
+    awk -v value="$database_url" '
+      BEGIN { updated = 0 }
+      /^DIRECT_URL=/ { print "DIRECT_URL=" value; updated = 1; next }
+      { print }
+      END { if (updated == 0) print "DIRECT_URL=" value }
+    ' .env > "$tmp"
+    cat "$tmp" > .env
+    rm -f "$tmp"
+    chmod 600 .env
+    log "Backfilled DIRECT_URL from DATABASE_URL in existing .env."
+  fi
+}
+
 cd "$APP_DIR"
 mkdir -p "$DEPLOY_DIR" "$LOG_DIR"
 
@@ -64,6 +96,7 @@ ENVEOF
   chmod 600 .env
   log "Created default .env. Please rotate ADMIN_PASSWORD and fill real production secrets after first deployment."
 fi
+ensure_direct_url
 
 if command -v docker >/dev/null 2>&1 && [ -f docker-compose.yml ]; then
   # Keep infrastructure startup idempotent. On existing servers, PostgreSQL/Redis

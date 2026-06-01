@@ -18,7 +18,43 @@ VITE_API_BASE_URL="${VITE_API_BASE_URL:-/api}"
 
 log() { printf '[%s] %s\n' "$(date '+%Y-%m-%d %H:%M:%S')" "$*"; }
 run() { log "+ $*"; "$@"; }
-random_hex() { openssl rand -hex 32 2>/dev/null || date +%s%N | sha256sum | awk '{print $1}'; }
+random_hex() {
+  openssl rand -hex 32 2>/dev/null || date +%s%N | sha256sum | awk '{print $1}'
+}
+
+env_value() {
+  local env_file="$1"
+  local key="$2"
+  grep -E "^${key}=" "$env_file" 2>/dev/null | tail -n 1 | cut -d= -f2-
+}
+
+ensure_direct_url() {
+  local env_file="$1"
+  if [ ! -f "$env_file" ]; then
+    return
+  fi
+
+  local database_url
+  database_url="$(env_value "$env_file" DATABASE_URL)"
+  if [ -z "$database_url" ]; then
+    return
+  fi
+
+  if ! grep -Eq '^DIRECT_URL=.' "$env_file"; then
+    local tmp
+    tmp="$(mktemp)"
+    awk -v value="$database_url" '
+      BEGIN { updated = 0 }
+      /^DIRECT_URL=/ { print "DIRECT_URL=" value; updated = 1; next }
+      { print }
+      END { if (updated == 0) print "DIRECT_URL=" value }
+    ' "$env_file" > "$tmp"
+    cat "$tmp" > "$env_file"
+    rm -f "$tmp"
+    chmod 600 "$env_file"
+    log "Backfilled backend DIRECT_URL from DATABASE_URL in existing .env."
+  fi
+}
 
 ensure_command() {
   command -v "$1" >/dev/null 2>&1 || { log "ERROR: missing command: $1"; exit 1; }
@@ -156,6 +192,7 @@ ENVEOF
     chmod 600 "$env_file"
     log "Created default backend .env. Please rotate ADMIN_PASSWORD and fill real WeChat/AI/payment secrets before public launch."
   fi
+  ensure_direct_url "$env_file"
 }
 
 start_infra() {

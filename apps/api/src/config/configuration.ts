@@ -86,6 +86,14 @@ function normalizeEnvironment(env: NodeJS.ProcessEnv): void {
     if (!canonicalValue && legacyValue) env[canonical] = legacyValue;
     if (!legacyValue && env[canonical]) env[legacy] = env[canonical];
   }
+
+  // Prisma schema uses `directUrl = env("DIRECT_URL")` for migration/direct
+  // connection support. Existing production deployments may only have
+  // DATABASE_URL in their persisted .env file; falling back keeps the API
+  // process from failing during Prisma Client initialization after upgrades.
+  if (!env.DIRECT_URL && env.DATABASE_URL) {
+    env.DIRECT_URL = env.DATABASE_URL;
+  }
 }
 
 function validateProductionConfig(config: AppConfig): void {
