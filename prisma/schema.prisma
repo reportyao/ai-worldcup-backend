@@ -29,6 +29,13 @@ enum CompetitionType {
   OTHER
 }
 
+enum CompetitionPriority {
+  P0
+  P1
+  P2
+  P3
+}
+
 enum MatchStatus {
   SCHEDULED
   LIVE
@@ -126,11 +133,13 @@ enum PassTier {
 
 /// 赛事（世界杯、洲际杯、联赛等）
 model Competition {
-  id         String          @id @default(cuid())
+  id         String              @id @default(cuid())
   /// 唯一标识码，如 "WC-2026", "EURO-2024"
-  code       String          @unique
+  code       String              @unique
   name       String
-  type       CompetitionType @default(WORLD_CUP)
+  type       CompetitionType     @default(WORLD_CUP)
+  /// 联赛优先级：P0=核心赛事 P1=用户常看 P2=次级 P3=低级别
+  priority   CompetitionPriority @default(P2)
   /// 赛季标识，如 "2026", "2024-25"
   season     String
   /// 赛事所属国家/地区，用于后台筛选与运营展示
@@ -138,18 +147,19 @@ model Competition {
   /// 城市场景标签，如 "New York", "Shanghai"，用于本地化运营
   cityTag    String?
   /// 后台上下架状态：ACTIVE / DRAFT / ARCHIVED
-  status     String          @default("ACTIVE")
+  status     String              @default("ACTIVE")
   startDate  DateTime?
   endDate    DateTime?
   /// 外部数据源 ID（如 football-data.org 的 competition id）
-  externalId String?         @unique
-  createdAt  DateTime        @default(now())
-  updatedAt  DateTime        @updatedAt
+  externalId String?             @unique
+  createdAt  DateTime            @default(now())
+  updatedAt  DateTime            @updatedAt
 
   matches Match[]
 
   @@index([type, season])
   @@index([status, startDate])
+  @@index([priority, status])
 }
 
 /// 球队
@@ -210,6 +220,7 @@ model Match {
   modelReviews    ModelReview[]
   shareTracks     ShareTrack[]
   unlocks         MatchUnlock[]
+  matchFeatures   MatchFeature[]
 
   @@unique([competitionId, homeTeamId, awayTeamId, kickoffAt])
   @@index([competitionId, kickoffAt])
@@ -219,20 +230,65 @@ model Match {
 
 /// 第三方足球数据同步运行日志（API-Football 等）
 model FootballDataSyncLog {
-  id           String   @id @default(cuid())
-  provider     String   @default("api-football")
+  id           String    @id @default(cuid())
+  provider     String    @default("api-football")
   scope        String
-  status       String   @default("RUNNING")
+  status       String    @default("RUNNING")
   params       Json?
   summary      Json?
   errorMessage String?
-  startedAt    DateTime @default(now())
+  startedAt    DateTime  @default(now())
   finishedAt   DateTime?
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @updatedAt
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
 
   @@index([provider, scope, startedAt])
   @@index([status, startedAt])
+}
+
+/// 原始 API 响应存档（用于重算和排查）
+model RawApiResponse {
+  id         String   @id @default(cuid())
+  /// 数据提供方，如 "api-football"
+  provider   String   @default("api-football")
+  /// 端点标识，如 "get_events", "get_teams"
+  endpoint   String
+  /// 关联的外部 ID（如 match external id）
+  externalId String?
+  /// 原始 JSON 响应
+  rawJson    Json
+  /// 请求参数快照
+  params     Json?
+  createdAt  DateTime @default(now())
+
+  @@index([provider, endpoint, externalId])
+  @@index([createdAt])
+}
+
+/// 比赛级特征快照（预测输入的数据基础）
+model MatchFeature {
+  id             String   @id @default(cuid())
+  /// 关联比赛
+  matchId        String
+  match          Match    @relation(fields: [matchId], references: [id], onDelete: Cascade)
+  /// 特征计算版本，如 "v1.0"
+  featureVersion String   @default("v1.0")
+  /// 结构化特征 JSON（近期状态、攻防、主客场、赛程等）
+  featuresJson   Json
+  /// 压缩后的文本摘要（直接拼入 Prompt）
+  summaryText    String?
+  /// 数据完整度等级：HIGH / MEDIUM / LOW
+  dataQuality    String   @default("MEDIUM")
+  /// 缺失的数据信号
+  missingSignals Json?    @default("[]")
+  /// 计算时间
+  computedAt     DateTime @default(now())
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  @@unique([matchId, featureVersion])
+  @@index([matchId, computedAt])
+  @@index([featureVersion, computedAt])
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -271,32 +327,34 @@ model AiModel {
 
 /// 预测任务（一场比赛的一个时间版本对应一个 Task）
 model PredictionTask {
-  id               String               @id @default(cuid())
+  id                String               @id @default(cuid())
   /// 关联比赛
-  matchId          String
-  match            Match                @relation(fields: [matchId], references: [id])
+  matchId           String
+  match             Match                @relation(fields: [matchId], references: [id])
   /// 预测版本：T-24h 或 T-2h
-  version          PredictionVersion
+  version           PredictionVersion
   /// 任务状态
-  status           PredictionTaskStatus @default(PENDING)
+  status            PredictionTaskStatus @default(PENDING)
   /// 触发方式
-  trigger          PredictionTrigger    @default(CRON)
+  trigger           PredictionTrigger    @default(CRON)
   /// 参与本次预测的模型数量
-  modelCount       Int                  @default(0)
+  modelCount        Int                  @default(0)
   /// 成功完成的模型数量
-  successCount     Int                  @default(0)
+  successCount      Int                  @default(0)
   /// 失败的模型数量
-  failureCount     Int                  @default(0)
+  failureCount      Int                  @default(0)
   /// 共识等级（所有模型预测完成后计算）
-  consensusLevel   ConsensusLevel?
+  consensusLevel    ConsensusLevel?
   /// 共识摘要 JSON
-  consensusSummary Json?
+  consensusSummary  Json?
   /// 发布时间（REVIEWED -> PUBLISHED 时设置）
-  publishedAt      DateTime?
+  publishedAt       DateTime?
   /// 任务错误信息
-  errorMessage     String?
-  createdAt        DateTime             @default(now())
-  updatedAt        DateTime             @updatedAt
+  errorMessage      String?
+  /// 本次预测使用的特征快照 ID（用于回测追溯）
+  featureSnapshotId String?
+  createdAt         DateTime             @default(now())
+  updatedAt         DateTime             @updatedAt
 
   predictions  ModelPrediction[]
   modelReviews ModelReview[]

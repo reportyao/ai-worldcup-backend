@@ -8,6 +8,7 @@ export const QueueName = {
   ConsensusCalculator: 'consensus-calculator',
   ScorecardUpdate: 'scorecard-update',
   Translation: 'translation',
+  FeatureCompute: 'feature-compute',
 } as const;
 
 export type QueueName = (typeof QueueName)[keyof typeof QueueName];

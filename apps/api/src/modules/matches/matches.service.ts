@@ -213,6 +213,7 @@ export class MatchesService {
 
     const successCount = published.predictions.filter((p) => p.isSuccess).length;
     const modelCount = published.predictions.length;
+    const summary = published.consensusSummary as Record<string, unknown> | null;
 
     return {
       status: 'published',
@@ -221,6 +222,17 @@ export class MatchesService {
       modelCount,
       successCount,
       level: published.consensusLevel,
+      agreementRate: summary?.agreementRate ?? undefined,
+      majorityResult: summary?.majorityResult ?? undefined,
+      majorityCount: summary?.majorityCount ?? undefined,
+      totalModels: summary?.totalModels ?? undefined,
+      divergencePoints: summary?.divergencePoints ?? undefined,
+      aggregatedProbability: summary?.aggregatedProbability ?? undefined,
+      aggregatedGoalsRange: summary?.aggregatedGoalsRange ?? undefined,
+      viewpointClusters: summary?.viewpointClusters ?? undefined,
+      sharedStrengths: summary?.sharedStrengths ?? undefined,
+      sharedRisks: summary?.sharedRisks ?? undefined,
+      sharedKeyVariables: summary?.sharedKeyVariables ?? undefined,
     };
   }
 

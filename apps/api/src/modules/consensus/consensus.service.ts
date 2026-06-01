@@ -4,15 +4,41 @@ import { ConsensusLevel } from '@prisma/client';
 import { PrismaService } from '../../prisma/prisma.service.js';
 
 /**
- * T4-01: AI 共识指数计算服务
+ * T4-01: AI 共识指数计算与观点聚合服务
  *
- * 根据文档规范：
+ * 共识等级规则：
  * - 高共识 (HIGH): 第一选择模型占比 ≥ 70%
  * - 存在分歧 (MIXED): 第一选择占比 50%–69%
  * - 强分歧 (STRONG_DIVERGENCE): 第一选择占比 < 50%
  *
- * 输出包含共识等级、分歧点、多数结果和高亮文本。
+ * 观点聚合：
+ * - 汇总各模型的胜负概率取平均
+ * - 聚合各模型的优势/劣势/风险/关键变量
+ * - 生成结构化的共识摘要供前端展示
  */
+
+export interface AggregatedProbability {
+  home: number;
+  draw: number;
+  away: number;
+}
+
+export interface AggregatedGoalsRange {
+  avgMin: number;
+  avgMax: number;
+  avgExpectation: number | null;
+}
+
+export interface ViewpointCluster {
+  /** 观点方向 */
+  direction: 'HOME_WIN' | 'DRAW' | 'AWAY_WIN';
+  /** 持该观点的模型列表 */
+  models: string[];
+  /** 该方向的平均概率 */
+  avgProbability: number;
+  /** 代表性论据（从 keyVariables 和 trend 中提取） */
+  keyArguments: string[];
+}
 
 export interface ConsensusResult {
   level: ConsensusLevel;
@@ -22,6 +48,18 @@ export interface ConsensusResult {
   totalModels: number;
   divergencePoints: string[];
   highlight: string;
+  /** 聚合后的平均概率 */
+  aggregatedProbability: AggregatedProbability;
+  /** 聚合后的进球区间 */
+  aggregatedGoalsRange: AggregatedGoalsRange | null;
+  /** 按方向分组的观点集群 */
+  viewpointClusters: ViewpointCluster[];
+  /** 所有模型共同提到的优势（去重后取 top） */
+  sharedStrengths: { home: string[]; away: string[] };
+  /** 所有模型共同提到的风险 */
+  sharedRisks: string[];
+  /** 所有模型共同提到的关键变量 */
+  sharedKeyVariables: string[];
 }
 
 interface PredictionConclusion {
@@ -34,6 +72,7 @@ interface PredictionConclusion {
   goalsRange?: {
     min: number;
     max: number;
+    expectation?: number;
   };
   likelyScores?: Array<{ home: number; away: number; weight?: number }>;
 }
@@ -42,8 +81,12 @@ interface StructuredPredictionOutput {
   modelId?: string;
   modelDisplayName?: string;
   conclusion?: PredictionConclusion;
+  strengths?: { home?: string[]; away?: string[] };
+  weaknesses?: { home?: string[]; away?: string[] };
   risks?: string[];
   keyVariables?: string[];
+  trend?: string;
+  matchNature?: string;
 }
 
 @Injectable()
@@ -51,8 +94,7 @@ export class ConsensusService {
   constructor(private readonly prisma: PrismaService) {}
 
   /**
-   * 计算指定预测任务的共识指数。
-   * 在所有模型预测完成后调用，结果写入 PredictionTask.consensusLevel 和 consensusSummary。
+   * 计算指定预测任务的共识指数并聚合观点。
    */
   async calculateAndSave(predictionTaskId: string): Promise<ConsensusResult> {
     const task = await this.prisma.predictionTask.findUniqueOrThrow({
@@ -78,6 +120,12 @@ export class ConsensusService {
         totalModels: 0,
         divergencePoints: ['暂无模型完成预测'],
         highlight: '暂无模型完成预测',
+        aggregatedProbability: { home: 0.33, draw: 0.34, away: 0.33 },
+        aggregatedGoalsRange: null,
+        viewpointClusters: [],
+        sharedStrengths: { home: [], away: [] },
+        sharedRisks: [],
+        sharedKeyVariables: [],
       };
       await this.saveConsensus(predictionTaskId, emptyResult);
       return emptyResult;
@@ -86,50 +134,111 @@ export class ConsensusService {
     const homeTeamName = task.match.homeTeam.shortName ?? task.match.homeTeam.name;
     const awayTeamName = task.match.awayTeam.shortName ?? task.match.awayTeam.name;
 
-    // 统计各模型的胜平负结论
-    const votes: Record<string, number> = {
-      HOME_WIN: 0,
-      DRAW: 0,
-      AWAY_WIN: 0,
-    };
+    // Parse all outputs
+    const outputs = successfulPredictions.map((p) => ({
+      modelName: p.aiModel.displayName,
+      output: p.structuredOutput as unknown as StructuredPredictionOutput,
+    }));
 
-    const goalsRanges: Array<{ min: number; max: number; modelName: string }> = [];
-    const allRisks: string[] = [];
-
-    for (const prediction of successfulPredictions) {
-      const output = prediction.structuredOutput as unknown as StructuredPredictionOutput;
-      const conclusion = output?.conclusion;
-      if (conclusion?.winLossDraw) {
-        votes[conclusion.winLossDraw] = (votes[conclusion.winLossDraw] ?? 0) + 1;
-      }
-      if (conclusion?.goalsRange) {
-        goalsRanges.push({
-          min: conclusion.goalsRange.min,
-          max: conclusion.goalsRange.max,
-          modelName: prediction.aiModel.displayName,
-        });
-      }
-      if (output?.risks && Array.isArray(output.risks)) {
-        allRisks.push(...output.risks.slice(0, 2));
-      }
+    // ─── Vote Counting ──────────────────────────────────────────────────────────
+    const votes: Record<string, number> = { HOME_WIN: 0, DRAW: 0, AWAY_WIN: 0 };
+    for (const { output } of outputs) {
+      const wld = output?.conclusion?.winLossDraw;
+      if (wld && wld in votes) votes[wld]++;
     }
 
-    const totalModels = successfulPredictions.length;
+    const totalModels = outputs.length;
     const sortedVotes = Object.entries(votes).sort(([, a], [, b]) => b - a);
     const [majorityResult, majorityCount] = sortedVotes[0] as [string, number];
     const agreementRate = totalModels > 0 ? majorityCount / totalModels : 0;
 
-    // 确定共识等级
     let level: ConsensusLevel;
-    if (agreementRate >= 0.7) {
-      level = ConsensusLevel.HIGH;
-    } else if (agreementRate >= 0.5) {
-      level = ConsensusLevel.MIXED;
-    } else {
-      level = ConsensusLevel.STRONG_DIVERGENCE;
+    if (agreementRate >= 0.7) level = ConsensusLevel.HIGH;
+    else if (agreementRate >= 0.5) level = ConsensusLevel.MIXED;
+    else level = ConsensusLevel.STRONG_DIVERGENCE;
+
+    // ─── Aggregated Probability ─────────────────────────────────────────────────
+    const probabilities = outputs
+      .map((o) => o.output?.conclusion?.winProbability)
+      .filter((p): p is { home: number; draw: number; away: number } => !!p);
+
+    const aggregatedProbability: AggregatedProbability = probabilities.length > 0
+      ? {
+          home: round3(probabilities.reduce((sum, p) => sum + p.home, 0) / probabilities.length),
+          draw: round3(probabilities.reduce((sum, p) => sum + p.draw, 0) / probabilities.length),
+          away: round3(probabilities.reduce((sum, p) => sum + p.away, 0) / probabilities.length),
+        }
+      : { home: 0.33, draw: 0.34, away: 0.33 };
+
+    // ─── Aggregated Goals Range ─────────────────────────────────────────────────
+    const goalsRanges = outputs
+      .map((o) => o.output?.conclusion?.goalsRange)
+      .filter((g): g is { min: number; max: number; expectation?: number } => !!g);
+
+    const aggregatedGoalsRange: AggregatedGoalsRange | null = goalsRanges.length > 0
+      ? {
+          avgMin: round2(goalsRanges.reduce((s, g) => s + g.min, 0) / goalsRanges.length),
+          avgMax: round2(goalsRanges.reduce((s, g) => s + g.max, 0) / goalsRanges.length),
+          avgExpectation: goalsRanges.some((g) => g.expectation != null)
+            ? round2(
+                goalsRanges.filter((g) => g.expectation != null).reduce((s, g) => s + g.expectation!, 0) /
+                  goalsRanges.filter((g) => g.expectation != null).length,
+              )
+            : null,
+        }
+      : null;
+
+    // ─── Viewpoint Clusters ─────────────────────────────────────────────────────
+    const clusterMap: Record<string, { models: string[]; probabilities: number[]; arguments: string[] }> = {
+      HOME_WIN: { models: [], probabilities: [], arguments: [] },
+      DRAW: { models: [], probabilities: [], arguments: [] },
+      AWAY_WIN: { models: [], probabilities: [], arguments: [] },
+    };
+
+    for (const { modelName, output } of outputs) {
+      const wld = output?.conclusion?.winLossDraw;
+      if (!wld || !(wld in clusterMap)) continue;
+      const cluster = clusterMap[wld];
+      cluster.models.push(modelName);
+      const prob = output.conclusion?.winProbability;
+      if (prob) cluster.probabilities.push(prob[wld === 'HOME_WIN' ? 'home' : wld === 'AWAY_WIN' ? 'away' : 'draw']);
+      // Collect key arguments
+      if (output.trend) cluster.arguments.push(output.trend);
+      if (output.keyVariables?.length) cluster.arguments.push(...output.keyVariables.slice(0, 2));
     }
 
-    // 生成分歧点
+    const viewpointClusters: ViewpointCluster[] = (['HOME_WIN', 'DRAW', 'AWAY_WIN'] as const)
+      .filter((dir) => clusterMap[dir].models.length > 0)
+      .map((dir) => ({
+        direction: dir,
+        models: clusterMap[dir].models,
+        avgProbability: clusterMap[dir].probabilities.length > 0
+          ? round3(clusterMap[dir].probabilities.reduce((s, p) => s + p, 0) / clusterMap[dir].probabilities.length)
+          : 0,
+        keyArguments: deduplicateStrings(clusterMap[dir].arguments).slice(0, 4),
+      }));
+
+    // ─── Shared Strengths / Risks / Key Variables ───────────────────────────────
+    const allHomeStrengths: string[] = [];
+    const allAwayStrengths: string[] = [];
+    const allRisks: string[] = [];
+    const allKeyVars: string[] = [];
+
+    for (const { output } of outputs) {
+      if (output?.strengths?.home) allHomeStrengths.push(...output.strengths.home);
+      if (output?.strengths?.away) allAwayStrengths.push(...output.strengths.away);
+      if (output?.risks) allRisks.push(...output.risks);
+      if (output?.keyVariables) allKeyVars.push(...output.keyVariables);
+    }
+
+    const sharedStrengths = {
+      home: getFrequentItems(allHomeStrengths, 4),
+      away: getFrequentItems(allAwayStrengths, 4),
+    };
+    const sharedRisks = getFrequentItems(allRisks, 5);
+    const sharedKeyVariables = getFrequentItems(allKeyVars, 5);
+
+    // ─── Divergence Points ──────────────────────────────────────────────────────
     const divergencePoints = this.buildDivergencePoints(
       votes,
       goalsRanges,
@@ -138,7 +247,7 @@ export class ConsensusService {
       awayTeamName,
     );
 
-    // 生成高亮文本
+    // ─── Highlight ──────────────────────────────────────────────────────────────
     const highlight = this.buildHighlight(
       level,
       majorityResult as 'HOME_WIN' | 'DRAW' | 'AWAY_WIN',
@@ -146,6 +255,7 @@ export class ConsensusService {
       totalModels,
       homeTeamName,
       awayTeamName,
+      aggregatedProbability,
     );
 
     const result: ConsensusResult = {
@@ -156,6 +266,12 @@ export class ConsensusService {
       totalModels,
       divergencePoints,
       highlight,
+      aggregatedProbability,
+      aggregatedGoalsRange,
+      viewpointClusters,
+      sharedStrengths,
+      sharedRisks,
+      sharedKeyVariables,
     };
 
     await this.saveConsensus(predictionTaskId, result);
@@ -202,7 +318,7 @@ export class ConsensusService {
 
   private buildDivergencePoints(
     votes: Record<string, number>,
-    goalsRanges: Array<{ min: number; max: number; modelName: string }>,
+    goalsRanges: Array<{ min: number; max: number; expectation?: number }>,
     allRisks: string[],
     homeTeamName: string,
     awayTeamName: string,
@@ -246,16 +362,24 @@ export class ConsensusService {
     totalModels: number,
     homeTeamName: string,
     awayTeamName: string,
+    aggregatedProbability: AggregatedProbability,
   ): string {
     const resultLabel = this.resultLabel(majorityResult, homeTeamName, awayTeamName);
+    const probPercent = Math.round(
+      (majorityResult === 'HOME_WIN'
+        ? aggregatedProbability.home
+        : majorityResult === 'AWAY_WIN'
+          ? aggregatedProbability.away
+          : aggregatedProbability.draw) * 100,
+    );
 
     switch (level) {
       case ConsensusLevel.HIGH:
-        return `AI 共识较强：${majorityCount}/${totalModels} 模型看好${resultLabel}`;
+        return `AI 共识较强：${majorityCount}/${totalModels} 模型看好${resultLabel}（综合概率 ${probPercent}%）`;
       case ConsensusLevel.MIXED:
-        return `AI 存在分歧：${majorityCount}/${totalModels} 模型倾向${resultLabel}，但风险不低`;
+        return `AI 存在分歧：${majorityCount}/${totalModels} 模型倾向${resultLabel}（综合概率 ${probPercent}%），但风险不低`;
       case ConsensusLevel.STRONG_DIVERGENCE:
-        return `AI 内部分歧明显：建议重点看风险提示`;
+        return `AI 内部分歧明显：各模型观点差异较大，建议重点看风险提示`;
       default:
         return `${majorityCount}/${totalModels} 模型倾向${resultLabel}`;
     }
@@ -277,4 +401,48 @@ export class ConsensusService {
         return result;
     }
   }
+}
+
+// ─── Utility Functions ──────────────────────────────────────────────────────────
+
+function round2(n: number): number {
+  return Math.round(n * 100) / 100;
+}
+
+function round3(n: number): number {
+  return Math.round(n * 1000) / 1000;
+}
+
+/**
+ * Deduplicate strings by similarity (exact match).
+ */
+function deduplicateStrings(items: string[]): string[] {
+  const seen = new Set<string>();
+  const result: string[] = [];
+  for (const item of items) {
+    const normalized = item.trim().toLowerCase();
+    if (!seen.has(normalized) && normalized.length > 0) {
+      seen.add(normalized);
+      result.push(item.trim());
+    }
+  }
+  return result;
+}
+
+/**
+ * Get the most frequently mentioned items (by occurrence count).
+ */
+function getFrequentItems(items: string[], limit: number): string[] {
+  const freq = new Map<string, { original: string; count: number }>();
+  for (const item of items) {
+    const key = item.trim().toLowerCase();
+    if (key.length === 0) continue;
+    const existing = freq.get(key);
+    if (existing) existing.count++;
+    else freq.set(key, { original: item.trim(), count: 1 });
+  }
+  return [...freq.values()]
+    .sort((a, b) => b.count - a.count)
+    .slice(0, limit)
+    .map((v) => v.original);
 }

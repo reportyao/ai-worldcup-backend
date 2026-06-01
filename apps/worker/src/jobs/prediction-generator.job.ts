@@ -91,11 +91,16 @@ function toModelConfig(model: AiModel): AiGatewayModelConfig {
   };
 }
 
-function toMatchContext(match: Awaited<ReturnType<typeof loadMatchContext>>): AiGatewayMatchContext {
+function toMatchContext(
+  match: Awaited<ReturnType<typeof loadMatchContext>>,
+  featureSummary?: string | null,
+  featureDataQuality?: 'HIGH' | 'MEDIUM' | 'LOW' | null,
+): AiGatewayMatchContext {
   return {
     id: match.id,
     competitionName: match.competition.name,
     competitionSeason: match.competition.season,
+    competitionPriority: (match.competition as { priority?: string }).priority ?? undefined,
     matchday: match.matchday,
     stage: match.stage,
     kickoffAt: match.kickoffAt.toISOString(),
@@ -111,6 +116,8 @@ function toMatchContext(match: Awaited<ReturnType<typeof loadMatchContext>>): Ai
       shortName: match.awayTeam.shortName,
       countryCode: match.awayTeam.countryCode,
     },
+    featureSummary: featureSummary ?? null,
+    featureDataQuality: featureDataQuality ?? null,
   };
 }
 
@@ -243,8 +250,25 @@ async function runSingleModel(taskId: string, model: AiModel, matchContext: AiGa
   return result.structuredOutput;
 }
 
+async function loadOrComputeFeature(matchId: string): Promise<{ summaryText: string | null; dataQuality: string | null; featureId: string | null }> {
+  // Try to load pre-computed feature
+  const feature = await prisma.matchFeature.findFirst({
+    where: { matchId },
+    orderBy: { computedAt: 'desc' },
+  });
+  if (feature) {
+    return {
+      summaryText: feature.summaryText,
+      dataQuality: feature.dataQuality,
+      featureId: feature.id,
+    };
+  }
+  return { summaryText: null, dataQuality: null, featureId: null };
+}
+
 async function generatePrediction(payload: z.infer<typeof DirectPredictionPayloadSchema>): Promise<PredictionTaskResult> {
   const match = await loadMatchContext(payload.matchId);
+  const featureData = await loadOrComputeFeature(payload.matchId);
   const activeModels = await prisma.aiModel.findMany({
     where: { isActive: true },
     orderBy: [{ sortOrder: 'asc' }, { createdAt: 'asc' }],
@@ -283,7 +307,19 @@ async function generatePrediction(payload: z.infer<typeof DirectPredictionPayloa
     await prisma.modelPrediction.deleteMany({ where: { predictionTaskId: task.id } });
   }
 
-  const matchContext = toMatchContext(match);
+  // Save feature snapshot reference for backtesting
+  if (featureData.featureId) {
+    await prisma.predictionTask.update({
+      where: { id: task.id },
+      data: { featureSnapshotId: featureData.featureId },
+    });
+  }
+
+  const matchContext = toMatchContext(
+    match,
+    featureData.summaryText,
+    featureData.dataQuality as 'HIGH' | 'MEDIUM' | 'LOW' | null,
+  );
   const promptTemplate = await loadActivePromptTemplate();
   const successfulPredictions: StructuredPrediction[] = [];
   const failures: string[] = [];

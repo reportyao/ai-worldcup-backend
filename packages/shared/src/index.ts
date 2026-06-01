@@ -4,3 +4,4 @@ export * from './types/index.js';
 export * from './state-machines/index.js';
 export * from './errors/index.js';
 export * from './ai-pipeline/index.js';
+export * from './feature-engine/index.js';

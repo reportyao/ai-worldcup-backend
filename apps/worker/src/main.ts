@@ -3,6 +3,7 @@ import { Redis } from 'ioredis';
 
 import { processConsensusCalculator } from './jobs/consensus-calculator.job.js';
 import { processDataSync } from './jobs/data-sync.job.js';
+import { processFeatureCompute } from './jobs/feature-compute.job.js';
 import { processPredictionGenerator } from './jobs/prediction-generator.job.js';
 import { processReviewGenerator } from './jobs/review-generator.job.js';
 import { processScorecardUpdate } from './jobs/scorecard-update.job.js';
@@ -44,6 +45,24 @@ async function registerPredictionScheduler(): Promise<void> {
     },
   );
   logger.info({ queue: QueueName.PredictionGenerator }, 'prediction scheduler registered');
+}
+
+async function registerFeatureComputeScheduler(): Promise<void> {
+  const queue = new Queue(QueueName.FeatureCompute, { connection: createConnection() });
+  queues.push(queue);
+  await queue.add(
+    'batch-feature-compute',
+    { mode: 'BATCH', daysAhead: 7 },
+    {
+      repeat: { pattern: process.env.FEATURE_COMPUTE_CRON ?? '0 3 * * *' },
+      jobId: 'feature-compute-batch-repeat',
+      attempts: 2,
+      backoff: { type: 'exponential', delay: 60_000 },
+      removeOnComplete: 50,
+      removeOnFail: 100,
+    },
+  );
+  logger.info({ queue: QueueName.FeatureCompute }, 'feature-compute scheduler registered');
 }
 
 async function registerDataSyncSchedulers(): Promise<void> {
@@ -103,12 +122,14 @@ async function main(): Promise<void> {
 
   await registerPredictionScheduler();
   await registerDataSyncSchedulers();
+  await registerFeatureComputeScheduler();
   registerWorker(QueueName.PredictionGenerator, processPredictionGenerator);
   registerWorker(QueueName.DataSync, processDataSync);
   registerWorker(QueueName.PostMatchReview, processReviewGenerator);
   registerWorker(QueueName.ConsensusCalculator, processConsensusCalculator);
   registerWorker(QueueName.ScorecardUpdate, processScorecardUpdate);
   registerWorker(QueueName.Translation, processTranslation);
+  registerWorker(QueueName.FeatureCompute, processFeatureCompute);
 
   const shutdown = async (signal: NodeJS.Signals): Promise<void> => {
     logger.info({ signal }, 'shutting down workers');

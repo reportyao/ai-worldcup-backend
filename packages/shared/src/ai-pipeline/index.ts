@@ -34,11 +34,16 @@ export interface AiGatewayMatchContext {
   id: string;
   competitionName: string;
   competitionSeason: string;
+  competitionPriority?: string;
   matchday?: string | null;
   stage?: string | null;
   kickoffAt: string;
   homeTeam: AiGatewayTeamContext;
   awayTeam: AiGatewayTeamContext;
+  /** Structured feature summary text (injected from MatchFeature) */
+  featureSummary?: string | null;
+  /** Feature data quality level */
+  featureDataQuality?: 'HIGH' | 'MEDIUM' | 'LOW' | null;
 }
 
 export interface AiGatewayRuntimeConfig {
@@ -143,6 +148,7 @@ function renderPromptTemplate(template: string, model: AiGatewayModelConfig, mat
     modelPersona: model.persona,
     competitionName: match.competitionName,
     competitionSeason: match.competitionSeason,
+    competitionPriority: match.competitionPriority,
     matchday: match.matchday,
     stage: match.stage,
     kickoffAt: match.kickoffAt,
@@ -152,6 +158,8 @@ function renderPromptTemplate(template: string, model: AiGatewayModelConfig, mat
     awayTeam: match.awayTeam.name,
     awayTeamName: match.awayTeam.name,
     awayTeamCode: match.awayTeam.code,
+    featureSummary: match.featureSummary,
+    featureDataQuality: match.featureDataQuality,
   };
   return template.replace(/{{\s*([a-zA-Z0-9_.-]+)\s*}}/g, (_match, key: string) => stringifyContextValue(variables[key]));
 }
@@ -173,6 +181,27 @@ export function buildPredictionPrompt(
     `当前模型人设：${personaText}`,
   ].join('\n');
 
+  const featureBlock = match.featureSummary
+    ? [
+        '',
+        '═══════════════════════════════════════════',
+        '📊 数据特征包（Prediction Pack）',
+        `数据质量等级：${match.featureDataQuality ?? '未知'}`,
+        '═══════════════════════════════════════════',
+        match.featureSummary,
+        '═══════════════════════════════════════════',
+        '',
+        '⚠️ 重要：请基于以上数据特征进行分析，不要凭空编造数据。',
+        '如果某项数据缺失，请在 informationQuality.missingSignals 中如实说明。',
+        '',
+      ].join('\n')
+    : [
+        '',
+        '⚠️ 注意：本次预测无可用历史数据特征，请基于你的知识库进行分析，',
+        '并在 informationQuality 中标注 completeness 为 LOW。',
+        '',
+      ].join('\n');
+
   const defaultUserPrompt = [
     `Prompt模板版本：${PREDICTION_PROMPT_TEMPLATE_VERSION}`,
     `预测版本：${version === PredictionVersion.T_MINUS_24H ? '开赛前24小时' : '开赛前2小时'}`,
@@ -182,11 +211,13 @@ export function buildPredictionPrompt(
     '',
     '比赛上下文：',
     `- 赛事：${match.competitionName} ${match.competitionSeason}`,
+    `- 赛事优先级：${match.competitionPriority ?? '未标注'}`,
     `- 阶段：${match.stage ?? '未标注'}`,
     `- 比赛日：${match.matchday ?? '未标注'}`,
     `- 开球时间：${match.kickoffAt}`,
     `- 主队：${match.homeTeam.name}（${match.homeTeam.code}）`,
     `- 客队：${match.awayTeam.name}（${match.awayTeam.code}）`,
+    featureBlock,
     '',
     '请严格输出以下 JSON 结构，字段名不可改动：',
     JSON.stringify(
