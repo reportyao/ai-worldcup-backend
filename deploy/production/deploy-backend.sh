@@ -65,6 +65,13 @@ ensure_production_env() {
     set_env_value ADMIN_PASSWORD "ChangeMe_$(random_hex | cut -c1-12)!"
     log "Backfilled ADMIN_PASSWORD in existing .env; rotate it after deployment."
   fi
+
+  local ai_allow_mock
+  ai_allow_mock="$(env_value AI_ALLOW_MOCK | tr '[:upper:]' '[:lower:]' | xargs)"
+  if [ -z "$ai_allow_mock" ] || ! printf '%s\n' false 0 no n off | grep -Fxq "$ai_allow_mock"; then
+    set_env_value AI_ALLOW_MOCK false
+    log "Set AI_ALLOW_MOCK=false in existing production .env."
+  fi
 }
 
 cd "$APP_DIR"
