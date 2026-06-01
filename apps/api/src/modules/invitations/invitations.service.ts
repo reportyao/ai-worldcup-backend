@@ -5,6 +5,7 @@ import {
   Injectable,
   Logger,
 } from '@nestjs/common';
+import { Prisma } from '@prisma/client';
 
 import { PrismaService } from '../../prisma/prisma.service.js';
 import { AccessService } from '../entitlements/access.service.js';
@@ -47,33 +48,47 @@ export class InvitationsService {
       };
     }
 
-    // 首次生成固定码（带重试防碰撞）
+    // 首次生成固定码（带重试防碰撞）。邀请码必须全局唯一且一经生成永久固定，
+    // 因此使用 updateMany({ inviteCode: null }) 进行“只写一次”保护，避免并发请求覆盖已有固定码。
     const maxAttempts = 10;
-    let code: string | undefined;
     for (let attempts = 0; attempts < maxAttempts; attempts++) {
       const candidate = this.createUniqueCode();
-      const existing = await this.prisma.user.findUnique({ where: { inviteCode: candidate } });
-      if (!existing) {
-        code = candidate;
-        break;
+
+      try {
+        const result = await this.prisma.user.updateMany({
+          where: { id: userId, inviteCode: null },
+          data: { inviteCode: candidate },
+        });
+
+        if (result.count === 1) {
+          this.logger.log(`Generated fixed invite code ${candidate} for user ${userId}`);
+          return {
+            code: candidate,
+            shareUrl: `/invite/${candidate}`,
+          };
+        }
+
+        // 另一并发请求已率先写入固定码时，直接复用已存在的固定码，绝不覆盖。
+        const refreshed = await this.prisma.user.findUnique({
+          where: { id: userId },
+          select: { inviteCode: true },
+        });
+        if (refreshed?.inviteCode) {
+          return {
+            code: refreshed.inviteCode,
+            shareUrl: `/invite/${refreshed.inviteCode}`,
+          };
+        }
+      } catch (error) {
+        if (this.isUniqueConstraintError(error)) {
+          // 随机码撞到其他用户的固定码，换一个候选码重试。
+          continue;
+        }
+        throw error;
       }
     }
 
-    if (!code) {
-      throw new BadRequestException('生成邀请码失败，请重试');
-    }
-
-    await this.prisma.user.update({
-      where: { id: userId },
-      data: { inviteCode: code },
-    });
-
-    this.logger.log(`Generated fixed invite code ${code} for user ${userId}`);
-
-    return {
-      code,
-      shareUrl: `/invite/${code}`,
-    };
+    throw new BadRequestException('生成邀请码失败，请重试');
   }
 
   /**
@@ -169,16 +184,7 @@ export class InvitationsService {
       take: 50,
     });
 
-    const todayKey = new Date().toISOString().slice(0, 10);
-    const todayStart = new Date(`${todayKey}T00:00:00.000Z`);
-
-    const todayRewardsGranted = await this.prisma.entitlement.count({
-      where: {
-        userId,
-        source: 'INVITE_REWARD',
-        createdAt: { gte: todayStart },
-      },
-    });
+    const stats = await this.getMyStats(userId);
 
     return {
       myCode: code,
@@ -192,12 +198,35 @@ export class InvitationsService {
         rewardGranted: inv.rewardGranted,
         createdAt: inv.createdAt.toISOString(),
       })),
-      stats: {
-        totalAccepted: invitations.filter((i) => i.status === 'ACCEPTED').length,
-        todayRewardsGranted,
-        maxDailyRewards: MAX_DAILY_INVITE_REWARDS,
-        remainingTodayRewards: Math.max(0, MAX_DAILY_INVITE_REWARDS - todayRewardsGranted),
-      },
+      stats,
+    };
+  }
+
+  /**
+   * 获取我的邀请奖励统计（轻量接口，供解锁弹窗实时展示邀请进度）。
+   */
+  async getMyStats(userId: string) {
+    const todayKey = new Date().toISOString().slice(0, 10);
+    const todayStart = new Date(`${todayKey}T00:00:00.000Z`);
+
+    const [totalAccepted, todayRewardsGranted] = await Promise.all([
+      this.prisma.invitation.count({
+        where: { inviterId: userId, status: 'ACCEPTED' },
+      }),
+      this.prisma.entitlement.count({
+        where: {
+          userId,
+          source: 'INVITE_REWARD',
+          createdAt: { gte: todayStart },
+        },
+      }),
+    ]);
+
+    return {
+      totalAccepted,
+      todayRewardsGranted,
+      maxDailyRewards: MAX_DAILY_INVITE_REWARDS,
+      remainingTodayRewards: Math.max(0, MAX_DAILY_INVITE_REWARDS - todayRewardsGranted),
     };
   }
 
@@ -234,5 +263,9 @@ export class InvitationsService {
       code += chars[bytes[i]! % chars.length];
     }
     return code;
+  }
+
+  private isUniqueConstraintError(error: unknown): boolean {
+    return error instanceof Prisma.PrismaClientKnownRequestError && error.code === 'P2002';
   }
 }

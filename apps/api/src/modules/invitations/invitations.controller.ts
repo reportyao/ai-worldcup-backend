@@ -55,6 +55,16 @@ export class InvitationsController {
   }
 
   /**
+   * GET /invitations/my-stats
+   * 获取我的邀请奖励统计（需要登录）
+   */
+  @Get('my-stats')
+  async myStats(@Req() req: Request) {
+    const userId = await this.requireUserId(req);
+    return this.invitationsService.getMyStats(userId);
+  }
+
+  /**
    * GET /invitations/validate/:code
    * 验证邀请码是否有效（无需登录）
    */
