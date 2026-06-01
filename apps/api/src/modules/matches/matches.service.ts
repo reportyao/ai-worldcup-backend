@@ -1,6 +1,6 @@
 import { Inject, Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { MatchStatus } from '@prisma/client';
-import type { Match, UserPrediction , PredictionTaskStatus } from '@prisma/client';
+import type { Match, UserPrediction, PredictionTaskStatus } from '@prisma/client';
 
 import { PrismaService } from '../../prisma/prisma.service.js';
 import { AuthService } from '../auth/auth.service.js';
@@ -8,6 +8,14 @@ import type { RequestMeta } from '../auth/auth.service.js';
 import { AccessService } from '../entitlements/access.service.js';
 
 import type { MatchListQueryDto, UserPredictionSubmitDto } from './matches.schemas.js';
+
+type TeaserData = {
+  modelCount: number;
+  keyVarCount: number;
+  hasHighConsensus: boolean;
+  modelNames: string[];
+  consensusLevel: string | null;
+};
 
 @Injectable()
 export class MatchesService {
@@ -75,7 +83,48 @@ export class MatchesService {
 
     if (!match) throw new NotFoundException('Match not found');
 
-    const userPrediction = await this.findViewerPrediction(matchId, viewer.userId, viewer.guestId);
+    const [userPrediction, access] = await Promise.all([
+      this.findViewerPrediction(matchId, viewer.userId, viewer.guestId),
+      this.buildAccessPayload(match.id, viewer.userId, viewer.guestId),
+    ]);
+
+    const reviewsForAnalyses = access.canViewFullModels
+      ? await this.prisma.modelReview.findMany({
+          where: { matchId, status: 'PUBLISHED' },
+          select: { aiModelId: true, predictionTaskId: true, accuracyJson: true },
+        })
+      : [];
+
+    const accuracyByTaskAndModel = new Map<string, unknown>();
+    const accuracyByModel = new Map<string, unknown>();
+    for (const review of reviewsForAnalyses) {
+      if (!review.accuracyJson) continue;
+      accuracyByModel.set(review.aiModelId, review.accuracyJson);
+      if (review.predictionTaskId) {
+        accuracyByTaskAndModel.set(`${review.predictionTaskId}:${review.aiModelId}`, review.accuracyJson);
+      }
+    }
+
+    const modelAnalyses = access.canViewFullModels
+      ? match.predictionTasks.flatMap((task) =>
+          task.predictions.map((prediction) => ({
+            id: prediction.id,
+            taskVersion: task.version,
+            model: {
+              id: prediction.aiModel.id,
+              displayName: prediction.aiModel.displayName,
+              persona: prediction.aiModel.persona,
+              provider: prediction.aiModel.provider,
+            },
+            structuredOutput: prediction.structuredOutput,
+            accuracy:
+              accuracyByTaskAndModel.get(`${task.id}:${prediction.aiModel.id}`) ??
+              accuracyByModel.get(prediction.aiModel.id) ??
+              null,
+            generatedAt: prediction.createdAt.toISOString(),
+          })),
+        )
+      : [];
 
     return {
       match: this.toMatchSummary(match),
@@ -93,22 +142,9 @@ export class MatchesService {
           status: match.status,
         },
         tabs: ['overview', 'models', 'my_prediction', 'review'],
-        access: await this.buildAccessPayload(match.id, viewer.userId, viewer.guestId),
+        access,
         consensus: this.buildConsensus(match.predictionTasks),
-        modelAnalyses: match.predictionTasks.flatMap((task) =>
-          task.predictions.map((prediction) => ({
-            id: prediction.id,
-            taskVersion: task.version,
-            model: {
-              id: prediction.aiModel.id,
-              displayName: prediction.aiModel.displayName,
-              persona: prediction.aiModel.persona,
-              provider: prediction.aiModel.provider,
-            },
-            structuredOutput: prediction.structuredOutput,
-            generatedAt: prediction.createdAt.toISOString(),
-          })),
-        ),
+        modelAnalyses,
         review: await this.buildReviewPayload(matchId, match.status),
       },
       userPrediction: userPrediction ? this.toUserPrediction(userPrediction) : null,
@@ -359,12 +395,42 @@ export class MatchesService {
 
   private async buildAccessPayload(matchId: string, userId?: string, guestId?: string) {
     const decision = await this.accessService.checkAccess(userId, guestId, matchId);
+    const teaserData = decision.canViewFullModels ? null : await this.buildTeaserData(matchId);
+
     return {
       canViewBasic: true,
       canViewFullModels: decision.canViewFullModels,
       reason: decision.reason,
       unlockHint: decision.unlockHint,
       snapshot: decision.snapshot,
+      teaserData,
+    };
+  }
+
+  private async buildTeaserData(matchId: string): Promise<TeaserData | null> {
+    const task = await this.prisma.predictionTask.findFirst({
+      where: { matchId, status: { in: ['PUBLISHED', 'REVIEWED', 'SUCCEEDED'] } },
+      include: {
+        predictions: {
+          where: { isSuccess: true },
+          include: { aiModel: true },
+          orderBy: { createdAt: 'desc' },
+        },
+      },
+      orderBy: [{ version: 'desc' }, { updatedAt: 'desc' }],
+    });
+
+    if (!task) return null;
+
+    const summary = task.consensusSummary as Record<string, unknown> | null;
+    const sharedKeyVariables = Array.isArray(summary?.sharedKeyVariables) ? summary.sharedKeyVariables : [];
+
+    return {
+      modelCount: task.predictions.length,
+      keyVarCount: sharedKeyVariables.length,
+      hasHighConsensus: task.consensusLevel === 'HIGH',
+      modelNames: task.predictions.map((prediction) => prediction.aiModel.displayName),
+      consensusLevel: task.consensusLevel,
     };
   }
 }
