@@ -1,6 +1,6 @@
 import { Inject, Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
-import { MatchStatus } from '@prisma/client';
-import type { Match, UserPrediction, PredictionTaskStatus } from '@prisma/client';
+import { MatchStatus, PredictionTaskStatus } from '@prisma/client';
+import type { Match, UserPrediction } from '@prisma/client';
 
 import { PrismaService } from '../../prisma/prisma.service.js';
 import { AuthService } from '../auth/auth.service.js';
@@ -267,8 +267,15 @@ export class MatchesService {
     const modelCount = published.predictions.length;
     const summary = published.consensusSummary as Record<string, unknown> | null;
 
+    // Determine correct status label based on actual task status
+    const statusLabel = published.status === PredictionTaskStatus.PUBLISHED
+      ? 'published'
+      : published.status === PredictionTaskStatus.REVIEWED
+        ? 'reviewed'
+        : 'ready';
+
     return {
-      status: 'published',
+      status: statusLabel,
       title: this.extractConsensusHint(published.consensusSummary) ?? 'AI 共识已发布',
       highlight: this.extractConsensusHighlight(published.consensusSummary),
       modelCount,

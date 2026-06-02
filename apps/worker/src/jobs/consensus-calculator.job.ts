@@ -139,7 +139,8 @@ export async function processConsensusCalculator(job: Job<unknown>): Promise<{ o
   const agreementRate = totalModels > 0 ? majorityCount / totalModels : 0;
 
   let level: ConsensusLevel;
-  if (agreementRate >= 0.7) level = ConsensusLevel.HIGH;
+  // Threshold aligned with packages/shared computeConsensusSummary (0.67)
+  if (agreementRate >= 0.67) level = ConsensusLevel.HIGH;
   else if (agreementRate >= 0.5) level = ConsensusLevel.MIXED;
   else level = ConsensusLevel.STRONG_DIVERGENCE;
 

@@ -20,6 +20,7 @@ export interface AccessDecision {
 export type AccessDenyReason =
   | 'NO_SESSION'
   | 'FREE_QUOTA_EXHAUSTED'
+  | 'NEED_CONSUME'
   | 'PASS_EXPIRED'
   | 'LOGIN_REQUIRED';
 
@@ -27,6 +28,8 @@ export type UnlockHint =
   | 'LOGIN_TO_GET_FREE'
   | 'INVITE_FRIENDS'
   | 'BUY_PASS'
+  | 'CONSUME_FREE'
+  | 'CONSUME_INVITE'
   | null;
 
 export interface EntitlementSnapshot {
@@ -108,25 +111,7 @@ export class AccessService {
 
       const shouldRequireExplicitMatchUnlock = Boolean(matchId);
 
-      // 2. 邀请奖励判断
-      const inviteEntitlements = await this.getActiveEntitlements(
-        userId,
-        null,
-        'INVITE_REWARD',
-        now,
-      );
-      const inviteRemaining = this.sumRemaining(inviteEntitlements);
-      if (inviteRemaining > 0) {
-        const snapshot = await this.buildUserSnapshot(user, todayKey);
-        return {
-          canViewFullModels: !shouldRequireExplicitMatchUnlock,
-          reason: shouldRequireExplicitMatchUnlock ? 'FREE_QUOTA_EXHAUSTED' : null,
-          snapshot,
-          unlockHint: shouldRequireExplicitMatchUnlock ? 'BUY_PASS' : null,
-        };
-      }
-
-      // 3. 每日免费额度判断
+      // 2. 每日免费额度判断
       const freeEntitlements = await this.getActiveEntitlements(
         userId,
         null,
@@ -138,9 +123,27 @@ export class AccessService {
         const snapshot = await this.buildUserSnapshot(user, todayKey);
         return {
           canViewFullModels: !shouldRequireExplicitMatchUnlock,
-          reason: shouldRequireExplicitMatchUnlock ? 'FREE_QUOTA_EXHAUSTED' : null,
+          reason: shouldRequireExplicitMatchUnlock ? 'NEED_CONSUME' : null,
           snapshot,
-          unlockHint: shouldRequireExplicitMatchUnlock ? 'BUY_PASS' : null,
+          unlockHint: shouldRequireExplicitMatchUnlock ? 'CONSUME_FREE' : null,
+        };
+      }
+
+      // 3. 邀请奖励判断
+      const inviteEntitlements = await this.getActiveEntitlements(
+        userId,
+        null,
+        'INVITE_REWARD',
+        now,
+      );
+      const inviteRemaining = this.sumRemaining(inviteEntitlements);
+      if (inviteRemaining > 0) {
+        const snapshot = await this.buildUserSnapshot(user, todayKey);
+        return {
+          canViewFullModels: !shouldRequireExplicitMatchUnlock,
+          reason: shouldRequireExplicitMatchUnlock ? 'NEED_CONSUME' : null,
+          snapshot,
+          unlockHint: shouldRequireExplicitMatchUnlock ? 'CONSUME_INVITE' : null,
         };
       }
 

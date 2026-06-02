@@ -361,7 +361,8 @@ async function generatePrediction(payload: z.infer<typeof DirectPredictionPayloa
     },
   });
 
-  if (successCount > 0) {
+  // Auto-publish only for CRON-triggered tasks; MANUAL triggers require admin review
+  if (successCount > 0 && payload.trigger === PredictionTrigger.CRON) {
     await prisma.predictionTask.update({ where: { id: updated.id }, data: { status: PredictionTaskStatus.REVIEWED } });
     await prisma.predictionTask.update({
       where: { id: updated.id },
