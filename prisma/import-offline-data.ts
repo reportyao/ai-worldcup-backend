@@ -196,7 +196,8 @@ async function importTeams(teams: RawTeam[]): Promise<Map<string, string>> {
       code,
       name: team.team_name,
       shortName: team.team_name,
-      crestUrl: team.team_badge || null,
+      // API-Football badge URLs are unstable in browsers; avoid persisting them for user-facing clients.
+      crestUrl: null,
       countryCode: null as string | null,
       externalId,
     };

@@ -306,7 +306,10 @@ async function upsertTeam(team: ApiFootballTeam, summary: SyncSummary, dryRun: b
     code: buildTeamCode(team),
     name,
     shortName: name,
-    crestUrl: team.team_badge || team.team_logo || null,
+    // API-Football team_badge/team_logo often points to third-party JPG resources that fail
+    // with ERR_HTTP2_PROTOCOL_ERROR in browsers. Keep the team metadata, but do not persist
+    // unstable badge URLs for user-facing clients.
+    crestUrl: null,
     externalId,
   };
   const existing = await prisma.team.findUnique({ where: { externalId } });
