@@ -26,10 +26,26 @@ export class MatchesService {
   ) {}
 
   async listMatches(query: MatchListQueryDto) {
+    // Hide finished matches older than 7 days from user-facing list (data preserved in DB for AI predictions)
+    const sevenDaysAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
     const where = {
       ...(query.competitionId ? { competitionId: query.competitionId } : {}),
       ...(query.matchday ? { matchday: query.matchday } : {}),
       ...(query.status ? { status: query.status } : {}),
+      // Exclude finished matches older than 7 days unless explicitly filtering for them
+      ...(!query.status
+        ? {
+            NOT: {
+              AND: [
+                { status: MatchStatus.FINISHED },
+                { kickoffAt: { lt: sevenDaysAgo } },
+              ],
+            },
+          }
+        : {}),
+      ...(query.status === 'FINISHED'
+        ? { kickoffAt: { gte: sevenDaysAgo } }
+        : {}),
     };
 
     const [items, total] = await this.prisma.$transaction([
@@ -213,7 +229,7 @@ export class MatchesService {
     return null;
   }
 
-  private toMatchSummary(match: Match & { competition: { id: string; code: string; name: string; season: string }; homeTeam: { id: string; code: string; name: string; shortName: string | null; countryCode: string | null; crestUrl: string | null }; awayTeam: { id: string; code: string; name: string; shortName: string | null; countryCode: string | null; crestUrl: string | null }; predictionTasks?: Array<{ status: PredictionTaskStatus; consensusLevel: string | null; consensusSummary: unknown }> }) {
+  private toMatchSummary(match: Match & { competition: { id: string; code: string; name: string; season: string }; homeTeam: { id: string; code: string; name: string; nameZh: string | null; shortName: string | null; countryCode: string | null; crestUrl: string | null; flagUrl: string | null }; awayTeam: { id: string; code: string; name: string; nameZh: string | null; shortName: string | null; countryCode: string | null; crestUrl: string | null; flagUrl: string | null }; predictionTasks?: Array<{ status: PredictionTaskStatus; consensusLevel: string | null; consensusSummary: unknown }> }) {
     const latestTask = match.predictionTasks?.[0];
     return {
       id: match.id,

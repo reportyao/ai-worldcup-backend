@@ -212,12 +212,16 @@ model Team {
   code        String   @unique
   /// 球队全名（英文）
   name        String
+  /// 球队中文名
+  nameZh      String?
   /// 球队简称（用于 UI 展示）
   shortName   String?
   /// 国旗 emoji 或 ISO 3166-1 alpha-2 国家代码
   countryCode String?
   /// 球队徽章 URL
   crestUrl    String?
+  /// 国旗图片 URL（优先使用，若无则通过 countryCode 生成）
+  flagUrl     String?
   /// 外部数据源 ID
   externalId  String?  @unique
   createdAt   DateTime @default(now())

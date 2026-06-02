@@ -381,10 +381,30 @@ export class AdminService {
   }
 
   async listMatches(query: AdminMatchListQuery) {
+    // For finished matches, only show recent 7 days by default (older ones remain in DB for AI prediction data)
+    const sevenDaysAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
+    const isFilteringFinished = query.status === 'FINISHED';
+    const hasExplicitDateRange = !!(query.from || query.to);
+
     const where: Prisma.MatchWhereInput = {
       ...(query.competitionId ? { competitionId: query.competitionId } : {}),
       ...(query.status ? { status: query.status as MatchStatus } : {}),
-      ...(query.from || query.to
+      // If no status filter is set, exclude finished matches older than 7 days
+      ...(!query.status && !hasExplicitDateRange
+        ? {
+            NOT: {
+              AND: [
+                { status: 'FINISHED' as MatchStatus },
+                { kickoffAt: { lt: sevenDaysAgo } },
+              ],
+            },
+          }
+        : {}),
+      // If filtering specifically for FINISHED, default to recent 7 days unless date range is explicit
+      ...(isFilteringFinished && !hasExplicitDateRange
+        ? { kickoffAt: { gte: sevenDaysAgo } }
+        : {}),
+      ...(hasExplicitDateRange
         ? {
             kickoffAt: {
               ...(query.from ? { gte: new Date(query.from) } : {}),

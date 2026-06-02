@@ -7,14 +7,14 @@ import type { PersonalityQuestionUpsertDto, PersonalitySubmitDto } from './perso
 
 type PersonalityCode = string;
 
-interface PersonalityOption {
+export interface PersonalityOption {
   id: string;
   label: string;
   description?: string;
   weights: Record<PersonalityCode, number>;
 }
 
-interface PersonalityQuestionPayload {
+export interface PersonalityQuestionPayload {
   id: string;
   activityKey: string;
   sortOrder: number;

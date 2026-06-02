@@ -4,7 +4,7 @@ import type { Request } from 'express';
 import { ZodValidationPipe } from '../../common/zod-validation.pipe.js';
 import { AuthService } from '../auth/auth.service.js';
 
-import { PersonalityService } from './personality.service.js';
+import { PersonalityService, type PersonalityQuestionPayload, type PersonalityOption } from './personality.service.js';
 import {
   PersonalityQuestionUpsertSchema,
   PersonalitySubmitSchema,
