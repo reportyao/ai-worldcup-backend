@@ -16,21 +16,27 @@ export interface EnqueuePredictionOptions {
   rerun?: boolean;
 }
 
+export interface EnqueueScorecardOptions {
+  matchId?: string;
+  mode?: 'MATCH' | 'SCAN_FINISHED';
+}
+
 @Injectable()
 export class PredictionPipelineService implements OnModuleDestroy {
   private readonly predictionQueue: Queue;
+  private readonly scorecardQueue: Queue;
 
   constructor(
     @Inject(ConfigService) private readonly config: ConfigService,
     @Inject(PrismaService) private readonly prisma: PrismaService,
   ) {
-    this.predictionQueue = new Queue(QueueName.PredictionGenerator, {
-      connection: { url: this.config.get<string>('REDIS_URL') ?? 'redis://localhost:6379/0' },
-    });
+    const connection = { url: this.config.get<string>('REDIS_URL') ?? 'redis://localhost:6379/0' };
+    this.predictionQueue = new Queue(QueueName.PredictionGenerator, { connection });
+    this.scorecardQueue = new Queue(QueueName.ScorecardUpdate, { connection });
   }
 
   async onModuleDestroy(): Promise<void> {
-    await this.predictionQueue.close();
+    await Promise.all([this.predictionQueue.close(), this.scorecardQueue.close()]);
   }
 
   async enqueuePrediction(options: EnqueuePredictionOptions) {
@@ -94,5 +100,35 @@ export class PredictionPipelineService implements OnModuleDestroy {
       },
     );
     return { jobId: job.id };
+  }
+
+  async enqueueScorecardUpdate(options: EnqueueScorecardOptions = {}) {
+    if (options.matchId) {
+      const match = await this.prisma.match.findUnique({ where: { id: options.matchId } });
+      if (!match) throw new BadRequestException('Match not found');
+      const job = await this.scorecardQueue.add(
+        'update-scorecard',
+        { matchId: options.matchId },
+        {
+          attempts: 2,
+          removeOnComplete: 200,
+          removeOnFail: 500,
+          jobId: `scorecard_${options.matchId}_${Date.now()}`,
+        },
+      );
+      return { mode: 'MATCH', matchId: options.matchId, jobId: job.id };
+    }
+
+    const job = await this.scorecardQueue.add(
+      'scan-finished-scorecards',
+      { mode: options.mode ?? 'SCAN_FINISHED' },
+      {
+        attempts: 1,
+        removeOnComplete: 50,
+        removeOnFail: 100,
+        jobId: `scorecard-scan_${Date.now()}`,
+      },
+    );
+    return { mode: 'SCAN_FINISHED', jobId: job.id };
   }
 }

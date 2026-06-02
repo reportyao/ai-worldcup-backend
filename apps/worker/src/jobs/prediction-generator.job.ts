@@ -1,10 +1,14 @@
 import {
   buildFailureStructuredOutput,
   computeConsensusSummary,
+  computeMatchFeatures,
+  FEATURE_VERSION,
   generateStructuredPrediction,
   type AiGatewayMatchContext,
   type AiGatewayModelConfig,
   type ExternalPromptTemplate,
+  type HistoricalMatch,
+  type MatchContext,
   type StructuredPrediction,
 } from '@ai-worldcup/shared';
 import {
@@ -252,25 +256,121 @@ async function runSingleModel(taskId: string, model: AiModel, matchContext: AiGa
   return result.structuredOutput;
 }
 
-async function loadOrComputeFeature(matchId: string): Promise<{ summaryText: string | null; dataQuality: string | null; featureId: string | null }> {
-  // Try to load pre-computed feature
-  const feature = await prisma.matchFeature.findFirst({
-    where: { matchId },
+const HISTORY_LIMIT = 30;
+
+async function fetchTeamHistory(teamId: string, beforeDate: Date): Promise<HistoricalMatch[]> {
+  return prisma.match.findMany({
+    where: {
+      OR: [{ homeTeamId: teamId }, { awayTeamId: teamId }],
+      status: 'FINISHED',
+      kickoffAt: { lt: beforeDate },
+    },
+    orderBy: { kickoffAt: 'desc' },
+    take: HISTORY_LIMIT,
+    select: {
+      id: true,
+      homeTeamId: true,
+      awayTeamId: true,
+      homeScore: true,
+      awayScore: true,
+      kickoffAt: true,
+      status: true,
+      competitionId: true,
+    },
+  });
+}
+
+async function fetchH2HHistory(homeTeamId: string, awayTeamId: string, beforeDate: Date): Promise<HistoricalMatch[]> {
+  return prisma.match.findMany({
+    where: {
+      OR: [
+        { homeTeamId, awayTeamId },
+        { homeTeamId: awayTeamId, awayTeamId: homeTeamId },
+      ],
+      status: 'FINISHED',
+      kickoffAt: { lt: beforeDate },
+    },
+    orderBy: { kickoffAt: 'desc' },
+    take: 10,
+    select: {
+      id: true,
+      homeTeamId: true,
+      awayTeamId: true,
+      homeScore: true,
+      awayScore: true,
+      kickoffAt: true,
+      status: true,
+      competitionId: true,
+    },
+  });
+}
+
+function mapPriority(priority?: string | null): 'P0' | 'P1' | 'P2' | 'P3' {
+  if (priority === 'P0' || priority === 'P1' || priority === 'P2' || priority === 'P3') return priority;
+  return 'P2';
+}
+
+async function computeAndPersistFeature(match: Awaited<ReturnType<typeof loadMatchContext>>) {
+  const context: MatchContext = {
+    matchId: match.id,
+    homeTeamId: match.homeTeamId,
+    homeTeamName: match.homeTeam.name,
+    homeTeamCode: match.homeTeam.code,
+    awayTeamId: match.awayTeamId,
+    awayTeamName: match.awayTeam.name,
+    awayTeamCode: match.awayTeam.code,
+    competitionId: match.competitionId,
+    competitionName: match.competition.name,
+    competitionSeason: match.competition.season,
+    competitionPriority: mapPriority((match.competition as { priority?: string | null }).priority),
+    kickoffAt: match.kickoffAt,
+    stage: match.stage,
+    matchday: match.matchday,
+  };
+  const [homeHistory, awayHistory, h2hHistory] = await Promise.all([
+    fetchTeamHistory(match.homeTeamId, match.kickoffAt),
+    fetchTeamHistory(match.awayTeamId, match.kickoffAt),
+    fetchH2HHistory(match.homeTeamId, match.awayTeamId, match.kickoffAt),
+  ]);
+  const result = computeMatchFeatures(context, homeHistory, awayHistory, h2hHistory);
+  return prisma.matchFeature.upsert({
+    where: { matchId_featureVersion: { matchId: match.id, featureVersion: FEATURE_VERSION } },
+    create: {
+      matchId: match.id,
+      featureVersion: FEATURE_VERSION,
+      featuresJson: JSON.parse(JSON.stringify(result.features)),
+      summaryText: result.summaryText,
+      dataQuality: result.dataQuality,
+      missingSignals: result.missingSignals,
+      computedAt: new Date(),
+    },
+    update: {
+      featuresJson: JSON.parse(JSON.stringify(result.features)),
+      summaryText: result.summaryText,
+      dataQuality: result.dataQuality,
+      missingSignals: result.missingSignals,
+      computedAt: new Date(),
+    },
+  });
+}
+
+async function loadOrComputeFeature(match: Awaited<ReturnType<typeof loadMatchContext>>): Promise<{ summaryText: string; dataQuality: string; featureId: string }> {
+  const existing = await prisma.matchFeature.findFirst({
+    where: { matchId: match.id, featureVersion: FEATURE_VERSION },
     orderBy: { computedAt: 'desc' },
   });
-  if (feature) {
-    return {
-      summaryText: feature.summaryText,
-      dataQuality: feature.dataQuality,
-      featureId: feature.id,
-    };
-  }
-  return { summaryText: null, dataQuality: null, featureId: null };
+  const feature = existing ?? await computeAndPersistFeature(match);
+  if (!feature?.id) throw new Error(`Feature snapshot was not created for match ${match.id}`);
+  return {
+    summaryText: feature.summaryText ?? '',
+    dataQuality: feature.dataQuality,
+    featureId: feature.id,
+  };
 }
 
 async function generatePrediction(payload: z.infer<typeof DirectPredictionPayloadSchema>): Promise<PredictionTaskResult> {
   const match = await loadMatchContext(payload.matchId);
-  const featureData = await loadOrComputeFeature(payload.matchId);
+  const featureData = await loadOrComputeFeature(match);
   const activeModels = await prisma.aiModel.findMany({
     where: { isActive: true },
     orderBy: [{ sortOrder: 'asc' }, { createdAt: 'asc' }],
@@ -284,6 +384,7 @@ async function generatePrediction(payload: z.infer<typeof DirectPredictionPayloa
       version: payload.version,
       trigger: payload.trigger,
       status: PredictionTaskStatus.RUNNING,
+      featureSnapshotId: featureData.featureId,
       modelCount: activeModels.length,
       successCount: 0,
       failureCount: 0,
@@ -295,6 +396,7 @@ async function generatePrediction(payload: z.infer<typeof DirectPredictionPayloa
     update: {
       trigger: payload.trigger,
       status: PredictionTaskStatus.RUNNING,
+      featureSnapshotId: featureData.featureId,
       modelCount: activeModels.length,
       successCount: 0,
       failureCount: 0,
@@ -307,14 +409,6 @@ async function generatePrediction(payload: z.infer<typeof DirectPredictionPayloa
 
   if (payload.rerun) {
     await prisma.modelPrediction.deleteMany({ where: { predictionTaskId: task.id } });
-  }
-
-  // Save feature snapshot reference for backtesting
-  if (featureData.featureId) {
-    await prisma.predictionTask.update({
-      where: { id: task.id },
-      data: { featureSnapshotId: featureData.featureId },
-    });
   }
 
   const matchContext = toMatchContext(

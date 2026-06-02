@@ -17,6 +17,8 @@ import { QueueName } from '../queues.js';
 const redisUrl = process.env.REDIS_URL ?? 'redis://localhost:6379/0';
 const prisma = new PrismaClient();
 let predictionQueue: Queue | undefined;
+let scorecardQueue: Queue | undefined;
+let reviewQueue: Queue | undefined;
 
 function createConnection(): Redis {
   return new Redis(redisUrl, {
@@ -29,6 +31,16 @@ function createConnection(): Redis {
 function getPredictionQueue(): Queue {
   predictionQueue ??= new Queue(QueueName.PredictionGenerator, { connection: createConnection() });
   return predictionQueue;
+}
+
+function getScorecardQueue(): Queue {
+  scorecardQueue ??= new Queue(QueueName.ScorecardUpdate, { connection: createConnection() });
+  return scorecardQueue;
+}
+
+function getReviewQueue(): Queue {
+  reviewQueue ??= new Queue(QueueName.PostMatchReview, { connection: createConnection() });
+  return reviewQueue;
 }
 
 const SyncScopeSchema = z.enum(['LEAGUES', 'TEAMS', 'FIXTURES', 'LIVE_SCORES', 'STANDINGS']);
@@ -265,6 +277,8 @@ async function upsertFixture(
     upsertTeam({ team_key: fixture.match_hometeam_id, team_name: fixture.match_hometeam_name }, summary, false),
     upsertTeam({ team_key: fixture.match_awayteam_id, team_name: fixture.match_awayteam_name }, summary, false),
   ]);
+  const nextStatus = mapMatchStatus(fixture);
+  const shouldTriggerPostMatch = existing?.status !== MatchStatus.FINISHED && nextStatus === MatchStatus.FINISHED;
   const match = await prisma.match.upsert({
     where: { externalId },
     update: {
@@ -272,7 +286,7 @@ async function upsertFixture(
       homeTeamId: homeTeam.id,
       awayTeamId: awayTeam.id,
       kickoffAt,
-      status: mapMatchStatus(fixture),
+      status: nextStatus,
       matchday: kickoffAt.toISOString().slice(0, 10),
       stage: fixture.match_round?.trim() || null,
       homeScore: toNullableInt(fixture.match_hometeam_score),
@@ -283,7 +297,7 @@ async function upsertFixture(
       homeTeamId: homeTeam.id,
       awayTeamId: awayTeam.id,
       kickoffAt,
-      status: mapMatchStatus(fixture),
+      status: nextStatus,
       matchday: kickoffAt.toISOString().slice(0, 10),
       stage: fixture.match_round?.trim() || null,
       homeScore: toNullableInt(fixture.match_hometeam_score),
@@ -295,6 +309,10 @@ async function upsertFixture(
   else {
     summary.matchesCreated += 1;
     if (options.enqueuePredictions) await enqueuePrediction(match.id, summary);
+  }
+
+  if (shouldTriggerPostMatch) {
+    await enqueuePostMatchEvaluation(match.id, summary);
   }
 }
 
@@ -322,6 +340,36 @@ async function upsertTeam(team: ApiFootballTeam, summary: SyncSummary, dryRun: b
   if (existing) summary.teamsUpdated += 1;
   else summary.teamsCreated += 1;
   return saved;
+}
+
+async function enqueuePostMatchEvaluation(matchId: string, summary: SyncSummary): Promise<void> {
+  try {
+    await getScorecardQueue().add(
+      'update-scorecard',
+      { matchId, trigger: 'CRON', mode: 'MATCH' },
+      {
+        jobId: `scorecard:${matchId}`,
+        attempts: 3,
+        backoff: { type: 'exponential', delay: 30_000 },
+        removeOnComplete: 100,
+        removeOnFail: 200,
+      },
+    );
+    await getReviewQueue().add(
+      'generate-review',
+      { matchId, trigger: 'CRON' },
+      {
+        jobId: `review:${matchId}`,
+        attempts: 3,
+        backoff: { type: 'exponential', delay: 60_000 },
+        removeOnComplete: 100,
+        removeOnFail: 200,
+      },
+    );
+  } catch (error) {
+    summary.errorCount += 1;
+    summary.errors.push({ externalId: matchId, message: error instanceof Error ? error.message : String(error) });
+  }
 }
 
 async function enqueuePrediction(matchId: string, summary: SyncSummary): Promise<void> {

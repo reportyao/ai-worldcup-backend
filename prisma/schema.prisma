@@ -449,6 +449,32 @@ model ModelPrediction {
   isSuccess        Boolean        @default(true)
   /// 错误信息（如果失败）
   errorMessage     String?
+  /// 赛后评估：胜平负是否命中
+  winDrawLossCorrect Boolean?
+  /// 赛后评估：让球胜平负是否命中
+  handicapCorrect    Boolean?
+  /// 赛后评估：大小球是否命中
+  overUnderCorrect   Boolean?
+  /// 赛后评估：比分是否精确命中
+  scoreExact         Boolean?
+  /// 赛后评估：半全场是否命中
+  halfFullCorrect    Boolean?
+  /// 赛后评估：总进球区间是否命中
+  goalRangeHit       Boolean?
+  /// 赛后评估：任一维度是否命中
+  anyHit             Boolean?
+  /// 概率评分：三分类 Brier Score，越低越好
+  brierScore         Float?
+  /// 概率评分：实际赛果负对数似然，越低越好
+  logLoss            Float?
+  /// 模型分配给实际赛果的概率
+  outcomeProbability Float?
+  /// 实际赛果：HOME_WIN / DRAW / AWAY_WIN
+  actualOutcome      String?
+  /// 评估算法版本
+  evaluationVersion  String?
+  /// 评估时间
+  evaluatedAt        DateTime?
   /// 生成时间
   generatedAt      DateTime       @default(now())
   createdAt        DateTime       @default(now())
@@ -750,8 +776,8 @@ model ModelScorecard {
   aiModel            AiModel  @relation(fields: [aiModelId], references: [id], onDelete: Cascade)
   /// 'OVERALL' | 'COMPETITION' | 'RECENT_10'
   scopeType          String   @default("OVERALL")
-  /// null for OVERALL/RECENT_10, competitionId for COMPETITION
-  scopeId            String?
+  /// empty string for OVERALL/RECENT_10, competitionId for COMPETITION
+  scopeId            String   @default("")
   totalMatches       Int      @default(0)
   winDrawLossCorrect Int      @default(0)
   scoreExact         Int      @default(0)
@@ -768,6 +794,12 @@ model ModelScorecard {
   hitRate            Float    @default(0)
   /// 胜平负命中率（保留向后兼容）
   winRate            Float    @default(0)
+  /// 概率评分平均 Brier Score，越低越好
+  brierScoreAvg      Float    @default(0)
+  /// 概率评分平均 Log Loss，越低越好
+  logLossAvg         Float    @default(0)
+  /// 有效概率评分样本数
+  probabilitySamples Int      @default(0)
   /// 近10场结果序列，如 "RRMRRRRRMR" (R=红, M=黑)
   recentForm         String?
   lastMatchId        String?

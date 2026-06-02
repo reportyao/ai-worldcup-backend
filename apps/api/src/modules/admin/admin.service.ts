@@ -48,6 +48,7 @@ import type {
   AdminPredictionRerunDto,
   AdminPredictionTaskQuery,
   AdminPredictionTriggerDto,
+  AdminScorecardTriggerDto,
   AdminPromptTemplateCreateDto,
   AdminPromptTemplateListQuery,
   AdminPromptTemplateUpdateDto,
@@ -936,6 +937,22 @@ export class AdminService {
   async enqueuePredictionSchedulerScan(meta: RequestMeta) {
     const result = await this.predictionPipeline.enqueueSchedulerScan();
     await this.writeAudit(meta, 'PREDICTION_SCHEDULER_SCAN', 'PredictionTask', null, null, result);
+    return result;
+  }
+
+  async triggerScorecardUpdate(dto: AdminScorecardTriggerDto, meta: RequestMeta) {
+    const result = await this.predictionPipeline.enqueueScorecardUpdate({
+      matchId: dto.matchId,
+      mode: dto.mode,
+    });
+    await this.writeAudit(
+      meta,
+      dto.matchId ? 'SCORECARD_UPDATE_TRIGGER' : 'SCORECARD_SCAN_TRIGGER',
+      dto.matchId ? 'Match' : 'ModelScorecard',
+      dto.matchId ?? null,
+      null,
+      result,
+    );
     return result;
   }
 

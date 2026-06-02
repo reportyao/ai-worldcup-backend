@@ -240,8 +240,9 @@ export class ScorecardService {
     matchId: string,
     accuracy: { winDrawLossCorrect: boolean; handicapCorrect: boolean; overUnderCorrect: boolean; scoreExact: boolean; halfFullCorrect: boolean; goalRangeHit: boolean; anyHit: boolean },
   ): Promise<ScorecardStats> {
+    const scopeKey = scopeId ?? '';
     const existing = await this.prisma.modelScorecard.findFirst({
-      where: { aiModelId, scopeType, scopeId },
+      where: { aiModelId, scopeType, scopeId: scopeKey },
     });
 
     const newTotal = (existing?.totalMatches ?? 0) + 1;
@@ -277,7 +278,7 @@ export class ScorecardService {
     if (existing) {
       await this.prisma.modelScorecard.update({ where: { id: existing.id }, data });
     } else {
-      await this.prisma.modelScorecard.create({ data: { aiModelId, scopeType, scopeId, ...data } });
+      await this.prisma.modelScorecard.create({ data: { aiModelId, scopeType, scopeId: scopeKey, ...data } });
     }
 
     return data;
@@ -343,7 +344,7 @@ export class ScorecardService {
     const winRate = totalMatches > 0 ? wdlCorrect / totalMatches : 0;
 
     const existing = await this.prisma.modelScorecard.findFirst({
-      where: { aiModelId, scopeType: 'RECENT_10', scopeId: null },
+      where: { aiModelId, scopeType: 'RECENT_10', scopeId: '' },
     });
 
     const data = {
@@ -364,7 +365,7 @@ export class ScorecardService {
     if (existing) {
       await this.prisma.modelScorecard.update({ where: { id: existing.id }, data });
     } else {
-      await this.prisma.modelScorecard.create({ data: { aiModelId, scopeType: 'RECENT_10', scopeId: null, ...data } });
+      await this.prisma.modelScorecard.create({ data: { aiModelId, scopeType: 'RECENT_10', scopeId: '', ...data } });
     }
 
     return data;

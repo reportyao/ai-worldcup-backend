@@ -222,6 +222,15 @@ export const AdminPredictionRerunSchema = z.object({
 });
 export type AdminPredictionRerunDto = z.infer<typeof AdminPredictionRerunSchema>;
 
+export const AdminScorecardTriggerSchema = z.object({
+  matchId: z.string().trim().min(1).optional(),
+  mode: z.enum(['MATCH', 'SCAN_FINISHED']).default('SCAN_FINISHED'),
+}).refine((value) => value.mode === 'SCAN_FINISHED' || Boolean(value.matchId), {
+  message: 'matchId is required when mode is MATCH',
+  path: ['matchId'],
+});
+export type AdminScorecardTriggerDto = z.infer<typeof AdminScorecardTriggerSchema>;
+
 
 export const AdminPromptTemplateListQuerySchema = PaginationQuerySchema.extend({
   scene: z.string().trim().default('MATCH_PREDICTION'),

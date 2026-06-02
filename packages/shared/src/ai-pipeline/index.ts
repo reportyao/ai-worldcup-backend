@@ -279,30 +279,71 @@ export function buildPredictionPrompt(
 }
 
 function extractJsonObject(rawOutput: string): unknown {
-  // Strip all markdown code fences (including mid-text ones)
   const stripped = rawOutput
     .trim()
+    .replace(/^\uFEFF/, '')
     .replace(/```(?:json)?\s*/gi, '')
     .replace(/```/g, '')
     .trim();
-  try {
-    return JSON.parse(stripped);
-  } catch {
-    // Fallback: find the outermost { ... } block
-    const start = stripped.indexOf('{');
-    const end = stripped.lastIndexOf('}');
-    if (start >= 0 && end > start) {
-      try {
-        return JSON.parse(stripped.slice(start, end + 1));
-      } catch {
-        // Try to fix common issues: trailing commas
-        const cleaned = stripped.slice(start, end + 1)
-          .replace(/,\s*([}\]])/g, '$1');
-        return JSON.parse(cleaned);
-      }
+  const candidates = [stripped];
+  const start = stripped.indexOf('{');
+  const end = stripped.lastIndexOf('}');
+  if (start >= 0 && end > start) candidates.push(stripped.slice(start, end + 1));
+
+  for (const candidate of candidates) {
+    const cleaned = candidate
+      .replace(/[“”]/g, '"')
+      .replace(/[‘’]/g, "'")
+      .replace(/,\s*([}\]])/g, '$1')
+      .trim();
+    try {
+      return JSON.parse(cleaned);
+    } catch {
+      // Try next candidate.
     }
-    throw new Error('AI output is not valid JSON');
   }
+  throw new Error('AI output is not valid JSON');
+}
+
+function normalizeProbabilityTriple(value: unknown): { home: number; draw: number; away: number } | undefined {
+  if (!value || typeof value !== 'object') return undefined;
+  const record = value as Record<string, unknown>;
+  const home = Number(record.home);
+  const draw = Number(record.draw);
+  const away = Number(record.away);
+  if (![home, draw, away].every(Number.isFinite)) return undefined;
+  const clamped: [number, number, number] = [home, draw, away].map((n) => Math.min(1, Math.max(0, n))) as [number, number, number];
+  const [homeProb, drawProb, awayProb] = clamped;
+  const sum = homeProb + drawProb + awayProb;
+  if (sum <= 0) return { home: 1 / 3, draw: 1 / 3, away: 1 / 3 };
+  return { home: homeProb / sum, draw: drawProb / sum, away: awayProb / sum };
+}
+
+function normalizePredictionPayload(parsed: Record<string, unknown>, model: AiGatewayModelConfig): Record<string, unknown> {
+  const conclusion = parsed.conclusion && typeof parsed.conclusion === 'object'
+    ? { ...(parsed.conclusion as Record<string, unknown>) }
+    : {};
+  const normalizedProbability = normalizeProbabilityTriple(conclusion.winProbability);
+  if (normalizedProbability) conclusion.winProbability = normalizedProbability;
+  if (conclusion.goalsRange && typeof conclusion.goalsRange === 'object') {
+    const goalsRange = { ...(conclusion.goalsRange as Record<string, unknown>) };
+    const min = Number(goalsRange.min);
+    const max = Number(goalsRange.max);
+    if (Number.isFinite(min) && Number.isFinite(max) && max < min) {
+      goalsRange.min = max;
+      goalsRange.max = min;
+    }
+    conclusion.goalsRange = goalsRange;
+  }
+  return {
+    ...parsed,
+    conclusion,
+    modelId: model.modelId,
+    modelDisplayName: model.displayName,
+    modelPersona: model.persona,
+    generatedAt: typeof parsed.generatedAt === 'string' ? parsed.generatedAt : new Date().toISOString(),
+    disclaimer: '娱乐分析，不构成任何投注建议。',
+  };
 }
 
 export function validateStructuredPrediction(
@@ -310,15 +351,7 @@ export function validateStructuredPrediction(
   model: AiGatewayModelConfig,
 ): StructuredPrediction {
   const parsed = extractJsonObject(rawOutput) as Record<string, unknown>;
-  const normalized = {
-    ...parsed,
-    modelId: model.modelId,
-    modelDisplayName: model.displayName,
-    modelPersona: model.persona,
-    generatedAt: typeof parsed.generatedAt === 'string' ? parsed.generatedAt : new Date().toISOString(),
-    disclaimer: '娱乐分析，不构成任何投注建议。',
-  };
-  return StructuredPredictionSchema.parse(normalized);
+  return StructuredPredictionSchema.parse(normalizePredictionPayload(parsed, model));
 }
 
 export function checkPredictionContentSafety(text: string, structured?: StructuredPrediction): ContentSafetyResult {

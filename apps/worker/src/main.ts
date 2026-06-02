@@ -89,6 +89,29 @@ async function registerFeatureComputeScheduler(): Promise<void> {
   logger.info({ queue: QueueName.FeatureCompute }, 'feature-compute scheduler registered');
 }
 
+async function registerScorecardScheduler(): Promise<void> {
+  const queue = new Queue(QueueName.ScorecardUpdate, { connection: createConnection() });
+  queues.push(queue);
+  await queue.add(
+    'scan-finished-scorecards',
+    {
+      mode: 'SCAN_FINISHED',
+      trigger: 'CRON',
+      lookbackDays: Number(process.env.SCORECARD_SCAN_LOOKBACK_DAYS ?? 7),
+      limit: Number(process.env.SCORECARD_SCAN_LIMIT ?? 50),
+    },
+    {
+      repeat: { pattern: process.env.SCORECARD_SCAN_CRON ?? '*/15 * * * *' },
+      jobId: 'scorecard-scan-repeat',
+      attempts: 2,
+      backoff: { type: 'exponential', delay: 60_000 },
+      removeOnComplete: 50,
+      removeOnFail: 100,
+    },
+  );
+  logger.info({ queue: QueueName.ScorecardUpdate }, 'scorecard scheduler registered');
+}
+
 async function registerDataSyncSchedulers(): Promise<void> {
   if (!process.env.API_FOOTBALL_KEY) {
     logger.warn('API_FOOTBALL_KEY is not configured; data-sync schedulers will not be registered');
@@ -151,6 +174,7 @@ async function main(): Promise<void> {
   await registerPredictionScheduler();
   await registerDataSyncSchedulers();
   await registerFeatureComputeScheduler();
+  await registerScorecardScheduler();
   registerWorker(QueueName.PredictionGenerator, processPredictionGenerator);
   registerWorker(QueueName.DataSync, processDataSync);
   registerWorker(QueueName.PostMatchReview, processReviewGenerator);

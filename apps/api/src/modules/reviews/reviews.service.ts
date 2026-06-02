@@ -64,6 +64,9 @@ export interface ScorecardStatsPayload {
   anyHit: number;
   hitRate: number;
   winRate: number;
+  brierScoreAvg: number;
+  logLossAvg: number;
+  probabilitySamples: number;
   recentForm: string;
 }
 
@@ -76,6 +79,9 @@ export interface LeaderboardEntry {
   winRate: number;
   hitRate: number;
   anyHit: number;
+  brierScoreAvg: number;
+  logLossAvg: number;
+  probabilitySamples: number;
   recentForm: string;
 }
 
@@ -219,6 +225,9 @@ export class ReviewsService {
       winRate: sc.winRate,
       hitRate: sc.hitRate,
       anyHit: sc.anyHit,
+      brierScoreAvg: sc.brierScoreAvg,
+      logLossAvg: sc.logLossAvg,
+      probabilitySamples: sc.probabilitySamples,
       recentForm: sc.recentForm ?? '',
     }));
   }
@@ -234,6 +243,9 @@ export class ReviewsService {
     anyHit: number;
     hitRate: number;
     winRate: number;
+    brierScoreAvg: number;
+    logLossAvg: number;
+    probabilitySamples: number;
     recentForm: string | null;
   }): ScorecardStatsPayload {
     return {
@@ -247,6 +259,9 @@ export class ReviewsService {
       anyHit: scorecard.anyHit,
       hitRate: scorecard.hitRate,
       winRate: scorecard.winRate,
+      brierScoreAvg: scorecard.brierScoreAvg,
+      logLossAvg: scorecard.logLossAvg,
+      probabilitySamples: scorecard.probabilitySamples,
       recentForm: scorecard.recentForm ?? '',
     };
   }

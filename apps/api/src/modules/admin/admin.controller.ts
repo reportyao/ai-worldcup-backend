@@ -35,6 +35,7 @@ import {
   AdminPredictionRerunSchema,
   AdminPredictionTaskQuerySchema,
   AdminPredictionTriggerSchema,
+  AdminScorecardTriggerSchema,
   AdminPromptTemplateCreateSchema,
   AdminPromptTemplateListQuerySchema,
   AdminPromptTemplateUpdateSchema,
@@ -58,6 +59,7 @@ import {
   type AdminPredictionRerunDto,
   type AdminPredictionTaskQuery,
   type AdminPredictionTriggerDto,
+  type AdminScorecardTriggerDto,
   type AdminPromptTemplateCreateDto,
   type AdminPromptTemplateListQuery,
   type AdminPromptTemplateUpdateDto,
@@ -291,6 +293,14 @@ export class AdminController {
   @Post('prediction-tasks/scheduler-scan')
   enqueuePredictionSchedulerScan(@Req() req: Request) {
     return this.adminService.enqueuePredictionSchedulerScan(this.adminService.getRequestMeta(req));
+  }
+
+  @Post('scorecards/trigger')
+  triggerScorecardUpdate(
+    @Req() req: Request,
+    @Body(new ZodValidationPipe(AdminScorecardTriggerSchema)) dto: AdminScorecardTriggerDto,
+  ) {
+    return this.adminService.triggerScorecardUpdate(dto, this.adminService.getRequestMeta(req));
   }
 
   @Get('prediction-tasks/:id')
