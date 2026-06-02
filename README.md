@@ -2,99 +2,138 @@
 
 ## 项目简介
 
-这是“球多多 AI 足球预测”平台的核心后端服务，负责处理所有业务逻辑、数据存储、AI 模型集成、预测任务调度以及用户认证等关键功能。它为用户前端和管理后台提供统一的 API 接口，是整个平台的“大脑”。
+这是“球多多 AI 足球预测”平台的核心后端服务，负责承载用户前端、管理后台、预测生产线、数据同步、权益订单、赛后复盘与模型评估等关键能力。后端以 **NestJS + Prisma + BullMQ** 为主体架构，通过 API 服务对外提供统一接口，通过 Worker 服务执行足球数据同步、特征计算、AI 预测生成、共识聚合、赛后评分和复盘生成等异步任务。
 
-## 主要功能
+平台当前已经完成多联赛数据接入、世界杯数据口径修复、比赛列表四类 Tab 查询、AI 预测 Sprint A 闭环建设，并在生产环境部署运行。Sprint A 的核心目标是让每一次预测都有可追溯输入、可稳定解析输出、可自动赛后评估，并能用概率评分持续比较模型质量。
 
-*   **用户与认证**：支持游客模式、微信登录，管理用户身份和会话。
-*   **赛事与比赛管理**：提供赛事、球队、比赛数据的 CRUD 操作，支持赛程导入、API-Football 多联赛同步和赛果更新。
-*   **足球数据同步**：支持通过 API-Football 同步联赛元数据、球队、未来赛程和实时比分，并记录每次同步的参数、状态和摘要。
-*   **AI 预测生产线**：
-    *   集成多种 AI 模型（如通过 NEXUS AI 中转站接入的 Gemini、Claude 等）。
-    *   支持 24 小时前（自动触发）和 2 小时前（管理员选择触发）两阶段预测。
-    *   **特征驱动的预测 (Prediction Pack)**：后台自动化计算球队近期战绩、交锋记录等特征，打包作为大模型的统一上下文输入。
-    *   **多维度共识聚合**：不仅汇总胜平负，还聚合了各模型的胜率概率、进球预期、观点集群分布、共同优势/风险等，提供深度共识分析。
-    *   **动态提示词模板**：支持后台配置提示词，并自动注入比赛变量（主客队、开赛时间、特征数据等）。
-    *   预测结果结构化存储，并支持后台编辑与共识自动重算。
-*   **权益与订单**：
-    *   管理用户预测权益的获取、消耗。
-    *   **比赛级解锁**：权益消费按比赛生效，解锁一场比赛即可查看该场下所有 AI 模型分析。
-    *   支付订单处理与会员权益同步。
-*   **分享与增长**：生成个性化分享卡片，支持邀请码机制。
-*   **后台管理 API**：为管理后台提供数据查询、任务触发、审计日志等接口。
-*   **健康检查**：提供服务健康状态监控接口。
+## 当前线上入口
+
+| 服务 | 地址 | 说明 |
+| --- | --- | --- |
+| API 域名 | `http://api.qiuduoduo.online` | 面向前端与管理后台的后端 API。 |
+| API IP | `http://82.157.76.140:3000` | 生产服务器 API 直连入口。 |
+| 健康检查 | `/api/health` | 用于确认 API 服务运行状态。 |
+
+## 主要能力
+
+| 模块 | 当前能力 |
+| --- | --- |
+| 用户与认证 | 支持游客、微信用户、管理员会话与后台登录。管理后台超级管理员账号由生产环境配置控制。 |
+| 赛事与比赛 | 支持赛事、赛季、球队、比赛管理，已修复世界杯 2026 与历史世界杯数据的 season-scoped externalId 口径。 |
+| 比赛列表 API | 支持 `today`、`worldcup`、`others`、`finished` 四类 Tab 查询；世界杯支持小组/阶段筛选，其他联赛支持 `competitionId` 快速筛选，已完赛展示最近三天有比分比赛并统一状态。 |
+| 足球数据同步 | 通过 API-Football 同步联赛元数据、球队、未来赛程和实时比分，并保存同步日志、摘要和错误信息。若缺少 API key，Worker 会安全跳过同步调度。 |
+| 特征引擎 | 基于历史比赛、近期状态和交锋信息生成 `MatchFeature`，并为预测任务提供统一 Prediction Pack。 |
+| AI 预测生产线 | 支持多模型并发预测、结构化 JSON 输出、提示词变量注入、模型失败记录和共识聚合。 |
+| Sprint A 预测闭环 | 预测前强制生成并绑定输入快照；失败模型不进入共识；AI 输出执行 JSON 抽取、修复、概率归一化与协议校验；赛后自动评分。 |
+| 概率评分 | `ModelPrediction` 已记录 `actualOutcome`、`outcomeProbability`、`brierScore`、`logLoss`、`evaluatedAt`；`ModelScorecard` 已聚合概率评分样本数、平均 Brier 和平均 LogLoss。 |
+| 后台运维 API | 支持预测任务触发、发布、下架、重跑、手动触发单场评分、批量评分扫描和审计日志。 |
+| 权益订单 | 支持比赛级解锁、权益消费、订单记录和会员权益同步。 |
+| 分享与增长 | 支持分享卡片、邀请码与增长相关接口。 |
+
+## Sprint A 预测评估闭环
+
+Sprint A 已经将预测链路从“生成结果”推进到“可评估、可追溯、可迭代”的基础阶段。每个预测任务在执行前会强制生成并绑定 `MatchFeature` 快照，避免预测结果后续无法解释输入来源。AI 输出经过更严格的 JSON 提取、修复、Schema 校验和概率归一化后才会写入模型预测表，失败或无效输出会被记录但不会参与最终共识。
+
+| 环节 | 实现说明 | 关键落库字段或任务 |
+| --- | --- | --- |
+| 输入快照 | 预测任务执行前创建并绑定 `MatchFeature`，预测任务记录 `featureSnapshotId`。 | `PredictionTask.featureSnapshotId`、`MatchFeature.summaryText`、`MatchFeature.signalsJson` |
+| 模型输出 | 结构化输出执行 JSON 抽取、修复、校验和概率归一化。 | `ModelPrediction.rawJson`、`ModelPrediction.errorMessage` |
+| 共识聚合 | 仅成功且结构化有效的模型预测进入共识计算。 | `PredictionTask.consensusJson` |
+| 赛后评分 | 比赛完赛时自动触发评分与复盘；Worker 也注册周期性扫描任务回填未评估比赛。 | `scorecard-update` 队列 |
+| 概率质量 | 对实际赛果对应概率计算 Brier Score 和 Log Loss，用于比较模型概率校准能力。 | `outcomeProbability`、`brierScore`、`logLoss`、`probabilitySampleSize` |
+
+## 比赛列表查询约定
+
+公开比赛列表接口保持向后兼容，并扩展了 Tab 级查询参数。前端 `/matches` 页面依赖这些参数完成“今日、世界杯、其他、已完赛”的统一展示。
+
+| 查询参数 | 示例 | 说明 |
+| --- | --- | --- |
+| `tab` | `today` | 可选值包括 `today`、`worldcup`、`others`、`finished`。 |
+| `group` | `A` | 仅用于世界杯 Tab，可按小组或阶段筛选。 |
+| `competitionId` | `xxx` | 主要用于其他联赛 Tab 的小菜单快速筛选。 |
+| `pageSize` | `20` | 控制分页返回数量。 |
+
+已完赛 Tab 的服务端逻辑会优先展示最近三天有比分的比赛，并将历史有比分但同步状态仍不一致的用户侧状态归一为 `FINISHED`，避免前端出现“已完赛列表仍显示进行中”的混乱体验。
 
 ## 技术栈
 
-*   **框架**: [NestJS](https://nestjs.com/) (基于 Node.js)
-*   **语言**: [TypeScript](https://www.typescriptlang.org/)
-*   **数据库**: [Prisma ORM](https://www.prisma.io/) (支持 MySQL/PostgreSQL)
-*   **任务队列**: [BullMQ](https://docs.bullmq.io/) (基于 Redis)
-*   **缓存**: [Redis](https://redis.io/)
-*   **AI 集成**: OpenAI 兼容 API (通过 NEXUS AI 等中转站)
-*   **部署**: [PM2](https://pm2.keymetrics.io/) (进程管理)
-
-## 部署信息
-
-*   **线上 API 地址**: 
-    *   **域名访问**: `http://api.qiuduoduo.online`
-    *   **IP 访问**: `http://82.157.76.140:3000`
+| 层次 | 技术 |
+| --- | --- |
+| 后端框架 | [NestJS](https://nestjs.com/) |
+| 语言 | [TypeScript](https://www.typescriptlang.org/) |
+| ORM | [Prisma](https://www.prisma.io/) |
+| 数据库 | PostgreSQL / MySQL 兼容设计，生产以当前部署环境为准。 |
+| 队列 | [BullMQ](https://docs.bullmq.io/) + [Redis](https://redis.io/) |
+| 进程管理 | [PM2](https://pm2.keymetrics.io/) |
+| AI 接入 | OpenAI 兼容接口，可通过 NEXUS AI 等中转服务接入多模型。 |
 
 ## 本地开发
 
-1.  **克隆仓库**：
-    ```bash
-    git clone https://github.com/reportyao/ai-worldcup-backend.git
-    cd ai-worldcup-backend
-    ```
-2.  **安装依赖**：
-    ```bash
-    npm install
-    # 或者 pnpm install
-    ```
-3.  **配置环境变量**：
-    创建 `.env` 文件，参考 `.env.example` 配置数据库连接、Redis 连接、AI API Key 等。
-    ```env
-    DATABASE_URL="mysql://user:password@localhost:3306/db_name"
-    REDIS_HOST="localhost"
-    REDIS_PORT=6379
-    OPENAI_API_KEY="sk-your-openai-key"
-    OPENAI_BASE_URL="https://api.openai.com/v1"
-    # ... 其他配置
-    ```
-4.  **启动数据库和 Redis**：
-    推荐使用 Docker Compose 启动本地开发环境的数据库和 Redis。
-    ```bash
-    docker-compose up -d mysql redis
-    ```
-5.  **运行数据库迁移**：
-    ```bash
-    npx prisma migrate dev --name init
-    ```
-6.  **配置 API-Football（可选）**：
-    若需要启用自动足球数据同步，请在 `.env` 中补充 API-Football 访问参数和默认联赛列表。`API_FOOTBALL_DEFAULT_LEAGUES` 使用逗号分隔的联赛 ID，Worker 会基于这些联赛执行定时赛程与实时比分同步。
-    ```env
-    API_FOOTBALL_BASE_URL="https://v3.football.api-sports.io"
-    API_FOOTBALL_KEY="your-api-football-key"
-    API_FOOTBALL_DEFAULT_LEAGUES="39,140,135,78,61"
-    FOOTBALL_DATA_FIXTURE_SYNC_CRON="0 */6 * * *"
-    FOOTBALL_DATA_LIVE_SYNC_CRON="*/10 * * * *"
-    FOOTBALL_DATA_SYNC_SEASON="2026"
-    ```
-7.  **启动开发服务器**：
-    ```bash
-    npm run start:dev
-    ```
-    API 服务将在 `http://localhost:3000` 启动。
-8.  **启动 Worker 进程**：
-    ```bash
-    npm run start:worker
-    ```
-    Worker 进程负责处理预测任务队列、API-Football 定时同步和同步后预测入队。
+```bash
+git clone https://github.com/reportyao/ai-worldcup-backend.git
+cd ai-worldcup-backend
+pnpm install
+cp .env.example .env
+pnpm prisma generate
+pnpm prisma migrate dev
+pnpm start:dev
+```
+
+Worker 进程需要单独启动，用于处理预测、同步、评分和复盘等异步任务。
+
+```bash
+pnpm start:worker
+```
+
+## 关键环境变量
+
+| 变量 | 说明 |
+| --- | --- |
+| `DATABASE_URL` | Prisma 数据库连接字符串。 |
+| `REDIS_HOST`、`REDIS_PORT` | BullMQ 队列依赖的 Redis 配置。 |
+| `OPENAI_API_KEY`、`OPENAI_BASE_URL` | OpenAI 兼容模型服务配置。 |
+| `API_FOOTBALL_BASE_URL`、`API_FOOTBALL_KEY` | API-Football 数据同步配置。 |
+| `API_FOOTBALL_DEFAULT_LEAGUES` | 默认同步联赛 ID，使用逗号分隔。 |
+| `FOOTBALL_DATA_FIXTURE_SYNC_CRON` | 未来赛程同步定时表达式。 |
+| `FOOTBALL_DATA_LIVE_SYNC_CRON` | 实时比分同步定时表达式。 |
+| `FOOTBALL_DATA_SYNC_SEASON` | 默认同步赛季。 |
+| `ADMIN_EMAIL`、`ADMIN_PASSWORD` | 管理后台超级管理员登录配置。 |
+
+生产环境变量保存在服务器端，不应提交到仓库。当前生产提示中若出现 `API_FOOTBALL_KEY is not configured`，表示数据同步调度不会注册，但预测评估、管理接口和其他队列仍可正常运行。
+
+## 数据库迁移
+
+```bash
+pnpm prisma migrate dev
+pnpm prisma generate
+pnpm build
+```
+
+生产发布时应使用：
+
+```bash
+pnpm prisma migrate deploy
+pnpm prisma generate
+pnpm build
+```
+
+最近关键迁移包括 `20260603120000_sprint_a_prediction_evaluation`，它新增了预测输入快照关联、模型预测赛后评分字段、模型概率评分聚合字段及相关索引。
+
+## Worker 任务说明
+
+| 队列或任务 | 作用 |
+| --- | --- |
+| `prediction-generator` | 生成 AI 多模型预测，绑定输入快照并计算共识。 |
+| `feature-compute` | 计算比赛特征快照。 |
+| `scorecard-update` | 对已完赛比赛进行模型命中与概率质量评分，支持单场与批量扫描。 |
+| `review-generator` | 生成赛后复盘内容。 |
+| `football-data-sync` | 同步联赛、球队、赛程和实时比分。 |
+
+数据同步任务在比赛从非完赛变为完赛时，会自动触发赛后评分和复盘队列。Worker 启动时也会注册评分扫描任务，以便回填遗漏的完赛比赛。
 
 ## API-Football 数据同步
 
-后台管理接口新增 `/admin/football-data/provider/leagues`、`/admin/football-data/sync-logs` 与 `/admin/football-data/sync` 三类能力。管理员可以先读取后端配置中的默认联赛，再按 `LEAGUES`、`TEAMS`、`FIXTURES` 或 `LIVE_SCORES` 范围触发同步。同步任务会写入 `FootballDataSyncLog`，其中保存提供方、同步范围、请求参数、运行状态、错误消息和写入摘要，便于审计与故障排查。
+后台管理接口提供联赛元数据、球队、未来赛程和实时比分同步能力。同步任务会写入 `FootballDataSyncLog`，其中保存提供方、同步范围、请求参数、运行状态、错误消息和写入摘要，便于审计与故障排查。
 
 | 同步范围 | 主要作用 | 是否建议开启预测入队 |
 | --- | --- | --- |
@@ -103,43 +142,41 @@
 | `FIXTURES` | 同步日期范围内的未来赛程、比赛状态和比分。 | 是 |
 | `LIVE_SCORES` | 高频刷新正在进行比赛的状态和比分。 | 否 |
 
-Worker 启动时会注册两类重复任务：未来赛程同步任务使用 `FOOTBALL_DATA_FIXTURE_SYNC_CRON`，实时比分同步任务使用 `FOOTBALL_DATA_LIVE_SYNC_CRON`。若 `API_FOOTBALL_KEY` 或默认联赛列表未配置，相关任务会安全跳过，不影响预测队列和其他业务队列运行。
-
 ## 内置数据集与文档
 
-本仓库已纳入 apifootball.com 抓取并校验后的项目数据集，统一保存在 `data/` 目录。数据请求使用账号后台 API key 执行，但提交到仓库的脚本、日志、原始响应与文档均已脱敏；提交前密钥扫描结果为 `secret_scan=passed`。
+仓库包含已脱敏的数据集与交付文档，主要保存在 `data/` 与 `docs/` 目录，用于离线分析、导入脚本和后续特征工程迭代。
 
 | 数据目录 | 内容 | 关键文档 |
 | --- | --- | --- |
-| `data/worldcup-2026/` | 2026 FIFA World Cup 48 支参赛队伍标准化 JSON/CSV、原始响应、校验脚本和校验结果。 | `data/worldcup-2026/worldcup_2026_teams_validation_report.md` |
-| `data/recommended-leagues/` | 23 个推荐联赛/赛事的球队、积分榜、赛程/赛果、射手榜汇总数据、原始响应、索引和抓取脚本。 | `data/recommended-leagues/recommended_leagues_validation_report.md` |
-| `docs/data_delivery_summary.md` | 本次三仓库代码、数据抓取、校验结论和后续建议的最终交付摘要。 | `docs/data_delivery_summary.md` |
+| `data/worldcup-2026/` | 2026 FIFA World Cup 参赛队伍标准化数据、原始响应、校验脚本和校验结果。 | `data/worldcup-2026/worldcup_2026_teams_validation_report.md` |
+| `data/recommended-leagues/` | 推荐联赛/赛事的球队、积分榜、赛程/赛果、射手榜汇总数据。 | `data/recommended-leagues/recommended_leagues_validation_report.md` |
+| `docs/data_delivery_summary.md` | 三仓库代码、数据抓取、校验结论和后续建议摘要。 | `docs/data_delivery_summary.md` |
 
-推荐联赛数据汇总规模如下，可直接作为后续导入脚本、离线分析或 AI 预测特征工程的输入。
+## 自动部署
 
-| 汇总表 | 记录数 | 输出格式 |
-| --- | ---: | --- |
-| `all_teams` | 859 | JSON / CSV |
-| `all_standings` | 884 | JSON / CSV |
-| `all_events` | 6154 | JSON / CSV |
-| `all_topscorers` | 1487 | JSON / CSV |
+本仓库已配置 GitHub Actions 自动部署工作流。代码推送到 `main` 分支后，会将源码同步到生产服务器 `/home/ubuntu/apps/ai-worldcup-backend`，并执行 `deploy/production/deploy-backend.sh`。部署脚本会安装依赖、生成 Prisma Client、执行数据库迁移、构建后端应用，并通过 PM2 重载 `ai-worldcup-api` 与 `ai-worldcup-worker`。
 
-当前已知限制是 odds 赔率接口在当前账号或接口参数下未返回可用数据，OFC World Cup Qualifiers 的积分榜接口为空，AFC Champions League Elite 的赛程接口为空。上述空响应均已保留在 `raw/` 目录和质量报告中，便于后续复查和增量补抓。
+| 部署项 | 说明 |
+| --- | --- |
+| 生产目录 | `/home/ubuntu/apps/ai-worldcup-backend` |
+| 部署脚本 | `deploy/production/deploy-backend.sh` |
+| PM2 服务 | `ai-worldcup-api`、`ai-worldcup-worker` |
+| 静态配置 | `.env` 只保留在服务器端，自动同步时不应覆盖。 |
 
-## 贡献
+## 开发与提交规范
 
-欢迎提交 Pull Request 或报告 Bug。请确保您的代码符合项目规范并包含相应的测试。
+新增后端能力时，应同时考虑数据库迁移、Prisma Client 生成、API 返回类型、Worker 幂等性、生产环境变量和后台运维入口。涉及预测准确率的改动必须保证输入可追溯、输出可校验、失败可记录、评估可回放。
 
-## 自动部署到生产服务器
+提交前至少执行：
 
-本仓库已配置 `.github/workflows/deploy.yml`。当代码推送到 `main` 分支时，GitHub Actions 会调度服务器上的自托管 Runner（标签：`worldcup-backend`），在服务器本机完成源码同步与后端部署。
+```bash
+pnpm prisma generate
+pnpm build
+```
 
-部署流程会将当前仓库内容同步到 `/home/ubuntu/apps/ai-worldcup-backend`，随后执行 `deploy/production/deploy-backend.sh`。脚本会安装依赖、生成 Prisma Client、执行数据库迁移、构建后端应用，并通过 PM2 重载 `ai-worldcup-api` 与 `ai-worldcup-worker`。生产环境变量保存在服务器端 `/home/ubuntu/apps/ai-worldcup-backend/.env`，自动同步时会被排除，不会被仓库内容覆盖。
+## References
 
-该自动部署方案不依赖 GitHub Secrets 中保存服务器私钥；服务器通过已安装的自托管 Runner 主动接收 GitHub Actions 任务。若更换服务器，需要重新注册对应仓库的 Runner 并保留 `self-hosted`、`linux`、`x64`、`worldcup-backend` 标签。
-
-## 自动部署（main 分支）
-
-本仓库已配置 GitHub Actions 自动部署工作流：当代码推送到 `main` 分支时，GitHub 托管 Runner 会先检出最新代码，然后通过 SSH 将源码同步到服务器 `/home/ubuntu/apps/ai-worldcup-backend`，最后在服务器执行部署脚本 `/home/ubuntu/apps/ai-worldcup-backend/deploy/production/deploy-backend.sh`。这种方式不依赖服务器直接访问 GitHub 拉取代码，适合当前生产服务器网络环境。
-
-自动部署依赖以下 GitHub Actions Secrets：`SSH_HOST`、`SSH_PORT`、`SSH_USER`、`SSH_PRIVATE_KEY`。服务器侧需要将对应公钥加入部署用户的 `~/.ssh/authorized_keys`，并确保部署脚本具有执行权限。
+[1]: https://nestjs.com/ "NestJS Documentation"
+[2]: https://www.prisma.io/ "Prisma ORM"
+[3]: https://docs.bullmq.io/ "BullMQ Documentation"
+[4]: https://pm2.keymetrics.io/ "PM2 Process Manager"
