@@ -182,6 +182,48 @@ export class AdminService {
       }),
     ]);
 
+    // 获取自动化任务最近执行状态
+    const recentSyncLogs = await this.prisma.footballDataSyncLog.findMany({
+      orderBy: { startedAt: 'desc' },
+      take: 10,
+    });
+
+    // 统计竞彩自动同步状态
+    const sportteryAutoSyncStats = await this.prisma.footballDataSyncLog.groupBy({
+      by: ['scope', 'status'],
+      where: {
+        provider: 'sporttery',
+        startedAt: { gte: new Date(Date.now() - 24 * 60 * 60 * 1000) },
+      },
+      _count: true,
+    });
+
+    // 待预测比赛数（已入库但尚未生成预测的比赛）
+    const pendingPredictionCount = await this.prisma.match.count({
+      where: {
+        status: 'SCHEDULED',
+        kickoffAt: { gte: new Date() },
+        predictionTasks: { none: {} },
+      },
+    });
+
+    // 今日完赛但未评分的比赛数
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    const unscoredFinishedCount = await this.prisma.match.count({
+      where: {
+        status: 'FINISHED',
+        updatedAt: { gte: today },
+        predictionTasks: {
+          some: {
+            predictions: {
+              some: { isSuccess: true, evaluatedAt: null },
+            },
+          },
+        },
+      },
+    });
+
     return {
       totalCompetitions,
       totalMatches,
@@ -190,6 +232,10 @@ export class AdminService {
       totalPredictionTasks,
       recentMatches,
       recentTasks,
+      recentSyncLogs,
+      sportteryAutoSyncStats,
+      pendingPredictionCount,
+      unscoredFinishedCount,
     };
   }
 
@@ -1158,5 +1204,147 @@ export class AdminService {
   ): Prisma.InputJsonValue | typeof Prisma.JsonNull {
     if (value === null || value === undefined) return Prisma.JsonNull;
     return JSON.parse(JSON.stringify(value)) as Prisma.InputJsonValue;
+  }
+
+  // ============================================================================
+  // Automation (自动化任务管理)
+  // ============================================================================
+
+  async getAutomationStatus() {
+    const now = new Date();
+    const oneDayAgo = new Date(now.getTime() - 24 * 60 * 60 * 1000);
+    const oneWeekAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
+
+    // 最近竞彩同步状态
+    const recentSportterySync = await this.prisma.footballDataSyncLog.findFirst({
+      where: { provider: 'sporttery' },
+      orderBy: { startedAt: 'desc' },
+    });
+
+    // 24小时内同步统计
+    const syncStats24h = await this.prisma.footballDataSyncLog.groupBy({
+      by: ['provider', 'scope', 'status'],
+      where: { startedAt: { gte: oneDayAgo } },
+      _count: true,
+    });
+
+    // 待预测比赛（已入库但未生成预测）
+    const pendingPredictions = await this.prisma.match.count({
+      where: {
+        status: 'SCHEDULED',
+        kickoffAt: { gte: now },
+        predictionTasks: { none: {} },
+      },
+    });
+
+    // 运行中的预测任务
+    const runningPredictions = await this.prisma.predictionTask.count({
+      where: { status: 'RUNNING' },
+    });
+
+    // 待评分比赛（完赛但未评分）
+    const pendingScorecards = await this.prisma.match.count({
+      where: {
+        status: 'FINISHED',
+        predictionTasks: {
+          some: {
+            status: 'SUCCEEDED',
+            predictions: {
+              some: { evaluatedAt: null },
+            },
+          },
+        },
+      },
+    });
+
+    // 7天内预测准确率概览
+    const weeklyAccuracy = await this.prisma.modelPrediction.groupBy({
+      by: ['aiModelId'],
+      where: {
+        evaluatedAt: { gte: oneWeekAgo },
+        isSuccess: true,
+      },
+      _count: { _all: true, winDrawLossCorrect: true, handicapCorrect: true, overUnderCorrect: true, scoreExact: true },
+    });
+
+    const totalEvaluated = await this.prisma.modelPrediction.count({
+      where: {
+        evaluatedAt: { gte: oneWeekAgo },
+        isSuccess: true,
+      },
+    });
+
+    // 定时任务配置信息
+    const schedulerConfig = {
+      sportteryDailySyncCron: process.env.SPORTTERY_DAILY_SYNC_CRON ?? '0 0,6,12 * * *',
+      sportteryResultCheckCron: process.env.SPORTTERY_RESULT_CHECK_CRON ?? '*/10 * * * *',
+      sportterySyncDaysAhead: Number(process.env.SPORTTERY_SYNC_DAYS_AHEAD ?? 3),
+      predictionSchedulerCron: process.env.PREDICTION_SCHEDULER_CRON ?? '*/5 * * * *',
+      scorecardScanCron: process.env.SCORECARD_SCAN_CRON ?? '*/15 * * * *',
+      dataRefreshFixturesCron: process.env.DATA_REFRESH_CRON_FIXTURES ?? '0 */6 * * *',
+      dataRefreshLiveCron: process.env.DATA_REFRESH_CRON_LIVE ?? '*/2 * * * *',
+    };
+
+    return {
+      lastSportterySync: recentSportterySync,
+      syncStats24h,
+      pendingPredictions,
+      runningPredictions,
+      pendingScorecards,
+      weeklyAccuracy: { totalEvaluated, byModel: weeklyAccuracy },
+      schedulerConfig,
+    };
+  }
+
+  async triggerSportteryAutoSync(
+    dto: { mode?: string; saleDate?: string; daysAhead?: number; enqueuePredictions?: boolean },
+    meta: RequestMeta,
+  ) {
+    const { Queue } = await import('bullmq');
+    const redisUrl = this.config.get('REDIS_URL', { infer: true }) ?? 'redis://localhost:6379/0';
+    const queue = new Queue('sporttery-auto-sync', { connection: { url: redisUrl } });
+
+    const jobData = {
+      mode: dto.mode ?? 'MULTI_DAY_SYNC',
+      saleDate: dto.saleDate,
+      daysAhead: dto.daysAhead ?? 3,
+      enqueuePredictions: dto.enqueuePredictions ?? true,
+    };
+
+    const job = await queue.add('sporttery-manual-trigger', jobData, {
+      jobId: `sporttery-manual-trigger:${Date.now()}`,
+      attempts: 3,
+      backoff: { type: 'exponential', delay: 30_000 },
+      removeOnComplete: 50,
+      removeOnFail: 100,
+    });
+
+    await queue.close();
+
+    await this.writeAudit(meta, 'SPORTTERY_AUTO_SYNC_TRIGGER', 'Queue', String(job.id), null, jobData);
+
+    return { jobId: job.id, data: jobData };
+  }
+
+  async getAutomationSyncLogs(query: { page?: string; pageSize?: string; provider?: string; scope?: string }) {
+    const page = Math.max(1, Number(query.page) || 1);
+    const pageSize = Math.min(100, Math.max(1, Number(query.pageSize) || 20));
+
+    const where: Prisma.FootballDataSyncLogWhereInput = {
+      ...(query.provider ? { provider: query.provider } : {}),
+      ...(query.scope ? { scope: { contains: query.scope } } : {}),
+    };
+
+    const [items, total] = await this.prisma.$transaction([
+      this.prisma.footballDataSyncLog.findMany({
+        where,
+        orderBy: { startedAt: 'desc' },
+        skip: (page - 1) * pageSize,
+        take: pageSize,
+      }),
+      this.prisma.footballDataSyncLog.count({ where }),
+    ]);
+
+    return { items, total, page, pageSize };
   }
 }

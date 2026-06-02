@@ -266,8 +266,34 @@ export class MatchesService {
         consensus: this.buildConsensus(match.predictionTasks),
         modelAnalyses,
         review: await this.buildReviewPayload(matchId, match.status),
+        sportteryMarket: await this.getSportteryMarket(matchId),
       },
       userPrediction: userPrediction ? this.toUserPrediction(userPrediction) : null,
+    };
+  }
+
+  private async getSportteryMarket(matchId: string) {
+    const market = await this.prisma.sportteryMatchMarket.findFirst({
+      where: { matchId },
+      orderBy: { syncedAt: 'desc' },
+    });
+    if (!market) return null;
+    return {
+      saleDate: market.saleDate,
+      matchNo: market.matchNo,
+      leagueName: market.leagueName,
+      homeTeamName: market.homeTeamName,
+      awayTeamName: market.awayTeamName,
+      kickoffAt: market.kickoffAt?.toISOString() ?? null,
+      status: market.status,
+      handicapLine: market.handicapLine,
+      overUnderLine: market.overUnderLine,
+      winDrawLoss: market.winDrawLoss,
+      handicapResult: market.handicapResult,
+      overUnderResult: market.overUnderResult,
+      scoreResult: market.scoreResult,
+      halfFullResult: market.halfFullResult,
+      syncedAt: market.syncedAt?.toISOString() ?? null,
     };
   }
 

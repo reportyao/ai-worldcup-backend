@@ -9,6 +9,7 @@ import { processFeatureCompute } from './jobs/feature-compute.job.js';
 import { processPredictionGenerator } from './jobs/prediction-generator.job.js';
 import { processReviewGenerator } from './jobs/review-generator.job.js';
 import { processScorecardUpdate } from './jobs/scorecard-update.job.js';
+import { processSportteryAutoSync } from './jobs/sporttery-auto-sync.job.js';
 import { processTranslation } from './jobs/translation.job.js';
 import { logger } from './logger.js';
 import { QueueName } from './queues.js';
@@ -147,6 +148,56 @@ async function registerDataSyncSchedulers(): Promise<void> {
   logger.info({ queue: QueueName.DataSync }, 'data-sync schedulers registered');
 }
 
+/**
+ * 竞彩数据自动同步定时任务注册
+ *
+ * 自动化闭环：
+ * - DAILY_FIXTURES: 每天 08:00/14:00/20:00 自动同步当天+未来3天竞彩赛程，新增比赛自动入队AI预测
+ * - RESULT_CHECK: 每10分钟检查已开赛比赛赛果，完赛后自动触发评分和复盘
+ */
+async function registerSportteryAutoSyncSchedulers(): Promise<void> {
+  const queue = new Queue(QueueName.SportteryAutoSync, { connection: createConnection() });
+  queues.push(queue);
+
+  // 1. 每天定时同步竞彩赛程（当天+未来3天）
+  //    默认 08:00, 14:00, 20:00 北京时间 = 00:00, 06:00, 12:00 UTC
+  await queue.add(
+    'sporttery-daily-fixtures',
+    {
+      mode: 'DAILY_FIXTURES',
+      daysAhead: Number(process.env.SPORTTERY_SYNC_DAYS_AHEAD ?? 3),
+      enqueuePredictions: true,
+    },
+    {
+      repeat: { pattern: process.env.SPORTTERY_DAILY_SYNC_CRON ?? '0 0,6,12 * * *' },
+      jobId: 'sporttery-daily-fixtures-repeat',
+      attempts: 3,
+      backoff: { type: 'exponential', delay: 60_000 },
+      removeOnComplete: 50,
+      removeOnFail: 100,
+    },
+  );
+
+  // 2. 每10分钟检查赛果更新
+  await queue.add(
+    'sporttery-result-check',
+    {
+      mode: 'RESULT_CHECK',
+      enqueuePredictions: false,
+    },
+    {
+      repeat: { pattern: process.env.SPORTTERY_RESULT_CHECK_CRON ?? '*/10 * * * *' },
+      jobId: 'sporttery-result-check-repeat',
+      attempts: 2,
+      backoff: { type: 'exponential', delay: 30_000 },
+      removeOnComplete: 50,
+      removeOnFail: 100,
+    },
+  );
+
+  logger.info({ queue: QueueName.SportteryAutoSync }, 'sporttery auto-sync schedulers registered');
+}
+
 function registerWorker(
   name: QueueName,
   processor: (job: Job) => Promise<unknown>,
@@ -175,6 +226,8 @@ async function main(): Promise<void> {
   await registerDataSyncSchedulers();
   await registerFeatureComputeScheduler();
   await registerScorecardScheduler();
+  await registerSportteryAutoSyncSchedulers();
+
   registerWorker(QueueName.PredictionGenerator, processPredictionGenerator);
   registerWorker(QueueName.DataSync, processDataSync);
   registerWorker(QueueName.PostMatchReview, processReviewGenerator);
@@ -182,6 +235,7 @@ async function main(): Promise<void> {
   registerWorker(QueueName.ScorecardUpdate, processScorecardUpdate);
   registerWorker(QueueName.Translation, processTranslation);
   registerWorker(QueueName.FeatureCompute, processFeatureCompute);
+  registerWorker(QueueName.SportteryAutoSync, processSportteryAutoSync);
 
   const shutdown = async (signal: NodeJS.Signals): Promise<void> => {
     logger.info({ signal }, 'shutting down workers');

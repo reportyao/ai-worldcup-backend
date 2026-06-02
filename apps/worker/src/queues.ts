@@ -9,6 +9,7 @@ export const QueueName = {
   ScorecardUpdate: 'scorecard-update',
   Translation: 'translation',
   FeatureCompute: 'feature-compute',
+  SportteryAutoSync: 'sporttery-auto-sync',
 } as const;
 
 export type QueueName = (typeof QueueName)[keyof typeof QueueName];

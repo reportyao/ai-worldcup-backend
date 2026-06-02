@@ -328,4 +328,28 @@ export class AdminController {
   ) {
     return this.adminService.listAuditLogs(query);
   }
+
+  // ============================================================================
+  // Automation (自动化任务管理)
+  // ============================================================================
+
+  @Get('automation/status')
+  getAutomationStatus() {
+    return this.adminService.getAutomationStatus();
+  }
+
+  @Post('automation/sporttery-sync')
+  triggerSportteryAutoSync(
+    @Req() req: Request,
+    @Body() dto: { mode?: string; saleDate?: string; daysAhead?: number; enqueuePredictions?: boolean },
+  ) {
+    return this.adminService.triggerSportteryAutoSync(dto, this.adminService.getRequestMeta(req));
+  }
+
+  @Get('automation/sync-logs')
+  getAutomationSyncLogs(
+    @Query() query: { page?: string; pageSize?: string; provider?: string; scope?: string },
+  ) {
+    return this.adminService.getAutomationSyncLogs(query);
+  }
 }
