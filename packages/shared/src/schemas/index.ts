@@ -337,10 +337,13 @@ export type EntitlementType = z.infer<typeof EntitlementSchema>;
  */
 export const EntitlementSnapshotSchema = z.object({
   freeDailyRemaining: z.number().int().min(0),
+  freeDailyMax: z.number().int().min(0),
   inviteRewardRemaining: z.number().int().min(0),
   isPassActive: z.boolean(),
   passExpiresAt: z.string().nullable(),
   passTier: z.nativeEnum(PassTier).nullable(),
+  todayInviteRewardsGranted: z.number().int().min(0),
+  maxDailyInviteRewards: z.number().int().min(0),
 });
 export type EntitlementSnapshotType = z.infer<typeof EntitlementSnapshotSchema>;
 

@@ -206,9 +206,9 @@ export class AccessService {
       if (freeRemaining > 0) {
         return {
           canViewFullModels: !matchId,
-          reason: matchId ? 'FREE_QUOTA_EXHAUSTED' : null,
+          reason: matchId ? 'NEED_CONSUME' : null,
           snapshot,
-          unlockHint: matchId ? 'LOGIN_TO_GET_FREE' : null,
+          unlockHint: matchId ? 'CONSUME_FREE' : null,
         };
       }
 
