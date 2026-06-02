@@ -9,6 +9,67 @@ import { AccessService } from '../entitlements/access.service.js';
 
 import type { MatchListQueryDto, UserPredictionSubmitDto } from './matches.schemas.js';
 
+const WORLD_CUP_2026_TEAM_NAME_ALIASES: Record<string, string> = {
+  'D.R. Congo': 'Congo DR',
+  'Ivory Coast': "Côte d'Ivoire",
+  'Cape Verde': 'Cabo Verde',
+  'South Korea': 'Korea Republic',
+  'Bosnia & Herzegovina': 'Bosnia-Herzegovina',
+  Curacao: 'Curaçao',
+  'United States': 'USA',
+};
+
+const WORLD_CUP_2026_TEAM_GROUPS: Record<string, number> = {
+  'Czech Republic': 1,
+  'Korea Republic': 1,
+  Mexico: 1,
+  'South Africa': 1,
+  'Bosnia-Herzegovina': 2,
+  Canada: 2,
+  Qatar: 2,
+  Switzerland: 2,
+  Australia: 3,
+  Paraguay: 3,
+  Turkey: 3,
+  USA: 3,
+  Brazil: 4,
+  Haiti: 4,
+  Morocco: 4,
+  Scotland: 4,
+  Curaçao: 5,
+  "Côte d'Ivoire": 5,
+  Ecuador: 5,
+  Germany: 5,
+  Japan: 6,
+  Netherlands: 6,
+  Sweden: 6,
+  Tunisia: 6,
+  'Cabo Verde': 7,
+  'Saudi Arabia': 7,
+  Spain: 7,
+  Uruguay: 7,
+  Belgium: 8,
+  Egypt: 8,
+  Iran: 8,
+  'New Zealand': 8,
+  France: 9,
+  Iraq: 9,
+  Norway: 9,
+  Senegal: 9,
+  Algeria: 10,
+  Argentina: 10,
+  Austria: 10,
+  Jordan: 10,
+  Colombia: 11,
+  'Congo DR': 11,
+  Portugal: 11,
+  Uzbekistan: 11,
+  Croatia: 12,
+  England: 12,
+  Ghana: 12,
+  Panama: 12,
+};
+
 type TeaserData = {
   modelCount: number;
   keyVarCount: number;
@@ -41,7 +102,14 @@ export class MatchesService {
       ...(query.matchday ? { matchday: query.matchday } : {}),
       ...(query.status ? { status: query.status } : {}),
       ...(tab === 'today' ? { matchday: query.matchday ?? todayKey } : {}),
-      ...(tab === 'worldcup' ? { competition: { type: CompetitionType.WORLD_CUP, status: 'ACTIVE' } } : {}),
+      ...(tab === 'worldcup'
+        ? {
+            competition: { type: CompetitionType.WORLD_CUP, status: 'ACTIVE' },
+            // Only show official imported World Cup fixtures. Legacy seed/demo fixtures do not carry
+            // official external IDs and can corrupt the 48-team / 12-group schedule presentation.
+            externalId: { startsWith: 'api-football:match:' },
+          }
+        : {}),
       ...(tab === 'others' ? { competition: { type: { not: CompetitionType.WORLD_CUP }, status: 'ACTIVE' } } : {}),
       ...(tab === 'finished'
         ? {
@@ -269,12 +337,32 @@ export class MatchesService {
     return date.toISOString().slice(0, 10);
   }
 
-  private normalizeStageForUser(match: Match & { competition: { type?: string } }): string | null {
+  private normalizeStageForUser(
+    match: Match & {
+      competition: { type?: string };
+      homeTeam: { name: string };
+      awayTeam: { name: string };
+    },
+  ): string | null {
     if (!match.stage) return null;
     if (match.competition.type !== CompetitionType.WORLD_CUP) return match.stage;
 
+    const groupNumberByTeams = this.resolveWorldCupGroupNumberByTeams(match.homeTeam.name, match.awayTeam.name);
+    if (groupNumberByTeams != null) return `Group ${groupNumberByTeams}`;
+
     const groupNumber = this.parseWorldCupGroupNumber(match.stage);
     return groupNumber == null ? match.stage : `Group ${groupNumber}`;
+  }
+
+  private resolveWorldCupGroupNumberByTeams(homeTeamName: string, awayTeamName: string): number | null {
+    const homeGroup = WORLD_CUP_2026_TEAM_GROUPS[this.canonicalWorldCupTeamName(homeTeamName)];
+    const awayGroup = WORLD_CUP_2026_TEAM_GROUPS[this.canonicalWorldCupTeamName(awayTeamName)];
+    return homeGroup != null && homeGroup === awayGroup ? homeGroup : null;
+  }
+
+  private canonicalWorldCupTeamName(teamName: string): string {
+    const normalized = teamName.trim();
+    return WORLD_CUP_2026_TEAM_NAME_ALIASES[normalized] ?? normalized;
   }
 
   private parseWorldCupGroupNumber(stage: string): number | null {
