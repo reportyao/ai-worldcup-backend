@@ -640,6 +640,59 @@ export class MatchesService {
     };
   }
 
+  /**
+   * 获取7日比赛统计：比赛总场数、共识预测命中（红）、未命中（黑）
+   * 共识判定：8个模型中，只要有任意一个模型的任意维度命中，该场比赛即为红
+   */
+  async getSevenDayStats() {
+    const sevenDaysAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
+    const finishedMatches = await this.prisma.match.findMany({
+      where: {
+        status: 'FINISHED',
+        kickoffAt: { gte: sevenDaysAgo },
+        predictionTasks: { some: { status: { in: ['SUCCEEDED', 'PARTIAL_SUCCESS', 'REVIEWED', 'PUBLISHED'] } } },
+      },
+      include: {
+        predictionTasks: {
+          where: { status: { in: ['SUCCEEDED', 'PARTIAL_SUCCESS', 'REVIEWED', 'PUBLISHED'] } },
+          orderBy: [{ version: 'desc' }],
+          take: 1,
+          include: {
+            predictions: {
+              where: { isSuccess: true, evaluatedAt: { not: null } },
+              select: { anyHit: true, aiModelId: true },
+            },
+          },
+        },
+      },
+    });
+
+    const totalMatches = finishedMatches.length;
+    let redMatches = 0;
+    let blackMatches = 0;
+    let evaluatedMatches = 0;
+
+    for (const match of finishedMatches) {
+      const task = match.predictionTasks[0];
+      if (!task || task.predictions.length === 0) continue;
+      evaluatedMatches++;
+      const anyModelHit = task.predictions.some((p) => p.anyHit === true);
+      if (anyModelHit) {
+        redMatches++;
+      } else {
+        blackMatches++;
+      }
+    }
+
+    return {
+      totalMatches,
+      evaluatedMatches,
+      redMatches,
+      blackMatches,
+      redRate: evaluatedMatches > 0 ? redMatches / evaluatedMatches : 0,
+    };
+  }
+
   private async buildTeaserData(matchId: string): Promise<TeaserData | null> {
     const task = await this.prisma.predictionTask.findFirst({
       where: { matchId, status: { in: ['PUBLISHED', 'REVIEWED', 'SUCCEEDED'] } },

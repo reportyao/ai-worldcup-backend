@@ -72,6 +72,24 @@ ensure_production_env() {
     set_env_value AI_ALLOW_MOCK false
     log "Set AI_ALLOW_MOCK=false in existing production .env."
   fi
+
+  # 竞彩自动同步环境变量
+  if ! has_env_value SPORTTERY_DAILY_SYNC_CRON; then
+    set_env_value SPORTTERY_DAILY_SYNC_CRON "0 0,6,12 * * *"
+    log "Backfilled SPORTTERY_DAILY_SYNC_CRON in existing .env."
+  fi
+  if ! has_env_value SPORTTERY_RESULT_CHECK_CRON; then
+    set_env_value SPORTTERY_RESULT_CHECK_CRON "*/10 * * * *"
+    log "Backfilled SPORTTERY_RESULT_CHECK_CRON in existing .env."
+  fi
+  if ! has_env_value SPORTTERY_SYNC_DAYS_AHEAD; then
+    set_env_value SPORTTERY_SYNC_DAYS_AHEAD "3"
+    log "Backfilled SPORTTERY_SYNC_DAYS_AHEAD in existing .env."
+  fi
+  if ! has_env_value SPORTTERY_AUTO_ENQUEUE_PREDICTIONS; then
+    set_env_value SPORTTERY_AUTO_ENQUEUE_PREDICTIONS "true"
+    log "Backfilled SPORTTERY_AUTO_ENQUEUE_PREDICTIONS in existing .env."
+  fi
 }
 
 cd "$APP_DIR"
@@ -114,6 +132,10 @@ API_FOOTBALL_LEAGUE_IDS=
 DATA_REFRESH_CRON_FIXTURES=0 */6 * * *
 DATA_REFRESH_CRON_LIVE=*/2 * * * *
 PREDICTION_SCHEDULER_WINDOW_MINUTES=10
+SPORTTERY_DAILY_SYNC_CRON=0 0,6,12 * * *
+SPORTTERY_RESULT_CHECK_CRON=*/10 * * * *
+SPORTTERY_SYNC_DAYS_AHEAD=3
+SPORTTERY_AUTO_ENQUEUE_PREDICTIONS=true
 WECHAT_MP_APPID=
 WECHAT_MP_SECRET=
 WECHAT_MP_TOKEN=

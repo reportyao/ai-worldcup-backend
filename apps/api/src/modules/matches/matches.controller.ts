@@ -24,6 +24,11 @@ export class MatchesController {
     return this.matchesService.listMatches(query);
   }
 
+  @Get('stats/seven-days')
+  getSevenDayStats() {
+    return this.matchesService.getSevenDayStats();
+  }
+
   @Get(':id')
   getMatch(
     @Param('id') id: string,

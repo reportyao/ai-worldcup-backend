@@ -262,8 +262,8 @@ export async function processReviewGenerator(job: Job<unknown>): Promise<{ ok: t
           (match.homeScore! + match.awayScore!) <= conclusion.goalsRange.max
         : false;
 
-      // 任一命中即为红单
-      const anyHit = winDrawLossCorrect || handicapCorrect || overUnderCorrect || scoreExact || halfFullCorrect;
+      // 任一命中即为红单（胜平负/让球/大小球/比分/半全场/进球范围，任一中即为红）
+      const anyHit = winDrawLossCorrect || handicapCorrect || overUnderCorrect || scoreExact || halfFullCorrect || goalRangeHit;
 
       const accuracyJson: AccuracyJson = {
         winDrawLossCorrect,
