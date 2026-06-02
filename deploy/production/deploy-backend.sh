@@ -211,3 +211,5 @@ pm2 status || true
 pm2 logs ai-worldcup-api --lines 80 --nostream || true
 tail -n 80 "$LOG_DIR/ai-worldcup-api.err.log" 2>/dev/null || true
 exit 1
+
+# Triggered deploy: 2026-06-02 21:56:40 - auto patch sporttery env
