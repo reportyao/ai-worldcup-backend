@@ -366,10 +366,19 @@ export class FootballDataSyncService {
 
   private mapMatchStatus(fixture: ApiFootballFixture): MatchStatus {
     const raw = (fixture.match_status ?? '').trim().toLowerCase();
-    if (raw.includes('postpon')) return MatchStatus.POSTPONED;
-    if (raw.includes('cancel') || raw.includes('abandon')) return MatchStatus.CANCELED;
-    if (raw.includes('finish') || raw.includes('after') || raw.includes('pen') || raw === 'ft') return MatchStatus.FINISHED;
-    if (fixture.match_live === '1' || /^\d+'?$/.test(raw) || raw.includes('half') || raw.includes('live')) return MatchStatus.LIVE;
+    if (/postpon|suspend/.test(raw)) return MatchStatus.POSTPONED;
+    if (/cancel|abandon|walkover/.test(raw)) return MatchStatus.CANCELED;
+    if (/finish|full[ -]?time|after|extra time|pen|ended/.test(raw) || ['ft', 'aet', 'ap', 'f/t'].includes(raw)) {
+      return MatchStatus.FINISHED;
+    }
+    if (fixture.match_live === '1' || /^\d+'?$/.test(raw) || /half|live|ht|break|interval/.test(raw)) return MatchStatus.LIVE;
+
+    const kickoffAt = this.parseKickoff(fixture);
+    const homeScore = this.toNullableInt(fixture.match_hometeam_score);
+    const awayScore = this.toNullableInt(fixture.match_awayteam_score);
+    if (kickoffAt && kickoffAt.getTime() < Date.now() - 3 * 60 * 60 * 1000 && homeScore != null && awayScore != null) {
+      return MatchStatus.FINISHED;
+    }
     return MatchStatus.SCHEDULED;
   }
 

@@ -26,26 +26,19 @@ export class MatchesService {
   ) {}
 
   async listMatches(query: MatchListQueryDto) {
-    // Hide finished matches older than 7 days from user-facing list (data preserved in DB for AI predictions)
-    const sevenDaysAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
+    // User-facing lists should not expose stale historical fixtures. Keep all rows in DB for AI
+    // prediction/review pipelines, but show only matches whose kickoff is within the latest
+    // seven-day result window or in the future. This also prevents old provider rows with stale
+    // SCHEDULED/CANCELED status from appearing as active matches.
+    const now = new Date();
+    const sevenDaysAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
+    const visibleWindow = { kickoffAt: { gte: sevenDaysAgo } };
     const where = {
       ...(query.competitionId ? { competitionId: query.competitionId } : {}),
       ...(query.matchday ? { matchday: query.matchday } : {}),
       ...(query.status ? { status: query.status } : {}),
-      // Exclude finished matches older than 7 days unless explicitly filtering for them
-      ...(!query.status
-        ? {
-            NOT: {
-              AND: [
-                { status: MatchStatus.FINISHED },
-                { kickoffAt: { lt: sevenDaysAgo } },
-              ],
-            },
-          }
-        : {}),
-      ...(query.status === 'FINISHED'
-        ? { kickoffAt: { gte: sevenDaysAgo } }
-        : {}),
+      ...visibleWindow,
+      ...(query.status === MatchStatus.SCHEDULED ? { kickoffAt: { gte: now } } : {}),
     };
 
     const [items, total] = await this.prisma.$transaction([
@@ -229,16 +222,23 @@ export class MatchesService {
     return null;
   }
 
-  private toMatchSummary(match: Match & { competition: { id: string; code: string; name: string; season: string }; homeTeam: { id: string; code: string; name: string; nameZh: string | null; shortName: string | null; countryCode: string | null; crestUrl: string | null; flagUrl: string | null }; awayTeam: { id: string; code: string; name: string; nameZh: string | null; shortName: string | null; countryCode: string | null; crestUrl: string | null; flagUrl: string | null }; predictionTasks?: Array<{ status: PredictionTaskStatus; consensusLevel: string | null; consensusSummary: unknown }> }) {
+  private toMatchSummary(match: Match & { competition: { id: string; code: string; name: string; season: string; type?: string; priority?: string }; homeTeam: { id: string; code: string; name: string; nameZh: string | null; shortName: string | null; countryCode: string | null; crestUrl: string | null; flagUrl: string | null }; awayTeam: { id: string; code: string; name: string; nameZh: string | null; shortName: string | null; countryCode: string | null; crestUrl: string | null; flagUrl: string | null }; predictionTasks?: Array<{ status: PredictionTaskStatus; consensusLevel: string | null; consensusSummary: unknown }> }) {
     const latestTask = match.predictionTasks?.[0];
+    const competitionNameZh = this.localizeCompetitionName(match.competition.name);
     return {
       id: match.id,
       competitionId: match.competitionId,
-      competition: match.competition,
-      homeTeam: match.homeTeam,
-      awayTeam: match.awayTeam,
+      competition: {
+        ...match.competition,
+        nameZh: competitionNameZh,
+      },
+      competitionName: match.competition.name,
+      competitionNameZh,
+      competitionPriority: match.competition.priority,
+      homeTeam: this.localizeTeam(match.homeTeam),
+      awayTeam: this.localizeTeam(match.awayTeam),
       kickoffAt: match.kickoffAt.toISOString(),
-      status: match.status,
+      status: this.normalizeUserFacingStatus(match),
       matchday: match.matchday,
       stage: match.stage,
       homeScore: match.homeScore,
@@ -248,6 +248,27 @@ export class MatchesService {
       consensusHint: this.extractConsensusHint(latestTask?.consensusSummary),
       unlockState: 'basic_available',
     };
+  }
+
+  private normalizeUserFacingStatus(match: Pick<Match, 'status' | 'kickoffAt' | 'homeScore' | 'awayScore'>): MatchStatus {
+    if (match.status === MatchStatus.SCHEDULED && match.homeScore != null && match.awayScore != null && match.kickoffAt.getTime() < Date.now()) {
+      return MatchStatus.FINISHED;
+    }
+    return match.status;
+  }
+
+  private localizeTeam<T extends { name: string; nameZh: string | null; shortName: string | null }>(team: T): T & { nameZh: string | null } {
+    return { ...team, nameZh: team.nameZh ?? this.localizeTeamName(team.name) ?? null };
+  }
+
+  private localizeTeamName(name: string): string | null {
+    const normalized = name.trim().toLowerCase();
+    return TEAM_NAME_ZH[normalized] ?? null;
+  }
+
+  private localizeCompetitionName(name: string): string | null {
+    const normalized = name.trim().toLowerCase();
+    return COMPETITION_NAME_ZH[normalized] ?? null;
   }
 
   private buildConsensus(tasks: Array<{ status: string; consensusLevel: string | null; consensusSummary: unknown; predictions: Array<{ isSuccess: boolean }> }>) {
@@ -457,3 +478,12 @@ export class MatchesService {
     };
   }
 }
+
+const TEAM_NAME_ZH: Record<string, string> = {
+  argentina: '阿根廷', australia: '澳大利亚', belgium: '比利时', brazil: '巴西', canada: '加拿大', chile: '智利', china: '中国', colombia: '哥伦比亚', croatia: '克罗地亚', denmark: '丹麦', ecuador: '厄瓜多尔', england: '英格兰', france: '法国', germany: '德国', ghana: '加纳', italy: '意大利', japan: '日本', mexico: '墨西哥', morocco: '摩洛哥', netherlands: '荷兰', poland: '波兰', portugal: '葡萄牙', qatar: '卡塔尔', senegal: '塞内加尔', serbia: '塞尔维亚', spain: '西班牙', switzerland: '瑞士', uruguay: '乌拉圭', usa: '美国', 'united states': '美国', 'united states of america': '美国',
+  'real madrid': '皇家马德里', barcelona: '巴塞罗那', 'fc barcelona': '巴塞罗那', 'manchester city': '曼城', 'manchester united': '曼联', liverpool: '利物浦', arsenal: '阿森纳', chelsea: '切尔西', 'bayern munich': '拜仁慕尼黑', 'borussia dortmund': '多特蒙德', 'paris saint germain': '巴黎圣日耳曼', psg: '巴黎圣日耳曼', juventus: '尤文图斯', 'inter milan': '国际米兰', 'ac milan': 'AC米兰', napoli: '那不勒斯', 'atletico madrid': '马德里竞技',
+};
+
+const COMPETITION_NAME_ZH: Record<string, string> = {
+  'fifa world cup': '世界杯', 'world cup': '世界杯', 'club world cup': '世俱杯', 'fifa club world cup': '世俱杯', 'uefa champions league': '欧冠', 'champions league': '欧冠', 'uefa europa league': '欧联杯', 'europa league': '欧联杯', 'premier league': '英超', 'la liga': '西甲', 'serie a': '意甲', bundesliga: '德甲', 'ligue 1': '法甲', 'major league soccer': '美职联', mls: '美职联', 'fa cup': '英格兰足总杯', 'copa del rey': '国王杯', 'copa america': '美洲杯', euro: '欧洲杯', 'uefa euro': '欧洲杯',
+};
