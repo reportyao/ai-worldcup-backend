@@ -197,6 +197,33 @@ export class MatchesService {
       }
     }
 
+    const modelIdsForAnalyses = Array.from(
+      new Set(match.predictionTasks.flatMap((task) => task.predictions.map((prediction) => prediction.aiModel.id))),
+    );
+    const scorecardsForAnalyses = access.canViewFullModels && modelIdsForAnalyses.length > 0
+      ? await this.prisma.modelScorecard.findMany({
+          where: { aiModelId: { in: modelIdsForAnalyses }, scopeType: 'OVERALL', scopeId: '' },
+        })
+      : [];
+    const scorecardByModel = new Map(
+      scorecardsForAnalyses.map((scorecard) => [
+        scorecard.aiModelId,
+        {
+          totalMatches: scorecard.totalMatches,
+          winDrawLossCorrect: scorecard.winDrawLossCorrect,
+          scoreExact: scorecard.scoreExact,
+          goalRangeHit: scorecard.goalRangeHit,
+          handicapCorrect: scorecard.handicapCorrect,
+          overUnderCorrect: scorecard.overUnderCorrect,
+          halfFullCorrect: scorecard.halfFullCorrect,
+          anyHit: scorecard.anyHit,
+          hitRate: scorecard.hitRate,
+          winRate: scorecard.winRate,
+          recentForm: scorecard.recentForm ?? '',
+        },
+      ]),
+    );
+
     const modelAnalyses = access.canViewFullModels
       ? match.predictionTasks.flatMap((task) =>
           task.predictions.map((prediction) => ({
@@ -213,6 +240,7 @@ export class MatchesService {
               accuracyByTaskAndModel.get(`${task.id}:${prediction.aiModel.id}`) ??
               accuracyByModel.get(prediction.aiModel.id) ??
               null,
+            scorecard: scorecardByModel.get(prediction.aiModel.id) ?? null,
             generatedAt: prediction.createdAt.toISOString(),
           })),
         )

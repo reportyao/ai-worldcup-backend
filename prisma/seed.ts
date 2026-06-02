@@ -155,41 +155,87 @@ async function main() {
   console.log(`  ✓ Matches: ${matchCount} seeded`);
 
   // ─── AI Models ─────────────────────────────────────────────────────────────
+  const gatewayBaseUrl = process.env.AI_GATEWAY_BASE_URL;
+  const modelGatewayConfig = (temperature: number) => ({
+    temperature,
+    maxTokens: 4096,
+    ...(gatewayBaseUrl ? { baseUrl: gatewayBaseUrl } : {}),
+  });
+
   const modelData = [
     {
-      modelId: 'gpt-4.1-mini',
-      displayName: 'GPT-4.1 Mini',
+      modelId: process.env.AI_MODEL_GPT ?? 'gpt-4.1-mini',
+      displayName: 'GPT',
       persona: 'STEADY' as const,
       provider: 'openai',
-      description: '稳健型分析师，注重数据和历史规律',
-      config: { temperature: 0.3, maxTokens: 4096 },
+      sortOrder: 10,
+      description: 'GPT 系列，稳健综合分析，支持通过 AI_GATEWAY_BASE_URL 或模型级 baseUrl 中转调用',
+      config: modelGatewayConfig(0.3),
     },
     {
-      modelId: 'gemini-2.5-flash',
-      displayName: 'Gemini 2.5 Flash',
-      persona: 'ATTACKING' as const,
-      provider: 'google',
-      description: '进攻型分析师，善于发现进球机会',
-      config: { temperature: 0.5, maxTokens: 4096 },
-    },
-    {
-      modelId: 'gpt-4.1-nano',
-      displayName: 'GPT-4.1 Nano',
-      persona: 'UPSET_HUNTER' as const,
-      provider: 'openai',
-      description: '冷门猎手，专注发现潜在爆冷',
-      config: { temperature: 0.7, maxTokens: 4096 },
-    },
-    {
-      modelId: 'claude-sonnet',
-      displayName: 'Claude Sonnet',
+      modelId: process.env.AI_MODEL_CLAUDE ?? 'claude-3-5-sonnet-latest',
+      displayName: 'Claude',
       persona: 'DATA_DRIVEN' as const,
       provider: 'anthropic',
-      description: '数据驱动型，严格基于统计和概率',
-      config: { temperature: 0.2, maxTokens: 4096 },
+      sortOrder: 20,
+      description: 'Claude 系列，强调逻辑推演与风险拆解，可通过中转站 OpenAI 兼容接口调用',
+      config: modelGatewayConfig(0.25),
+    },
+    {
+      modelId: process.env.AI_MODEL_GEMINI ?? 'gemini-2.5-flash',
+      displayName: 'Gemini',
+      persona: 'ATTACKING' as const,
+      provider: 'google',
+      sortOrder: 30,
+      description: 'Gemini 系列，关注比赛节奏、攻防转换和大球区间',
+      config: modelGatewayConfig(0.45),
+    },
+    {
+      modelId: process.env.AI_MODEL_KIMI ?? 'moonshot-v1-8k',
+      displayName: 'Kimi',
+      persona: 'STEADY' as const,
+      provider: 'moonshot',
+      sortOrder: 40,
+      description: 'Kimi/月之暗面，作为中文语境足球分析补充，经中转站接入',
+      config: modelGatewayConfig(0.35),
+    },
+    {
+      modelId: process.env.AI_MODEL_XIAOMI ?? 'xiaoai-latest',
+      displayName: 'Xiaomi',
+      persona: 'UPSET_HUNTER' as const,
+      provider: 'xiaomi',
+      sortOrder: 50,
+      description: '小米大模型，偏冷门变量和临场不确定性，经中转站接入',
+      config: modelGatewayConfig(0.55),
+    },
+    {
+      modelId: process.env.AI_MODEL_QWEN ?? 'qwen-plus',
+      displayName: '千问',
+      persona: 'DATA_DRIVEN' as const,
+      provider: 'qwen',
+      sortOrder: 60,
+      description: '通义千问，强调结构化数据与概率校准，经中转站接入',
+      config: modelGatewayConfig(0.3),
+    },
+    {
+      modelId: process.env.AI_MODEL_MINIMAX ?? 'abab6.5s-chat',
+      displayName: 'MiniMax',
+      persona: 'ATTACKING' as const,
+      provider: 'minimax',
+      sortOrder: 70,
+      description: 'MiniMax，补充进球、比分和半全场判断，经中转站接入',
+      config: modelGatewayConfig(0.4),
+    },
+    {
+      modelId: process.env.AI_MODEL_ZHIPU ?? 'glm-4-flash',
+      displayName: '智谱',
+      persona: 'STEADY' as const,
+      provider: 'zhipu',
+      sortOrder: 80,
+      description: '智谱 GLM，补充中文赛事理解和稳健结论，经中转站接入',
+      config: modelGatewayConfig(0.35),
     },
   ];
-
   for (const m of modelData) {
     await prisma.aiModel.upsert({
       where: { modelId: m.modelId },
@@ -220,7 +266,7 @@ async function main() {
         version: 'T_MINUS_24H',
         status: 'PENDING',
         trigger: 'CRON',
-        modelCount: 4,
+        modelCount: modelData.length,
       },
     });
   }

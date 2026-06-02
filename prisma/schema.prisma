@@ -270,13 +270,14 @@ model Match {
   createdAt     DateTime    @default(now())
   updatedAt     DateTime    @updatedAt
 
-  predictionTasks PredictionTask[]
-  userPredictions UserPrediction[]
-  modelReviews    ModelReview[]
-  shareTracks     ShareTrack[]
-  unlocks         MatchUnlock[]
-  matchFeatures   MatchFeature[]
-  aiPkRecords     AiPkRecord[]
+  predictionTasks  PredictionTask[]
+  userPredictions  UserPrediction[]
+  modelReviews     ModelReview[]
+  shareTracks      ShareTrack[]
+  unlocks          MatchUnlock[]
+  matchFeatures    MatchFeature[]
+  aiPkRecords      AiPkRecord[]
+  sportteryMarkets SportteryMatchMarket[]
 
   @@unique([competitionId, homeTeamId, awayTeamId, kickoffAt])
   @@index([competitionId, kickoffAt])
@@ -319,6 +320,51 @@ model RawApiResponse {
 
   @@index([provider, endpoint, externalId])
   @@index([createdAt])
+}
+
+/// 体彩中心竞彩足球官方场次与玩法快照。
+/// 用于保持比赛数据、官方让球、开奖赛果与中国竞彩网竞彩口径一致。
+model SportteryMatchMarket {
+  id              String    @id @default(cuid())
+  provider        String    @default("sporttery")
+  /// 销售/竞彩日期，格式 yyyy-MM-dd
+  saleDate        String
+  /// 官方场次编号，如 周三001
+  matchNo         String
+  /// 官方期号或业务编号
+  issueNo         String?
+  /// 关联到平台比赛；无法自动匹配时先保留官方快照，后台可后续人工关联
+  matchId         String?
+  match           Match?    @relation(fields: [matchId], references: [id], onDelete: SetNull)
+  leagueName      String?
+  homeTeamName    String
+  awayTeamName    String
+  kickoffAt       DateTime?
+  status          String    @default("SCHEDULED")
+  /// 竞彩让球值；同步时也回写到 Match.handicapLine
+  handicapLine    Float?
+  /// 大小球盘口；同步时也回写到 Match.overUnderLine
+  overUnderLine   Float?
+  /// 官方胜平负赛果
+  winDrawLoss     String?
+  /// 官方让球胜平负赛果
+  handicapResult  String?
+  /// 官方大小球赛果
+  overUnderResult String?
+  /// 官方比分赛果，如 2:1
+  scoreResult     String?
+  /// 官方半全场赛果，如 胜胜 / DRAW_HOME
+  halfFullResult  String?
+  /// 官方原始响应，便于追溯和重算
+  rawJson         Json
+  syncedAt        DateTime  @default(now())
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+
+  @@unique([provider, saleDate, matchNo])
+  @@index([matchId])
+  @@index([saleDate, kickoffAt])
+  @@index([provider, syncedAt])
 }
 
 /// 比赛级特征快照（预测输入的数据基础）
@@ -424,31 +470,31 @@ model PredictionTask {
 
 /// 单个模型对单场比赛的预测结果
 model ModelPrediction {
-  id               String         @id @default(cuid())
+  id                 String         @id @default(cuid())
   /// 关联预测任务
-  predictionTaskId String
-  predictionTask   PredictionTask @relation(fields: [predictionTaskId], references: [id], onDelete: Cascade)
+  predictionTaskId   String
+  predictionTask     PredictionTask @relation(fields: [predictionTaskId], references: [id], onDelete: Cascade)
   /// 关联 AI 模型
-  aiModelId        String
-  aiModel          AiModel        @relation(fields: [aiModelId], references: [id])
+  aiModelId          String
+  aiModel            AiModel        @relation(fields: [aiModelId], references: [id])
   /// 结构化预测输出 JSON（符合 StructuredPredictionSchema）
-  structuredOutput Json
+  structuredOutput   Json
   /// AI 原始输出文本（用于调试和审计）
-  rawOutput        String?
+  rawOutput          String?
   /// 使用的 Prompt 模板版本
-  promptVersion    String?
+  promptVersion      String?
   /// 使用的 Prompt 完整内容快照
-  promptSnapshot   String?
+  promptSnapshot     String?
   /// 模型调用耗时（毫秒）
-  latencyMs        Int?
+  latencyMs          Int?
   /// 输入 token 数
-  inputTokens      Int?
+  inputTokens        Int?
   /// 输出 token 数
-  outputTokens     Int?
+  outputTokens       Int?
   /// 是否成功
-  isSuccess        Boolean        @default(true)
+  isSuccess          Boolean        @default(true)
   /// 错误信息（如果失败）
-  errorMessage     String?
+  errorMessage       String?
   /// 赛后评估：胜平负是否命中
   winDrawLossCorrect Boolean?
   /// 赛后评估：让球胜平负是否命中
@@ -476,9 +522,9 @@ model ModelPrediction {
   /// 评估时间
   evaluatedAt        DateTime?
   /// 生成时间
-  generatedAt      DateTime       @default(now())
-  createdAt        DateTime       @default(now())
-  updatedAt        DateTime       @updatedAt
+  generatedAt        DateTime       @default(now())
+  createdAt          DateTime       @default(now())
+  updatedAt          DateTime       @updatedAt
 
   /// 同一任务中同一模型只能有一条预测
   @@unique([predictionTaskId, aiModelId])

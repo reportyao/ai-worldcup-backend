@@ -4,10 +4,11 @@ import { PredictionPipelineModule } from '../prediction-pipeline/prediction-pipe
 
 import { ApiFootballClient } from './api-football.client.js';
 import { FootballDataSyncService } from './football-data-sync.service.js';
+import { SportteryClient } from './sporttery.client.js';
 
 @Module({
   imports: [PredictionPipelineModule],
-  providers: [ApiFootballClient, FootballDataSyncService],
-  exports: [ApiFootballClient, FootballDataSyncService],
+  providers: [ApiFootballClient, SportteryClient, FootballDataSyncService],
+  exports: [ApiFootballClient, SportteryClient, FootballDataSyncService],
 })
 export class FootballDataModule {}

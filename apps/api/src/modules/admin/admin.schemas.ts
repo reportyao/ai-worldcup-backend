@@ -137,18 +137,20 @@ export const AdminMatchImportSchema = z.object({
 export type AdminMatchImportDto = z.infer<typeof AdminMatchImportSchema>;
 
 export const AdminFootballDataSyncSchema = z.object({
-  scope: z.enum(['LEAGUES', 'TEAMS', 'FIXTURES', 'LIVE_SCORES', 'STANDINGS']).default('FIXTURES'),
+  provider: z.enum(['api-football', 'sporttery']).default('api-football'),
+  scope: z.enum(['LEAGUES', 'TEAMS', 'FIXTURES', 'LIVE_SCORES', 'STANDINGS', 'SPORTTERY_JC']).default('FIXTURES'),
   leagueIds: z.array(z.coerce.number().int().positive()).optional(),
   season: optionalTrimmedString,
   from: z.string().regex(/^\d{4}-\d{2}-\d{2}$/).optional(),
   to: z.string().regex(/^\d{4}-\d{2}-\d{2}$/).optional(),
+  saleDate: z.string().regex(/^\d{4}-\d{2}-\d{2}$/).optional(),
   dryRun: z.coerce.boolean().default(false),
   enqueuePredictions: z.coerce.boolean().default(false),
 });
 export type AdminFootballDataSyncDto = z.infer<typeof AdminFootballDataSyncSchema>;
 
 export const AdminFootballDataSyncLogQuerySchema = PaginationQuerySchema.extend({
-  scope: z.enum(['LEAGUES', 'TEAMS', 'FIXTURES', 'LIVE_SCORES', 'STANDINGS']).optional(),
+  scope: z.enum(['LEAGUES', 'TEAMS', 'FIXTURES', 'LIVE_SCORES', 'STANDINGS', 'SPORTTERY_JC']).optional(),
   status: z.enum(['RUNNING', 'SUCCEEDED', 'PARTIAL_SUCCESS', 'FAILED']).optional(),
 });
 export type AdminFootballDataSyncLogQuery = z.infer<typeof AdminFootballDataSyncLogQuerySchema>;

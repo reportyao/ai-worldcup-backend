@@ -76,7 +76,7 @@ function getRuntimeConfig() {
   return {
     timeoutMs: Number(process.env.AI_GATEWAY_TIMEOUT_MS ?? 30_000),
     defaultBaseUrl: process.env.AI_GATEWAY_BASE_URL,
-    openaiApiKey: process.env.AI_OPENAI_API_KEY ?? process.env.OPENAI_API_KEY,
+    openaiApiKey: process.env.AI_GATEWAY_API_KEY ?? process.env.AI_OPENAI_API_KEY ?? process.env.OPENAI_API_KEY,
     openaiBaseUrl: process.env.AI_OPENAI_BASE_URL,
     googleApiKey: process.env.AI_GOOGLE_API_KEY,
     googleBaseUrl: process.env.AI_GOOGLE_BASE_URL,

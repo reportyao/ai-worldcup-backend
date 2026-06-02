@@ -1,15 +1,18 @@
-export type FootballDataProvider = 'api-football';
+export type FootballDataProvider = 'api-football' | 'sporttery';
 
-export type FootballDataSyncScope = 'LEAGUES' | 'TEAMS' | 'FIXTURES' | 'LIVE_SCORES' | 'STANDINGS';
+export type FootballDataSyncScope = 'LEAGUES' | 'TEAMS' | 'FIXTURES' | 'LIVE_SCORES' | 'STANDINGS' | 'SPORTTERY_JC';
 
 export type FootballDataSyncStatus = 'RUNNING' | 'SUCCEEDED' | 'PARTIAL_SUCCESS' | 'FAILED';
 
 export interface FootballDataSyncOptions {
+  provider?: FootballDataProvider;
   scope: FootballDataSyncScope;
   leagueIds?: number[];
   season?: string;
   from?: string;
   to?: string;
+  /** 体彩竞彩销售日期，格式 yyyy-MM-dd；未传时默认当天 */
+  saleDate?: string;
   dryRun?: boolean;
   enqueuePredictions?: boolean;
 }
@@ -19,6 +22,7 @@ export interface FootballDataSyncSummary {
   scope: FootballDataSyncScope;
   dryRun: boolean;
   leagueIds: number[];
+  saleDate?: string;
   competitionsCreated: number;
   competitionsUpdated: number;
   teamsCreated: number;
@@ -26,6 +30,8 @@ export interface FootballDataSyncSummary {
   matchesCreated: number;
   matchesUpdated: number;
   matchesSkipped: number;
+  marketSnapshotsCreated?: number;
+  marketSnapshotsUpdated?: number;
   predictionEnqueued: number;
   predictionFailed: number;
   errorCount: number;
@@ -66,4 +72,23 @@ export interface ApiFootballFixture {
   match_awayteam_name?: string;
   match_awayteam_score?: string;
   league_season?: string;
+}
+
+export interface SportteryFootballMatch {
+  saleDate: string;
+  matchNo: string;
+  issueNo?: string;
+  leagueName?: string;
+  homeTeamName: string;
+  awayTeamName: string;
+  kickoffAt?: string;
+  status?: string;
+  handicapLine?: number;
+  overUnderLine?: number;
+  winDrawLoss?: string;
+  handicapResult?: string;
+  overUnderResult?: string;
+  scoreResult?: string;
+  halfFullResult?: string;
+  raw: Record<string, unknown>;
 }

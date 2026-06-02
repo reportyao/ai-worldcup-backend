@@ -534,13 +534,14 @@ export async function generateStructuredPrediction(
   let rawOutput: string;
   let usage: ProviderUsage = {};
 
-  // If model config has a baseUrl (e.g. ainb.plus proxy), always use OpenAI-compatible path
-  const hasProxyBaseUrl = !!getStringConfig(model.config, 'baseUrl');
+  // If model config or runtime has a baseUrl (e.g. proxy/gateway), use OpenAI-compatible path.
+  // This lets GPT, Claude, Gemini, Kimi, Xiaomi, Qwen, MiniMax and Zhipu share one relay station.
+  const hasProxyBaseUrl = !!getStringConfig(model.config, 'baseUrl') || !!runtime.defaultBaseUrl;
 
   if (provider === 'mock' || (runtime.allowMock === true && !hasProxyBaseUrl)) {
     rawOutput = buildMockPrediction(model, match);
   } else if (provider === 'openai' || hasProxyBaseUrl) {
-    // All models with a custom baseUrl (proxy/gateway) use OpenAI-compatible chat/completions
+    // All models with a custom/global baseUrl (proxy/gateway) use OpenAI-compatible chat/completions.
     ({ rawOutput, usage } = await callOpenAI(model, prompt, runtime));
   } else if (provider === 'google') {
     ({ rawOutput, usage } = await callGoogle(model, prompt, runtime));

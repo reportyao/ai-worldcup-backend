@@ -7,6 +7,7 @@ import { PrismaService } from '../../prisma/prisma.service.js';
 import { PredictionPipelineService } from '../prediction-pipeline/prediction-pipeline.service.js';
 
 import { ApiFootballClient } from './api-football.client.js';
+import { SportteryClient } from './sporttery.client.js';
 import type {
   ApiFootballFixture,
   ApiFootballLeague,
@@ -15,7 +16,13 @@ import type {
   FootballDataSyncScope,
   FootballDataSyncStatus,
   FootballDataSyncSummary,
+  SportteryFootballMatch,
 } from './football-data.types.js';
+
+interface NormalizedFootballDataSyncOptions extends Required<Omit<FootballDataSyncOptions, 'provider' | 'saleDate'>> {
+  provider: 'api-football' | 'sporttery';
+  saleDate: string;
+}
 
 @Injectable()
 export class FootballDataSyncService {
@@ -23,6 +30,7 @@ export class FootballDataSyncService {
     private readonly prisma: PrismaService,
     private readonly config: ConfigService<AppConfig, true>,
     private readonly client: ApiFootballClient,
+    private readonly sportteryClient: SportteryClient,
     private readonly predictionPipeline: PredictionPipelineService,
   ) {}
 
@@ -34,7 +42,7 @@ export class FootballDataSyncService {
     const page = query.page ?? 1;
     const pageSize = query.pageSize ?? 20;
     const where: Prisma.FootballDataSyncLogWhereInput = {
-      provider: 'api-football',
+      ...(query.scope === 'SPORTTERY_JC' ? { provider: 'sporttery' } : { provider: 'api-football' }),
       ...(query.scope ? { scope: query.scope } : {}),
       ...(query.status ? { status: query.status } : {}),
     };
@@ -52,11 +60,11 @@ export class FootballDataSyncService {
 
   async sync(options: FootballDataSyncOptions) {
     const normalized = this.normalizeOptions(options);
-    if (!this.client.hasCredentials()) throw new BadRequestException('API_FOOTBALL_KEY is not configured');
+    if (normalized.provider === 'api-football' && !this.client.hasCredentials()) throw new BadRequestException('API_FOOTBALL_KEY is not configured');
 
     const log = await this.prisma.footballDataSyncLog.create({
       data: {
-        provider: 'api-football',
+        provider: normalized.provider,
         scope: normalized.scope,
         status: 'RUNNING',
         params: this.toPrismaJson(normalized),
@@ -65,7 +73,11 @@ export class FootballDataSyncService {
 
     const summary = this.createEmptySummary(normalized);
     try {
-      await this.syncInternal(normalized, summary);
+      if (normalized.provider === 'sporttery' || normalized.scope === 'SPORTTERY_JC') {
+        await this.syncSporttery(normalized, summary);
+      } else {
+        await this.syncInternal(normalized, summary);
+      }
       const status = this.resolveFinalStatus(summary);
       const updated = await this.prisma.footballDataSyncLog.update({
         where: { id: log.id },
@@ -92,7 +104,7 @@ export class FootballDataSyncService {
     }
   }
 
-  private async syncInternal(options: Required<FootballDataSyncOptions>, summary: FootballDataSyncSummary) {
+  private async syncInternal(options: NormalizedFootballDataSyncOptions, summary: FootballDataSyncSummary) {
     const leagues = await this.resolveTargetLeagues(options);
     if (leagues.length === 0) {
       throw new BadRequestException('No API-Football leagues selected. Pass leagueIds or configure API_FOOTBALL_LEAGUE_IDS.');
@@ -121,7 +133,188 @@ export class FootballDataSyncService {
     }
   }
 
-  private async resolveTargetLeagues(options: Required<FootballDataSyncOptions>) {
+
+  private async syncSporttery(options: NormalizedFootballDataSyncOptions, summary: FootballDataSyncSummary) {
+    const items = await this.sportteryClient.getDailyFootballMatches(options.saleDate);
+    if (items.length === 0) {
+      summary.errorCount += 1;
+      summary.errors.push({ message: `No Sporttery football matches returned for ${options.saleDate}. Configure SPORTTERY_FOOTBALL_JC_URL if the official endpoint changes.` });
+      return;
+    }
+    const competition = await this.upsertSportteryCompetition(options, summary);
+    for (const item of items) {
+      await this.upsertSportteryMatch(competition.id, item, options, summary);
+    }
+  }
+
+  private async upsertSportteryCompetition(options: NormalizedFootballDataSyncOptions, summary: FootballDataSyncSummary) {
+    const season = options.season || options.saleDate.slice(0, 4);
+    const externalId = `sporttery:football:${season}`;
+    const data = {
+      code: `SPT-JC-${season}`.slice(0, 40),
+      name: `中国竞彩网竞彩足球 ${season}`,
+      type: CompetitionType.OTHER,
+      season,
+      country: '中国',
+      status: 'ACTIVE',
+      externalId,
+    };
+    if (options.dryRun) {
+      const existing = await this.prisma.competition.findUnique({ where: { externalId } });
+      if (existing) summary.competitionsUpdated += 1;
+      else summary.competitionsCreated += 1;
+      return existing ?? { id: `dry-run:${externalId}` };
+    }
+    const existing = await this.prisma.competition.findUnique({ where: { externalId } });
+    const saved = await this.prisma.competition.upsert({ where: { externalId }, update: data, create: data });
+    if (existing) summary.competitionsUpdated += 1;
+    else summary.competitionsCreated += 1;
+    return saved;
+  }
+
+  private async upsertSportteryMatch(competitionId: string, item: SportteryFootballMatch, options: NormalizedFootballDataSyncOptions, summary: FootballDataSyncSummary) {
+    const externalId = `sporttery:football:${item.saleDate}:${item.matchNo}`;
+    const kickoffAt = item.kickoffAt ? new Date(item.kickoffAt) : null;
+    if (!kickoffAt || Number.isNaN(kickoffAt.getTime())) {
+      summary.matchesSkipped += 1;
+      summary.errorCount += 1;
+      summary.errors.push({ externalId, message: 'Sporttery match is missing kickoff time' });
+      return;
+    }
+
+    if (options.dryRun) {
+      const existing = await this.prisma.match.findUnique({ where: { externalId } });
+      if (existing) summary.matchesUpdated += 1;
+      else summary.matchesCreated += 1;
+      return;
+    }
+
+    const [homeTeam, awayTeam] = await Promise.all([
+      this.upsertSportteryTeam(item.homeTeamName, summary),
+      this.upsertSportteryTeam(item.awayTeamName, summary),
+    ]);
+
+    const existing = await this.prisma.match.findUnique({ where: { externalId } });
+    const match = await this.prisma.match.upsert({
+      where: { externalId },
+      update: {
+        competitionId,
+        homeTeamId: homeTeam.id,
+        awayTeamId: awayTeam.id,
+        kickoffAt,
+        status: this.mapSportteryStatus(item),
+        matchday: item.saleDate,
+        stage: item.leagueName ?? null,
+        handicapLine: item.handicapLine ?? null,
+        overUnderLine: item.overUnderLine ?? null,
+      },
+      create: {
+        competitionId,
+        homeTeamId: homeTeam.id,
+        awayTeamId: awayTeam.id,
+        kickoffAt,
+        status: this.mapSportteryStatus(item),
+        matchday: item.saleDate,
+        stage: item.leagueName ?? null,
+        handicapLine: item.handicapLine ?? null,
+        overUnderLine: item.overUnderLine ?? null,
+        externalId,
+      },
+    });
+
+    const existingMarket = await this.prisma.sportteryMatchMarket.findUnique({
+      where: { provider_saleDate_matchNo: { provider: 'sporttery', saleDate: item.saleDate, matchNo: item.matchNo } },
+    });
+    await this.prisma.sportteryMatchMarket.upsert({
+      where: { provider_saleDate_matchNo: { provider: 'sporttery', saleDate: item.saleDate, matchNo: item.matchNo } },
+      update: {
+        matchId: match.id,
+        issueNo: item.issueNo ?? null,
+        leagueName: item.leagueName ?? null,
+        homeTeamName: item.homeTeamName,
+        awayTeamName: item.awayTeamName,
+        kickoffAt,
+        status: item.status ?? 'SCHEDULED',
+        handicapLine: item.handicapLine ?? null,
+        overUnderLine: item.overUnderLine ?? null,
+        winDrawLoss: item.winDrawLoss ?? null,
+        handicapResult: item.handicapResult ?? null,
+        overUnderResult: item.overUnderResult ?? null,
+        scoreResult: item.scoreResult ?? null,
+        halfFullResult: item.halfFullResult ?? null,
+        rawJson: this.toPrismaJson(item.raw),
+        syncedAt: new Date(),
+      },
+      create: {
+        provider: 'sporttery',
+        saleDate: item.saleDate,
+        matchNo: item.matchNo,
+        issueNo: item.issueNo ?? null,
+        matchId: match.id,
+        leagueName: item.leagueName ?? null,
+        homeTeamName: item.homeTeamName,
+        awayTeamName: item.awayTeamName,
+        kickoffAt,
+        status: item.status ?? 'SCHEDULED',
+        handicapLine: item.handicapLine ?? null,
+        overUnderLine: item.overUnderLine ?? null,
+        winDrawLoss: item.winDrawLoss ?? null,
+        handicapResult: item.handicapResult ?? null,
+        overUnderResult: item.overUnderResult ?? null,
+        scoreResult: item.scoreResult ?? null,
+        halfFullResult: item.halfFullResult ?? null,
+        rawJson: this.toPrismaJson(item.raw),
+      },
+    });
+    if (existingMarket) summary.marketSnapshotsUpdated = (summary.marketSnapshotsUpdated ?? 0) + 1;
+    else summary.marketSnapshotsCreated = (summary.marketSnapshotsCreated ?? 0) + 1;
+
+    if (existing) summary.matchesUpdated += 1;
+    else {
+      summary.matchesCreated += 1;
+      if (options.enqueuePredictions) await this.enqueueInitialPrediction(match.id, summary);
+    }
+  }
+
+  private async upsertSportteryTeam(name: string, summary: FootballDataSyncSummary, dryRun = false) {
+    const normalized = name.trim();
+    const externalId = `sporttery:team:${this.slugify(normalized)}`;
+    const data = {
+      code: `SPT-${this.slugify(normalized).slice(0, 24)}`.toUpperCase(),
+      name: normalized,
+      nameZh: normalized,
+      shortName: normalized,
+      externalId,
+    };
+    if (dryRun) {
+      const existing = await this.prisma.team.findUnique({ where: { externalId } });
+      if (existing) summary.teamsUpdated += 1;
+      else summary.teamsCreated += 1;
+      return existing ?? { id: `dry-run:${externalId}` };
+    }
+    const existing = await this.prisma.team.findUnique({ where: { externalId } });
+    const saved = await this.prisma.team.upsert({ where: { externalId }, update: data, create: data });
+    if (existing) summary.teamsUpdated += 1;
+    else summary.teamsCreated += 1;
+    return saved;
+  }
+
+  private mapSportteryStatus(item: SportteryFootballMatch): MatchStatus {
+    const raw = (item.status ?? '').toLowerCase();
+    if (/finish|ended|完|已开奖|已完赛/.test(raw) || item.scoreResult) return MatchStatus.FINISHED;
+    if (/live|进行|半场/.test(raw)) return MatchStatus.LIVE;
+    if (/cancel|取消/.test(raw)) return MatchStatus.CANCELED;
+    if (/postpon|延期/.test(raw)) return MatchStatus.POSTPONED;
+    return MatchStatus.SCHEDULED;
+  }
+
+  private slugify(value: string): string {
+    const ascii = value.normalize('NFKD').replace(/[\u0300-\u036f]/g, '').replace(/[^A-Za-z0-9]+/g, '-').replace(/^-+|-+$/g, '').toLowerCase();
+    return ascii || Buffer.from(value).toString('hex').slice(0, 24);
+  }
+
+
+  private async resolveTargetLeagues(options: NormalizedFootballDataSyncOptions) {
     const leagues = await this.client.getLeagues();
     const targetIds = new Set(options.leagueIds.map(String));
     return leagues.filter((league) => league.league_id && targetIds.has(String(league.league_id)));
@@ -129,7 +322,7 @@ export class FootballDataSyncService {
 
   private async upsertCompetition(
     league: ApiFootballLeague,
-    options: Required<FootballDataSyncOptions>,
+    options: NormalizedFootballDataSyncOptions,
     summary: FootballDataSyncSummary,
   ) {
     const season = options.season || league.league_season || this.inferSeasonFromDate(options.from);
@@ -173,7 +366,7 @@ export class FootballDataSyncService {
   private async upsertFixture(
     competitionId: string,
     fixture: ApiFootballFixture,
-    options: Required<FootballDataSyncOptions>,
+    options: NormalizedFootballDataSyncOptions,
     summary: FootballDataSyncSummary,
   ) {
     const externalId = fixture.match_id ? `api-football:match:${fixture.match_id}` : undefined;
@@ -291,28 +484,31 @@ export class FootballDataSyncService {
     }
   }
 
-  private normalizeOptions(options: FootballDataSyncOptions): Required<FootballDataSyncOptions> {
+  private normalizeOptions(options: FootballDataSyncOptions): NormalizedFootballDataSyncOptions {
     const today = new Date();
     const defaultFrom = this.formatDate(today);
     const defaultTo = this.formatDate(new Date(today.getTime() + 14 * 24 * 60 * 60 * 1000));
     const leagueIds = options.leagueIds?.length ? options.leagueIds : this.parseLeagueIdsFromEnv();
     return {
+      provider: options.provider ?? (options.scope === 'SPORTTERY_JC' ? 'sporttery' : 'api-football'),
       scope: options.scope,
       leagueIds,
       season: options.season ?? '',
       from: options.from ?? defaultFrom,
       to: options.to ?? defaultTo,
+      saleDate: options.saleDate ?? options.from ?? this.formatDate(today),
       dryRun: options.dryRun ?? false,
       enqueuePredictions: options.enqueuePredictions ?? false,
     };
   }
 
-  private createEmptySummary(options: Required<FootballDataSyncOptions>): FootballDataSyncSummary {
+  private createEmptySummary(options: NormalizedFootballDataSyncOptions): FootballDataSyncSummary {
     return {
-      provider: 'api-football',
+      provider: options.provider,
       scope: options.scope,
       dryRun: options.dryRun,
       leagueIds: options.leagueIds,
+      saleDate: options.saleDate,
       competitionsCreated: 0,
       competitionsUpdated: 0,
       teamsCreated: 0,
@@ -320,6 +516,8 @@ export class FootballDataSyncService {
       matchesCreated: 0,
       matchesUpdated: 0,
       matchesSkipped: 0,
+      marketSnapshotsCreated: 0,
+      marketSnapshotsUpdated: 0,
       predictionEnqueued: 0,
       predictionFailed: 0,
       errorCount: 0,
