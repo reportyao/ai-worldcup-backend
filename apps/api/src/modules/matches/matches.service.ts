@@ -1,5 +1,5 @@
 import { Inject, Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
-import { MatchStatus, PredictionTaskStatus } from '@prisma/client';
+import { CompetitionType, MatchStatus, PredictionTaskStatus } from '@prisma/client';
 import type { Match, UserPrediction } from '@prisma/client';
 
 import { PrismaService } from '../../prisma/prisma.service.js';
@@ -28,18 +28,36 @@ export class MatchesService {
   async listMatches(query: MatchListQueryDto) {
     // User-facing lists should not expose stale historical fixtures. Keep all rows in DB for AI
     // prediction/review pipelines, but show only matches whose kickoff is within the latest
-    // seven-day result window or in the future. This also prevents old provider rows with stale
-    // SCHEDULED/CANCELED status from appearing as active matches.
+    // seven-day result window or in the future, unless a tab asks for a stricter window.
     const now = new Date();
     const sevenDaysAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
-    const visibleWindow = { kickoffAt: { gte: sevenDaysAgo } };
+    const threeDaysAgo = new Date(now.getTime() - 3 * 24 * 60 * 60 * 1000);
+    const todayKey = this.formatMatchday(now);
+    const tab = query.tab;
+
     const where = {
       ...(query.competitionId ? { competitionId: query.competitionId } : {}),
+      ...(query.group ? { stage: query.group } : {}),
       ...(query.matchday ? { matchday: query.matchday } : {}),
       ...(query.status ? { status: query.status } : {}),
-      ...visibleWindow,
+      ...(tab === 'today' ? { matchday: query.matchday ?? todayKey } : {}),
+      ...(tab === 'worldcup' ? { competition: { type: CompetitionType.WORLD_CUP, status: 'ACTIVE' } } : {}),
+      ...(tab === 'others' ? { competition: { type: { not: CompetitionType.WORLD_CUP }, status: 'ACTIVE' } } : {}),
+      ...(tab === 'finished'
+        ? {
+            kickoffAt: { gte: threeDaysAgo, lte: now },
+            OR: [
+              { status: MatchStatus.FINISHED },
+              { AND: [{ homeScore: { not: null } }, { awayScore: { not: null } }] },
+            ],
+          }
+        : tab === 'today'
+          ? {}
+          : { kickoffAt: { gte: sevenDaysAgo } }),
       ...(query.status === MatchStatus.SCHEDULED ? { kickoffAt: { gte: now } } : {}),
     };
+
+    const orderBy = tab === 'finished' ? { kickoffAt: 'desc' as const } : { kickoffAt: 'asc' as const };
 
     const [items, total] = await this.prisma.$transaction([
       this.prisma.match.findMany({
@@ -53,7 +71,7 @@ export class MatchesService {
             take: 1,
           },
         },
-        orderBy: { kickoffAt: 'asc' },
+        orderBy,
         skip: (query.page - 1) * query.pageSize,
         take: query.pageSize,
       }),
@@ -250,8 +268,16 @@ export class MatchesService {
     };
   }
 
+  private formatMatchday(date: Date): string {
+    return date.toISOString().slice(0, 10);
+  }
+
   private normalizeUserFacingStatus(match: Pick<Match, 'status' | 'kickoffAt' | 'homeScore' | 'awayScore'>): MatchStatus {
-    if (match.status === MatchStatus.SCHEDULED && match.homeScore != null && match.awayScore != null && match.kickoffAt.getTime() < Date.now()) {
+    const hasFinalScore = match.homeScore != null && match.awayScore != null;
+    const isPastKickoff = match.kickoffAt.getTime() < Date.now();
+    const isTerminalException = match.status === MatchStatus.CANCELED || match.status === MatchStatus.POSTPONED;
+
+    if (hasFinalScore && isPastKickoff && !isTerminalException) {
       return MatchStatus.FINISHED;
     }
     return match.status;

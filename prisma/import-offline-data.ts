@@ -153,14 +153,15 @@ async function importCompetitions(leagueIndex: LeagueIndex[]): Promise<Map<strin
   let updated = 0;
 
   for (const league of leagueIndex) {
-    const externalId = `api-football:league:${league.league_id}`;
-    const code = buildCompetitionCode(league.league_id, league.league_season);
+    const season = league.league_season || '2024-25';
+    const externalId = `api-football:league:${league.league_id}:season:${season}`;
+    const code = buildCompetitionCode(league.league_id, season);
     const data = {
       code,
       name: league.league_name,
       type: mapCompetitionType(league.tier, league.league_name),
       priority: mapPriority(league.priority),
-      season: league.league_season || '2024-25',
+      season,
       country: league.country_name || null,
       status: 'ACTIVE',
       externalId,

@@ -132,8 +132,8 @@ export class FootballDataSyncService {
     options: Required<FootballDataSyncOptions>,
     summary: FootballDataSyncSummary,
   ) {
-    const externalId = `api-football:league:${league.league_id}`;
     const season = options.season || league.league_season || this.inferSeasonFromDate(options.from);
+    const externalId = `api-football:league:${league.league_id}:season:${season}`;
     const code = this.buildCompetitionCode(league, season);
     const data = {
       code,

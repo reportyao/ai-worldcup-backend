@@ -210,8 +210,8 @@ async function request<T>(params: Record<string, string>): Promise<T> {
 }
 
 async function upsertCompetition(league: ApiFootballLeague, options: NormalizedOptions, summary: SyncSummary) {
-  const externalId = `api-football:league:${league.league_id}`;
   const season = options.season || league.league_season || options.from.slice(0, 4);
+  const externalId = `api-football:league:${league.league_id}:season:${season}`;
   const data = {
     code: buildCompetitionCode(league, season),
     name: league.league_name?.trim() || `API-Football League ${league.league_id}`,
