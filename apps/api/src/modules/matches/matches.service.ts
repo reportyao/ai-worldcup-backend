@@ -46,10 +46,7 @@ export class MatchesService {
       ...(tab === 'finished'
         ? {
             kickoffAt: { gte: threeDaysAgo, lte: now },
-            OR: [
-              { status: MatchStatus.FINISHED },
-              { AND: [{ homeScore: { not: null } }, { awayScore: { not: null } }] },
-            ],
+            status: MatchStatus.FINISHED,
           }
         : tab === 'today'
           ? {}
@@ -258,7 +255,7 @@ export class MatchesService {
       kickoffAt: match.kickoffAt.toISOString(),
       status: this.normalizeUserFacingStatus(match),
       matchday: match.matchday,
-      stage: match.stage,
+      stage: this.normalizeStageForUser(match),
       homeScore: match.homeScore,
       awayScore: match.awayScore,
       aiStatus: latestTask?.status ?? 'PENDING',
@@ -270,6 +267,30 @@ export class MatchesService {
 
   private formatMatchday(date: Date): string {
     return date.toISOString().slice(0, 10);
+  }
+
+  private normalizeStageForUser(match: Match & { competition: { type?: string } }): string | null {
+    if (!match.stage) return null;
+    if (match.competition.type !== CompetitionType.WORLD_CUP) return match.stage;
+
+    const groupNumber = this.parseWorldCupGroupNumber(match.stage);
+    return groupNumber == null ? match.stage : `Group ${groupNumber}`;
+  }
+
+  private parseWorldCupGroupNumber(stage: string): number | null {
+    const normalized = stage.trim();
+    const numericMatch = normalized.match(/^(?:group\s*)?(?:第\s*)?(\d{1,2})(?:\s*组)?$/i);
+    if (numericMatch) {
+      const value = Number(numericMatch[1]);
+      return value >= 1 && value <= 12 ? value : null;
+    }
+
+    const letterMatch = normalized.match(/^(?:group\s*)?([a-l])(?:\s*组)?$/i);
+    if (letterMatch) {
+      return letterMatch[1].toUpperCase().charCodeAt(0) - 'A'.charCodeAt(0) + 1;
+    }
+
+    return null;
   }
 
   private normalizeUserFacingStatus(match: Pick<Match, 'status' | 'kickoffAt' | 'homeScore' | 'awayScore'>): MatchStatus {

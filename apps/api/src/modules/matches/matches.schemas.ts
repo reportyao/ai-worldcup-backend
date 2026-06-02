@@ -8,7 +8,7 @@ export const MatchListQuerySchema = z.object({
   matchday: z.string().regex(/^\d{4}-\d{2}-\d{2}$/).optional(),
   status: z.nativeEnum(MatchStatus).optional(),
   page: z.coerce.number().int().min(1).default(1),
-  pageSize: z.coerce.number().int().min(1).max(200).default(20),
+  pageSize: z.coerce.number().int().min(1).max(500).default(20),
 });
 export type MatchListQueryDto = z.infer<typeof MatchListQuerySchema>;
 
