@@ -352,4 +352,18 @@ export class AdminController {
   ) {
     return this.adminService.getAutomationSyncLogs(query);
   }
+
+  // ============================================================================
+  // 竞彩比赛视图接口
+  // ============================================================================
+
+  @Get('sporttery/match-view')
+  getSportteryMatchView() {
+    return this.adminService.listSportteryMatchView();
+  }
+
+  @Get('sporttery/health')
+  getSportteryHealth() {
+    return this.adminService.getSportteryHealthStatus();
+  }
 }

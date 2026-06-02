@@ -1347,4 +1347,195 @@ export class AdminService {
 
     return { items, total, page, pageSize };
   }
+
+  /**
+   * 获取今日竞彩比赛（含盘口）+ 近3天完赛比赛（含赛果）
+   * 专为管理后台比赛管理页面设计
+   */
+  async listSportteryMatchView() {
+    const now = new Date();
+    // 北京时间今日 00:00 ~ 23:59
+    const cstOffset = 8 * 60 * 60 * 1000;
+    const todayStartCst = new Date(Math.floor((now.getTime() + cstOffset) / 86400000) * 86400000 - cstOffset);
+    const todayEndCst = new Date(todayStartCst.getTime() + 86400000);
+    const todayStr = new Date(now.getTime() + cstOffset).toISOString().slice(0, 10);
+    // 近3天完赛
+    const threeDaysAgo = new Date(now.getTime() - 3 * 24 * 60 * 60 * 1000);
+
+    const [todayMarkets, recentFinished] = await this.prisma.$transaction([
+      this.prisma.sportteryMatchMarket.findMany({
+        where: {
+          OR: [
+            { saleDate: todayStr },
+            { kickoffAt: { gte: todayStartCst, lt: todayEndCst } },
+          ],
+        },
+        include: {
+          match: {
+            include: {
+              homeTeam: true,
+              awayTeam: true,
+              competition: true,
+              predictionTasks: { orderBy: { updatedAt: 'desc' }, take: 1, select: { status: true } },
+              _count: { select: { predictionTasks: true } },
+            },
+          },
+        },
+        orderBy: [{ kickoffAt: 'asc' }, { matchNo: 'asc' }],
+      }),
+      this.prisma.match.findMany({
+        where: {
+          status: 'FINISHED',
+          kickoffAt: { gte: threeDaysAgo },
+        },
+        include: {
+          homeTeam: true,
+          awayTeam: true,
+          competition: true,
+          sportteryMarkets: { orderBy: { syncedAt: 'desc' }, take: 1 },
+          predictionTasks: { orderBy: { updatedAt: 'desc' }, take: 1, select: { status: true } },
+          _count: { select: { predictionTasks: true } },
+        },
+        orderBy: { kickoffAt: 'desc' },
+      }),
+    ]);
+
+    return {
+      todayMatches: todayMarkets.map((m) => ({
+        marketId: m.id,
+        saleDate: m.saleDate,
+        matchNo: m.matchNo,
+        leagueName: m.leagueName,
+        homeTeamName: m.homeTeamName,
+        awayTeamName: m.awayTeamName,
+        kickoffAt: m.kickoffAt?.toISOString() ?? null,
+        status: m.status,
+        handicapLine: m.handicapLine,
+        overUnderLine: m.overUnderLine,
+        winDrawLoss: m.winDrawLoss,
+        handicapResult: m.handicapResult,
+        overUnderResult: m.overUnderResult,
+        scoreResult: m.scoreResult,
+        halfFullResult: m.halfFullResult,
+        syncedAt: m.syncedAt?.toISOString() ?? null,
+        match: m.match
+          ? {
+              id: m.match.id,
+              homeScore: m.match.homeScore,
+              awayScore: m.match.awayScore,
+              status: m.match.status,
+              aiStatus: m.match.predictionTasks[0]?.status ?? 'PENDING',
+              predictionCount: m.match._count.predictionTasks,
+              homeTeam: m.match.homeTeam,
+              awayTeam: m.match.awayTeam,
+              competition: m.match.competition,
+            }
+          : null,
+      })),
+      recentFinished: recentFinished.map((m) => {
+        const market = m.sportteryMarkets[0] ?? null;
+        return {
+          id: m.id,
+          homeScore: m.homeScore,
+          awayScore: m.awayScore,
+          kickoffAt: m.kickoffAt.toISOString(),
+          status: m.status,
+          aiStatus: m.predictionTasks[0]?.status ?? 'PENDING',
+          predictionCount: m._count.predictionTasks,
+          homeTeam: m.homeTeam,
+          awayTeam: m.awayTeam,
+          competition: m.competition,
+          sportteryMarket: market
+            ? {
+                saleDate: market.saleDate,
+                matchNo: market.matchNo,
+                scoreResult: market.scoreResult,
+                winDrawLoss: market.winDrawLoss,
+                handicapResult: market.handicapResult,
+                overUnderResult: market.overUnderResult,
+                halfFullResult: market.halfFullResult,
+                syncedAt: market.syncedAt?.toISOString() ?? null,
+              }
+            : null,
+        };
+      }),
+    };
+  }
+
+  /**
+   * 竞彩数据健康状态监控
+   * 检查同步是否正常、今日数据是否及时
+   */
+  async getSportteryHealthStatus() {
+    const now = new Date();
+    const cstOffset = 8 * 60 * 60 * 1000;
+    const todayStr = new Date(now.getTime() + cstOffset).toISOString().slice(0, 10);
+    const oneDayAgo = new Date(now.getTime() - 24 * 60 * 60 * 1000);
+
+    const [lastSync, todayMarketCount, recentSyncLogs, pendingMatchCount, finishedWithResult] =
+      await this.prisma.$transaction([
+        this.prisma.footballDataSyncLog.findFirst({
+          where: { provider: 'sporttery' },
+          orderBy: { startedAt: 'desc' },
+        }),
+        this.prisma.sportteryMatchMarket.count({ where: { saleDate: todayStr } }),
+        this.prisma.footballDataSyncLog.findMany({
+          where: { provider: 'sporttery', startedAt: { gte: oneDayAgo } },
+          orderBy: { startedAt: 'desc' },
+          take: 20,
+        }),
+        this.prisma.sportteryMatchMarket.count({
+          where: { saleDate: todayStr, status: 'SCHEDULED' },
+        }),
+        this.prisma.sportteryMatchMarket.count({
+          where: { saleDate: todayStr, scoreResult: { not: null } },
+        }),
+      ]);
+
+    const lastSyncAge = lastSync ? now.getTime() - new Date(lastSync.startedAt).getTime() : null;
+    const isHealthy =
+      lastSync !== null &&
+      lastSyncAge !== null &&
+      lastSyncAge < 4 * 60 * 60 * 1000 &&
+      lastSync.status !== 'FAILED';
+
+    const syncSuccessRate =
+      recentSyncLogs.length > 0
+        ? Math.round(
+            (recentSyncLogs.filter((l) => l.status === 'SUCCEEDED' || l.status === 'PARTIAL_SUCCESS').length /
+              recentSyncLogs.length) *
+              100,
+          )
+        : null;
+
+    return {
+      isHealthy,
+      todayDate: todayStr,
+      todayMarketCount,
+      pendingMatchCount,
+      finishedWithResult,
+      lastSync: lastSync
+        ? {
+            id: lastSync.id,
+            status: lastSync.status,
+            startedAt: lastSync.startedAt,
+            finishedAt: lastSync.finishedAt,
+            ageMinutes: lastSyncAge !== null ? Math.round(lastSyncAge / 60000) : null,
+            summary: lastSync.summary,
+            errorMessage: lastSync.errorMessage,
+          }
+        : null,
+      recentSyncLogs: recentSyncLogs.map((l) => ({
+        id: l.id,
+        status: l.status,
+        startedAt: l.startedAt,
+        finishedAt: l.finishedAt,
+        scope: l.scope,
+        errorMessage: l.errorMessage,
+        summary: l.summary,
+      })),
+      syncSuccessRate,
+      lastSyncAgeMinutes: lastSyncAge !== null ? Math.round(lastSyncAge / 60000) : null,
+    };
+  }
 }
