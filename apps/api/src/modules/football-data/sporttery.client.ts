@@ -28,7 +28,8 @@ export class SportteryClient {
         const response = await fetch(url, {
           headers: {
             accept: 'application/json,text/plain,*/*',
-            referer: 'https://www.sporttery.cn/',
+            referer: 'https://www.sporttery.cn/jc/zqsgkj/',
+            origin: 'https://www.sporttery.cn',
             'user-agent': 'Mozilla/5.0 AI-Worldcup-Sporttery-Sync/1.0',
           },
           signal: AbortSignal.timeout(Number(process.env.SPORTTERY_TIMEOUT_MS ?? 15_000)),
@@ -55,6 +56,7 @@ export class SportteryClient {
     if (configured) return [this.interpolateUrl(configured, saleDate)];
     const encoded = encodeURIComponent(saleDate);
     return [
+      `https://webapi.sporttery.cn/gateway/uniform/football/getUniformMatchResultV1.qry?matchBeginDate=${encoded}&matchEndDate=${encoded}&leagueId=&pageSize=200&pageNo=1&isFix=0&matchPage=1&pcOrWap=1`,
       `https://webapi.sporttery.cn/gateway/jc/football/getMatchResultV1.qry?matchPage=1&matchBeginDate=${encoded}&matchEndDate=${encoded}&leagueId=&pageSize=200&pageNo=1&isFix=0`,
       `https://webapi.sporttery.cn/gateway/jc/football/getMatchInfoV1.qry?matchDate=${encoded}`,
       `https://webapi.sporttery.cn/gateway/jc/football/getMatchResultV1.qry?matchBeginDate=${encoded}&matchEndDate=${encoded}&pageSize=200&pageNo=1`,
@@ -94,8 +96,8 @@ export class SportteryClient {
   private normalizeMatch(row: Record<string, unknown>, fallbackDate: string): SportteryFootballMatch | null {
     const saleDate = this.firstString(row, ['saleDate', 'matchDate', 'businessDate', 'date']) ?? fallbackDate;
     const matchNo = this.firstString(row, ['matchNumStr', 'matchNo', 'matchNum', 'num', 'serialNo', 'matchCode']);
-    const homeTeamName = this.firstString(row, ['homeTeamAbbName', 'homeTeamName', 'homeName', 'hostName', 'home']);
-    const awayTeamName = this.firstString(row, ['awayTeamAbbName', 'awayTeamName', 'awayName', 'guestName', 'away']);
+    const homeTeamName = this.firstString(row, ['homeTeamAbbName', 'homeTeamName', 'homeName', 'hostName', 'allHomeTeam', 'homeTeam', 'home']);
+    const awayTeamName = this.firstString(row, ['awayTeamAbbName', 'awayTeamName', 'awayName', 'guestName', 'allAwayTeam', 'awayTeam', 'away']);
     if (!matchNo || !homeTeamName || !awayTeamName) return null;
 
     return {
@@ -106,14 +108,14 @@ export class SportteryClient {
       homeTeamName,
       awayTeamName,
       kickoffAt: this.normalizeKickoff(row, saleDate),
-      status: this.firstString(row, ['matchStatus', 'status', 'matchState']),
-      handicapLine: this.firstNumber(row, ['handicap', 'fixedodds', 'goalline', 'hhadGoalLine', 'letBall']),
-      overUnderLine: this.firstNumber(row, ['overUnderLine', 'goalLine', 'totalGoalLine']),
-      winDrawLoss: this.mapResult(this.firstString(row, ['spfResult', 'hadResult', 'winDrawLoss', 'result'])),
-      handicapResult: this.mapResult(this.firstString(row, ['rqspfResult', 'hhadResult', 'handicapResult'])),
+      status: this.firstString(row, ['matchStatus', 'status', 'matchState', 'matchResultStatus', 'poolStatus', 'resultStatus']),
+      handicapLine: this.firstNumber(row, ['handicap', 'fixedodds', 'goalline', 'hhadGoalLine', 'letBall', 'goalLine']),
+      overUnderLine: this.firstNumber(row, ['overUnderLine', 'totalGoalLine']),
+      winDrawLoss: this.mapResult(this.firstString(row, ['spfResult', 'hadResult', 'winDrawLoss', 'result', 'winFlag'])),
+      handicapResult: this.mapResult(this.firstString(row, ['rqspfResult', 'hhadResult', 'handicapResult', 'letBallResult'])),
       overUnderResult: this.mapOverUnder(this.firstString(row, ['overUnderResult', 'bigSmallResult', 'ouResult'])),
-      scoreResult: this.firstString(row, ['scoreResult', 'bfResult', 'score', 'fullScore']),
-      halfFullResult: this.firstString(row, ['halfFullResult', 'bqcResult', 'hafuResult']),
+      scoreResult: this.firstString(row, ['scoreResult', 'bfResult', 'score', 'fullScore', 'sectionsNo999']),
+      halfFullResult: this.firstString(row, ['halfFullResult', 'bqcResult', 'hafuResult', 'sectionsNo1']),
       raw: row,
     };
   }
@@ -147,9 +149,9 @@ export class SportteryClient {
 
   private mapResult(value?: string): string | undefined {
     if (!value) return undefined;
-    if (/^(3|胜|主胜|HOME_WIN)$/i.test(value)) return 'HOME_WIN';
-    if (/^(1|平|DRAW)$/i.test(value)) return 'DRAW';
-    if (/^(0|负|客胜|AWAY_WIN)$/i.test(value)) return 'AWAY_WIN';
+    if (/^(3|胜|主胜|H|HOME|HOME_WIN)$/i.test(value)) return 'HOME_WIN';
+    if (/^(1|平|D|DRAW)$/i.test(value)) return 'DRAW';
+    if (/^(0|负|客胜|A|AWAY|AWAY_WIN)$/i.test(value)) return 'AWAY_WIN';
     return value;
   }
 
