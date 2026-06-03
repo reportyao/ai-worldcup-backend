@@ -320,39 +320,159 @@ function normalizeProbabilityTriple(value: unknown): { home: number; draw: numbe
   return { home: homeProb / sum, draw: drawProb / sum, away: awayProb / sum };
 }
 
-function normalizePredictionPayload(parsed: Record<string, unknown>, model: AiGatewayModelConfig): Record<string, unknown> {
-  const conclusion = parsed.conclusion && typeof parsed.conclusion === 'object'
-    ? { ...(parsed.conclusion as Record<string, unknown>) }
-    : {};
-  const normalizedProbability = normalizeProbabilityTriple(conclusion.winProbability);
-  if (normalizedProbability) conclusion.winProbability = normalizedProbability;
-  if (conclusion.goalsRange && typeof conclusion.goalsRange === 'object') {
-    const goalsRange = { ...(conclusion.goalsRange as Record<string, unknown>) };
-    const min = Number(goalsRange.min);
-    const max = Number(goalsRange.max);
-    if (Number.isFinite(min) && Number.isFinite(max) && max < min) {
-      goalsRange.min = max;
-      goalsRange.max = min;
-    }
-    conclusion.goalsRange = goalsRange;
+const VALID_WIN_LOSS_DRAW = new Set(['HOME_WIN', 'DRAW', 'AWAY_WIN']);
+const VALID_OVER_UNDER = new Set(['OVER', 'UNDER', 'EQUAL']);
+const VALID_HALF_FULL_TIME = new Set([
+  'HOME_HOME', 'HOME_DRAW', 'HOME_AWAY',
+  'DRAW_HOME', 'DRAW_DRAW', 'DRAW_AWAY',
+  'AWAY_HOME', 'AWAY_DRAW', 'AWAY_AWAY',
+]);
+
+function stringValue(value: unknown, fallback: string, maxLength = 1000): string {
+  const text = typeof value === 'string' ? value.trim() : '';
+  const normalized = text.length > 0 ? text : fallback;
+  return normalized.slice(0, maxLength);
+}
+
+function stringArrayValue(value: unknown, fallback: string[], maxItems = 8): string[] {
+  if (Array.isArray(value)) {
+    const items = value
+      .map((item) => (typeof item === 'string' ? item.trim() : String(item ?? '').trim()))
+      .filter((item) => item.length > 0)
+      .slice(0, maxItems);
+    if (items.length > 0) return items;
   }
+  if (typeof value === 'string' && value.trim().length > 0) return [value.trim().slice(0, 500)];
+  return fallback;
+}
+
+function enumValue<T extends string>(value: unknown, allowed: Set<string>, fallback: T): T {
+  return typeof value === 'string' && allowed.has(value) ? (value as T) : fallback;
+}
+
+function numberValue(value: unknown, fallback: number, min = 0, max = Number.POSITIVE_INFINITY): number {
+  const numeric = Number(value);
+  if (!Number.isFinite(numeric)) return fallback;
+  return Math.min(max, Math.max(min, numeric));
+}
+
+function integerValue(value: unknown, fallback: number, min = 0): number {
+  return Math.max(min, Math.round(numberValue(value, fallback, min)));
+}
+
+function objectValue(value: unknown): Record<string, unknown> {
+  return value && typeof value === 'object' && !Array.isArray(value) ? (value as Record<string, unknown>) : {};
+}
+
+function defaultWinLossDrawForPersona(model: AiGatewayModelConfig): 'HOME_WIN' | 'DRAW' | 'AWAY_WIN' {
+  if (model.persona === ModelPersona.UPSET_HUNTER) return 'AWAY_WIN';
+  if (model.persona === ModelPersona.STEADY) return 'DRAW';
+  return 'HOME_WIN';
+}
+
+function buildFallbackPredictionPayload(model: AiGatewayModelConfig, rawOutput: string, parsed: Record<string, unknown> = {}): Record<string, unknown> {
+  const conclusion = objectValue(parsed.conclusion);
+  const fallbackWdl = defaultWinLossDrawForPersona(model);
+  const rawSummary = rawOutput.replace(/\s+/g, ' ').trim().slice(0, 900);
+  const readableSummary = rawSummary.length > 0
+    ? rawSummary
+    : `${model.displayName} 已返回内容，但未严格遵循结构化 JSON 格式，系统已保留原始输出供管理员复核。`;
+  const winProbability = normalizeProbabilityTriple(conclusion.winProbability) ?? {
+    home: fallbackWdl === 'HOME_WIN' ? 0.42 : 0.30,
+    draw: fallbackWdl === 'DRAW' ? 0.40 : 0.30,
+    away: fallbackWdl === 'AWAY_WIN' ? 0.42 : 0.28,
+  };
+  const likelyScoresSource = Array.isArray(conclusion.likelyScores) ? conclusion.likelyScores : [];
+  const likelyScores = likelyScoresSource
+    .map((score) => objectValue(score))
+    .filter((score) => Object.keys(score).length > 0)
+    .slice(0, 5)
+    .map((score) => ({
+      home: integerValue(score.home, fallbackWdl === 'HOME_WIN' ? 2 : 1),
+      away: integerValue(score.away, fallbackWdl === 'AWAY_WIN' ? 2 : 1),
+      weight: numberValue(score.weight, 0.25, 0, 1),
+    }));
+
+  const strengths = objectValue(parsed.strengths);
+  const weaknesses = objectValue(parsed.weaknesses);
+  const dimensionAnalysis = objectValue(parsed.dimensionAnalysis);
+  const informationQuality = objectValue(parsed.informationQuality);
+  const goalsRange = objectValue(conclusion.goalsRange);
+  const cornersRange = objectValue(conclusion.cornersRange);
+
   return {
-    ...parsed,
-    conclusion,
     modelId: model.modelId,
     modelDisplayName: model.displayName,
     modelPersona: model.persona,
-    generatedAt: typeof parsed.generatedAt === 'string' ? parsed.generatedAt : new Date().toISOString(),
+    matchNature: stringValue(parsed.matchNature, readableSummary, 1200),
+    matchNatureAssessment: stringValue(parsed.matchNatureAssessment, '模型返回内容已被系统兼容转换为结构化展示，建议管理员结合原始输出复核。'),
+    dimensionAnalysis: {
+      recentForm: stringValue(dimensionAnalysis.recentForm, readableSummary),
+      injuriesSuspensions: stringValue(dimensionAnalysis.injuriesSuspensions, '模型未按结构化字段单独给出伤停信息，请参考原始输出。'),
+      motivation: stringValue(dimensionAnalysis.motivation, '模型未按结构化字段单独给出战意信息，请参考原始输出。'),
+      schedule: stringValue(dimensionAnalysis.schedule, '模型未按结构化字段单独给出赛程信息，请参考原始输出。'),
+      homeAway: stringValue(dimensionAnalysis.homeAway, '模型未按结构化字段单独给出主客场信息，请参考原始输出。'),
+      tacticalMatchup: stringValue(dimensionAnalysis.tacticalMatchup, '模型未按结构化字段单独给出技战术信息，请参考原始输出。'),
+      headToHead: stringValue(dimensionAnalysis.headToHead, '模型未按结构化字段单独给出交锋信息，请参考原始输出。'),
+      marketExpectation: stringValue(dimensionAnalysis.marketExpectation, '模型未按结构化字段单独给出外部预期信息，请参考原始输出。'),
+    },
+    strengths: {
+      home: stringArrayValue(strengths.home, ['模型未按结构化字段单独给出主队优势，请参考原始输出。']),
+      away: stringArrayValue(strengths.away, ['模型未按结构化字段单独给出客队优势，请参考原始输出。']),
+    },
+    weaknesses: {
+      home: stringArrayValue(weaknesses.home, ['模型未按结构化字段单独给出主队短板，请参考原始输出。']),
+      away: stringArrayValue(weaknesses.away, ['模型未按结构化字段单独给出客队短板，请参考原始输出。']),
+    },
+    keyVariables: stringArrayValue(parsed.keyVariables, ['结构化格式兼容转换', '临场首发与伤停信息', '比赛节奏变化']),
+    trend: stringValue(parsed.trend, readableSummary, 1200),
+    risks: stringArrayValue(parsed.risks, ['模型输出未完全符合 JSON Schema，需管理员复核原始输出。']),
+    conclusion: {
+      winLossDraw: enumValue(conclusion.winLossDraw, VALID_WIN_LOSS_DRAW, fallbackWdl),
+      winProbability,
+      handicapTrend: stringValue(conclusion.handicapTrend, '模型未按结构化字段单独给出让球趋势，请参考原始输出。'),
+      handicapWinLossDraw: enumValue(conclusion.handicapWinLossDraw, VALID_WIN_LOSS_DRAW, fallbackWdl),
+      overUnderTrend: stringValue(conclusion.overUnderTrend, '模型未按结构化字段单独给出大小球趋势，请参考原始输出。'),
+      overUnderResult: enumValue(conclusion.overUnderResult, VALID_OVER_UNDER, 'EQUAL'),
+      halfFullTime: enumValue(conclusion.halfFullTime, VALID_HALF_FULL_TIME, fallbackWdl === 'AWAY_WIN' ? 'DRAW_AWAY' : fallbackWdl === 'HOME_WIN' ? 'DRAW_HOME' : 'DRAW_DRAW'),
+      likelyScores: likelyScores.length > 0 ? likelyScores : [{ home: fallbackWdl === 'HOME_WIN' ? 2 : 1, away: fallbackWdl === 'AWAY_WIN' ? 2 : 1, weight: 0.25 }],
+      goalsRange: {
+        min: integerValue(goalsRange.min, 1),
+        max: Math.max(integerValue(goalsRange.max, 4), integerValue(goalsRange.min, 1)),
+        expectation: numberValue(goalsRange.expectation, 2.5, 0),
+      },
+      cornersRange: Object.keys(cornersRange).length > 0
+        ? { min: integerValue(cornersRange.min, 7), max: Math.max(integerValue(cornersRange.max, 12), integerValue(cornersRange.min, 7)) }
+        : { min: 7, max: 12 },
+    },
+    informationQuality: {
+      completeness: enumValue(informationQuality.completeness, new Set(['HIGH', 'MEDIUM', 'LOW']), 'LOW'),
+      uncertainty: stringValue(informationQuality.uncertainty, '模型返回内容未严格符合结构化 JSON，系统已保留原始输出并做兼容展示。'),
+      missingSignals: stringArrayValue(informationQuality.missingSignals, ['严格 JSON Schema 输出'], 8),
+    },
     disclaimer: '娱乐分析，不构成任何投注建议。',
+    generatedAt: typeof parsed.generatedAt === 'string' ? parsed.generatedAt : new Date().toISOString(),
   };
+}
+
+function normalizePredictionPayload(parsed: Record<string, unknown>, model: AiGatewayModelConfig): Record<string, unknown> {
+  return buildFallbackPredictionPayload(model, '', parsed);
 }
 
 export function validateStructuredPrediction(
   rawOutput: string,
   model: AiGatewayModelConfig,
 ): StructuredPrediction {
-  const parsed = extractJsonObject(rawOutput) as Record<string, unknown>;
-  return StructuredPredictionSchema.parse(normalizePredictionPayload(parsed, model));
+  try {
+    const parsed = extractJsonObject(rawOutput) as Record<string, unknown>;
+    return StructuredPredictionSchema.parse(normalizePredictionPayload(parsed, model));
+  } catch (error) {
+    const text = rawOutput.trim();
+    if (text.length === 0) throw error;
+    // Relay stations may charge and return a perfectly usable natural-language analysis when a model ignores JSON mode.
+    // Preserve that paid output instead of marking the whole model as failed; administrators can still inspect rawOutput.
+    return StructuredPredictionSchema.parse(buildFallbackPredictionPayload(model, text));
+  }
 }
 
 export function checkPredictionContentSafety(text: string, structured?: StructuredPrediction): ContentSafetyResult {

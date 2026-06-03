@@ -1,9 +1,9 @@
-import { ErrorCode } from '@ai-worldcup/shared';
+import { AUTO_TRIGGER_PREDICTION_VERSIONS, ErrorCode } from '@ai-worldcup/shared';
 import type { OnModuleDestroy } from '@nestjs/common';
 import { BadRequestException, Inject, Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { PredictionTaskStatus } from '@prisma/client';
-import type { PredictionTrigger, PredictionVersion } from '@prisma/client';
+import { PredictionTaskStatus, PredictionTrigger } from '@prisma/client';
+import type { PredictionVersion } from '@prisma/client';
 import { Queue } from 'bullmq';
 
 import { PrismaService } from '../../prisma/prisma.service.js';
@@ -20,6 +20,8 @@ export interface EnqueueScorecardOptions {
   matchId?: string;
   mode?: 'MATCH' | 'SCAN_FINISHED';
 }
+
+const T_MINUS_2H_MANUAL_WINDOW_MS = 2 * 60 * 60 * 1000;
 
 @Injectable()
 export class PredictionPipelineService implements OnModuleDestroy {
@@ -40,8 +42,26 @@ export class PredictionPipelineService implements OnModuleDestroy {
   }
 
   async enqueuePrediction(options: EnqueuePredictionOptions) {
+    if (options.trigger === PredictionTrigger.CRON && !AUTO_TRIGGER_PREDICTION_VERSIONS.includes(options.version)) {
+      throw new BadRequestException({
+        code: ErrorCode.VALIDATION_FAILED,
+        message: `Prediction version ${options.version} is not allowed for automatic trigger`,
+      });
+    }
+
     const match = await this.prisma.match.findUnique({ where: { id: options.matchId } });
     if (!match) throw new BadRequestException('Match not found');
+
+    if (options.trigger === PredictionTrigger.MANUAL && options.version === 'T_MINUS_2H') {
+      const msUntilKickoff = match.kickoffAt.getTime() - Date.now();
+      if (msUntilKickoff > T_MINUS_2H_MANUAL_WINDOW_MS || msUntilKickoff < 0) {
+        throw new BadRequestException({
+          code: ErrorCode.VALIDATION_FAILED,
+          message: '赛前2小时预测只能在比赛开始前2小时内由人工触发',
+          details: { kickoffAt: match.kickoffAt, msUntilKickoff },
+        });
+      }
+    }
 
     const existing = await this.prisma.predictionTask.findUnique({
       where: { matchId_version: { matchId: options.matchId, version: options.version } },

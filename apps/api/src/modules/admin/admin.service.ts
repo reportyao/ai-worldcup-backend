@@ -891,8 +891,12 @@ export class AdminService {
             match: {
               OR: [
                 { homeTeam: { name: { contains: query.keyword, mode: 'insensitive' } } },
+                { homeTeam: { nameZh: { contains: query.keyword } } },
+                { homeTeam: { shortName: { contains: query.keyword, mode: 'insensitive' } } },
                 { homeTeam: { code: { contains: query.keyword, mode: 'insensitive' } } },
                 { awayTeam: { name: { contains: query.keyword, mode: 'insensitive' } } },
+                { awayTeam: { nameZh: { contains: query.keyword } } },
+                { awayTeam: { shortName: { contains: query.keyword, mode: 'insensitive' } } },
                 { awayTeam: { code: { contains: query.keyword, mode: 'insensitive' } } },
               ],
             },

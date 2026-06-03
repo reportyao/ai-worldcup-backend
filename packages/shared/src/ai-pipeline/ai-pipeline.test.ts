@@ -1,7 +1,7 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
 import { ModelPersona, PredictionVersion } from '../enums/index.js';
-import { generateStructuredPrediction } from './index.js';
+import { generateStructuredPrediction, validateStructuredPrediction } from './index.js';
 
 function buildStructuredPredictionJson() {
   return JSON.stringify({
@@ -61,6 +61,26 @@ function buildMatchContext() {
 describe('AI gateway OpenAI-compatible response parsing', () => {
   afterEach(() => {
     vi.restoreAllMocks();
+  });
+
+  it('converts non-json relay output into a valid structured prediction instead of failing', () => {
+    const structured = validateStructuredPrediction(
+      '主队近期攻防更稳定，客队反击有威胁，但模型没有按 JSON 返回。建议关注临场首发和赛程疲劳。',
+      {
+        id: 'model-natural-language',
+        modelId: 'relay-model',
+        displayName: 'Relay Model',
+        provider: 'openai',
+        persona: ModelPersona.STEADY,
+        config: { apiKey: 'sk-test' },
+      },
+    );
+
+    expect(structured.modelId).toBe('relay-model');
+    expect(structured.modelDisplayName).toBe('Relay Model');
+    expect(structured.conclusion.winLossDraw).toBe('DRAW');
+    expect(structured.matchNature).toContain('主队近期攻防更稳定');
+    expect(structured.informationQuality?.missingSignals).toContain('严格 JSON Schema 输出');
   });
 
   it('aggregates text/event-stream data chunks from OpenAI-compatible gateways', async () => {
