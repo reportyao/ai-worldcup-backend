@@ -1,4 +1,7 @@
-import 'dotenv/config';
+import * as dotenv from 'dotenv';
+import * as path from 'path';
+dotenv.config({ path: path.resolve(process.cwd(), '../../.env') });
+
 
 import { Job, Queue, Worker } from 'bullmq';
 import { Redis } from 'ioredis';
@@ -15,6 +18,11 @@ import { logger } from './logger.js';
 import { QueueName } from './queues.js';
 
 function normalizeEnvironment(env: NodeJS.ProcessEnv): void {
+  // Ensure AI_GATEWAY_TIMEOUT_MS is set, default to 60000 if not present
+  if (!env.AI_GATEWAY_TIMEOUT_MS) {
+    env.AI_GATEWAY_TIMEOUT_MS = '60000';
+  }
+
   const aliases: Array<[canonical: string, legacy: string]> = [
     ['WECHAT_MP_APPID', 'WECHAT_APP_ID'],
     ['WECHAT_MP_SECRET', 'WECHAT_APP_SECRET'],
