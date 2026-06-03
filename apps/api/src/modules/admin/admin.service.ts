@@ -886,6 +886,18 @@ export class AdminService {
       ...(query.version ? { version: query.version as PredictionVersion } : {}),
       ...(query.status ? { status: query.status as PredictionTaskStatus } : {}),
       ...(query.trigger ? { trigger: query.trigger as PredictionTrigger } : {}),
+      ...(query.keyword
+        ? {
+            match: {
+              OR: [
+                { homeTeam: { name: { contains: query.keyword, mode: 'insensitive' } } },
+                { homeTeam: { code: { contains: query.keyword, mode: 'insensitive' } } },
+                { awayTeam: { name: { contains: query.keyword, mode: 'insensitive' } } },
+                { awayTeam: { code: { contains: query.keyword, mode: 'insensitive' } } },
+              ],
+            },
+          }
+        : {}),
     };
     const [items, total] = await this.prisma.$transaction([
       this.prisma.predictionTask.findMany({

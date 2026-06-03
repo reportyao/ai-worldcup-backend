@@ -205,6 +205,7 @@ export type AdminAiModelReorderDto = z.infer<typeof AdminAiModelReorderSchema>;
 
 export const AdminPredictionTaskQuerySchema = PaginationQuerySchema.extend({
   matchId: z.string().trim().optional(),
+  keyword: z.string().trim().optional(),
   version: z.enum(ALL_PREDICTION_VERSIONS as [string, ...string[]]).optional(),
   status: z
     .enum(['PENDING', 'RUNNING', 'PARTIAL_SUCCESS', 'SUCCEEDED', 'FAILED', 'REVIEWED', 'PUBLISHED'])
