@@ -1312,7 +1312,8 @@ export class AdminService {
     };
 
     const job = await queue.add('sporttery-manual-trigger', jobData, {
-      jobId: `sporttery-manual-trigger:${Date.now()}`,
+      // BullMQ does not allow ':' in custom jobId values; use a hyphenated ID to avoid 500 errors on manual triggers.
+      jobId: `sporttery-manual-trigger-${Date.now()}`,
       attempts: 3,
       backoff: { type: 'exponential', delay: 30_000 },
       removeOnComplete: 50,
