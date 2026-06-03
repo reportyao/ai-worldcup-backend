@@ -41,14 +41,120 @@ export class SportteryClient {
         const text = await response.text();
         const payload = this.parseJson(text);
         const items = this.extractRows(payload).map((row) => this.normalizeMatch(row, saleDate)).filter((item): item is SportteryFootballMatch => Boolean(item));
-        if (items.length > 0) return items;
+        const fallbackItems = await this.fetchTrade500SellingMatches(saleDate);
+        const merged = this.mergeMatches([...items, ...fallbackItems]);
+        if (merged.length > 0) return merged;
         errors.push(`empty ${url}`);
       } catch (error) {
         errors.push(`${error instanceof Error ? error.message : String(error)} ${url}`);
       }
     }
+    const fallbackItems = await this.fetchTrade500SellingMatches(saleDate);
+    if (fallbackItems.length > 0) return fallbackItems;
     this.logger.warn(`Sporttery sync returned no rows. ${errors.slice(0, 3).join('; ')}`);
     return [];
+  }
+
+  private async fetchTrade500SellingMatches(saleDate: string): Promise<SportteryFootballMatch[]> {
+    const enabled = (process.env.SPORTTERY_TRADE500_FALLBACK_ENABLED ?? 'true').toLowerCase() !== 'false';
+    if (!enabled) return [];
+    const url = process.env.SPORTTERY_TRADE500_JCZQ_URL ?? 'https://trade.500.com/jczq/';
+    try {
+      const response = await fetch(url, {
+        headers: {
+          accept: 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
+          referer: 'https://trade.500.com/jczq/',
+          'user-agent': 'Mozilla/5.0 AI-Worldcup-Sporttery-Sync/1.0',
+        },
+        signal: AbortSignal.timeout(Number(process.env.SPORTTERY_TIMEOUT_MS ?? 15_000)),
+      });
+      if (!response.ok) return [];
+      const html = this.decodeChineseHtml(Buffer.from(await response.arrayBuffer()));
+      return this.extractTrade500Rows(html, saleDate);
+    } catch (error) {
+      this.logger.warn(`Trade500 fallback failed: ${error instanceof Error ? error.message : String(error)}`);
+      return [];
+    }
+  }
+
+  private decodeChineseHtml(buffer: Buffer): string {
+    const utf8 = buffer.toString('utf8');
+    if (!/�/.test(utf8) && !/charset=(gb2312|gbk|gb18030)/i.test(utf8)) return utf8;
+    return new TextDecoder('gb18030').decode(buffer);
+  }
+
+  private extractTrade500Rows(html: string, saleDate: string): SportteryFootballMatch[] {
+    const rows: SportteryFootballMatch[] = [];
+    const rowRegex = /<tr\b([^>]*class=["'][^"']*bet-tb-tr[^"']*["'][^>]*)>([\s\S]*?)<\/tr>/gi;
+    let match: RegExpExecArray | null;
+    while ((match = rowRegex.exec(html))) {
+      const attrs = this.parseHtmlAttributes(match[1]);
+      const processDate = attrs['data-processdate'] ?? attrs['data-saledate'] ?? saleDate;
+      if (processDate !== saleDate) continue;
+      if (attrs['data-isend'] === '1') continue;
+      const matchNo = attrs['data-matchnum'];
+      const homeTeamName = attrs['data-homesxname'];
+      const awayTeamName = attrs['data-awaysxname'];
+      if (!matchNo || !homeTeamName || !awayTeamName) continue;
+      const kickoffAt = attrs['data-matchdate'] && attrs['data-matchtime'] ? this.normalizeDateTimeWithCst(attrs['data-matchdate'], attrs['data-matchtime']) : undefined;
+      rows.push({
+        saleDate: processDate,
+        matchNo,
+        issueNo: attrs['data-processid'] ?? attrs['data-id'],
+        leagueName: attrs['data-simpleleague'],
+        homeTeamName,
+        awayTeamName,
+        kickoffAt,
+        status: 'SCHEDULED',
+        handicapLine: this.parseFiniteNumber(attrs['data-rangqiu']),
+        raw: { source: 'trade500', attrs, rowText: this.stripHtml(match[2]) },
+      });
+    }
+    return rows;
+  }
+
+  private parseHtmlAttributes(input: string): Record<string, string> {
+    const attrs: Record<string, string> = {};
+    const attrRegex = /([A-Za-z0-9_-]+)\s*=\s*("([^"]*)"|'([^']*)')/g;
+    let match: RegExpExecArray | null;
+    while ((match = attrRegex.exec(input))) attrs[match[1].toLowerCase()] = this.decodeHtmlEntities(match[3] ?? match[4] ?? '');
+    return attrs;
+  }
+
+  private decodeHtmlEntities(value: string): string {
+    return value.replace(/&quot;/g, '"').replace(/&#39;/g, "'").replace(/&amp;/g, '&').replace(/&lt;/g, '<').replace(/&gt;/g, '>').trim();
+  }
+
+  private stripHtml(value: string): string {
+    return this.decodeHtmlEntities(value.replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' '));
+  }
+
+  private normalizeDateTimeWithCst(datePart: string, timePart: string): string | undefined {
+    const normalizedTime = /^\d{1}:/.test(timePart) ? `0${timePart}` : timePart;
+    const withSeconds = /^\d{2}:\d{2}$/.test(normalizedTime) ? `${normalizedTime}:00` : normalizedTime;
+    const date = new Date(`${datePart}T${withSeconds}+08:00`);
+    return Number.isNaN(date.getTime()) ? undefined : date.toISOString();
+  }
+
+  private parseFiniteNumber(value?: string): number | undefined {
+    if (value === undefined || value === null || value === '') return undefined;
+    const parsed = Number(value);
+    return Number.isFinite(parsed) ? parsed : undefined;
+  }
+
+  private mergeMatches(items: SportteryFootballMatch[]): SportteryFootballMatch[] {
+    const merged = new Map<string, SportteryFootballMatch>();
+    for (const item of items) {
+      const key = `${item.saleDate}:${item.matchNo}`;
+      const existing = merged.get(key);
+      if (!existing) {
+        merged.set(key, item);
+        continue;
+      }
+      const preferNew = (!existing.kickoffAt && Boolean(item.kickoffAt)) || (!existing.scoreResult && Boolean(item.scoreResult));
+      merged.set(key, preferNew ? { ...existing, ...item } : { ...item, ...existing });
+    }
+    return [...merged.values()];
   }
 
   private buildCandidateUrls(saleDate: string): string[] {

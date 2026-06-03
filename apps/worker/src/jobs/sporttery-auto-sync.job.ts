@@ -101,10 +101,28 @@ interface SportteryRawMatch {
   overUnderResult?: string;
   scoreResult?: string;
   halfFullResult?: string;
+  source?: 'sporttery' | 'trade500';
   raw: Record<string, unknown>;
 }
 
 async function fetchSportteryMatches(saleDate: string): Promise<SportteryRawMatch[]> {
+  const officialItems = await fetchOfficialSportteryMatches(saleDate);
+  const trade500Items = await fetchTrade500SellingMatches(saleDate);
+  const merged = mergeSportteryMatches([...officialItems, ...trade500Items]);
+
+  if (merged.length === 0) {
+    logger.warn({ saleDate }, 'sporttery-auto-sync: no data returned from official endpoints or trade500 fallback');
+  } else if (trade500Items.length > 0) {
+    logger.info(
+      { saleDate, officialCount: officialItems.length, trade500Count: trade500Items.length, mergedCount: merged.length },
+      'sporttery-auto-sync: merged official data with trade500 selling fixtures fallback',
+    );
+  }
+
+  return merged;
+}
+
+async function fetchOfficialSportteryMatches(saleDate: string): Promise<SportteryRawMatch[]> {
   const configuredUrl = process.env.SPORTTERY_FOOTBALL_JC_URL;
   const encoded = encodeURIComponent(saleDate);
 
@@ -140,7 +158,7 @@ async function fetchSportteryMatches(saleDate: string): Promise<SportteryRawMatc
       const payload = parseJson(text);
       const rows = extractRows(payload);
       const items = rows
-        .map((row) => normalizeMatch(row, saleDate))
+        .map((row) => normalizeMatch(row, saleDate, 'sporttery'))
         .filter((item): item is SportteryRawMatch => Boolean(item));
 
       if (items.length > 0) return items;
@@ -150,8 +168,137 @@ async function fetchSportteryMatches(saleDate: string): Promise<SportteryRawMatc
     }
   }
 
-  logger.warn({ saleDate, errors: errors.slice(0, 3) }, 'sporttery-auto-sync: no data returned');
+  logger.warn({ saleDate, errors: errors.slice(0, 3) }, 'sporttery-auto-sync: official endpoints returned no data');
   return [];
+}
+
+async function fetchTrade500SellingMatches(saleDate: string): Promise<SportteryRawMatch[]> {
+  const enabled = (process.env.SPORTTERY_TRADE500_FALLBACK_ENABLED ?? 'true').toLowerCase() !== 'false';
+  if (!enabled) return [];
+
+  const configuredUrl = process.env.SPORTTERY_TRADE500_JCZQ_URL ?? 'https://trade.500.com/jczq/';
+  try {
+    const response = await fetch(configuredUrl, {
+      headers: {
+        accept: 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
+        referer: 'https://trade.500.com/jczq/',
+        'user-agent': 'Mozilla/5.0 AI-Worldcup-Sporttery-AutoSync/1.0',
+      },
+      signal: AbortSignal.timeout(Number(process.env.SPORTTERY_TIMEOUT_MS ?? 15_000)),
+    });
+
+    if (!response.ok) {
+      logger.warn({ saleDate, status: response.status }, 'sporttery-auto-sync: trade500 fallback request failed');
+      return [];
+    }
+
+    const html = decodeChineseHtml(Buffer.from(await response.arrayBuffer()));
+    return extractTrade500Rows(html, saleDate);
+  } catch (error) {
+    logger.warn({ saleDate, error: error instanceof Error ? error.message : String(error) }, 'sporttery-auto-sync: trade500 fallback failed');
+    return [];
+  }
+}
+
+function decodeChineseHtml(buffer: Buffer): string {
+  const utf8 = buffer.toString('utf8');
+  if (!/�/.test(utf8) && !/charset=(gb2312|gbk|gb18030)/i.test(utf8)) return utf8;
+  return new TextDecoder('gb18030').decode(buffer);
+}
+
+function extractTrade500Rows(html: string, saleDate: string): SportteryRawMatch[] {
+  const rows: SportteryRawMatch[] = [];
+  const rowRegex = /<tr\b([^>]*class=["'][^"']*bet-tb-tr[^"']*["'][^>]*)>([\s\S]*?)<\/tr>/gi;
+  let match: RegExpExecArray | null;
+
+  while ((match = rowRegex.exec(html))) {
+    const attrs = parseHtmlAttributes(match[1]);
+    const processDate = attrs['data-processdate'] ?? attrs['data-saledate'] ?? saleDate;
+    if (processDate !== saleDate) continue;
+    if (attrs['data-isend'] === '1') continue;
+
+    const matchNo = attrs['data-matchnum'];
+    const homeTeamName = attrs['data-homesxname'];
+    const awayTeamName = attrs['data-awaysxname'];
+    if (!matchNo || !homeTeamName || !awayTeamName) continue;
+
+    const matchDate = attrs['data-matchdate'];
+    const matchTime = attrs['data-matchtime'];
+    const kickoffAt = matchDate && matchTime ? normalizeDateTimeWithCst(matchDate, matchTime) : undefined;
+    const handicapLine = parseFiniteNumber(attrs['data-rangqiu']);
+
+    rows.push({
+      saleDate: processDate,
+      matchNo,
+      issueNo: attrs['data-processid'] ?? attrs['data-id'] ?? undefined,
+      leagueName: attrs['data-simpleleague'] ?? undefined,
+      homeTeamName,
+      awayTeamName,
+      kickoffAt,
+      status: 'SCHEDULED',
+      handicapLine,
+      source: 'trade500',
+      raw: {
+        source: 'trade500',
+        attrs,
+        rowText: stripHtml(match[2]),
+      },
+    });
+  }
+
+  return rows;
+}
+
+function parseHtmlAttributes(input: string): Record<string, string> {
+  const attrs: Record<string, string> = {};
+  const attrRegex = /([A-Za-z0-9_-]+)\s*=\s*("([^"]*)"|'([^']*)')/g;
+  let match: RegExpExecArray | null;
+  while ((match = attrRegex.exec(input))) {
+    attrs[match[1].toLowerCase()] = decodeHtmlEntities(match[3] ?? match[4] ?? '');
+  }
+  return attrs;
+}
+
+function decodeHtmlEntities(value: string): string {
+  return value
+    .replace(/&quot;/g, '"')
+    .replace(/&#39;/g, "'")
+    .replace(/&amp;/g, '&')
+    .replace(/&lt;/g, '<')
+    .replace(/&gt;/g, '>')
+    .trim();
+}
+
+function stripHtml(value: string): string {
+  return decodeHtmlEntities(value.replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' '));
+}
+
+function normalizeDateTimeWithCst(datePart: string, timePart: string): string | undefined {
+  const normalizedTime = /^\d{1}:/.test(timePart) ? `0${timePart}` : timePart;
+  const withSeconds = /^\d{2}:\d{2}$/.test(normalizedTime) ? `${normalizedTime}:00` : normalizedTime;
+  const date = new Date(`${datePart}T${withSeconds}+08:00`);
+  return Number.isNaN(date.getTime()) ? undefined : date.toISOString();
+}
+
+function parseFiniteNumber(value?: string): number | undefined {
+  if (value === undefined || value === null || value === '') return undefined;
+  const parsed = Number(value);
+  return Number.isFinite(parsed) ? parsed : undefined;
+}
+
+function mergeSportteryMatches(items: SportteryRawMatch[]): SportteryRawMatch[] {
+  const merged = new Map<string, SportteryRawMatch>();
+  for (const item of items) {
+    const key = `${item.saleDate}:${item.matchNo}`;
+    const existing = merged.get(key);
+    if (!existing) {
+      merged.set(key, item);
+      continue;
+    }
+    const preferNew = !existing.kickoffAt && Boolean(item.kickoffAt) || (!existing.scoreResult && Boolean(item.scoreResult));
+    merged.set(key, preferNew ? { ...existing, ...item, raw: { official: existing.raw, fallback: item.raw } } : { ...item, ...existing, raw: { official: existing.raw, fallback: item.raw } });
+  }
+  return [...merged.values()];
 }
 
 function parseJson(text: string): Record<string, unknown> {
@@ -180,7 +327,7 @@ function unwrapRows(value: unknown): Array<Record<string, unknown>> {
   return [];
 }
 
-function normalizeMatch(row: Record<string, unknown>, fallbackDate: string): SportteryRawMatch | null {
+function normalizeMatch(row: Record<string, unknown>, fallbackDate: string, source: 'sporttery' | 'trade500' = 'sporttery'): SportteryRawMatch | null {
   const saleDate = firstString(row, ['saleDate', 'matchDate', 'businessDate', 'date']) ?? fallbackDate;
   const matchNo = firstString(row, ['matchNumStr', 'matchNo', 'matchNum', 'num', 'serialNo', 'matchCode']);
   const homeTeamName = firstString(row, ['homeTeamAbbName', 'homeTeamName', 'homeName', 'hostName', 'allHomeTeam', 'homeTeam', 'home']);
@@ -203,6 +350,7 @@ function normalizeMatch(row: Record<string, unknown>, fallbackDate: string): Spo
     overUnderResult: mapOverUnder(firstString(row, ['overUnderResult', 'bigSmallResult', 'ouResult'])),
     scoreResult: firstString(row, ['scoreResult', 'bfResult', 'score', 'fullScore', 'sectionsNo999']),
     halfFullResult: firstString(row, ['halfFullResult', 'bqcResult', 'hafuResult', 'sectionsNo1']),
+    source,
     raw: row,
   };
 }
@@ -637,8 +785,8 @@ async function upsertSportteryMatchAndTrigger(
   }
 
   // 自动触发逻辑
-  // 1. 新增比赛且未开赛 -> 入队AI预测
-  if (!existing && matchStatus === MatchStatus.SCHEDULED && enqueuePredictions) {
+  // 1. 未开赛且允许预测 -> 入队 AI 预测；enqueuePredictionForMatch 内部会跳过已有任务，便于补偿同步。
+  if (matchStatus === MatchStatus.SCHEDULED && enqueuePredictions) {
     await enqueuePredictionForMatch(match.id, summary);
   }
 
@@ -726,7 +874,7 @@ async function enqueuePredictionForMatch(matchId: string, summary: SportteryAuto
         rerun: false,
       },
       {
-        jobId: `sporttery-auto:prediction:${matchId}:${PredictionVersion.T_MINUS_24H}`,
+        jobId: `sporttery-auto-prediction-${matchId}-${PredictionVersion.T_MINUS_24H}`,
         attempts: 3,
         backoff: { type: 'exponential', delay: 30_000 },
         removeOnComplete: 200,
@@ -747,7 +895,7 @@ async function triggerPostMatchPipeline(matchId: string, summary: SportteryAutoS
       'update-scorecard',
       { matchId, trigger: 'CRON', mode: 'MATCH' },
       {
-        jobId: `sporttery-auto:scorecard:${matchId}`,
+        jobId: `sporttery-auto-scorecard-${matchId}`,
         attempts: 3,
         backoff: { type: 'exponential', delay: 30_000 },
         removeOnComplete: 100,
@@ -761,7 +909,7 @@ async function triggerPostMatchPipeline(matchId: string, summary: SportteryAutoS
       'generate-review',
       { matchId, trigger: 'CRON' },
       {
-        jobId: `sporttery-auto:review:${matchId}`,
+        jobId: `sporttery-auto-review-${matchId}`,
         attempts: 3,
         backoff: { type: 'exponential', delay: 60_000 },
         removeOnComplete: 100,

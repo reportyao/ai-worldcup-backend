@@ -1367,7 +1367,7 @@ export class AdminService {
       this.prisma.sportteryMatchMarket.findMany({
         where: {
           OR: [
-            { saleDate: todayStr },
+            { saleDate: todayStr, scoreResult: null },
             { kickoffAt: { gte: todayStartCst, lt: todayEndCst } },
           ],
         },
@@ -1479,14 +1479,14 @@ export class AdminService {
           where: { provider: 'sporttery' },
           orderBy: { startedAt: 'desc' },
         }),
-        this.prisma.sportteryMatchMarket.count({ where: { saleDate: todayStr } }),
+        this.prisma.sportteryMatchMarket.count({ where: { saleDate: todayStr, scoreResult: null } }),
         this.prisma.footballDataSyncLog.findMany({
           where: { provider: 'sporttery', startedAt: { gte: oneDayAgo } },
           orderBy: { startedAt: 'desc' },
           take: 20,
         }),
         this.prisma.sportteryMatchMarket.count({
-          where: { saleDate: todayStr, status: 'SCHEDULED' },
+          where: { saleDate: todayStr, scoreResult: null },
         }),
         this.prisma.sportteryMatchMarket.count({
           where: { saleDate: todayStr, scoreResult: { not: null } },
