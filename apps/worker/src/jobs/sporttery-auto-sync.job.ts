@@ -209,10 +209,17 @@ function normalizeMatch(row: Record<string, unknown>, fallbackDate: string): Spo
 
 function normalizeKickoff(row: Record<string, unknown>, saleDate: string): string | undefined {
   const combined = firstString(row, ['matchTime', 'startTime', 'kickoffAt', 'matchDateTime']);
-  if (combined && /\d{4}-\d{2}-\d{2}/.test(combined)) return new Date(combined.replace(/\//g, '-')).toISOString();
-  const time = firstString(row, ['matchTime', 'startTime', 'time']) ?? '00:00:00';
-  const normalizedTime = /^\d{2}:\d{2}$/.test(time) ? `${time}:00` : time;
-  const date = new Date(`${saleDate}T${normalizedTime}+08:00`);
+  if (combined && /\d{4}[-/]\d{2}[-/]\d{2}[ T]\d{1,2}:\d{2}/.test(combined)) {
+    const date = new Date(combined.replace(/\//g, '-'));
+    return Number.isNaN(date.getTime()) ? undefined : date.toISOString();
+  }
+
+  const time = firstString(row, ['startTime', 'time']);
+  if (!time || !/^\d{1,2}:\d{2}(:\d{2})?$/.test(time)) return undefined;
+
+  const normalizedTime = /^\d{1}:/.test(time) ? `0${time}` : time;
+  const withSeconds = /^\d{2}:\d{2}$/.test(normalizedTime) ? `${normalizedTime}:00` : normalizedTime;
+  const date = new Date(`${saleDate}T${withSeconds}+08:00`);
   return Number.isNaN(date.getTime()) ? undefined : date.toISOString();
 }
 
@@ -480,9 +487,55 @@ async function upsertSportteryMatchAndTrigger(
 ): Promise<void> {
   const externalId = `sporttery:football:${item.saleDate}:${item.matchNo}`;
   const kickoffAt = item.kickoffAt ? new Date(item.kickoffAt) : null;
+  const existingMarket = await prisma.sportteryMatchMarket.findUnique({
+    where: { provider_saleDate_matchNo: { provider: 'sporttery', saleDate: item.saleDate, matchNo: item.matchNo } },
+  });
 
   if (!kickoffAt || Number.isNaN(kickoffAt.getTime())) {
+    await prisma.sportteryMatchMarket.upsert({
+      where: { provider_saleDate_matchNo: { provider: 'sporttery', saleDate: item.saleDate, matchNo: item.matchNo } },
+      update: {
+        matchId: null,
+        issueNo: item.issueNo ?? null,
+        leagueName: item.leagueName ?? null,
+        homeTeamName: item.homeTeamName,
+        awayTeamName: item.awayTeamName,
+        kickoffAt: null,
+        status: item.status ?? 'SCHEDULED',
+        handicapLine: item.handicapLine ?? null,
+        overUnderLine: item.overUnderLine ?? null,
+        winDrawLoss: item.winDrawLoss ?? null,
+        handicapResult: item.handicapResult ?? null,
+        overUnderResult: item.overUnderResult ?? null,
+        scoreResult: item.scoreResult ?? null,
+        halfFullResult: item.halfFullResult ?? null,
+        rawJson: toPrismaJson(item.raw),
+        syncedAt: new Date(),
+      },
+      create: {
+        provider: 'sporttery',
+        saleDate: item.saleDate,
+        matchNo: item.matchNo,
+        matchId: null,
+        issueNo: item.issueNo ?? null,
+        leagueName: item.leagueName ?? null,
+        homeTeamName: item.homeTeamName,
+        awayTeamName: item.awayTeamName,
+        kickoffAt: null,
+        status: item.status ?? 'SCHEDULED',
+        handicapLine: item.handicapLine ?? null,
+        overUnderLine: item.overUnderLine ?? null,
+        winDrawLoss: item.winDrawLoss ?? null,
+        handicapResult: item.handicapResult ?? null,
+        overUnderResult: item.overUnderResult ?? null,
+        scoreResult: item.scoreResult ?? null,
+        halfFullResult: item.halfFullResult ?? null,
+        rawJson: toPrismaJson(item.raw),
+      },
+    });
     summary.matchesSkipped += 1;
+    if (existingMarket) summary.matchesUpdated += 1;
+    else summary.matchesCreated += 1;
     return;
   }
 
@@ -535,10 +588,6 @@ async function upsertSportteryMatchAndTrigger(
   });
 
   // Upsert SportteryMatchMarket
-  const existingMarket = await prisma.sportteryMatchMarket.findUnique({
-    where: { provider_saleDate_matchNo: { provider: 'sporttery', saleDate: item.saleDate, matchNo: item.matchNo } },
-  });
-
   await prisma.sportteryMatchMarket.upsert({
     where: { provider_saleDate_matchNo: { provider: 'sporttery', saleDate: item.saleDate, matchNo: item.matchNo } },
     update: {

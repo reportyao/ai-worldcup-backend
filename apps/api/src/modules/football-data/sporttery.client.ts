@@ -122,10 +122,17 @@ export class SportteryClient {
 
   private normalizeKickoff(row: Record<string, unknown>, saleDate: string): string | undefined {
     const combined = this.firstString(row, ['matchTime', 'startTime', 'kickoffAt', 'matchDateTime']);
-    if (combined && /\d{4}-\d{2}-\d{2}/.test(combined)) return new Date(combined.replace(/\//g, '-')).toISOString();
-    const time = this.firstString(row, ['matchTime', 'startTime', 'time']) ?? '00:00:00';
-    const normalizedTime = /^\d{2}:\d{2}$/.test(time) ? `${time}:00` : time;
-    const date = new Date(`${saleDate}T${normalizedTime}+08:00`);
+    if (combined && /\d{4}[-/]\d{2}[-/]\d{2}[ T]\d{1,2}:\d{2}/.test(combined)) {
+      const date = new Date(combined.replace(/\//g, '-'));
+      return Number.isNaN(date.getTime()) ? undefined : date.toISOString();
+    }
+
+    const time = this.firstString(row, ['startTime', 'time']);
+    if (!time || !/^\d{1,2}:\d{2}(:\d{2})?$/.test(time)) return undefined;
+
+    const normalizedTime = /^\d{1}:/.test(time) ? `0${time}` : time;
+    const withSeconds = /^\d{2}:\d{2}$/.test(normalizedTime) ? `${normalizedTime}:00` : normalizedTime;
+    const date = new Date(`${saleDate}T${withSeconds}+08:00`);
     return Number.isNaN(date.getTime()) ? undefined : date.toISOString();
   }
 

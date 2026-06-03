@@ -176,9 +176,55 @@ export class FootballDataSyncService {
     const externalId = `sporttery:football:${item.saleDate}:${item.matchNo}`;
     const kickoffAt = item.kickoffAt ? new Date(item.kickoffAt) : null;
     if (!kickoffAt || Number.isNaN(kickoffAt.getTime())) {
+      if (!options.dryRun) {
+        const existingMarket = await this.prisma.sportteryMatchMarket.findUnique({
+          where: { provider_saleDate_matchNo: { provider: 'sporttery', saleDate: item.saleDate, matchNo: item.matchNo } },
+        });
+        await this.prisma.sportteryMatchMarket.upsert({
+          where: { provider_saleDate_matchNo: { provider: 'sporttery', saleDate: item.saleDate, matchNo: item.matchNo } },
+          update: {
+            matchId: null,
+            issueNo: item.issueNo ?? null,
+            leagueName: item.leagueName ?? null,
+            homeTeamName: item.homeTeamName,
+            awayTeamName: item.awayTeamName,
+            kickoffAt: null,
+            status: item.status ?? 'SCHEDULED',
+            handicapLine: item.handicapLine ?? null,
+            overUnderLine: item.overUnderLine ?? null,
+            winDrawLoss: item.winDrawLoss ?? null,
+            handicapResult: item.handicapResult ?? null,
+            overUnderResult: item.overUnderResult ?? null,
+            scoreResult: item.scoreResult ?? null,
+            halfFullResult: item.halfFullResult ?? null,
+            rawJson: this.toPrismaJson(item.raw),
+            syncedAt: new Date(),
+          },
+          create: {
+            provider: 'sporttery',
+            saleDate: item.saleDate,
+            matchNo: item.matchNo,
+            matchId: null,
+            issueNo: item.issueNo ?? null,
+            leagueName: item.leagueName ?? null,
+            homeTeamName: item.homeTeamName,
+            awayTeamName: item.awayTeamName,
+            kickoffAt: null,
+            status: item.status ?? 'SCHEDULED',
+            handicapLine: item.handicapLine ?? null,
+            overUnderLine: item.overUnderLine ?? null,
+            winDrawLoss: item.winDrawLoss ?? null,
+            handicapResult: item.handicapResult ?? null,
+            overUnderResult: item.overUnderResult ?? null,
+            scoreResult: item.scoreResult ?? null,
+            halfFullResult: item.halfFullResult ?? null,
+            rawJson: this.toPrismaJson(item.raw),
+          },
+        });
+        if (existingMarket) summary.marketSnapshotsUpdated = (summary.marketSnapshotsUpdated ?? 0) + 1;
+        else summary.marketSnapshotsCreated = (summary.marketSnapshotsCreated ?? 0) + 1;
+      }
       summary.matchesSkipped += 1;
-      summary.errorCount += 1;
-      summary.errors.push({ externalId, message: 'Sporttery match is missing kickoff time' });
       return;
     }
 
