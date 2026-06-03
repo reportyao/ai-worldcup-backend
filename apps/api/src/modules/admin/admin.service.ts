@@ -1034,7 +1034,7 @@ export class AdminService {
     try {
       const result = await this.predictionPipeline.enqueuePrediction({
         matchId,
-        version: PredictionVersion.T_MINUS_24H,
+        version: PredictionVersion.T_MINUS_7H,
         trigger: PredictionTrigger.CRON,
         rerun: false,
       });

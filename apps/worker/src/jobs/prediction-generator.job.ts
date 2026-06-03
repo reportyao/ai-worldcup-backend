@@ -10,6 +10,7 @@ import {
   type HistoricalMatch,
   type MatchContext,
   type StructuredPrediction,
+  AUTO_PREDICTION_SCHEDULES,
 } from '@ai-worldcup/shared';
 import {
   PredictionTaskStatus,
@@ -67,10 +68,12 @@ type PredictionTaskResult =
   | { ok: true; mode: 'SCHEDULE_DUE'; enqueued: number }
   | { ok: true; mode: 'GENERATE'; taskId: string; successCount: number; failureCount: number };
 
-export const PREDICTION_SCHEDULES = [
-  { version: PredictionVersion.T_MINUS_24H, targetMs: 24 * 60 * 60 * 1000 },
-  { version: PredictionVersion.T_MINUS_2H, targetMs: 2 * 60 * 60 * 1000 },
-] as const;
+export const PREDICTION_SCHEDULES = AUTO_PREDICTION_SCHEDULES.map((schedule) => ({
+  version: schedule.version as PredictionVersion,
+  targetMs: schedule.targetMs,
+})) as Array<{ version: PredictionVersion; targetMs: number }>;
+
+const MANUAL_ONLY_PREDICTION_VERSIONS = new Set<PredictionVersion>([PredictionVersion.T_MINUS_2H]);
 
 function getRuntimeConfig() {
   return {
@@ -369,6 +372,9 @@ async function loadOrComputeFeature(match: Awaited<ReturnType<typeof loadMatchCo
 }
 
 async function generatePrediction(payload: z.infer<typeof DirectPredictionPayloadSchema>): Promise<PredictionTaskResult> {
+  if (payload.trigger === PredictionTrigger.CRON && MANUAL_ONLY_PREDICTION_VERSIONS.has(payload.version)) {
+    throw new Error(`${payload.version} predictions must be triggered manually`);
+  }
   const match = await loadMatchContext(payload.matchId);
   const featureData = await loadOrComputeFeature(match);
   const activeModels = await prisma.aiModel.findMany({

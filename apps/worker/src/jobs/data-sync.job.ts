@@ -378,12 +378,12 @@ async function enqueuePrediction(matchId: string, summary: SyncSummary): Promise
       'generate-prediction',
       {
         matchId,
-        version: PredictionVersion.T_MINUS_24H,
+        version: PredictionVersion.T_MINUS_7H,
         trigger: PredictionTrigger.CRON,
         rerun: false,
       },
       {
-        jobId: `prediction:${matchId}:${PredictionVersion.T_MINUS_24H}`,
+        jobId: `prediction:${matchId}:${PredictionVersion.T_MINUS_7H}`,
         attempts: 3,
         backoff: { type: 'exponential', delay: 30_000 },
         removeOnComplete: 100,

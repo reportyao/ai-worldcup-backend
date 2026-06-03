@@ -1,4 +1,5 @@
 import { StructuredPredictionSchema } from '@ai-worldcup/shared';
+import { MANUAL_TRIGGER_PREDICTION_VERSIONS, ALL_PREDICTION_VERSIONS } from '@ai-worldcup/shared';
 import { z } from 'zod';
 
 const nullableDateInput = z
@@ -204,7 +205,7 @@ export type AdminAiModelReorderDto = z.infer<typeof AdminAiModelReorderSchema>;
 
 export const AdminPredictionTaskQuerySchema = PaginationQuerySchema.extend({
   matchId: z.string().trim().optional(),
-  version: z.enum(['T_MINUS_24H', 'T_MINUS_2H']).optional(),
+  version: z.enum(ALL_PREDICTION_VERSIONS as [string, ...string[]]).optional(),
   status: z
     .enum(['PENDING', 'RUNNING', 'PARTIAL_SUCCESS', 'SUCCEEDED', 'FAILED', 'REVIEWED', 'PUBLISHED'])
     .optional(),
@@ -214,7 +215,7 @@ export type AdminPredictionTaskQuery = z.infer<typeof AdminPredictionTaskQuerySc
 
 export const AdminPredictionTriggerSchema = z.object({
   matchId: z.string().min(1),
-  version: z.enum(['T_MINUS_24H', 'T_MINUS_2H']),
+  version: z.enum(MANUAL_TRIGGER_PREDICTION_VERSIONS as [string, ...string[]]),
   rerun: z.coerce.boolean().default(false),
 });
 export type AdminPredictionTriggerDto = z.infer<typeof AdminPredictionTriggerSchema>;

@@ -51,7 +51,7 @@ enum UserPredictionResult {
 }
 
 enum PredictionVersion {
-  T_MINUS_24H
+  T_MINUS_7H
   T_MINUS_2H
 }
 
@@ -433,7 +433,7 @@ model PredictionTask {
   /// 关联比赛
   matchId           String
   match             Match                @relation(fields: [matchId], references: [id])
-  /// 预测版本：T-24h 或 T-2h
+  /// 预测版本：T-7h 或 T-2h
   version           PredictionVersion
   /// 任务状态
   status            PredictionTaskStatus @default(PENDING)

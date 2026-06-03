@@ -9,6 +9,7 @@ import {
   type ConsensusSummary,
   type StructuredPrediction,
 } from '../schemas/index.js';
+import { getPredictionVersionLongLabel } from '../prediction-versions/index.js';
 
 export const PREDICTION_PROMPT_TEMPLATE_VERSION = 'worldcup-prediction-v3.0';
 
@@ -142,7 +143,7 @@ function stringifyContextValue(value: unknown): string {
 function renderPromptTemplate(template: string, model: AiGatewayModelConfig, match: AiGatewayMatchContext, version: PredictionVersion): string {
   const variables: Record<string, unknown> = {
     version,
-    versionLabel: version === PredictionVersion.T_MINUS_24H ? '开赛前24小时' : '开赛前2小时',
+    versionLabel: getPredictionVersionLongLabel(version),
     modelId: model.modelId,
     modelDisplayName: model.displayName,
     modelPersona: model.persona,
@@ -204,7 +205,7 @@ export function buildPredictionPrompt(
 
   const defaultUserPrompt = [
     `Prompt模板版本：${PREDICTION_PROMPT_TEMPLATE_VERSION}`,
-    `预测版本：${version === PredictionVersion.T_MINUS_24H ? '开赛前24小时' : '开赛前2小时'}`,
+    `预测版本：${getPredictionVersionLongLabel(version)}`,
     `模型标识：${model.modelId}`,
     `模型展示名：${model.displayName}`,
     `模型人设：${model.persona}`,
@@ -415,18 +416,93 @@ function buildMockPrediction(model: AiGatewayModelConfig, match: AiGatewayMatchC
   });
 }
 
+function parseOpenAiCompatibleSse(text: string): unknown | undefined {
+  const payloads = text
+    .split(/\r?\n/)
+    .map((line) => line.trim())
+    .filter((line) => line.startsWith('data:'))
+    .map((line) => line.slice(5).trim())
+    .filter((line) => line.length > 0 && line !== '[DONE]');
+
+  if (payloads.length === 0) return undefined;
+
+  const chunks: Array<Record<string, unknown>> = [];
+  for (const payload of payloads) {
+    try {
+      const parsed = JSON.parse(payload) as Record<string, unknown>;
+      chunks.push(parsed);
+    } catch {
+      // Ignore malformed keep-alive/debug events and continue collecting usable chunks.
+    }
+  }
+  if (chunks.length === 0) return undefined;
+
+  const messageByIndex = new Map<number, string>();
+  let usage: unknown;
+  let fallbackCompletion: Record<string, unknown> | undefined;
+
+  for (const chunk of chunks) {
+    if (chunk.usage) usage = chunk.usage;
+    const choices = Array.isArray(chunk.choices) ? chunk.choices : [];
+    if (choices.length > 0) fallbackCompletion = chunk;
+    for (const choice of choices) {
+      if (!choice || typeof choice !== 'object') continue;
+      const choiceRecord = choice as Record<string, unknown>;
+      const index = typeof choiceRecord.index === 'number' ? choiceRecord.index : 0;
+      const message = choiceRecord.message && typeof choiceRecord.message === 'object'
+        ? (choiceRecord.message as Record<string, unknown>).content
+        : undefined;
+      const delta = choiceRecord.delta && typeof choiceRecord.delta === 'object'
+        ? (choiceRecord.delta as Record<string, unknown>).content
+        : undefined;
+      const content = typeof message === 'string' ? message : typeof delta === 'string' ? delta : '';
+      if (content) messageByIndex.set(index, `${messageByIndex.get(index) ?? ''}${content}`);
+    }
+  }
+
+  if (messageByIndex.size > 0) {
+    return {
+      choices: Array.from(messageByIndex.entries()).map(([index, content]) => ({
+        index,
+        message: { role: 'assistant', content },
+      })),
+      usage,
+    };
+  }
+
+  // Some gateways prepend `data:` even for a complete non-stream response.
+  return fallbackCompletion ?? chunks[chunks.length - 1];
+}
+
+function parseJsonLikeResponse(text: string, contentType: string): unknown {
+  const trimmed = text.trim().replace(/^\uFEFF/, '');
+  if (!trimmed) throw new Error('AI provider response is empty');
+
+  if (contentType.includes('text/event-stream') || trimmed.startsWith('data:')) {
+    const parsedSse = parseOpenAiCompatibleSse(trimmed);
+    if (parsedSse !== undefined) return parsedSse;
+  }
+
+  try {
+    return JSON.parse(trimmed);
+  } catch (error) {
+    const preview = trimmed.replace(/\s+/g, ' ').slice(0, 300);
+    throw new Error(`AI provider response is not valid JSON: ${preview}`);
+  }
+}
+
 async function postJson(url: string, body: unknown, headers: Record<string, string>, timeoutMs: number): Promise<unknown> {
   const response = await fetch(url, {
     method: 'POST',
-    headers: { 'content-type': 'application/json', ...headers },
+    headers: { accept: 'application/json', 'content-type': 'application/json', ...headers },
     body: JSON.stringify(body),
     signal: withTimeout(timeoutMs),
   });
+  const responseText = await response.text().catch(() => '');
   if (!response.ok) {
-    const responseText = await response.text().catch(() => '');
-    throw new Error(`AI provider request failed: ${response.status} ${responseText.slice(0, 300)}`);
+    throw new Error(`AI provider request failed: ${response.status} ${responseText.trim().slice(0, 500)}`);
   }
-  return response.json();
+  return parseJsonLikeResponse(responseText, response.headers.get('content-type') ?? '');
 }
 
 async function callOpenAI(

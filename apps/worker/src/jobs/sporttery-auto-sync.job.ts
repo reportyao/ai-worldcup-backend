@@ -861,7 +861,7 @@ async function enqueuePredictionForMatch(matchId: string, summary: SportteryAuto
   try {
     // 检查是否已有预测任务
     const existingTask = await prisma.predictionTask.findUnique({
-      where: { matchId_version: { matchId, version: PredictionVersion.T_MINUS_24H } },
+      where: { matchId_version: { matchId, version: PredictionVersion.T_MINUS_7H } },
     });
     if (existingTask) return;
 
@@ -869,12 +869,12 @@ async function enqueuePredictionForMatch(matchId: string, summary: SportteryAuto
       'generate-prediction',
       {
         matchId,
-        version: PredictionVersion.T_MINUS_24H,
+        version: PredictionVersion.T_MINUS_7H,
         trigger: PredictionTrigger.CRON,
         rerun: false,
       },
       {
-        jobId: `sporttery-auto-prediction-${matchId}-${PredictionVersion.T_MINUS_24H}`,
+        jobId: `sporttery-auto-prediction-${matchId}-${PredictionVersion.T_MINUS_7H}`,
         attempts: 3,
         backoff: { type: 'exponential', delay: 30_000 },
         removeOnComplete: 200,

@@ -518,7 +518,7 @@ export class FootballDataSyncService {
     try {
       await this.predictionPipeline.enqueuePrediction({
         matchId,
-        version: PredictionVersion.T_MINUS_24H,
+        version: PredictionVersion.T_MINUS_7H,
         trigger: PredictionTrigger.CRON,
         rerun: false,
       });

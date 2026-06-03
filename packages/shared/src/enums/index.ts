@@ -32,7 +32,7 @@ export const PredictionTrigger = {
 export type PredictionTrigger = (typeof PredictionTrigger)[keyof typeof PredictionTrigger];
 
 export const PredictionVersion = {
-  T_MINUS_24H: 'T_MINUS_24H',
+  T_MINUS_7H: 'T_MINUS_7H',
   T_MINUS_2H: 'T_MINUS_2H',
 } as const;
 export type PredictionVersion = (typeof PredictionVersion)[keyof typeof PredictionVersion];

@@ -257,13 +257,13 @@ async function main() {
       where: {
         matchId_version: {
           matchId: match.id,
-          version: 'T_MINUS_24H',
+          version: 'T_MINUS_7H',
         },
       },
       update: {},
       create: {
         matchId: match.id,
-        version: 'T_MINUS_24H',
+        version: 'T_MINUS_7H',
         status: 'PENDING',
         trigger: 'CRON',
         modelCount: modelData.length,

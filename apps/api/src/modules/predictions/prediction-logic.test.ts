@@ -219,8 +219,7 @@ describe('Access Control Logic', () => {
 
 describe('Prediction Scheduler Window', () => {
   const PREDICTION_SCHEDULES = [
-    { version: 'T_MINUS_24H', targetMs: 24 * 60 * 60 * 1000 },
-    { version: 'T_MINUS_2H', targetMs: 2 * 60 * 60 * 1000 },
+    { version: 'T_MINUS_7H', targetMs: 7 * 60 * 60 * 1000 },
   ] as const;
 
   function isMatchInWindow(kickoffAt: Date, now: Date, targetMs: number, windowMinutes: number): boolean {
@@ -229,39 +228,27 @@ describe('Prediction Scheduler Window', () => {
     return kickoffAt >= from && kickoffAt <= to;
   }
 
-  it('should include match exactly 24h from now in T_MINUS_24H window (10min)', () => {
+  it('should include match exactly 7h from now in T_MINUS_7H window (10min)', () => {
     const now = new Date('2026-06-15T10:00:00Z');
-    const kickoff = new Date('2026-06-16T10:00:00Z'); // exactly 24h later
+    const kickoff = new Date('2026-06-15T17:00:00Z'); // exactly 7h later
     expect(isMatchInWindow(kickoff, now, PREDICTION_SCHEDULES[0].targetMs, 10)).toBe(true);
   });
 
-  it('should include match 23h55m from now in T_MINUS_24H window (10min)', () => {
+  it('should include match 6h55m from now in T_MINUS_7H window (10min)', () => {
     const now = new Date('2026-06-15T10:00:00Z');
-    const kickoff = new Date('2026-06-16T09:55:00Z'); // 23h55m later
+    const kickoff = new Date('2026-06-15T16:55:00Z'); // 6h55m later
     expect(isMatchInWindow(kickoff, now, PREDICTION_SCHEDULES[0].targetMs, 10)).toBe(true);
   });
 
-  it('should exclude match 25h from now in T_MINUS_24H window (10min)', () => {
+  it('should exclude match 8h from now in T_MINUS_7H window (10min)', () => {
     const now = new Date('2026-06-15T10:00:00Z');
-    const kickoff = new Date('2026-06-16T11:00:00Z'); // 25h later
+    const kickoff = new Date('2026-06-15T18:00:00Z'); // 8h later
     expect(isMatchInWindow(kickoff, now, PREDICTION_SCHEDULES[0].targetMs, 10)).toBe(false);
-  });
-
-  it('should include match exactly 2h from now in T_MINUS_2H window (10min)', () => {
-    const now = new Date('2026-06-15T10:00:00Z');
-    const kickoff = new Date('2026-06-15T12:00:00Z'); // exactly 2h later
-    expect(isMatchInWindow(kickoff, now, PREDICTION_SCHEDULES[1].targetMs, 10)).toBe(true);
-  });
-
-  it('should exclude match 3h from now in T_MINUS_2H window (10min)', () => {
-    const now = new Date('2026-06-15T10:00:00Z');
-    const kickoff = new Date('2026-06-15T13:00:00Z'); // 3h later
-    expect(isMatchInWindow(kickoff, now, PREDICTION_SCHEDULES[1].targetMs, 10)).toBe(false);
   });
 
   it('should handle wider window (30min) correctly', () => {
     const now = new Date('2026-06-15T10:00:00Z');
-    const kickoff = new Date('2026-06-16T10:25:00Z'); // 24h25m later
+    const kickoff = new Date('2026-06-15T17:25:00Z'); // 7h25m later
     // With 10min window: out of range
     expect(isMatchInWindow(kickoff, now, PREDICTION_SCHEDULES[0].targetMs, 10)).toBe(false);
     // With 30min window: in range
@@ -466,8 +453,8 @@ describe('Invite Reward Limits', () => {
 
   it('should have 7-day validity for invite rewards', () => {
     const now = new Date('2026-06-15T10:00:00Z');
-    const validUntil = new Date(now.getTime() + 7 * 24 * 60 * 60 * 1000);
-    const diffDays = (validUntil.getTime() - now.getTime()) / (24 * 60 * 60 * 1000);
+    const validUntil = new Date(now.getTime() + 7 * 7 * 60 * 60 * 1000);
+    const diffDays = (validUntil.getTime() - now.getTime()) / (7 * 60 * 60 * 1000);
     expect(diffDays).toBe(7);
   });
 

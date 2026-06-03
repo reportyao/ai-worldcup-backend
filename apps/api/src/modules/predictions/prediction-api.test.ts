@@ -52,8 +52,8 @@ describe('MatchListQuerySchema', () => {
     expect(result.success).toBe(false);
   });
 
-  it('should reject pageSize > 50', () => {
-    const result = MatchListQuerySchema.safeParse({ pageSize: '51' });
+  it('should reject pageSize > 500', () => {
+    const result = MatchListQuerySchema.safeParse({ pageSize: '501' });
     expect(result.success).toBe(false);
   });
 
@@ -178,14 +178,14 @@ describe('UserPredictionSubmitSchema', () => {
 describe('AdminPredictionTriggerSchema', () => {
   const AdminPredictionTriggerSchema = z.object({
     matchId: z.string().min(1),
-    version: z.enum(['T_MINUS_24H', 'T_MINUS_2H']),
+    version: z.enum(['T_MINUS_7H', 'T_MINUS_2H']),
     rerun: z.coerce.boolean().default(false),
   });
 
   it('should accept valid trigger request', () => {
     const result = AdminPredictionTriggerSchema.safeParse({
       matchId: 'match-abc-123',
-      version: 'T_MINUS_24H',
+      version: 'T_MINUS_7H',
     });
     expect(result.success).toBe(true);
     if (result.success) {
@@ -208,7 +208,7 @@ describe('AdminPredictionTriggerSchema', () => {
   it('should reject empty matchId', () => {
     const result = AdminPredictionTriggerSchema.safeParse({
       matchId: '',
-      version: 'T_MINUS_24H',
+      version: 'T_MINUS_7H',
     });
     expect(result.success).toBe(false);
   });
@@ -224,7 +224,7 @@ describe('AdminPredictionTriggerSchema', () => {
   it('should coerce string "true" to boolean for rerun', () => {
     const result = AdminPredictionTriggerSchema.safeParse({
       matchId: 'match-123',
-      version: 'T_MINUS_24H',
+      version: 'T_MINUS_7H',
       rerun: 'true',
     });
     expect(result.success).toBe(true);
@@ -239,7 +239,7 @@ describe('AdminPredictionTriggerSchema', () => {
 describe('PredictionGeneratorPayloadSchema', () => {
   const DirectPredictionPayloadSchema = z.object({
     matchId: z.string(),
-    version: z.enum(['T_MINUS_24H', 'T_MINUS_2H']),
+    version: z.enum(['T_MINUS_7H', 'T_MINUS_2H']),
     trigger: z.enum(['CRON', 'MANUAL']).default('CRON'),
     rerun: z.coerce.boolean().default(false),
   });
@@ -257,7 +257,7 @@ describe('PredictionGeneratorPayloadSchema', () => {
   it('should parse direct prediction payload', () => {
     const result = PredictionGeneratorPayloadSchema.safeParse({
       matchId: 'match-123',
-      version: 'T_MINUS_24H',
+      version: 'T_MINUS_7H',
       trigger: 'MANUAL',
       rerun: false,
     });
