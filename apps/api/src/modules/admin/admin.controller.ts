@@ -195,6 +195,16 @@ export class AdminController {
     return this.adminService.triggerFootballDataSync(dto, this.adminService.getRequestMeta(req));
   }
 
+  @Get('custom-ai-predictions')
+  listCustomAiPredictions(
+    @Query('refresh') refresh?: string,
+    @Query('includeUnmatched') includeUnmatched?: string,
+    @Query('daysBefore') daysBefore?: string,
+    @Query('daysAhead') daysAhead?: string,
+  ) {
+    return this.adminService.listCustomAiPredictions({ refresh, includeUnmatched, daysBefore, daysAhead });
+  }
+
 
   @Get('ai-models')
   listAiModels(

@@ -27,6 +27,7 @@ import type { AppConfig } from '../../config/configuration.js';
 import { PrismaService } from '../../prisma/prisma.service.js';
 import { ConsensusService } from '../consensus/consensus.service.js';
 import { FootballDataSyncService } from '../football-data/football-data-sync.service.js';
+import { FeijingAiPredictionService } from '../football-data/feijing-ai-prediction.service.js';
 import { PredictionPipelineService } from '../prediction-pipeline/prediction-pipeline.service.js';
 
 import type {
@@ -96,6 +97,7 @@ export class AdminService {
     private readonly predictionPipeline: PredictionPipelineService,
     private readonly consensusService: ConsensusService,
     private readonly footballDataSync: FootballDataSyncService,
+    private readonly feijingAiPrediction: FeijingAiPredictionService,
     private readonly config: ConfigService<AppConfig, true>,
   ) {}
 
@@ -662,6 +664,15 @@ export class AdminService {
 
   listFootballDataSyncLogs(query: AdminFootballDataSyncLogQuery) {
     return this.footballDataSync.listSyncLogs(query);
+  }
+
+  listCustomAiPredictions(query: { refresh?: string; includeUnmatched?: string; daysBefore?: string; daysAhead?: string }) {
+    return this.feijingAiPrediction.list({
+      refresh: query.refresh === 'true' || query.refresh === '1',
+      includeUnmatched: query.includeUnmatched === undefined ? true : query.includeUnmatched === 'true' || query.includeUnmatched === '1',
+      daysBefore: query.daysBefore === undefined ? undefined : Number(query.daysBefore),
+      daysAhead: query.daysAhead === undefined ? undefined : Number(query.daysAhead),
+    });
   }
 
   async triggerFootballDataSync(dto: AdminFootballDataSyncDto, meta: RequestMeta) {
@@ -1384,10 +1395,18 @@ export class AdminService {
     const [todayMarkets, recentFinished] = await this.prisma.$transaction([
       this.prisma.sportteryMatchMarket.findMany({
         where: {
+          saleDate: todayStr,
+          scoreResult: null,
+          status: { not: 'FINISHED' },
           OR: [
-            { saleDate: todayStr, scoreResult: null },
-            { kickoffAt: { gte: todayStartCst, lt: todayEndCst } },
+            { kickoffAt: null },
+            { kickoffAt: { gte: now, lt: todayEndCst } },
           ],
+          match: {
+            is: {
+              status: { not: 'FINISHED' },
+            },
+          },
         },
         include: {
           match: {
@@ -1412,7 +1431,17 @@ export class AdminService {
           awayTeam: true,
           competition: true,
           sportteryMarkets: { orderBy: { syncedAt: 'desc' }, take: 1 },
-          predictionTasks: { orderBy: { updatedAt: 'desc' }, take: 1, select: { status: true } },
+          predictionTasks: {
+            orderBy: { updatedAt: 'desc' },
+            take: 1,
+            include: {
+              predictions: {
+                where: { isSuccess: true },
+                include: { aiModel: true },
+                orderBy: { generatedAt: 'asc' },
+              },
+            },
+          },
           _count: { select: { predictionTasks: true } },
         },
         orderBy: { kickoffAt: 'desc' },
@@ -1453,6 +1482,41 @@ export class AdminService {
       })),
       recentFinished: recentFinished.map((m) => {
         const market = m.sportteryMarkets[0] ?? null;
+        const latestTask = m.predictionTasks[0] ?? null;
+        const predictionComparisons =
+          latestTask?.predictions.map((p) => {
+            const structured = (p.structuredOutput ?? {}) as JsonRecord;
+            const conclusion = (structured.conclusion ?? {}) as JsonRecord;
+            const likelyScores = Array.isArray(conclusion.likelyScores)
+              ? (conclusion.likelyScores as JsonRecord[])
+              : [];
+            const primaryScore = likelyScores[0] ?? null;
+            return {
+              predictionId: p.id,
+              modelId: p.aiModelId,
+              modelDisplayName: p.aiModel.displayName,
+              persona: p.aiModel.persona,
+              predictedWinDrawLoss: (conclusion.winLossDraw as string | undefined) ?? null,
+              predictedHandicap: (conclusion.handicapWinLossDraw as string | undefined) ?? null,
+              predictedOverUnder: (conclusion.overUnderTrend as string | undefined) ?? null,
+              predictedScore:
+                primaryScore && typeof primaryScore.home === 'number' && typeof primaryScore.away === 'number'
+                  ? `${primaryScore.home}:${primaryScore.away}`
+                  : null,
+              predictedGoalsRange:
+                conclusion.goalsRange && typeof conclusion.goalsRange === 'object'
+                  ? (conclusion.goalsRange as JsonRecord)
+                  : null,
+              winDrawLossCorrect: p.winDrawLossCorrect,
+              handicapCorrect: p.handicapCorrect,
+              overUnderCorrect: p.overUnderCorrect,
+              scoreExact: p.scoreExact,
+              halfFullCorrect: p.halfFullCorrect,
+              goalRangeHit: p.goalRangeHit,
+              anyHit: p.anyHit,
+              evaluatedAt: p.evaluatedAt?.toISOString() ?? null,
+            };
+          }) ?? [];
         return {
           id: m.id,
           homeScore: m.homeScore,
@@ -1464,10 +1528,13 @@ export class AdminService {
           homeTeam: m.homeTeam,
           awayTeam: m.awayTeam,
           competition: m.competition,
+          predictionComparisons,
           sportteryMarket: market
             ? {
                 saleDate: market.saleDate,
                 matchNo: market.matchNo,
+                handicapLine: market.handicapLine,
+                overUnderLine: market.overUnderLine,
                 scoreResult: market.scoreResult,
                 winDrawLoss: market.winDrawLoss,
                 handicapResult: market.handicapResult,
@@ -1489,7 +1556,16 @@ export class AdminService {
     const now = new Date();
     const cstOffset = 8 * 60 * 60 * 1000;
     const todayStr = new Date(now.getTime() + cstOffset).toISOString().slice(0, 10);
+    const todayStartCst = new Date(Math.floor((now.getTime() + cstOffset) / 86400000) * 86400000 - cstOffset);
+    const todayEndCst = new Date(todayStartCst.getTime() + 86400000);
     const oneDayAgo = new Date(now.getTime() - 24 * 60 * 60 * 1000);
+    const pendingTodayMarketWhere: Prisma.SportteryMatchMarketWhereInput = {
+      saleDate: todayStr,
+      scoreResult: null,
+      status: { not: 'FINISHED' },
+      OR: [{ kickoffAt: null }, { kickoffAt: { gte: now, lt: todayEndCst } }],
+      match: { is: { status: { not: 'FINISHED' } } },
+    };
 
     const [lastSync, todayMarketCount, recentSyncLogs, pendingMatchCount, finishedWithResult] =
       await this.prisma.$transaction([
@@ -1497,15 +1573,13 @@ export class AdminService {
           where: { provider: 'sporttery' },
           orderBy: { startedAt: 'desc' },
         }),
-        this.prisma.sportteryMatchMarket.count({ where: { saleDate: todayStr, scoreResult: null } }),
+        this.prisma.sportteryMatchMarket.count({ where: pendingTodayMarketWhere }),
         this.prisma.footballDataSyncLog.findMany({
           where: { provider: 'sporttery', startedAt: { gte: oneDayAgo } },
           orderBy: { startedAt: 'desc' },
           take: 20,
         }),
-        this.prisma.sportteryMatchMarket.count({
-          where: { saleDate: todayStr, scoreResult: null },
-        }),
+        this.prisma.sportteryMatchMarket.count({ where: pendingTodayMarketWhere }),
         this.prisma.sportteryMatchMarket.count({
           where: { saleDate: todayStr, scoreResult: { not: null } },
         }),
