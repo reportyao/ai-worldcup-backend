@@ -922,6 +922,25 @@ export class AdminService {
     return { item: updated, consensus };
   }
 
+  async clearModelPrediction(id: string, meta: RequestMeta) {
+    const before = await this.prisma.modelPrediction.findUnique({ where: { id }, include: { aiModel: true } });
+    if (!before) throw new NotFoundException('Model prediction not found');
+    const updated = await this.prisma.modelPrediction.update({
+      where: { id },
+      data: {
+        structuredOutput: this.toPrismaJson(null),
+        rawOutput: null,
+        isSuccess: false,
+        errorMessage: '管理员一键清空',
+        generatedAt: new Date(),
+      },
+      include: { aiModel: true },
+    });
+    const consensus = await this.consensusService.calculateAndSave(before.predictionTaskId);
+    await this.writeAudit(meta, 'MODEL_PREDICTION_CLEAR', 'ModelPrediction', id, before, { updated, consensus });
+    return { item: updated, consensus };
+  }
+
   async listPredictionTasks(query: AdminPredictionTaskQuery) {
     const where: Prisma.PredictionTaskWhereInput = {
       ...(query.matchId ? { matchId: query.matchId } : {}),
