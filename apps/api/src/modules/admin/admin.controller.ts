@@ -32,6 +32,7 @@ import {
   AdminMatchCreateSchema,
   AdminMatchImportSchema,
   AdminMatchListQuerySchema,
+  AdminMatchResultUpdateSchema,
   AdminMatchUpdateSchema,
   AdminPredictionRerunSchema,
   AdminPredictionTaskQuerySchema,
@@ -58,6 +59,7 @@ import {
   type AdminMatchCreateDto,
   type AdminMatchImportDto,
   type AdminMatchListQuery,
+  type AdminMatchResultUpdateDto,
   type AdminMatchUpdateDto,
   type AdminPredictionRerunDto,
   type AdminPredictionTaskQuery,
@@ -162,6 +164,15 @@ export class AdminController {
     @Body(new ZodValidationPipe(AdminMatchUpdateSchema)) dto: AdminMatchUpdateDto,
   ) {
     return this.adminService.updateMatch(id, dto, this.adminService.getRequestMeta(req));
+  }
+
+  @Patch('matches/:id/result')
+  updateMatchResult(
+    @Param('id') id: string,
+    @Req() req: Request,
+    @Body(new ZodValidationPipe(AdminMatchResultUpdateSchema)) dto: AdminMatchResultUpdateDto,
+  ) {
+    return this.adminService.updateMatchResult(id, dto, this.adminService.getRequestMeta(req));
   }
 
   @Delete('matches/:id')

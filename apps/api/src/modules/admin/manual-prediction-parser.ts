@@ -196,132 +196,169 @@ function parseStrengthsWeaknesses(text: string): {
 }
 
 /**
+ * 标准化 F 段落解析：优先读取每行 `- 字段：值`，避免“让球胜平负”被误识别为“胜平负”。
+ */
+function normalizePredictionText(text: string): string {
+  return stripMarkdownLinks(text)
+    .replace(/\r\n/g, '\n')
+    .replace(/[：﹕]/g, ':')
+    .replace(/[，、；]/g, ',')
+    .replace(/[／]/g, '/')
+    .replace(/[*_`]/g, '')
+    .replace(/\u00a0/g, ' ')
+    .trim();
+}
+
+function extractConclusionFields(text: string): Map<string, string> {
+  const fields = new Map<string, string>();
+  const normalized = normalizePredictionText(text);
+  for (const rawLine of normalized.split('\n')) {
+    const line = rawLine.trim();
+    const match = line.match(/^[-•]\s*([^:]{2,12})\s*:\s*(.+)$/);
+    if (!match) continue;
+    const label = match[1].replace(/\s+/g, '');
+    const value = match[2].trim();
+    if (!value) continue;
+    if (label === '胜平负') fields.set('winLossDraw', value);
+    else if (label === '让球胜平负' || label === '让球') fields.set('handicapWinLossDraw', value);
+    else if (label === '比分' || label === '可能比分' || label === '首选比分') fields.set('scores', value);
+    else if (label === '大小球' || label === '进球数') fields.set('overUnder', value);
+    else if (label === '半全场') fields.set('halfFullTime', value);
+  }
+  return fields;
+}
+
+function isNoClearLean(value: string | undefined): boolean {
+  return !value || /无明确|无法判断|不确定|待定|暂无|没有/.test(value);
+}
+
+function parseWinDrawLossValue(value: string | undefined): 'HOME_WIN' | 'DRAW' | 'AWAY_WIN' | undefined {
+  if (isNoClearLean(value)) return undefined;
+  const text = normalizePredictionText(value ?? '');
+  if (/^(主胜|主队胜|胜)$/.test(text) || /主胜/.test(text)) return 'HOME_WIN';
+  if (/^(平局|平|和局|打平)$/.test(text) || /平局/.test(text)) return 'DRAW';
+  if (/^(客胜|客队胜|负)$/.test(text) || /客胜/.test(text)) return 'AWAY_WIN';
+  return undefined;
+}
+
+function parseHandicapValue(value: string | undefined): { trend?: string; result?: 'HOME_WIN' | 'DRAW' | 'AWAY_WIN' } {
+  if (isNoClearLean(value)) return {};
+  const text = normalizePredictionText(value ?? '');
+  if (/让球主胜|主胜/.test(text)) return { trend: '让球主胜', result: 'HOME_WIN' };
+  if (/让球平|平局|\b平\b|让平/.test(text)) return { trend: '让球平', result: 'DRAW' };
+  if (/让球客胜|客胜/.test(text)) return { trend: '让球客胜', result: 'AWAY_WIN' };
+  return { trend: text };
+}
+
+function parseOverUnderValue(value: string | undefined): { trend?: string; result?: 'OVER' | 'UNDER' | 'EQUAL'; line?: number } {
+  if (isNoClearLean(value)) return {};
+  const text = normalizePredictionText(value ?? '');
+  const lineMatch = text.match(/(\d+(?:\.\d+)?)/);
+  const line = lineMatch ? Number(lineMatch[1]) : undefined;
+  if (/大/.test(text)) return { trend: line ? `大${line}球` : '大球', result: 'OVER', line };
+  if (/小/.test(text)) return { trend: line ? `小${line}球` : '小球', result: 'UNDER', line };
+  if (/走|等于|刚好|=/.test(text)) return { trend: line ? `走${line}球` : '走水', result: 'EQUAL', line };
+  return { trend: text, line };
+}
+
+function parseHalfFullTimeValue(value: string | undefined): string | undefined {
+  if (isNoClearLean(value)) return undefined;
+  const text = normalizePredictionText(value ?? '');
+  const direct = text.match(/(主|平|客)\s*\/\s*(主|平|客)/);
+  const cn = text.match(/(胜|平|负)(胜|平|负)/);
+  const map: Record<string, string> = { 主: 'HOME', 胜: 'HOME', 平: 'DRAW', 客: 'AWAY', 负: 'AWAY' };
+  if (direct) return `${map[direct[1]]}_${map[direct[2]]}`;
+  if (cn) return `${map[cn[1]]}_${map[cn[2]]}`;
+  return undefined;
+}
+
+function parseLikelyScoresValue(value: string | undefined): Array<{ home: number; away: number; weight: number }> {
+  if (isNoClearLean(value)) return [];
+  const text = normalizePredictionText(value ?? '');
+  const scores: Array<{ home: number; away: number; weight: number }> = [];
+  const weights = [0.45, 0.3, 0.15, 0.07, 0.03];
+  const seen = new Set<string>();
+  const regex = /(\d{1,2})\s*[:：-]\s*(\d{1,2})/g;
+  let match: RegExpExecArray | null;
+  while ((match = regex.exec(text)) && scores.length < 5) {
+    const home = Number(match[1]);
+    const away = Number(match[2]);
+    const key = `${home}:${away}`;
+    if (seen.has(key)) continue;
+    seen.add(key);
+    scores.push({ home, away, weight: weights[scores.length] ?? 0.03 });
+  }
+  return scores;
+}
+
+function inferScoresFromResult(result: 'HOME_WIN' | 'DRAW' | 'AWAY_WIN'): Array<{ home: number; away: number; weight: number }> {
+  if (result === 'HOME_WIN') return [{ home: 2, away: 1, weight: 0.4 }, { home: 1, away: 0, weight: 0.3 }, { home: 2, away: 0, weight: 0.2 }];
+  if (result === 'AWAY_WIN') return [{ home: 1, away: 2, weight: 0.4 }, { home: 0, away: 1, weight: 0.3 }, { home: 0, away: 2, weight: 0.2 }];
+  return [{ home: 1, away: 1, weight: 0.4 }, { home: 0, away: 0, weight: 0.3 }, { home: 2, away: 2, weight: 0.2 }];
+}
+
+function probabilityForResult(result: 'HOME_WIN' | 'DRAW' | 'AWAY_WIN'): { home: number; draw: number; away: number } {
+  if (result === 'HOME_WIN') return { home: 0.5, draw: 0.27, away: 0.23 };
+  if (result === 'AWAY_WIN') return { home: 0.23, draw: 0.27, away: 0.5 };
+  return { home: 0.3, draw: 0.4, away: 0.3 };
+}
+
+function deriveGoalsRange(
+  scores: Array<{ home: number; away: number }>,
+  overUnder: { result?: 'OVER' | 'UNDER' | 'EQUAL'; line?: number },
+): { min: number; max: number; expectation?: number } {
+  if (scores.length > 0) {
+    const totals = scores.map((score) => score.home + score.away);
+    return {
+      min: Math.min(...totals),
+      max: Math.max(...totals),
+      expectation: Number((totals.reduce((sum, item) => sum + item, 0) / totals.length).toFixed(2)),
+    };
+  }
+  if (overUnder.line != null) {
+    if (overUnder.result === 'UNDER') return { min: 0, max: Math.floor(overUnder.line), expectation: Math.max(0, overUnder.line - 0.75) };
+    if (overUnder.result === 'OVER') return { min: Math.floor(overUnder.line) + 1, max: Math.floor(overUnder.line) + 4, expectation: overUnder.line + 0.75 };
+    if (overUnder.result === 'EQUAL') return { min: Math.round(overUnder.line), max: Math.round(overUnder.line), expectation: overUnder.line };
+  }
+  return { min: 0, max: 3, expectation: 1.8 };
+}
+
+function fallbackConclusionTextSearch(text: string): Partial<ParsedManualPrediction['conclusion']> {
+  const normalized = normalizePredictionText(text);
+  const result: Partial<ParsedManualPrediction['conclusion']> = {};
+  const wdl = normalized.match(/(?:^|\n)\s*(?:[-•]\s*)?胜平负\s*:\s*([^\n]+)/)?.[1];
+  result.winLossDraw = parseWinDrawLossValue(wdl);
+  if (!result.winLossDraw) {
+    if (/首选[^\n]{0,20}主胜|主胜[^\n]{0,20}首选/.test(normalized)) result.winLossDraw = 'HOME_WIN';
+    else if (/首选[^\n]{0,20}客胜|客胜[^\n]{0,20}首选/.test(normalized)) result.winLossDraw = 'AWAY_WIN';
+    else if (/首选[^\n]{0,20}平局|平局[^\n]{0,20}首选/.test(normalized)) result.winLossDraw = 'DRAW';
+  }
+  return result;
+}
+
+/**
  * 从 F 段落解析最终结论
  */
 function parseConclusion(text: string): ParsedManualPrediction['conclusion'] {
-  const result: ParsedManualPrediction['conclusion'] = {
-    winLossDraw: 'DRAW',
-    winProbability: { home: 0.33, draw: 0.34, away: 0.33 },
-    likelyScores: [],
-    goalsRange: { min: 0, max: 3 },
+  const fields = extractConclusionFields(text);
+  const fallback = fallbackConclusionTextSearch(text);
+  const winLossDraw = parseWinDrawLossValue(fields.get('winLossDraw')) ?? fallback.winLossDraw ?? 'DRAW';
+  const handicap = parseHandicapValue(fields.get('handicapWinLossDraw'));
+  const overUnder = parseOverUnderValue(fields.get('overUnder'));
+  const likelyScores = parseLikelyScoresValue(fields.get('scores'));
+  const scores = likelyScores.length > 0 ? likelyScores : inferScoresFromResult(winLossDraw);
+
+  return {
+    winLossDraw,
+    winProbability: probabilityForResult(winLossDraw),
+    ...(handicap.trend ? { handicapTrend: handicap.trend } : {}),
+    ...(handicap.result ? { handicapWinLossDraw: handicap.result } : {}),
+    ...(overUnder.trend ? { overUnderTrend: overUnder.trend } : {}),
+    ...(overUnder.result ? { overUnderResult: overUnder.result } : {}),
+    ...(parseHalfFullTimeValue(fields.get('halfFullTime')) ? { halfFullTime: parseHalfFullTimeValue(fields.get('halfFullTime')) } : {}),
+    likelyScores: scores,
+    goalsRange: deriveGoalsRange(scores, overUnder),
   };
-
-  const lower = text.toLowerCase();
-
-  // 1. 解析胜平负
-  const wdlSection = text.match(/胜平负[：:]\s*\n?([^\n]*(?:\n[^\n]*)?)/i);
-  if (wdlSection) {
-    const wdlText = wdlSection[1];
-    if (wdlText.includes('平局') || wdlText.includes('平')) {
-      result.winLossDraw = 'DRAW';
-    } else if (wdlText.match(/客胜|客队胜|客.*不败/)) {
-      result.winLossDraw = 'AWAY_WIN';
-    } else if (wdlText.match(/主胜|主队胜/)) {
-      result.winLossDraw = 'HOME_WIN';
-    }
-  } else {
-    // 从整体文本判断
-    if (lower.includes('平局') && (lower.includes('主选') || lower.includes('首选'))) {
-      result.winLossDraw = 'DRAW';
-    } else if (lower.match(/客胜.*主选|主选.*客胜/)) {
-      result.winLossDraw = 'AWAY_WIN';
-    } else if (lower.match(/主胜.*主选|主选.*主胜/)) {
-      result.winLossDraw = 'HOME_WIN';
-    }
-  }
-
-  // 2. 解析让球胜平负
-  const handicapSection = text.match(/让球胜平负[：:]\s*\n?([^\n]*(?:\n[^\n]*)?)/i);
-  if (handicapSection) {
-    const hText = handicapSection[1];
-    if (hText.includes('让球客胜') || hText.includes('客胜')) {
-      result.handicapWinLossDraw = 'AWAY_WIN';
-      result.handicapTrend = '让球客胜';
-    } else if (hText.includes('让球平')) {
-      result.handicapWinLossDraw = 'DRAW';
-      result.handicapTrend = '让球平';
-    } else if (hText.includes('让球主胜') || hText.includes('主胜')) {
-      result.handicapWinLossDraw = 'HOME_WIN';
-      result.handicapTrend = '让球主胜';
-    }
-  }
-
-  // 3. 解析大小球
-  const ouSection = text.match(/大小球[：:]\s*\n?([^\n]*(?:\n[^\n]*)?)/i);
-  if (ouSection) {
-    const ouText = ouSection[1];
-    if (ouText.includes('小')) {
-      result.overUnderTrend = ouText.match(/小\s*[\d.]+\s*球?/)?.[0] || '小球';
-      result.overUnderResult = 'UNDER';
-      // 从大小球线提取进球范围
-      const lineMatch = ouText.match(/(\d+\.?\d*)/);
-      if (lineMatch) {
-        const line = parseFloat(lineMatch[1]);
-        result.goalsRange = { min: 0, max: Math.floor(line), expectation: line - 0.5 };
-      }
-    } else if (ouText.includes('大')) {
-      result.overUnderTrend = ouText.match(/大\s*[\d.]+\s*球?/)?.[0] || '大球';
-      result.overUnderResult = 'OVER';
-    }
-  }
-
-  // 4. 解析比分
-  const scoreSection = text.match(/比分[：:]\s*\n?([\s\S]*?)(?=\n\s*\d+\.\s*[^比]|\n\s*\*\*|$)/i);
-  if (scoreSection) {
-    const scoreLines = scoreSection[1].split('\n').filter(l => l.trim());
-    const scores: Array<{ home: number; away: number; weight: number }> = [];
-    for (const line of scoreLines) {
-      const scoreMatch = line.match(/(\d+)\s*[-:]\s*(\d+)/);
-      if (scoreMatch) {
-        scores.push({
-          home: parseInt(scoreMatch[1]),
-          away: parseInt(scoreMatch[2]),
-          weight: scores.length === 0 ? 0.4 : scores.length === 1 ? 0.3 : 0.2,
-        });
-      }
-    }
-    if (scores.length > 0) {
-      result.likelyScores = scores.slice(0, 5);
-      const allGoals = scores.map(s => s.home + s.away);
-      result.goalsRange = {
-        min: Math.min(...allGoals),
-        max: Math.max(...allGoals),
-        expectation: allGoals.reduce((a, b) => a + b, 0) / allGoals.length,
-      };
-    }
-  }
-
-  // 5. 解析半全场
-  const hftSection = text.match(/半全场[：:]\s*\n?([^\n]*(?:\n[^\n]*)?)/i);
-  if (hftSection) {
-    const hftText = hftSection[1];
-    // 解析 "平/平" "平/客" 等格式
-    const hftMatch = hftText.match(/(主|平|客)\s*[/／]\s*(主|平|客)/);
-    if (hftMatch) {
-      const map: Record<string, string> = { '主': 'HOME', '平': 'DRAW', '客': 'AWAY' };
-      result.halfFullTime = `${map[hftMatch[1]]}_${map[hftMatch[2]]}`;
-    }
-  }
-
-  // 6. 根据胜平负推算概率
-  switch (result.winLossDraw) {
-    case 'HOME_WIN':
-      result.winProbability = { home: 0.45, draw: 0.28, away: 0.27 };
-      break;
-    case 'DRAW':
-      result.winProbability = { home: 0.30, draw: 0.40, away: 0.30 };
-      break;
-    case 'AWAY_WIN':
-      result.winProbability = { home: 0.25, draw: 0.30, away: 0.45 };
-      break;
-  }
-
-  // 确保 likelyScores 不为空
-  if (result.likelyScores.length === 0) {
-    result.likelyScores = [{ home: 1, away: 1, weight: 0.35 }, { home: 0, away: 1, weight: 0.30 }, { home: 1, away: 0, weight: 0.25 }];
-  }
-
-  return result;
 }
 
 /**

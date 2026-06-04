@@ -46,6 +46,7 @@ import type {
   AdminMatchCreateDto,
   AdminMatchImportDto,
   AdminMatchListQuery,
+  AdminMatchResultUpdateDto,
   AdminMatchUpdateDto,
   AdminPredictionRerunDto,
   AdminPredictionTaskQuery,
@@ -562,6 +563,63 @@ export class AdminService {
     return updated;
   }
 
+  async updateMatchResult(id: string, dto: AdminMatchResultUpdateDto, meta: RequestMeta) {
+    const before = await this.prisma.match.findUnique({
+      where: { id },
+      include: { ...MATCH_INCLUDE, sportteryMarkets: { orderBy: { syncedAt: 'desc' }, take: 1 } },
+    });
+    if (!before) throw new NotFoundException('Match not found');
+    if ((dto.homeHalfScore == null) !== (dto.awayHalfScore == null)) {
+      throw new BadRequestException('homeHalfScore and awayHalfScore must be supplied together');
+    }
+
+    const actualOutcome = this.computeOutcome(dto.homeScore, dto.awayScore);
+    const actualHandicap = this.computeHandicapOutcome(dto.homeScore, dto.awayScore, dto.handicapLine ?? before.handicapLine);
+    const actualOverUnder = this.computeOverUnderOutcome(dto.homeScore, dto.awayScore, dto.overUnderLine ?? before.overUnderLine);
+    const actualHalfFull = this.computeHalfFullOutcome(dto.homeHalfScore ?? null, dto.awayHalfScore ?? null, dto.homeScore, dto.awayScore);
+
+    const updated = await this.prisma.$transaction(async (tx) => {
+      const match = await tx.match.update({
+        where: { id },
+        data: {
+          status: dto.status as MatchStatus,
+          homeScore: dto.homeScore,
+          awayScore: dto.awayScore,
+          homeHalfScore: dto.homeHalfScore ?? null,
+          awayHalfScore: dto.awayHalfScore ?? null,
+          handicapLine: dto.handicapLine ?? before.handicapLine,
+          overUnderLine: dto.overUnderLine ?? before.overUnderLine,
+        },
+        include: MATCH_INCLUDE,
+      });
+
+      if (dto.updateSportteryMarket) {
+        const market = before.sportteryMarkets[0];
+        if (market) {
+          await tx.sportteryMatchMarket.update({
+            where: { id: market.id },
+            data: {
+              status: dto.status,
+              handicapLine: dto.handicapLine ?? market.handicapLine,
+              overUnderLine: dto.overUnderLine ?? market.overUnderLine,
+              scoreResult: `${dto.homeScore}:${dto.awayScore}`,
+              winDrawLoss: this.toChineseOutcome(actualOutcome),
+              handicapResult: actualHandicap ? this.toChineseOutcome(actualHandicap) : market.handicapResult,
+              overUnderResult: actualOverUnder ? this.toChineseOverUnder(actualOverUnder) : market.overUnderResult,
+              halfFullResult: actualHalfFull ? this.toChineseHalfFull(actualHalfFull) : market.halfFullResult,
+              syncedAt: new Date(),
+            },
+          });
+        }
+      }
+      return match;
+    });
+
+    const evaluation = dto.status === 'FINISHED' ? await this.recalculateFinishedMatchComparisons(id) : [];
+    await this.writeAudit(meta, 'MATCH_RESULT_UPDATE', 'Match', id, before, { updated, evaluation });
+    return { item: updated, evaluation };
+  }
+
   async deleteMatch(id: string, meta: RequestMeta) {
     const before = await this.prisma.match.findUnique({
       where: { id },
@@ -902,28 +960,58 @@ export class AdminService {
   }
 
   async updateModelPrediction(id: string, dto: AdminModelPredictionUpdateDto, meta: RequestMeta) {
-    const before = await this.prisma.modelPrediction.findUnique({ where: { id }, include: { aiModel: true } });
+    const before = await this.prisma.modelPrediction.findUnique({
+      where: { id },
+      include: { aiModel: true, predictionTask: { include: { match: true } } },
+    });
     if (!before) throw new NotFoundException('Model prediction not found');
+
+    const rawOutput = dto.rawOutput ?? null;
+    let structuredOutput: unknown = dto.structuredOutput;
+    if (structuredOutput === undefined && rawOutput) {
+      structuredOutput = this.buildStructuredPredictionFromMarkdown(rawOutput, before.aiModel);
+    }
+
     const updated = await this.prisma.modelPrediction.update({
       where: { id },
       data: {
-        ...(dto.structuredOutput !== undefined ? { structuredOutput: this.toPrismaJson(dto.structuredOutput) } : {}),
-        rawOutput: dto.rawOutput ?? null,
+        ...(structuredOutput !== undefined ? { structuredOutput: this.toPrismaJson(structuredOutput) } : {}),
+        rawOutput,
         promptVersion: dto.promptVersion ?? before.promptVersion,
         promptSnapshot: dto.promptSnapshot ?? before.promptSnapshot,
         isSuccess: dto.isSuccess,
         errorMessage: dto.errorMessage ?? null,
         generatedAt: new Date(),
+        winDrawLossCorrect: null,
+        handicapCorrect: null,
+        overUnderCorrect: null,
+        scoreExact: null,
+        halfFullCorrect: null,
+        goalRangeHit: null,
+        anyHit: null,
+        brierScore: null,
+        logLoss: null,
+        outcomeProbability: null,
+        actualOutcome: null,
+        evaluationVersion: null,
+        evaluatedAt: null,
       },
       include: { aiModel: true },
     });
-    const consensus = await this.consensusService.calculateAndSave(before.predictionTaskId);
+    await this.recalculatePredictionTaskStats(before.predictionTaskId);
+    const consensus = dto.isSuccess ? await this.consensusService.calculateAndSave(before.predictionTaskId) : null;
+    if (before.predictionTask.match.status === 'FINISHED') {
+      await this.recalculateFinishedMatchComparisons(before.predictionTask.matchId);
+    }
     await this.writeAudit(meta, 'MODEL_PREDICTION_UPDATE', 'ModelPrediction', id, before, { updated, consensus });
     return { item: updated, consensus };
   }
 
   async clearModelPrediction(id: string, meta: RequestMeta) {
-    const before = await this.prisma.modelPrediction.findUnique({ where: { id }, include: { aiModel: true } });
+    const before = await this.prisma.modelPrediction.findUnique({
+      where: { id },
+      include: { aiModel: true, predictionTask: { include: { match: true } } },
+    });
     if (!before) throw new NotFoundException('Model prediction not found');
     const updated = await this.prisma.modelPrediction.update({
       where: { id },
@@ -933,10 +1021,27 @@ export class AdminService {
         isSuccess: false,
         errorMessage: '管理员一键清空',
         generatedAt: new Date(),
+        winDrawLossCorrect: null,
+        handicapCorrect: null,
+        overUnderCorrect: null,
+        scoreExact: null,
+        halfFullCorrect: null,
+        goalRangeHit: null,
+        anyHit: null,
+        brierScore: null,
+        logLoss: null,
+        outcomeProbability: null,
+        actualOutcome: null,
+        evaluationVersion: null,
+        evaluatedAt: null,
       },
       include: { aiModel: true },
     });
+    await this.recalculatePredictionTaskStats(before.predictionTaskId);
     const consensus = await this.consensusService.calculateAndSave(before.predictionTaskId);
+    if (before.predictionTask.match.status === 'FINISHED') {
+      await this.recalculateFinishedMatchComparisons(before.predictionTask.matchId);
+    }
     await this.writeAudit(meta, 'MODEL_PREDICTION_CLEAR', 'ModelPrediction', id, before, { updated, consensus });
     return { item: updated, consensus };
   }
@@ -1683,6 +1788,175 @@ export class AdminService {
     };
   }
 
+  private buildStructuredPredictionFromMarkdown(markdown: string, model: { modelId: string; displayName: string; persona?: ModelPersona | null }) {
+    const parsed = parseManualPredictionMarkdown(markdown);
+    return {
+      modelId: model.modelId,
+      modelDisplayName: model.displayName,
+      modelPersona: model.persona || undefined,
+      matchNature: parsed.matchNature,
+      matchNatureAssessment: parsed.matchNatureAssessment,
+      dimensionAnalysis: parsed.dimensionAnalysis,
+      strengths: parsed.strengths,
+      weaknesses: parsed.weaknesses,
+      keyVariables: parsed.keyVariables,
+      trend: parsed.trend,
+      risks: parsed.risks,
+      conclusion: parsed.conclusion,
+      informationQuality: parsed.informationQuality,
+      disclaimer: parsed.disclaimer,
+      generatedAt: new Date().toISOString(),
+    };
+  }
+
+  private async recalculatePredictionTaskStats(taskId: string) {
+    const predictions = await this.prisma.modelPrediction.findMany({ where: { predictionTaskId: taskId } });
+    const filled = predictions.filter((p) => p.isSuccess && Boolean(p.rawOutput?.trim()));
+    const failed = predictions.filter((p) => !p.isSuccess || !p.rawOutput?.trim());
+    const status = filled.length === 0
+      ? PredictionTaskStatus.FAILED
+      : failed.length === 0
+        ? PredictionTaskStatus.SUCCEEDED
+        : PredictionTaskStatus.PARTIAL_SUCCESS;
+    return this.prisma.predictionTask.update({
+      where: { id: taskId },
+      data: {
+        modelCount: filled.length,
+        successCount: filled.length,
+        failureCount: failed.length,
+        status,
+        errorMessage: failed.length > 0 ? failed.map((p) => p.errorMessage).filter(Boolean).join('\n') || null : null,
+      },
+    });
+  }
+
+  private computeOutcome(homeScore: number, awayScore: number): 'HOME_WIN' | 'DRAW' | 'AWAY_WIN' {
+    if (homeScore > awayScore) return 'HOME_WIN';
+    if (homeScore < awayScore) return 'AWAY_WIN';
+    return 'DRAW';
+  }
+
+  private computeHandicapOutcome(homeScore: number, awayScore: number, handicapLine: number | null): 'HOME_WIN' | 'DRAW' | 'AWAY_WIN' | null {
+    if (handicapLine == null) return null;
+    const adjustedHome = homeScore + handicapLine;
+    if (adjustedHome > awayScore) return 'HOME_WIN';
+    if (adjustedHome < awayScore) return 'AWAY_WIN';
+    return 'DRAW';
+  }
+
+  private computeOverUnderOutcome(homeScore: number, awayScore: number, line: number | null): 'OVER' | 'UNDER' | 'EQUAL' | null {
+    if (line == null) return null;
+    const total = homeScore + awayScore;
+    if (total > line) return 'OVER';
+    if (total < line) return 'UNDER';
+    return 'EQUAL';
+  }
+
+  private computeHalfFullOutcome(homeHalf: number | null, awayHalf: number | null, homeScore: number, awayScore: number): string | null {
+    if (homeHalf == null || awayHalf == null) return null;
+    return `${this.computeOutcome(homeHalf, awayHalf).replace('_WIN', '')}_${this.computeOutcome(homeScore, awayScore).replace('_WIN', '')}`;
+  }
+
+  private toChineseOutcome(outcome: 'HOME_WIN' | 'DRAW' | 'AWAY_WIN'): string {
+    if (outcome === 'HOME_WIN') return '主胜';
+    if (outcome === 'AWAY_WIN') return '客胜';
+    return '平局';
+  }
+
+  private toChineseOverUnder(result: 'OVER' | 'UNDER' | 'EQUAL'): string {
+    if (result === 'OVER') return '大球';
+    if (result === 'UNDER') return '小球';
+    return '走水';
+  }
+
+  private toChineseHalfFull(result: string): string {
+    const map: Record<string, string> = { HOME: '胜', DRAW: '平', AWAY: '负' };
+    const [half, full] = result.split('_');
+    return `${map[half] ?? half}${map[full] ?? full}`;
+  }
+
+  private getConclusion(output: unknown): JsonRecord {
+    if (!output || typeof output !== 'object') return {};
+    const structured = output as JsonRecord;
+    const conclusion = structured.conclusion;
+    return conclusion && typeof conclusion === 'object' ? (conclusion as JsonRecord) : {};
+  }
+
+  private evaluatePredictionAgainstResult(
+    structuredOutput: unknown,
+    match: { homeScore: number; awayScore: number; homeHalfScore: number | null; awayHalfScore: number | null; handicapLine: number | null; overUnderLine: number | null },
+  ) {
+    const conclusion = this.getConclusion(structuredOutput);
+    const actualOutcome = this.computeOutcome(match.homeScore, match.awayScore);
+    const actualHandicap = this.computeHandicapOutcome(match.homeScore, match.awayScore, match.handicapLine);
+    const actualOverUnder = this.computeOverUnderOutcome(match.homeScore, match.awayScore, match.overUnderLine);
+    const actualHalfFull = this.computeHalfFullOutcome(match.homeHalfScore, match.awayHalfScore, match.homeScore, match.awayScore);
+    const likelyScores = Array.isArray(conclusion.likelyScores) ? (conclusion.likelyScores as JsonRecord[]) : [];
+    const goalsRange = conclusion.goalsRange && typeof conclusion.goalsRange === 'object' ? (conclusion.goalsRange as JsonRecord) : null;
+    const winDrawLossCorrect = conclusion.winLossDraw === actualOutcome;
+    const handicapCorrect = actualHandicap != null && conclusion.handicapWinLossDraw != null ? conclusion.handicapWinLossDraw === actualHandicap : false;
+    const overUnderCorrect = actualOverUnder != null && conclusion.overUnderResult != null ? conclusion.overUnderResult === actualOverUnder : false;
+    const scoreExact = likelyScores.some((score) => score.home === match.homeScore && score.away === match.awayScore);
+    const halfFullCorrect = actualHalfFull != null && conclusion.halfFullTime != null ? conclusion.halfFullTime === actualHalfFull : false;
+    const totalGoals = match.homeScore + match.awayScore;
+    const goalRangeHit = goalsRange && typeof goalsRange.min === 'number' && typeof goalsRange.max === 'number'
+      ? totalGoals >= goalsRange.min && totalGoals <= goalsRange.max
+      : false;
+    const probabilities = conclusion.winProbability && typeof conclusion.winProbability === 'object' ? (conclusion.winProbability as JsonRecord) : null;
+    const probability = probabilities
+      ? Number(actualOutcome === 'HOME_WIN' ? probabilities.home : actualOutcome === 'DRAW' ? probabilities.draw : probabilities.away)
+      : null;
+    const safeProbability = probability != null && Number.isFinite(probability) ? Math.min(Math.max(probability, 1e-6), 1) : null;
+    const homeProb = Number(probabilities?.home ?? 1 / 3);
+    const drawProb = Number(probabilities?.draw ?? 1 / 3);
+    const awayProb = Number(probabilities?.away ?? 1 / 3);
+    const brierScore = ((homeProb - (actualOutcome === 'HOME_WIN' ? 1 : 0)) ** 2
+      + (drawProb - (actualOutcome === 'DRAW' ? 1 : 0)) ** 2
+      + (awayProb - (actualOutcome === 'AWAY_WIN' ? 1 : 0)) ** 2) / 3;
+    const anyHit = winDrawLossCorrect || handicapCorrect || overUnderCorrect || scoreExact || halfFullCorrect || Boolean(goalRangeHit);
+    return {
+      winDrawLossCorrect,
+      handicapCorrect,
+      overUnderCorrect,
+      scoreExact,
+      halfFullCorrect,
+      goalRangeHit: Boolean(goalRangeHit),
+      anyHit,
+      brierScore,
+      logLoss: safeProbability != null ? -Math.log(safeProbability) : null,
+      outcomeProbability: safeProbability,
+      actualOutcome,
+      evaluationVersion: 'manual-admin-v2',
+      evaluatedAt: new Date(),
+    };
+  }
+
+  private async recalculateFinishedMatchComparisons(matchId: string) {
+    const match = await this.prisma.match.findUnique({
+      where: { id: matchId },
+      select: { id: true, status: true, homeScore: true, awayScore: true, homeHalfScore: true, awayHalfScore: true, handicapLine: true, overUnderLine: true },
+    });
+    if (!match || match.status !== 'FINISHED' || match.homeScore == null || match.awayScore == null) return [];
+    const predictions = await this.prisma.modelPrediction.findMany({
+      where: { predictionTask: { matchId }, isSuccess: true },
+      select: { id: true, structuredOutput: true },
+    });
+    const results = [] as Array<{ predictionId: string; anyHit: boolean }>;
+    for (const prediction of predictions) {
+      const accuracy = this.evaluatePredictionAgainstResult(prediction.structuredOutput, {
+        homeScore: match.homeScore,
+        awayScore: match.awayScore,
+        homeHalfScore: match.homeHalfScore,
+        awayHalfScore: match.awayHalfScore,
+        handicapLine: match.handicapLine,
+        overUnderLine: match.overUnderLine,
+      });
+      await this.prisma.modelPrediction.update({ where: { id: prediction.id }, data: accuracy });
+      results.push({ predictionId: prediction.id, anyHit: accuracy.anyHit });
+    }
+    return results;
+  }
+
   // ============================================================================
   // Manual AI Prediction Upload (人工上传AI分析结果)
   // ============================================================================
@@ -1736,25 +2010,7 @@ export class AdminService {
     for (const pred of dto.predictions) {
       const model = modelMap.get(pred.aiModelId)!;
       try {
-        const parsed = parseManualPredictionMarkdown(pred.markdownContent);
-
-        const structuredOutput = {
-          modelId: model.modelId,
-          modelDisplayName: model.displayName,
-          modelPersona: model.persona || undefined,
-          matchNature: parsed.matchNature,
-          matchNatureAssessment: parsed.matchNatureAssessment,
-          dimensionAnalysis: parsed.dimensionAnalysis,
-          strengths: parsed.strengths,
-          weaknesses: parsed.weaknesses,
-          keyVariables: parsed.keyVariables,
-          trend: parsed.trend,
-          risks: parsed.risks,
-          conclusion: parsed.conclusion,
-          informationQuality: parsed.informationQuality,
-          disclaimer: parsed.disclaimer,
-          generatedAt: new Date().toISOString(),
-        };
+        const structuredOutput = this.buildStructuredPredictionFromMarkdown(pred.markdownContent, model);
 
         await this.prisma.modelPrediction.upsert({
           where: { predictionTaskId_aiModelId: { predictionTaskId: task.id, aiModelId: model.id } },
@@ -1814,6 +2070,9 @@ export class AdminService {
     let consensus = null;
     if (successCount > 0) {
       consensus = await this.consensusService.calculateAndSave(task.id);
+    }
+    if (match.status === 'FINISHED') {
+      await this.recalculateFinishedMatchComparisons(match.id);
     }
 
     await this.writeAudit(meta, 'MANUAL_PREDICTION_UPLOAD', 'PredictionTask', task.id, null, {

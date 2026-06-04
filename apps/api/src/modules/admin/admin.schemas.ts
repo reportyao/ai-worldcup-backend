@@ -129,6 +129,18 @@ export const AdminMatchUpdateSchema = AdminMatchBaseSchema.partial().superRefine
 );
 export type AdminMatchUpdateDto = z.infer<typeof AdminMatchUpdateSchema>;
 
+export const AdminMatchResultUpdateSchema = z.object({
+  status: z.enum(['SCHEDULED', 'LIVE', 'FINISHED', 'POSTPONED', 'CANCELED']).default('FINISHED'),
+  homeScore: z.coerce.number().int().min(0).max(99),
+  awayScore: z.coerce.number().int().min(0).max(99),
+  homeHalfScore: ScoreSchema,
+  awayHalfScore: ScoreSchema,
+  handicapLine: z.union([z.coerce.number(), z.literal(''), z.null()]).optional().transform((value) => (value === '' ? null : value)),
+  overUnderLine: z.union([z.coerce.number(), z.literal(''), z.null()]).optional().transform((value) => (value === '' ? null : value)),
+  updateSportteryMarket: z.coerce.boolean().default(true),
+});
+export type AdminMatchResultUpdateDto = z.infer<typeof AdminMatchResultUpdateSchema>;
+
 export const AdminMatchImportSchema = z.object({
   competitionId: z.string().min(1),
   fileName: z.string().min(1),
