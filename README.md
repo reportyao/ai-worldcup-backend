@@ -23,6 +23,20 @@
 | **命中判定系统** | `scorecard-update` 与 `review-generator` 协同工作，实现比赛维度（共识命中）与模型维度（个人命中）的双重统计。 |
 | **7日统计 API** | `GET /matches/stats/seven-days` 接口提供最近 7 天的比赛总数、红单数、黑单数及红单率。 |
 
+## 2026-06-04 更新记录
+
+本次更新围绕管理后台比赛口径、完赛赛果完整性和外部自建 AI 预测数据接入进行了增强。后端已经将今日比赛、近 3 日完赛、预测任务候选比赛以及自建 AI 预测接口的数据口径统一到服务层，避免前端页面各自重复过滤导致展示不一致。
+
+| 更新项 | 后端能力 | 涉及接口或模块 |
+| --- | --- | --- |
+| **今日比赛口径** | 今日比赛仅返回当日尚未完赛、尚未开赛或仍处于可预测状态的赛事，已经完赛的比赛不再混入今日待预测列表。 | `AdminService.getSportteryMatchView`、竞彩健康状态统计 |
+| **近 3 日完赛口径** | 已完赛比赛统一进入近 3 日完赛列表，便于运营集中核验赛果和预测表现。 | `AdminService.getSportteryMatchView` |
+| **完整赛果输出** | 完赛比赛返回胜平负、让球胜平负、大小球、比分、半全场、半场比分等完整赛果字段，并附带模型预测与命中评估对比。 | `sportteryMarkets`、`predictionTasks`、`ModelPrediction.review` |
+| **自建 AI 预测接入** | 新增飞鲸 / Bet007 自建 AI 预测服务，按接口 `key` 拉取预测数据，支持 gzip/JSON 解析、5 分钟缓存、外部比赛 ID 优先匹配、本地队名和开赛时间兜底匹配。 | `FeijingAiPredictionService` |
+| **后台与前台接口** | 后台可通过管理接口查看自建 AI 预测匹配结果，前台可通过公开接口展示自建 AI 预测列表。 | `GET /api/admin/custom-ai-predictions`、`GET /api/custom-ai-predictions` |
+
+自建 AI 预测接口默认读取 `http://interface.titan007.com/football/ai.aspx`，默认密钥为本次配置的 `880306AAC9A249EA`。生产环境可以通过 `FEIJING_AI_URL`、`BET007_AI_URL`、`FEIJING_AI_KEY` 或 `BET007_AI_KEY` 覆盖默认配置，以便在不同供应商或密钥切换时无需修改代码。
+
 ## 技术栈
 
 | 层次 | 技术 |
@@ -41,6 +55,8 @@
 | `SPORTTERY_RESULT_CHECK_CRON` | `*/10 * * * *` | 竞彩赛果检查定时表达式（每10分钟）。 |
 | `SPORTTERY_SYNC_DAYS_AHEAD` | `3` | 向后同步的天数。 |
 | `SPORTTERY_AUTO_ENQUEUE_PREDICTIONS` | `true` | 是否自动将新比赛入队 AI 预测。 |
+| `FEIJING_AI_URL` / `BET007_AI_URL` | `http://interface.titan007.com/football/ai.aspx` | 自建 AI 预测接口地址，可按供应商实际地址覆盖。 |
+| `FEIJING_AI_KEY` / `BET007_AI_KEY` | `880306AAC9A249EA` | 自建 AI 预测接口密钥，请优先在生产环境变量中维护。 |
 
 ## 部署与运维
 
