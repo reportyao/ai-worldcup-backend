@@ -264,7 +264,7 @@ export const AdminPromptTemplateUpdateSchema = AdminPromptTemplateCreateSchema.p
 export type AdminPromptTemplateUpdateDto = z.infer<typeof AdminPromptTemplateUpdateSchema>;
 
 export const AdminModelPredictionUpdateSchema = z.object({
-  structuredOutput: StructuredPredictionSchema,
+  structuredOutput: StructuredPredictionSchema.optional().nullable(),
   rawOutput: optionalTrimmedString,
   promptVersion: optionalTrimmedString,
   promptSnapshot: optionalTrimmedString,

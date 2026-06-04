@@ -907,7 +907,7 @@ export class AdminService {
     const updated = await this.prisma.modelPrediction.update({
       where: { id },
       data: {
-        structuredOutput: this.toPrismaJson(dto.structuredOutput),
+        ...(dto.structuredOutput !== undefined ? { structuredOutput: this.toPrismaJson(dto.structuredOutput) } : {}),
         rawOutput: dto.rawOutput ?? null,
         promptVersion: dto.promptVersion ?? before.promptVersion,
         promptSnapshot: dto.promptSnapshot ?? before.promptSnapshot,
