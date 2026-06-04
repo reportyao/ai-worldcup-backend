@@ -79,6 +79,19 @@ interface RequestMeta {
 
 type JsonRecord = Record<string, unknown>;
 
+const SPORTTERY_SYNC_CRON_DEFAULT = '0 19,21,2,7,16 * * *';
+const LEGACY_SPORTTERY_DAILY_SYNC_CRON = '0 0,6,12 * * *';
+const LEGACY_SPORTTERY_RESULT_CHECK_CRON = '*/10 * * * *';
+
+function resolveSportterySchedulerCron(value: string | undefined, fallback = SPORTTERY_SYNC_CRON_DEFAULT): string {
+  const configured = value?.trim();
+  if (!configured) return fallback;
+  if (configured === LEGACY_SPORTTERY_DAILY_SYNC_CRON || configured === LEGACY_SPORTTERY_RESULT_CHECK_CRON) {
+    return fallback;
+  }
+  return configured;
+}
+
 const COMPETITION_INCLUDE = {
   _count: { select: { matches: true } },
 } satisfies Prisma.CompetitionInclude;
@@ -1305,8 +1318,8 @@ export class AdminService {
 
     // 定时任务配置信息
     const schedulerConfig = {
-      sportteryDailySyncCron: process.env.SPORTTERY_DAILY_SYNC_CRON ?? '0 0,6,12 * * *',
-      sportteryResultCheckCron: process.env.SPORTTERY_RESULT_CHECK_CRON ?? '*/10 * * * *',
+      sportteryDailySyncCron: resolveSportterySchedulerCron(process.env.SPORTTERY_DAILY_SYNC_CRON),
+      sportteryResultCheckCron: resolveSportterySchedulerCron(process.env.SPORTTERY_RESULT_CHECK_CRON),
       sportterySyncDaysAhead: Number(process.env.SPORTTERY_SYNC_DAYS_AHEAD ?? 3),
       predictionSchedulerCron: process.env.PREDICTION_SCHEDULER_CRON ?? '*/5 * * * *',
       scorecardScanCron: process.env.SCORECARD_SCAN_CRON ?? '*/15 * * * *',
@@ -1384,30 +1397,31 @@ export class AdminService {
    */
   async listSportteryMatchView() {
     const now = new Date();
-    // 北京时间今日 00:00 ~ 23:59
+    // 北京时间今日 00:00 ~ 23:59。竞彩销售日与自然比赛日可能跨日，后台“今日比赛”同时覆盖：
+    // 1) 今日销售日的未完赛竞彩；2) 自然日今日开球、但销售日可能属于昨日的未完赛竞彩。
     const cstOffset = 8 * 60 * 60 * 1000;
     const todayStartCst = new Date(Math.floor((now.getTime() + cstOffset) / 86400000) * 86400000 - cstOffset);
     const todayEndCst = new Date(todayStartCst.getTime() + 86400000);
     const todayStr = new Date(now.getTime() + cstOffset).toISOString().slice(0, 10);
+    const todayPendingMarketWhere: Prisma.SportteryMatchMarketWhereInput = {
+      scoreResult: null,
+      status: { not: 'FINISHED' },
+      OR: [
+        { saleDate: todayStr },
+        { kickoffAt: { gte: todayStartCst, lt: todayEndCst } },
+      ],
+      match: {
+        is: {
+          status: { not: 'FINISHED' },
+        },
+      },
+    };
     // 近3天完赛
     const threeDaysAgo = new Date(now.getTime() - 3 * 24 * 60 * 60 * 1000);
 
     const [todayMarkets, recentFinished] = await this.prisma.$transaction([
       this.prisma.sportteryMatchMarket.findMany({
-        where: {
-          saleDate: todayStr,
-          scoreResult: null,
-          status: { not: 'FINISHED' },
-          OR: [
-            { kickoffAt: null },
-            { kickoffAt: { gte: now, lt: todayEndCst } },
-          ],
-          match: {
-            is: {
-              status: { not: 'FINISHED' },
-            },
-          },
-        },
+        where: todayPendingMarketWhere,
         include: {
           match: {
             include: {
@@ -1560,10 +1574,12 @@ export class AdminService {
     const todayEndCst = new Date(todayStartCst.getTime() + 86400000);
     const oneDayAgo = new Date(now.getTime() - 24 * 60 * 60 * 1000);
     const pendingTodayMarketWhere: Prisma.SportteryMatchMarketWhereInput = {
-      saleDate: todayStr,
       scoreResult: null,
       status: { not: 'FINISHED' },
-      OR: [{ kickoffAt: null }, { kickoffAt: { gte: now, lt: todayEndCst } }],
+      OR: [
+        { saleDate: todayStr },
+        { kickoffAt: { gte: todayStartCst, lt: todayEndCst } },
+      ],
       match: { is: { status: { not: 'FINISHED' } } },
     };
 

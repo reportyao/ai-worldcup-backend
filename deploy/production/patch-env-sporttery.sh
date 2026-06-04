@@ -28,20 +28,35 @@ set_env_value() {
   fi
 }
 
+get_env_value() {
+  local key="$1"
+  grep -E "^${key}=" "$ENV_FILE" 2>/dev/null | tail -n 1 | cut -d= -f2- | xargs
+}
+
+ensure_sporttery_cron_value() {
+  local key="$1"
+  local desired="0 19,21,2,7,16 * * *"
+  local current
+  current="$(get_env_value "$key")"
+
+  if [ -z "$current" ]; then
+    set_env_value "$key" "$desired"
+    return
+  fi
+
+  if [ "$current" = "0 0,6,12 * * *" ] || [ "$current" = "*/10 * * * *" ]; then
+    set_env_value "$key" "$desired"
+  fi
+}
+
 has_env_value() {
   local key="$1"
   grep -q "^${key}=.\+" "$ENV_FILE" 2>/dev/null
 }
 
-# 竞彩赛程定时同步（每天0点、6点、12点）
-if ! has_env_value SPORTTERY_DAILY_SYNC_CRON; then
-  set_env_value SPORTTERY_DAILY_SYNC_CRON "0 0,6,12 * * *"
-fi
-
-# 竞彩赛果定时检查（每10分钟）
-if ! has_env_value SPORTTERY_RESULT_CHECK_CRON; then
-  set_env_value SPORTTERY_RESULT_CHECK_CRON "*/10 * * * *"
-fi
+# 竞彩赛程与赛果定时同步（服务器 UTC：19、21、2、7、16 点；对应北京时间 03:00、05:00、10:00、15:00、24:00）
+ensure_sporttery_cron_value SPORTTERY_DAILY_SYNC_CRON
+ensure_sporttery_cron_value SPORTTERY_RESULT_CHECK_CRON
 
 # 同步未来几天数据
 if ! has_env_value SPORTTERY_SYNC_DAYS_AHEAD; then

@@ -343,7 +343,7 @@ export class FeijingAiPredictionService {
   private normalizeName(name: string) {
     return name
       .toLowerCase()
-      .replace(/[\s\-_.·•()（）\[\]【】]/g, '')
+      .replace(/[\s_.·•()（）[\]【】-]/g, '')
       .replace(/足球俱乐部|俱乐部|fc|cf|sc|afc|team/g, '')
       .trim();
   }

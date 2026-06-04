@@ -299,7 +299,7 @@ function parseConclusion(text: string): ParsedManualPrediction['conclusion'] {
     const hftMatch = hftText.match(/(主|平|客)\s*[/／]\s*(主|平|客)/);
     if (hftMatch) {
       const map: Record<string, string> = { '主': 'HOME', '平': 'DRAW', '客': 'AWAY' };
-      result.halfFullTime = `${map[hftMatch[1]]}_${map[hftMatch[2]]}` as any;
+      result.halfFullTime = `${map[hftMatch[1]]}_${map[hftMatch[2]]}`;
     }
   }
 

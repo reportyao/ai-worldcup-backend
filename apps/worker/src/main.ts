@@ -3,7 +3,8 @@ import * as path from 'path';
 dotenv.config({ path: path.resolve(process.cwd(), '../../.env') });
 
 
-import { Job, Queue, Worker } from 'bullmq';
+import type { Job, JobsOptions } from 'bullmq';
+import { Queue, Worker } from 'bullmq';
 import { Redis } from 'ioredis';
 
 import { processConsensusCalculator } from './jobs/consensus-calculator.job.js';
@@ -59,6 +60,67 @@ function createConnection(): Redis {
 
 const workers: Worker[] = [];
 const queues: Queue[] = [];
+
+const SPORTTERY_SYNC_CRON_DEFAULT = '0 19,21,2,7,16 * * *';
+const LEGACY_SPORTTERY_DAILY_SYNC_CRON = '0 0,6,12 * * *';
+const LEGACY_SPORTTERY_RESULT_CHECK_CRON = '*/10 * * * *';
+
+type CronRepeatableJobOptions = JobsOptions & {
+  jobId: string;
+  repeat: { pattern: string };
+};
+
+function resolveSportteryCron(envKey: string, defaultPattern = SPORTTERY_SYNC_CRON_DEFAULT): string {
+  const configured = process.env[envKey]?.trim();
+  if (!configured) return defaultPattern;
+
+  if (
+    configured === LEGACY_SPORTTERY_DAILY_SYNC_CRON ||
+    configured === LEGACY_SPORTTERY_RESULT_CHECK_CRON
+  ) {
+    logger.warn(
+      { envKey, configured, defaultPattern },
+      'legacy sporttery cron detected; using current default cadence instead',
+    );
+    return defaultPattern;
+  }
+
+  return configured;
+}
+
+async function registerRepeatableJob(
+  queue: Queue,
+  jobName: string,
+  data: Record<string, unknown>,
+  options: CronRepeatableJobOptions,
+): Promise<void> {
+  await removeStaleRepeatableJobs(queue, jobName, options.repeat.pattern);
+  await queue.add(jobName, data, options);
+}
+
+async function removeStaleRepeatableJobs(
+  queue: Queue,
+  jobName: string,
+  expectedPattern: string,
+): Promise<void> {
+  const repeatableJobs = await queue.getRepeatableJobs(0, -1, true);
+  for (const repeatableJob of repeatableJobs) {
+    if (repeatableJob.name !== jobName) continue;
+    if (repeatableJob.pattern === expectedPattern) continue;
+
+    const removed = await queue.removeRepeatableByKey(repeatableJob.key);
+    logger.warn(
+      {
+        queue: queue.name,
+        jobName,
+        removed,
+        stalePattern: repeatableJob.pattern,
+        expectedPattern,
+      },
+      'removed stale repeatable job before registering scheduler',
+    );
+  }
+}
 
 async function registerPredictionScheduler(): Promise<void> {
   const queue = new Queue(QueueName.PredictionGenerator, { connection: createConnection() });
@@ -160,17 +222,18 @@ async function registerDataSyncSchedulers(): Promise<void> {
  * 竞彩数据自动同步定时任务注册
  *
  * 自动化闭环：
- * - DAILY_FIXTURES: 每天凌晨3:00、5:00、上午10:00、15:00、24:00（北京时间）自动同步当天+未杣3天竞彩赛程，新增比赛自动入队AI预测
+ * - DAILY_FIXTURES: 每天凌晨3:00、5:00、上午10:00、15:00、24:00（北京时间）自动同步当天+未来3天竞彩赛程，新增比赛自动入队AI预测
  * - RESULT_CHECK: 同一时间点检查赛果，完赛后自动触发评分和复盘
  */
 async function registerSportteryAutoSyncSchedulers(): Promise<void> {
   const queue = new Queue(QueueName.SportteryAutoSync, { connection: createConnection() });
   queues.push(queue);
 
-  // 1. 每天定时同步竞彩赛程（当天+未杣3天）
+  // 1. 每天定时同步竞彩赛程（当天+未来3天）
   //    北京时间 3:00, 5:00, 10:00, 15:00, 24:00(=次日0:00)
   //    对应 UTC: 19:00(前一天), 21:00(前一天), 2:00, 7:00, 16:00
-  await queue.add(
+  await registerRepeatableJob(
+    queue,
     'sporttery-daily-fixtures',
     {
       mode: 'DAILY_FIXTURES',
@@ -178,7 +241,7 @@ async function registerSportteryAutoSyncSchedulers(): Promise<void> {
       enqueuePredictions: true,
     },
     {
-      repeat: { pattern: process.env.SPORTTERY_DAILY_SYNC_CRON ?? '0 19,21,2,7,16 * * *' },
+      repeat: { pattern: resolveSportteryCron('SPORTTERY_DAILY_SYNC_CRON') },
       jobId: 'sporttery-daily-fixtures-repeat',
       attempts: 3,
       backoff: { type: 'exponential', delay: 60_000 },
@@ -189,14 +252,15 @@ async function registerSportteryAutoSyncSchedulers(): Promise<void> {
 
   // 2. 同一时间点检查赛果更新（与 DAILY_FIXTURES 同步）
   //    北京时间 3:00, 5:00, 10:00, 15:00, 24:00
-  await queue.add(
+  await registerRepeatableJob(
+    queue,
     'sporttery-result-check',
     {
       mode: 'RESULT_CHECK',
       enqueuePredictions: false,
     },
     {
-      repeat: { pattern: process.env.SPORTTERY_RESULT_CHECK_CRON ?? '0 19,21,2,7,16 * * *' },
+      repeat: { pattern: resolveSportteryCron('SPORTTERY_RESULT_CHECK_CRON') },
       jobId: 'sporttery-result-check-repeat',
       attempts: 2,
       backoff: { type: 'exponential', delay: 30_000 },

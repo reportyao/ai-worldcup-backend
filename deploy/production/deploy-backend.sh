@@ -37,6 +37,24 @@ set_env_value() {
   chmod 600 .env
 }
 
+ensure_sporttery_cron_value() {
+  local key="$1"
+  local desired="0 19,21,2,7,16 * * *"
+  local current
+  current="$(env_value "$key" | xargs)"
+
+  if [ -z "$current" ]; then
+    set_env_value "$key" "$desired"
+    log "Backfilled $key in existing .env."
+    return
+  fi
+
+  if [ "$current" = "0 0,6,12 * * *" ] || [ "$current" = "*/10 * * * *" ]; then
+    set_env_value "$key" "$desired"
+    log "Migrated legacy $key=$current to $desired in existing .env."
+  fi
+}
+
 ensure_production_env() {
   if [ ! -f .env ]; then
     return
@@ -73,15 +91,9 @@ ensure_production_env() {
     log "Set AI_ALLOW_MOCK=false in existing production .env."
   fi
 
-  # 竞彩自动同步环境变量
-  if ! has_env_value SPORTTERY_DAILY_SYNC_CRON; then
-    set_env_value SPORTTERY_DAILY_SYNC_CRON "0 0,6,12 * * *"
-    log "Backfilled SPORTTERY_DAILY_SYNC_CRON in existing .env."
-  fi
-  if ! has_env_value SPORTTERY_RESULT_CHECK_CRON; then
-    set_env_value SPORTTERY_RESULT_CHECK_CRON "*/10 * * * *"
-    log "Backfilled SPORTTERY_RESULT_CHECK_CRON in existing .env."
-  fi
+  # 竞彩自动同步环境变量。Cron 使用服务器 UTC 时区，对应北京时间 03:00、05:00、10:00、15:00、24:00。
+  ensure_sporttery_cron_value SPORTTERY_DAILY_SYNC_CRON
+  ensure_sporttery_cron_value SPORTTERY_RESULT_CHECK_CRON
   if ! has_env_value SPORTTERY_SYNC_DAYS_AHEAD; then
     set_env_value SPORTTERY_SYNC_DAYS_AHEAD "3"
     log "Backfilled SPORTTERY_SYNC_DAYS_AHEAD in existing .env."
@@ -132,8 +144,8 @@ API_FOOTBALL_LEAGUE_IDS=
 DATA_REFRESH_CRON_FIXTURES=0 */6 * * *
 DATA_REFRESH_CRON_LIVE=*/2 * * * *
 PREDICTION_SCHEDULER_WINDOW_MINUTES=10
-SPORTTERY_DAILY_SYNC_CRON=0 0,6,12 * * *
-SPORTTERY_RESULT_CHECK_CRON=*/10 * * * *
+SPORTTERY_DAILY_SYNC_CRON=0 19,21,2,7,16 * * *
+SPORTTERY_RESULT_CHECK_CRON=0 19,21,2,7,16 * * *
 SPORTTERY_SYNC_DAYS_AHEAD=3
 SPORTTERY_AUTO_ENQUEUE_PREDICTIONS=true
 WECHAT_MP_APPID=

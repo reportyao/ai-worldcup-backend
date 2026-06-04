@@ -430,7 +430,7 @@ function toPrismaJson(value: unknown): Prisma.InputJsonValue {
 }
 
 function parseScore(scoreResult: string): { home: number; away: number } | null {
-  const match = scoreResult.match(/(\d+)\s*[:\-]\s*(\d+)/);
+  const match = scoreResult.match(/(\d+)\s*[:-]\s*(\d+)/);
   if (!match) return null;
   return { home: Number(match[1]), away: Number(match[2]) };
 }

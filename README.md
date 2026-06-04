@@ -51,8 +51,8 @@
 
 | 变量 | 默认值 | 说明 |
 | --- | --- | --- |
-| `SPORTTERY_DAILY_SYNC_CRON` | `0 0,6,12 * * *` | 竞彩赛程同步定时表达式（每天0/6/12点）。 |
-| `SPORTTERY_RESULT_CHECK_CRON` | `*/10 * * * *` | 竞彩赛果检查定时表达式（每10分钟）。 |
+| `SPORTTERY_DAILY_SYNC_CRON` | `0 19,21,2,7,16 * * *` | 竞彩赛程同步定时表达式。服务器按 UTC 执行，对应北京时间 03:00、05:00、10:00、15:00、24:00。 |
+| `SPORTTERY_RESULT_CHECK_CRON` | `0 19,21,2,7,16 * * *` | 竞彩赛果检查定时表达式。服务器按 UTC 执行，对应北京时间 03:00、05:00、10:00、15:00、24:00。 |
 | `SPORTTERY_SYNC_DAYS_AHEAD` | `3` | 向后同步的天数。 |
 | `SPORTTERY_AUTO_ENQUEUE_PREDICTIONS` | `true` | 是否自动将新比赛入队 AI 预测。 |
 | `FEIJING_AI_URL` / `BET007_AI_URL` | `http://interface.titan007.com/football/ai.aspx` | 自建 AI 预测接口地址，可按供应商实际地址覆盖。 |
@@ -61,7 +61,7 @@
 ## 部署与运维
 
 ### 自动部署
-代码推送到 `main` 分支后，GitHub Actions 会自动部署到生产服务器。部署脚本 `deploy/production/deploy-backend.sh` 会自动补全缺失的竞彩环境变量。
+代码推送到 `main` 分支后，GitHub Actions 会自动部署到生产服务器。部署脚本 `deploy/production/deploy-backend.sh` 会自动补全缺失的竞彩环境变量，并将旧的 `0 0,6,12 * * *` 或 `*/10 * * * *` 频次迁移为新的固定北京时间执行点。Worker 启动时会在注册新定时任务前清理同名旧 repeatable job，避免生产 Redis 中残留的旧 10 分钟任务继续执行。
 
 ### 手动补全环境变量
 若需手动在服务器上配置最新环境变量，可执行：
