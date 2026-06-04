@@ -76,6 +76,21 @@ type TeaserData = {
   hasHighConsensus: boolean;
   modelNames: string[];
   consensusLevel: string | null;
+  /** 各模型战绩摘要（用于未解锁态展示，引导付费） */
+  modelStats: Array<{
+    displayName: string;
+    description: string | null;
+    /** 总场次 */
+    totalMatches: number;
+    /** 红单数 */
+    anyHit: number;
+    /** 红单率 */
+    hitRate: number;
+    /** 近10场结果序列 R=红 M=黑 */
+    recentForm: string;
+    /** 当前连红数 */
+    streak: number;
+  }>;
 };
 
 @Injectable()
@@ -234,6 +249,7 @@ export class MatchesService {
               displayName: prediction.aiModel.displayName,
               persona: prediction.aiModel.persona,
               provider: prediction.aiModel.provider,
+              description: prediction.aiModel.description ?? null,
             },
             structuredOutput: prediction.structuredOutput,
             rawOutput: prediction.rawOutput ?? null,
@@ -706,11 +722,42 @@ export class MatchesService {
       },
       orderBy: [{ version: 'desc' }, { updatedAt: 'desc' }],
     });
-
     if (!task) return null;
-
     const summary = task.consensusSummary as Record<string, unknown> | null;
     const sharedKeyVariables = Array.isArray(summary?.sharedKeyVariables) ? summary.sharedKeyVariables : [];
+
+    // 查询各模型战绩（OVERALL scope）
+    const modelIds = task.predictions.map((p) => p.aiModel.id);
+    const scorecards = modelIds.length > 0
+      ? await this.prisma.modelScorecard.findMany({
+          where: { aiModelId: { in: modelIds }, scopeType: 'OVERALL', scopeId: '' },
+        })
+      : [];
+    const scorecardMap = new Map(scorecards.map((s) => [s.aiModelId, s]));
+
+    // 计算连红数：从 recentForm 末尾往前数连续 R 的数量
+    const calcStreak = (form: string | null): number => {
+      if (!form) return 0;
+      let count = 0;
+      for (let i = form.length - 1; i >= 0; i--) {
+        if (form[i] === 'R') count++;
+        else break;
+      }
+      return count;
+    };
+
+    const modelStats = task.predictions.map((prediction) => {
+      const sc = scorecardMap.get(prediction.aiModel.id);
+      return {
+        displayName: prediction.aiModel.displayName,
+        description: prediction.aiModel.description ?? null,
+        totalMatches: sc?.totalMatches ?? 0,
+        anyHit: sc?.anyHit ?? 0,
+        hitRate: sc?.hitRate ?? 0,
+        recentForm: sc?.recentForm ?? '',
+        streak: calcStreak(sc?.recentForm ?? null),
+      };
+    });
 
     return {
       modelCount: task.predictions.length,
@@ -718,6 +765,7 @@ export class MatchesService {
       hasHighConsensus: task.consensusLevel === 'HIGH',
       modelNames: task.predictions.map((prediction) => prediction.aiModel.displayName),
       consensusLevel: task.consensusLevel,
+      modelStats,
     };
   }
 }
