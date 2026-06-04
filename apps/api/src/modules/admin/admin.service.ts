@@ -53,7 +53,9 @@ import type {
   AdminPromptTemplateListQuery,
   AdminPromptTemplateUpdateDto,
   AdminModelPredictionUpdateDto,
+  AdminManualPredictionUploadDto,
 } from './admin.schemas.js';
+import { parseManualPredictionMarkdown } from './manual-prediction-parser.js';
 
 interface RequestWithAdmin extends Request {
   adminMeta?: RequestMeta;
@@ -1553,6 +1555,161 @@ export class AdminService {
       })),
       syncSuccessRate,
       lastSyncAgeMinutes: lastSyncAge !== null ? Math.round(lastSyncAge / 60000) : null,
+    };
+  }
+
+  // ============================================================================
+  // Manual AI Prediction Upload (人工上传AI分析结果)
+  // ============================================================================
+
+  async manualUploadPrediction(dto: AdminManualPredictionUploadDto, meta: RequestMeta) {
+    const match = await this.prisma.match.findUnique({
+      where: { id: dto.matchId },
+      include: { homeTeam: true, awayTeam: true },
+    });
+    if (!match) throw new NotFoundException('Match not found');
+
+    // 验证所有 aiModelId 存在
+    const modelIds = dto.predictions.map(p => p.aiModelId);
+    const models = await this.prisma.aiModel.findMany({
+      where: { id: { in: modelIds } },
+    });
+    if (models.length !== modelIds.length) {
+      const foundIds = new Set(models.map(m => m.id));
+      const missing = modelIds.filter(id => !foundIds.has(id));
+      throw new BadRequestException(`AI models not found: ${missing.join(', ')}`);
+    }
+    const modelMap = new Map(models.map(m => [m.id, m]));
+
+    // 创建或更新 PredictionTask
+    const version = dto.version as PredictionVersion;
+    const task = await this.prisma.predictionTask.upsert({
+      where: { matchId_version: { matchId: dto.matchId, version } },
+      create: {
+        matchId: dto.matchId,
+        version,
+        trigger: PredictionTrigger.MANUAL,
+        status: PredictionTaskStatus.SUCCEEDED,
+        modelCount: dto.predictions.length,
+        successCount: dto.predictions.length,
+        failureCount: 0,
+        errorMessage: null,
+      },
+      update: {
+        trigger: PredictionTrigger.MANUAL,
+        status: PredictionTaskStatus.SUCCEEDED,
+        modelCount: dto.predictions.length,
+        successCount: dto.predictions.length,
+        failureCount: 0,
+        errorMessage: null,
+      },
+    });
+
+    // 为每个模型解析 Markdown 并创建 ModelPrediction
+    const results: Array<{ aiModelId: string; modelName: string; success: boolean; error?: string }> = [];
+
+    for (const pred of dto.predictions) {
+      const model = modelMap.get(pred.aiModelId)!;
+      try {
+        const parsed = parseManualPredictionMarkdown(pred.markdownContent);
+
+        const structuredOutput = {
+          modelId: model.modelId,
+          modelDisplayName: model.displayName,
+          modelPersona: model.persona || undefined,
+          matchNature: parsed.matchNature,
+          matchNatureAssessment: parsed.matchNatureAssessment,
+          dimensionAnalysis: parsed.dimensionAnalysis,
+          strengths: parsed.strengths,
+          weaknesses: parsed.weaknesses,
+          keyVariables: parsed.keyVariables,
+          trend: parsed.trend,
+          risks: parsed.risks,
+          conclusion: parsed.conclusion,
+          informationQuality: parsed.informationQuality,
+          disclaimer: parsed.disclaimer,
+          generatedAt: new Date().toISOString(),
+        };
+
+        await this.prisma.modelPrediction.upsert({
+          where: { predictionTaskId_aiModelId: { predictionTaskId: task.id, aiModelId: model.id } },
+          create: {
+            predictionTaskId: task.id,
+            aiModelId: model.id,
+            structuredOutput: this.toPrismaJson(structuredOutput),
+            rawOutput: pred.markdownContent,
+            promptVersion: 'manual-upload',
+            promptSnapshot: '人工上传',
+            latencyMs: null,
+            inputTokens: null,
+            outputTokens: null,
+            isSuccess: true,
+            errorMessage: null,
+            generatedAt: new Date(),
+          },
+          update: {
+            structuredOutput: this.toPrismaJson(structuredOutput),
+            rawOutput: pred.markdownContent,
+            promptVersion: 'manual-upload',
+            promptSnapshot: '人工上传',
+            isSuccess: true,
+            errorMessage: null,
+            generatedAt: new Date(),
+          },
+        });
+
+        results.push({ aiModelId: model.id, modelName: model.displayName, success: true });
+      } catch (error) {
+        const errMsg = error instanceof Error ? error.message : String(error);
+        results.push({ aiModelId: model.id, modelName: model.displayName, success: false, error: errMsg });
+      }
+    }
+
+    // 更新任务统计
+    const successCount = results.filter(r => r.success).length;
+    const failureCount = results.filter(r => !r.success).length;
+    const finalStatus = successCount === 0
+      ? PredictionTaskStatus.FAILED
+      : failureCount === 0
+        ? PredictionTaskStatus.SUCCEEDED
+        : PredictionTaskStatus.PARTIAL_SUCCESS;
+
+    await this.prisma.predictionTask.update({
+      where: { id: task.id },
+      data: {
+        modelCount: dto.predictions.length,
+        successCount,
+        failureCount,
+        status: finalStatus,
+        errorMessage: failureCount > 0 ? results.filter(r => !r.success).map(r => `${r.modelName}: ${r.error}`).join('\n') : null,
+      },
+    });
+
+    // 重新计算共识
+    let consensus = null;
+    if (successCount > 0) {
+      consensus = await this.consensusService.calculateAndSave(task.id);
+    }
+
+    await this.writeAudit(meta, 'MANUAL_PREDICTION_UPLOAD', 'PredictionTask', task.id, null, {
+      matchId: dto.matchId,
+      version: dto.version,
+      modelCount: dto.predictions.length,
+      successCount,
+      failureCount,
+      results,
+    });
+
+    return {
+      task: await this.prisma.predictionTask.findUnique({
+        where: { id: task.id },
+        include: {
+          match: { include: { competition: true, homeTeam: true, awayTeam: true } },
+          predictions: { include: { aiModel: true }, orderBy: { generatedAt: 'desc' } },
+        },
+      }),
+      consensus,
+      results,
     };
   }
 }

@@ -542,7 +542,7 @@ async function syncDailyFixtures(payload: SportterySyncPayload, summary: Sportte
 // ─────────────────────────────────────────────────────────────────────────────
 
 async function checkResults(payload: SportterySyncPayload, summary: SportteryAutoSyncSummary): Promise<void> {
-  // 查找最近3天内状态为 SCHEDULED 或 LIVE 的比赛对应的销售日期
+  // 1. 查找最近3天内状态为 SCHEDULED 或 LIVE 的比赛对应的销售日期
   const threeDaysAgo = new Date(Date.now() - 3 * 24 * 60 * 60 * 1000);
   const pendingMarkets = await prisma.sportteryMatchMarket.findMany({
     where: {
@@ -559,10 +559,27 @@ async function checkResults(payload: SportterySyncPayload, summary: SportteryAut
   });
 
   const saleDates = [...new Set(pendingMarkets.map((m) => m.saleDate))];
-  if (saleDates.length === 0) {
-    // 也检查当天
-    saleDates.push(formatDate(new Date()));
+
+  // 2. 始终包含今天和昨天的日期，确保跨天赛果能被拉取
+  const today = formatDate(new Date());
+  const yesterday = formatDate(new Date(Date.now() - 24 * 60 * 60 * 1000));
+  if (!saleDates.includes(today)) saleDates.push(today);
+  if (!saleDates.includes(yesterday)) saleDates.push(yesterday);
+
+  // 3. 同时查找 match 表中仍为 SCHEDULED 状态但 kickoffAt 已过的比赛对应的 saleDate
+  const pendingMatches = await prisma.match.findMany({
+    where: {
+      status: { in: ['SCHEDULED', 'LIVE'] },
+      kickoffAt: { gte: threeDaysAgo, lte: new Date() },
+    },
+    select: { matchday: true },
+  });
+  for (const m of pendingMatches) {
+    if (m.matchday && !saleDates.includes(m.matchday)) {
+      saleDates.push(m.matchday);
+    }
   }
+
   summary.saleDates = saleDates;
 
   for (const saleDate of saleDates) {
@@ -798,7 +815,44 @@ async function upsertSportteryMatchAndTrigger(
 
 async function updateMatchResult(item: SportteryRawMatch, summary: SportteryAutoSyncSummary): Promise<void> {
   const externalId = `sporttery:football:${item.saleDate}:${item.matchNo}`;
-  const match = await prisma.match.findUnique({ where: { externalId } });
+  let match = await prisma.match.findUnique({ where: { externalId } });
+
+  // 跨 saleDate 匹配：体彩赛果数据的 saleDate 可能与原始入库时的 saleDate 不同
+  // 例如：比赛入库时 saleDate=2026-06-03，但赛果在 saleDate=2026-06-04 的接口中返回
+  if (!match) {
+    // 通过 matchNo 在近几天的 externalId 中搜索
+    const matchNoSuffix = `:${item.matchNo}`;
+    const candidates = await prisma.match.findMany({
+      where: {
+        externalId: { endsWith: matchNoSuffix },
+        status: { in: ['SCHEDULED', 'LIVE'] },
+      },
+    });
+    if (candidates.length === 1) {
+      match = candidates[0];
+    } else if (candidates.length > 1) {
+      // 多个候选时，选择 kickoffAt 最接近当前时间的
+      match = candidates.sort((a, b) =>
+        Math.abs(a.kickoffAt.getTime() - Date.now()) - Math.abs(b.kickoffAt.getTime() - Date.now())
+      )[0];
+    }
+  }
+
+  // 还是找不到，尝试通过 sportteryMatchMarket 的 matchId 关联
+  if (!match) {
+    const market = await prisma.sportteryMatchMarket.findFirst({
+      where: {
+        provider: 'sporttery',
+        matchNo: item.matchNo,
+        matchId: { not: null },
+      },
+      orderBy: { syncedAt: 'desc' },
+    });
+    if (market?.matchId) {
+      match = await prisma.match.findUnique({ where: { id: market.matchId } });
+    }
+  }
+
   if (!match) return;
 
   const newStatus = mapSportteryStatus(item);

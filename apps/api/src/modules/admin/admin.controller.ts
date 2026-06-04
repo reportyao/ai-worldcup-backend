@@ -40,6 +40,7 @@ import {
   AdminPromptTemplateListQuerySchema,
   AdminPromptTemplateUpdateSchema,
   AdminModelPredictionUpdateSchema,
+  AdminManualPredictionUploadSchema,
   AdminTeamListQuerySchema,
   type AdminAiModelCreateDto,
   type AdminAiModelListQuery,
@@ -64,6 +65,7 @@ import {
   type AdminPromptTemplateListQuery,
   type AdminPromptTemplateUpdateDto,
   type AdminModelPredictionUpdateDto,
+  type AdminManualPredictionUploadDto,
 } from './admin.schemas.js';
 import { AdminService } from './admin.service.js';
 
@@ -351,6 +353,18 @@ export class AdminController {
     @Query() query: { page?: string; pageSize?: string; provider?: string; scope?: string },
   ) {
     return this.adminService.getAutomationSyncLogs(query);
+  }
+
+  // ============================================================================
+  // 人工上传AI分析结果
+  // ============================================================================
+
+  @Post('prediction-tasks/manual-upload')
+  manualUploadPrediction(
+    @Req() req: Request,
+    @Body(new ZodValidationPipe(AdminManualPredictionUploadSchema)) dto: AdminManualPredictionUploadDto,
+  ) {
+    return this.adminService.manualUploadPrediction(dto, this.adminService.getRequestMeta(req));
   }
 
   // ============================================================================

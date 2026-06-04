@@ -266,3 +266,19 @@ export const AdminModelPredictionUpdateSchema = z.object({
   errorMessage: optionalTrimmedString,
 });
 export type AdminModelPredictionUpdateDto = z.infer<typeof AdminModelPredictionUpdateSchema>;
+
+
+// ============================================================================
+// Manual AI Prediction Upload (人工上传AI分析结果)
+// ============================================================================
+
+export const AdminManualPredictionUploadSchema = z.object({
+  matchId: z.string().min(1),
+  version: z.enum(MANUAL_TRIGGER_PREDICTION_VERSIONS as [string, ...string[]]).default('T_MINUS_7H'),
+  /** 每个模型对应一份 Markdown 内容 */
+  predictions: z.array(z.object({
+    aiModelId: z.string().min(1),
+    markdownContent: z.string().min(10),
+  })).min(1),
+});
+export type AdminManualPredictionUploadDto = z.infer<typeof AdminManualPredictionUploadSchema>;
