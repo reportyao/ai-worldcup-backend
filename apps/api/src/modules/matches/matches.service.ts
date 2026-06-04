@@ -236,6 +236,7 @@ export class MatchesService {
               provider: prediction.aiModel.provider,
             },
             structuredOutput: prediction.structuredOutput,
+            rawOutput: prediction.rawOutput ?? null,
             accuracy:
               accuracyByTaskAndModel.get(`${task.id}:${prediction.aiModel.id}`) ??
               accuracyByModel.get(prediction.aiModel.id) ??
