@@ -156,6 +156,12 @@ export const AdminFootballDataSyncLogQuerySchema = PaginationQuerySchema.extend(
 });
 export type AdminFootballDataSyncLogQuery = z.infer<typeof AdminFootballDataSyncLogQuerySchema>;
 
+export const AdminCustomAiPredictionSettingsUpdateSchema = z.object({
+  apiUrl: optionalTrimmedString,
+  apiKey: optionalTrimmedString,
+});
+export type AdminCustomAiPredictionSettingsUpdateDto = z.infer<typeof AdminCustomAiPredictionSettingsUpdateSchema>;
+
 export const AdminAuditLogListQuerySchema = PaginationQuerySchema.extend({
   action: z.string().trim().optional(),
   targetType: z.string().trim().optional(),

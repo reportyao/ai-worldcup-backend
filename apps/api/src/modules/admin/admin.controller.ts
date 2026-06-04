@@ -27,6 +27,7 @@ import {
   AdminCompetitionUpdateSchema,
   AdminFootballDataSyncLogQuerySchema,
   AdminFootballDataSyncSchema,
+  AdminCustomAiPredictionSettingsUpdateSchema,
   AdminLoginSchema,
   AdminMatchCreateSchema,
   AdminMatchImportSchema,
@@ -52,6 +53,7 @@ import {
   type AdminCompetitionUpdateDto,
   type AdminFootballDataSyncDto,
   type AdminFootballDataSyncLogQuery,
+  type AdminCustomAiPredictionSettingsUpdateDto,
   type AdminLoginDto,
   type AdminMatchCreateDto,
   type AdminMatchImportDto,
@@ -205,6 +207,18 @@ export class AdminController {
     return this.adminService.listCustomAiPredictions({ refresh, includeUnmatched, daysBefore, daysAhead });
   }
 
+  @Get('custom-ai-predictions/settings')
+  getCustomAiPredictionSettings() {
+    return this.adminService.getCustomAiPredictionSettings();
+  }
+
+  @Patch('custom-ai-predictions/settings')
+  updateCustomAiPredictionSettings(
+    @Req() req: Request,
+    @Body(new ZodValidationPipe(AdminCustomAiPredictionSettingsUpdateSchema)) dto: AdminCustomAiPredictionSettingsUpdateDto,
+  ) {
+    return this.adminService.updateCustomAiPredictionSettings(dto, this.adminService.getRequestMeta(req));
+  }
 
   @Get('ai-models')
   listAiModels(

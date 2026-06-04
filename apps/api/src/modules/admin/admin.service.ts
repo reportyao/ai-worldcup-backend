@@ -41,6 +41,7 @@ import type {
   AdminCompetitionUpdateDto,
   AdminFootballDataSyncDto,
   AdminFootballDataSyncLogQuery,
+  AdminCustomAiPredictionSettingsUpdateDto,
   AdminLoginDto,
   AdminMatchCreateDto,
   AdminMatchImportDto,
@@ -686,6 +687,21 @@ export class AdminService {
       daysBefore: query.daysBefore === undefined ? undefined : Number(query.daysBefore),
       daysAhead: query.daysAhead === undefined ? undefined : Number(query.daysAhead),
     });
+  }
+
+  getCustomAiPredictionSettings() {
+    return this.feijingAiPrediction.getRuntimeSettings();
+  }
+
+  async updateCustomAiPredictionSettings(dto: AdminCustomAiPredictionSettingsUpdateDto, meta: RequestMeta) {
+    const before = await this.feijingAiPrediction.getRuntimeSettings();
+    const after = await this.feijingAiPrediction.updateRuntimeSettings({
+      apiUrl: dto.apiUrl,
+      apiKey: dto.apiKey,
+      updatedBy: meta.adminEmail,
+    });
+    await this.writeAudit(meta, 'CUSTOM_AI_PREDICTION_SETTINGS_UPDATE', 'ActivityConfig', 'custom_ai_feijing_settings', before, after);
+    return after;
   }
 
   async triggerFootballDataSync(dto: AdminFootballDataSyncDto, meta: RequestMeta) {

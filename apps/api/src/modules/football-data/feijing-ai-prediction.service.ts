@@ -50,6 +50,7 @@ interface NormalizedFeijingAiPrediction {
 
 interface CachedFeijingPayload {
   fetchedAt: Date;
+  cacheKey: string;
   rows: NormalizedFeijingAiPrediction[];
 }
 
@@ -60,8 +61,24 @@ interface ListOptions {
   daysAhead?: number;
 }
 
+interface FeijingRuntimeSettings {
+  apiUrl: string;
+  apiKey: string;
+  storedApiUrl: string | null;
+  storedApiKey: string | null;
+  updatedAt: string | null;
+  updatedBy: string | null;
+}
+
+interface FeijingSettingsUpdateInput {
+  apiUrl?: string | null;
+  apiKey?: string | null;
+  updatedBy?: string | null;
+}
+
 const DEFAULT_FEIJING_AI_URL = 'http://interface.titan007.com/football/ai.aspx';
 const DEFAULT_FEIJING_AI_KEY = '880306AAC9A249EA';
+const FEIJING_SETTINGS_KEY = 'custom_ai_feijing_settings';
 const CACHE_TTL_MS = 5 * 60 * 1000;
 
 @Injectable()
@@ -72,7 +89,8 @@ export class FeijingAiPredictionService {
   constructor(private readonly prisma: PrismaService) {}
 
   async list(options: ListOptions = {}) {
-    const fetched = await this.fetchNormalizedPredictions(Boolean(options.refresh));
+    const settings = await this.getEffectiveSettings();
+    const fetched = await this.fetchNormalizedPredictions(Boolean(options.refresh), settings);
     const scoped = this.filterByDateWindow(fetched.rows, options);
     const matches = await this.loadCandidateMatches(scoped);
     const mapped = scoped.map((prediction) => {
@@ -80,27 +98,73 @@ export class FeijingAiPredictionService {
       return this.toResponseItem(prediction, match);
     });
     const includeUnmatched = options.includeUnmatched ?? true;
-    const items = includeUnmatched ? mapped : mapped.filter((item) => item.matched);
+    const items = this.sortResponseItems(includeUnmatched ? mapped : mapped.filter((item) => item.matched));
 
     return {
       source: 'feijing-titan007-ai',
-      apiUrl: this.getApiBaseUrl(),
+      apiUrl: settings.apiUrl,
       fetchedAt: fetched.fetchedAt.toISOString(),
       total: items.length,
+      rawTotal: scoped.length,
       matchedCount: items.filter((item) => item.matched).length,
       unmatchedCount: items.filter((item) => !item.matched).length,
+      predictionTypeCounts: this.buildPredictionTypeCounts(items),
+      settings: this.toSettingsResponse(settings),
       items,
     };
   }
 
-  private async fetchNormalizedPredictions(forceRefresh: boolean) {
+  async getRuntimeSettings() {
+    const settings = await this.getEffectiveSettings();
+    return this.toSettingsResponse(settings);
+  }
+
+  async updateRuntimeSettings(input: FeijingSettingsUpdateInput) {
+    const current = await this.loadStoredSettings();
+    const nextApiUrl = input.apiUrl === undefined ? current.apiUrl : this.normalizeOptionalString(input.apiUrl);
+    const nextApiKey = input.apiKey === undefined ? current.apiKey : this.normalizeOptionalString(input.apiKey);
+    const updatedAt = new Date().toISOString();
+    const updatedBy = this.normalizeOptionalString(input.updatedBy);
+    const config = {
+      apiUrl: nextApiUrl,
+      apiKey: nextApiKey,
+      updatedAt,
+      updatedBy,
+    };
+
+    await this.prisma.activityConfig.upsert({
+      where: { key: FEIJING_SETTINGS_KEY },
+      create: {
+        key: FEIJING_SETTINGS_KEY,
+        type: 'SYSTEM',
+        title: '飞鲸自建 AI 预测接口配置',
+        status: 'ACTIVE',
+        config,
+      },
+      update: {
+        title: '飞鲸自建 AI 预测接口配置',
+        status: 'ACTIVE',
+        config,
+      },
+    });
+
+    this.invalidateCache();
+    return this.getRuntimeSettings();
+  }
+
+  invalidateCache() {
+    this.cache = null;
+  }
+
+  private async fetchNormalizedPredictions(forceRefresh: boolean, settings: FeijingRuntimeSettings) {
     const now = Date.now();
-    if (!forceRefresh && this.cache && now - this.cache.fetchedAt.getTime() < CACHE_TTL_MS) {
+    const cacheKey = `${settings.apiUrl}::${settings.apiKey}`;
+    if (!forceRefresh && this.cache && this.cache.cacheKey === cacheKey && now - this.cache.fetchedAt.getTime() < CACHE_TTL_MS) {
       return this.cache;
     }
 
-    const url = new URL(this.getApiBaseUrl());
-    url.searchParams.set('key', this.getApiKey());
+    const url = new URL(settings.apiUrl);
+    url.searchParams.set('key', settings.apiKey);
 
     const response = await fetch(url, {
       method: 'GET',
@@ -120,7 +184,7 @@ export class FeijingAiPredictionService {
       .map((row) => this.normalizePrediction(row as RawFeijingAiPrediction))
       .filter((row): row is NormalizedFeijingAiPrediction => row !== null);
 
-    this.cache = { fetchedAt: new Date(), rows };
+    this.cache = { fetchedAt: new Date(), cacheKey, rows };
     return this.cache;
   }
 
@@ -282,12 +346,105 @@ export class FeijingAiPredictionService {
     };
   }
 
-  private getApiBaseUrl() {
-    return process.env.FEIJING_AI_URL || process.env.BET007_AI_URL || DEFAULT_FEIJING_AI_URL;
+  private sortResponseItems<T extends { matched: boolean; matchTime: string | null; updateTime: string | null; predictType: string; match: { kickoffAt: string } | null }>(items: T[]) {
+    const predictTypeOrder = new Map([
+      ['1', 1],
+      ['2', 2],
+      ['3', 3],
+    ]);
+    return [...items].sort((a, b) => {
+      if (a.matched !== b.matched) return a.matched ? -1 : 1;
+      const aTime = Date.parse(a.match?.kickoffAt ?? a.matchTime ?? '') || Number.MAX_SAFE_INTEGER;
+      const bTime = Date.parse(b.match?.kickoffAt ?? b.matchTime ?? '') || Number.MAX_SAFE_INTEGER;
+      if (aTime !== bTime) return aTime - bTime;
+      const aType = predictTypeOrder.get(a.predictType) ?? 99;
+      const bType = predictTypeOrder.get(b.predictType) ?? 99;
+      if (aType !== bType) return aType - bType;
+      const aUpdate = Date.parse(a.updateTime ?? '') || 0;
+      const bUpdate = Date.parse(b.updateTime ?? '') || 0;
+      return bUpdate - aUpdate;
+    });
   }
 
-  private getApiKey() {
-    return process.env.FEIJING_AI_KEY || process.env.BET007_AI_KEY || DEFAULT_FEIJING_AI_KEY;
+  private buildPredictionTypeCounts(items: Array<{ predictType: string; predictTypeLabel: string; matched: boolean }>) {
+    const order = new Map([
+      ['1', 1],
+      ['2', 2],
+      ['3', 3],
+    ]);
+    const counts = new Map<string, { type: string; label: string; total: number; matchedCount: number; unmatchedCount: number }>();
+    for (const item of items) {
+      const current = counts.get(item.predictType) ?? {
+        type: item.predictType,
+        label: item.predictTypeLabel,
+        total: 0,
+        matchedCount: 0,
+        unmatchedCount: 0,
+      };
+      current.total += 1;
+      if (item.matched) current.matchedCount += 1;
+      else current.unmatchedCount += 1;
+      counts.set(item.predictType, current);
+    }
+    return [...counts.values()].sort((a, b) => (order.get(a.type) ?? 99) - (order.get(b.type) ?? 99));
+  }
+
+  private async getEffectiveSettings(): Promise<FeijingRuntimeSettings> {
+    const stored = await this.loadStoredSettings();
+    const envApiUrl = this.normalizeOptionalString(process.env.FEIJING_AI_URL || process.env.BET007_AI_URL);
+    const envApiKey = this.normalizeOptionalString(process.env.FEIJING_AI_KEY || process.env.BET007_AI_KEY);
+    return {
+      apiUrl: stored.apiUrl || envApiUrl || DEFAULT_FEIJING_AI_URL,
+      apiKey: stored.apiKey || envApiKey || DEFAULT_FEIJING_AI_KEY,
+      storedApiUrl: stored.apiUrl,
+      storedApiKey: stored.apiKey,
+      updatedAt: stored.updatedAt,
+      updatedBy: stored.updatedBy,
+    };
+  }
+
+  private async loadStoredSettings() {
+    const record = await this.prisma.activityConfig.findUnique({ where: { key: FEIJING_SETTINGS_KEY } });
+    const config = this.toJsonRecord(record?.config);
+    return {
+      apiUrl: this.normalizeOptionalString(config.apiUrl),
+      apiKey: this.normalizeOptionalString(config.apiKey),
+      updatedAt: this.normalizeOptionalString(config.updatedAt),
+      updatedBy: this.normalizeOptionalString(config.updatedBy),
+    };
+  }
+
+  private toSettingsResponse(settings: FeijingRuntimeSettings) {
+    const envApiUrl = this.normalizeOptionalString(process.env.FEIJING_AI_URL || process.env.BET007_AI_URL);
+    const envApiKey = this.normalizeOptionalString(process.env.FEIJING_AI_KEY || process.env.BET007_AI_KEY);
+    return {
+      apiUrl: settings.apiUrl,
+      apiKeyMasked: this.maskSecret(settings.apiKey),
+      hasStoredApiUrl: Boolean(settings.storedApiUrl),
+      hasStoredApiKey: Boolean(settings.storedApiKey),
+      hasEnvApiUrl: Boolean(envApiUrl),
+      hasEnvApiKey: Boolean(envApiKey),
+      usingDefaultApiUrl: !settings.storedApiUrl && !envApiUrl,
+      usingDefaultApiKey: !settings.storedApiKey && !envApiKey,
+      updatedAt: settings.updatedAt,
+      updatedBy: settings.updatedBy,
+    };
+  }
+
+  private toJsonRecord(value: unknown): JsonRecord {
+    if (!value || typeof value !== 'object' || Array.isArray(value)) return {};
+    return value as JsonRecord;
+  }
+
+  private normalizeOptionalString(value: unknown) {
+    if (value === null || value === undefined) return null;
+    const normalized = String(value).trim();
+    return normalized.length > 0 ? normalized : null;
+  }
+
+  private maskSecret(value: string) {
+    if (value.length <= 8) return '*'.repeat(value.length);
+    return `${value.slice(0, 4)}${'*'.repeat(Math.max(4, value.length - 8))}${value.slice(-4)}`;
   }
 
   private pickUnknown(row: RawFeijingAiPrediction, ...keys: string[]) {
@@ -347,5 +504,4 @@ export class FeijingAiPredictionService {
       .replace(/足球俱乐部|俱乐部|fc|cf|sc|afc|team/g, '')
       .trim();
   }
-
 }
