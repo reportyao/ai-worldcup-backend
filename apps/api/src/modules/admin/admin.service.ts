@@ -966,7 +966,7 @@ export class AdminService {
     });
     if (!before) throw new NotFoundException('Model prediction not found');
 
-    const rawOutput = dto.rawOutput ?? null;
+    const rawOutput = dto.rawOutput !== undefined ? dto.rawOutput : before.rawOutput;
     let structuredOutput: unknown = dto.structuredOutput;
     if (structuredOutput === undefined && rawOutput) {
       structuredOutput = this.buildStructuredPredictionFromMarkdown(rawOutput, before.aiModel);
@@ -1537,6 +1537,12 @@ export class AdminService {
    */
   async listSportteryMatchView() {
     const now = new Date();
+    const comparisonTaskStatuses: PredictionTaskStatus[] = [
+      PredictionTaskStatus.SUCCEEDED,
+      PredictionTaskStatus.PARTIAL_SUCCESS,
+      PredictionTaskStatus.REVIEWED,
+      PredictionTaskStatus.PUBLISHED,
+    ];
     // 北京时间今日 00:00 ~ 23:59。竞彩销售日与自然比赛日可能跨日，后台“今日比赛”同时覆盖：
     // 1) 今日销售日的未完赛竞彩；2) 自然日今日开球、但销售日可能属于昨日的未完赛竞彩。
     const cstOffset = 8 * 60 * 60 * 1000;
@@ -1569,7 +1575,8 @@ export class AdminService {
               awayTeam: true,
               competition: true,
               predictionTasks: {
-                orderBy: { updatedAt: 'desc' },
+                where: { status: { in: comparisonTaskStatuses } },
+                orderBy: [{ version: 'desc' }, { updatedAt: 'desc' }],
                 take: 1,
                 include: {
                   predictions: {
@@ -1595,7 +1602,8 @@ export class AdminService {
           competition: true,
           sportteryMarkets: { orderBy: { syncedAt: 'desc' }, take: 1 },
           predictionTasks: {
-            orderBy: { updatedAt: 'desc' },
+            where: { status: { in: comparisonTaskStatuses } },
+            orderBy: [{ version: 'desc' }, { updatedAt: 'desc' }],
             take: 1,
             include: {
               predictions: {
@@ -2125,4 +2133,168 @@ export class AdminService {
       results,
     };
   }
+  /**
+   * 管理后台：预测结论与赛果对照列表。
+   * 支持分页和比赛状态筛选，用于独立管理页复核模型预测命中情况。
+   */
+  async listPredictionComparisons(query: { page: number; pageSize: number; matchStatus?: string }) {
+    const page = Math.max(1, query.page || 1);
+    const pageSize = Math.min(100, Math.max(1, query.pageSize || 20));
+    const sevenDaysAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
+    const comparisonTaskStatuses = [
+      PredictionTaskStatus.SUCCEEDED,
+      PredictionTaskStatus.PARTIAL_SUCCESS,
+      PredictionTaskStatus.REVIEWED,
+      PredictionTaskStatus.PUBLISHED,
+    ];
+
+    const where: Prisma.MatchWhereInput = {
+      kickoffAt: { gte: sevenDaysAgo },
+      predictionTasks: {
+        some: {
+          status: { in: comparisonTaskStatuses },
+          predictions: { some: { isSuccess: true } },
+        },
+      },
+      ...(query.matchStatus ? { status: query.matchStatus as MatchStatus } : {}),
+    };
+
+    const [total, matches] = await this.prisma.$transaction([
+      this.prisma.match.count({ where }),
+      this.prisma.match.findMany({
+        where,
+        include: {
+          homeTeam: true,
+          awayTeam: true,
+          competition: true,
+          sportteryMarkets: { orderBy: { syncedAt: 'desc' }, take: 1 },
+          predictionTasks: {
+            where: { status: { in: comparisonTaskStatuses } },
+            orderBy: [{ version: 'desc' }, { updatedAt: 'desc' }],
+            take: 1,
+            include: {
+              predictions: {
+                where: { isSuccess: true },
+                include: { aiModel: true },
+                orderBy: { generatedAt: 'asc' },
+              },
+            },
+          },
+        },
+        orderBy: { kickoffAt: 'desc' },
+        skip: (page - 1) * pageSize,
+        take: pageSize,
+      }),
+    ]);
+
+    const items = matches.map((m) => {
+      const task = m.predictionTasks[0];
+      const predictions = task?.predictions ?? [];
+      const market = m.sportteryMarkets[0] ?? null;
+      const taskSummary = (task?.consensusSummary ?? {}) as JsonRecord;
+      const adminComparison = (taskSummary.adminComparison ?? {}) as JsonRecord;
+      const modelResults = predictions.map((p) => {
+        const structured = (p.structuredOutput ?? {}) as JsonRecord;
+        const conclusion = (structured.conclusion ?? {}) as JsonRecord;
+        const likelyScores = Array.isArray(conclusion.likelyScores)
+          ? (conclusion.likelyScores as JsonRecord[])
+          : [];
+        const primaryScore = likelyScores[0] ?? null;
+
+        return {
+          predictionId: p.id,
+          modelName: p.aiModel.displayName,
+          persona: p.aiModel.persona,
+          predictedWinDrawLoss: (conclusion.winLossDraw as string | undefined) ?? null,
+          predictedHandicap: (conclusion.handicapWinLossDraw as string | undefined) ?? null,
+          predictedOverUnder: (conclusion.overUnderTrend as string | undefined) ?? null,
+          predictedScore:
+            primaryScore && typeof primaryScore.home === 'number' && typeof primaryScore.away === 'number'
+              ? `${primaryScore.home}:${primaryScore.away}`
+              : null,
+          winDrawLossCorrect: p.winDrawLossCorrect,
+          handicapCorrect: p.handicapCorrect,
+          overUnderCorrect: p.overUnderCorrect,
+          scoreExact: p.scoreExact,
+          halfFullCorrect: p.halfFullCorrect,
+          goalRangeHit: p.goalRangeHit,
+          anyHit: p.anyHit,
+          evaluatedAt: p.evaluatedAt?.toISOString() ?? null,
+        };
+      });
+
+      const hitCount = modelResults.filter((r) => r.anyHit === true).length;
+      const totalModels = modelResults.length;
+      const computedIsRed = hitCount > 0;
+      const adminIsRed = typeof adminComparison.isRed === 'boolean' ? adminComparison.isRed : null;
+
+      return {
+        matchId: m.id,
+        homeTeam: { name: m.homeTeam.name, nameZh: m.homeTeam.nameZh, shortName: m.homeTeam.shortName, crestUrl: m.homeTeam.crestUrl },
+        awayTeam: { name: m.awayTeam.name, nameZh: m.awayTeam.nameZh, shortName: m.awayTeam.shortName, crestUrl: m.awayTeam.crestUrl },
+        competition: { name: m.competition.name },
+        kickoffAt: m.kickoffAt.toISOString(),
+        status: m.status,
+        homeScore: m.homeScore,
+        awayScore: m.awayScore,
+        handicapLine: market?.handicapLine ?? m.handicapLine,
+        overUnderLine: market?.overUnderLine ?? m.overUnderLine,
+        sportteryResult: market ? {
+          scoreResult: market.scoreResult,
+          winDrawLoss: market.winDrawLoss,
+          handicapResult: market.handicapResult,
+          overUnderResult: market.overUnderResult,
+          halfFullResult: market.halfFullResult,
+        } : null,
+        modelResults,
+        hitCount,
+        totalModels,
+        computedIsRed,
+        adminIsRed,
+        isRed: adminIsRed ?? computedIsRed,
+        adminNote: typeof adminComparison.note === 'string' ? adminComparison.note : null,
+      };
+    });
+
+    return { items, total, page, pageSize };
+  }
+
+  /**
+   * 管理后台：更新单场比赛预测对照的人工红黑标记与备注。
+   */
+  async updateMatchComparisonResult(matchId: string, dto: { isRed?: boolean | null; adminNote?: string | null }) {
+    const comparisonTaskStatuses = [
+      PredictionTaskStatus.SUCCEEDED,
+      PredictionTaskStatus.PARTIAL_SUCCESS,
+      PredictionTaskStatus.REVIEWED,
+      PredictionTaskStatus.PUBLISHED,
+    ];
+    const task = await this.prisma.predictionTask.findFirst({
+      where: { matchId, status: { in: comparisonTaskStatuses } },
+      orderBy: [{ version: 'desc' }, { updatedAt: 'desc' }],
+      select: { id: true, consensusSummary: true },
+    });
+    if (!task) {
+      throw new NotFoundException('Prediction task not found for match');
+    }
+
+    const summary = (task.consensusSummary ?? {}) as JsonRecord;
+    const nextSummary: Prisma.InputJsonObject = {
+      ...summary,
+      adminComparison: {
+        isRed: dto.isRed ?? null,
+        note: dto.adminNote ?? null,
+        updatedAt: new Date().toISOString(),
+      },
+    };
+
+    await this.prisma.predictionTask.update({
+      where: { id: task.id },
+      data: { consensusSummary: nextSummary },
+      select: { id: true },
+    });
+
+    return { success: true, matchId };
+  }
+
 }

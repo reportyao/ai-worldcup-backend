@@ -423,4 +423,24 @@ export class AdminController {
   getSportteryHealth() {
     return this.adminService.getSportteryHealthStatus();
   }
+
+  @Get('prediction-comparisons')
+  listPredictionComparisons(
+    @Query() query: { page?: string; pageSize?: string; matchStatus?: string },
+  ) {
+    return this.adminService.listPredictionComparisons({
+      page: query.page ? Number(query.page) : 1,
+      pageSize: query.pageSize ? Number(query.pageSize) : 20,
+      matchStatus: query.matchStatus || undefined,
+    });
+  }
+
+  @Patch('prediction-comparisons/:matchId/result')
+  updateMatchComparisonResult(
+    @Param('matchId') matchId: string,
+    @Body() dto: { isRed?: boolean | null; adminNote?: string | null },
+  ) {
+    return this.adminService.updateMatchComparisonResult(matchId, dto);
+  }
+
 }

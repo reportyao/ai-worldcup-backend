@@ -104,10 +104,16 @@ function extractListItems(text: string): string[] {
 }
 
 /**
- * 去除 Markdown 链接格式 [text](url) -> text
+ * 去除 Markdown 链接与来源引用标记。
+ * - [text](url) -> text
+ * - [1] / [163] / [news.qq] / [https://...] -> 删除
  */
 function stripMarkdownLinks(text: string): string {
-  return text.replace(/\[([^\]]+)\]\([^)]+\)/g, '$1').trim();
+  return text
+    .replace(/\[([^\]]+)\]\((?:https?:\/\/|www\.)[^)]+\)/gi, '$1')
+    .replace(/\s*\[(?:\^?\d+|[A-Za-z0-9][A-Za-z0-9._:/?#=&%+-]*\.[A-Za-z0-9._:/?#=&%+-]+|https?:\/\/[^\]\s]+|www\.[^\]\s]+)\]/g, '')
+    .replace(/(?<!\()\bhttps?:\/\/[^\s<>\])"']+/g, '')
+    .trim();
 }
 
 /**

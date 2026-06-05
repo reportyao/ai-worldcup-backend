@@ -29,6 +29,11 @@ export class MatchesController {
     return this.matchesService.getSevenDayStats();
   }
 
+  @Get('stats/prediction-comparisons')
+  getPredictionComparisons() {
+    return this.matchesService.getPredictionComparisons();
+  }
+
   @Get(':id')
   getMatch(
     @Param('id') id: string,

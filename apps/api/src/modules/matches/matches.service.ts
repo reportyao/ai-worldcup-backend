@@ -263,6 +263,29 @@ export class MatchesService {
         )
       : [];
 
+    const consensus = this.buildConsensus(match.predictionTasks);
+    const safeConsensus = access.canViewFullModels
+      ? consensus
+      : {
+          status: consensus.status,
+          title: consensus.status === 'ready' || consensus.status === 'reviewed' ? 'AI 共识已发布' : consensus.title,
+          highlight: '完整预测方向、比分区间与风险提示解锁后查看。',
+          modelCount: consensus.modelCount,
+          successCount: consensus.successCount,
+          level: consensus.level,
+          agreementRate: consensus.agreementRate,
+          totalModels: consensus.totalModels,
+          sharedStrengths: undefined,
+          sharedRisks: undefined,
+          sharedKeyVariables: undefined,
+          majorityResult: undefined,
+          majorityCount: undefined,
+          divergencePoints: undefined,
+          aggregatedProbability: undefined,
+          aggregatedGoalsRange: undefined,
+          viewpointClusters: undefined,
+        };
+
     return {
       match: this.toMatchSummary(match),
       detail: {
@@ -280,7 +303,7 @@ export class MatchesService {
         },
         tabs: ['overview', 'models', 'my_prediction', 'review'],
         access,
-        consensus: this.buildConsensus(match.predictionTasks),
+        consensus: safeConsensus,
         modelAnalyses,
         review: await this.buildReviewPayload(matchId, match.status),
         sportteryMarket: await this.getSportteryMarket(matchId),
@@ -708,6 +731,116 @@ export class MatchesService {
       blackMatches,
       redRate: evaluatedMatches > 0 ? redMatches / evaluatedMatches : 0,
     };
+  }
+
+
+  /**
+   * 公开 API：获取最近 7 天已完赛比赛的预测结论与赛果对照列表。
+   * 该接口作为首页历史战绩入口的数据源，无需解锁即可查看历史表现。
+   */
+  async getPredictionComparisons() {
+    const sevenDaysAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
+    const comparisonTaskStatuses = [
+      PredictionTaskStatus.SUCCEEDED,
+      PredictionTaskStatus.PARTIAL_SUCCESS,
+      PredictionTaskStatus.REVIEWED,
+      PredictionTaskStatus.PUBLISHED,
+    ];
+
+    const matches = await this.prisma.match.findMany({
+      where: {
+        status: MatchStatus.FINISHED,
+        kickoffAt: { gte: sevenDaysAgo },
+        predictionTasks: {
+          some: {
+            status: { in: comparisonTaskStatuses },
+            predictions: { some: { isSuccess: true, evaluatedAt: { not: null } } },
+          },
+        },
+      },
+      include: {
+        homeTeam: true,
+        awayTeam: true,
+        competition: true,
+        predictionTasks: {
+          where: { status: { in: comparisonTaskStatuses } },
+          orderBy: [{ version: 'desc' }, { updatedAt: 'desc' }],
+          take: 1,
+          include: {
+            predictions: {
+              where: { isSuccess: true },
+              include: { aiModel: true },
+              orderBy: { generatedAt: 'asc' },
+            },
+          },
+        },
+      },
+      orderBy: { kickoffAt: 'desc' },
+    });
+
+    return matches.map((match) => {
+      const task = match.predictionTasks[0];
+      const predictions = task?.predictions ?? [];
+      const modelResults = predictions.map((p) => {
+        const structured = (p.structuredOutput ?? {}) as Record<string, unknown>;
+        const conclusion = (structured.conclusion ?? {}) as Record<string, unknown>;
+        const likelyScores = Array.isArray(conclusion.likelyScores)
+          ? (conclusion.likelyScores as Array<Record<string, unknown>>)
+          : [];
+        const primaryScore = likelyScores[0] ?? null;
+        return {
+          modelName: p.aiModel.displayName,
+          persona: p.aiModel.persona,
+          predictedWinDrawLoss: (conclusion.winLossDraw as string | undefined) ?? null,
+          predictedHandicap: (conclusion.handicapWinLossDraw as string | undefined) ?? null,
+          predictedOverUnder: (conclusion.overUnderTrend as string | undefined) ?? null,
+          predictedScore:
+            primaryScore && typeof primaryScore.home === 'number' && typeof primaryScore.away === 'number'
+              ? `${primaryScore.home}:${primaryScore.away}`
+              : null,
+          winDrawLossCorrect: p.winDrawLossCorrect,
+          handicapCorrect: p.handicapCorrect,
+          overUnderCorrect: p.overUnderCorrect,
+          scoreExact: p.scoreExact,
+          halfFullCorrect: p.halfFullCorrect,
+          goalRangeHit: p.goalRangeHit,
+          anyHit: p.anyHit,
+          evaluatedAt: p.evaluatedAt?.toISOString() ?? null,
+        };
+      });
+
+      const hitCount = modelResults.filter((m) => m.anyHit === true).length;
+      const totalModels = modelResults.length;
+
+      return {
+        matchId: match.id,
+        homeTeam: {
+          name: match.homeTeam.name,
+          nameZh: match.homeTeam.nameZh ?? this.localizeTeamName(match.homeTeam.name),
+          shortName: match.homeTeam.shortName,
+          crestUrl: match.homeTeam.crestUrl,
+        },
+        awayTeam: {
+          name: match.awayTeam.name,
+          nameZh: match.awayTeam.nameZh ?? this.localizeTeamName(match.awayTeam.name),
+          shortName: match.awayTeam.shortName,
+          crestUrl: match.awayTeam.crestUrl,
+        },
+        competition: {
+          name: match.competition.name,
+          nameZh: this.localizeCompetitionName(match.competition.name),
+        },
+        kickoffAt: match.kickoffAt.toISOString(),
+        homeScore: match.homeScore,
+        awayScore: match.awayScore,
+        handicapLine: match.handicapLine,
+        overUnderLine: match.overUnderLine,
+        modelResults,
+        hitCount,
+        totalModels,
+        isRed: hitCount > 0,
+      };
+    });
   }
 
   private async buildTeaserData(matchId: string): Promise<TeaserData | null> {
