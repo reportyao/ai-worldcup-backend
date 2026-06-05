@@ -127,8 +127,14 @@ function getStringConfig(config: Record<string, unknown> | null | undefined, key
   return typeof value === 'string' && value.trim().length > 0 ? value.trim() : undefined;
 }
 
-function withTimeout(timeoutMs: number): AbortSignal {
-  return AbortSignal.timeout(Math.max(1_000, timeoutMs));
+function createTimeoutSignal(timeoutMs: number): { signal: AbortSignal; clear: () => void } {
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), Math.max(1_000, timeoutMs));
+  (timer as { unref?: () => void }).unref?.();
+  return {
+    signal: controller.signal,
+    clear: () => clearTimeout(timer),
+  };
 }
 
 function trimBaseUrl(baseUrl: string): string {
@@ -612,17 +618,22 @@ function parseJsonLikeResponse(text: string, contentType: string): unknown {
 }
 
 async function postJson(url: string, body: unknown, headers: Record<string, string>, timeoutMs: number): Promise<unknown> {
-  const response = await fetch(url, {
-    method: 'POST',
-    headers: { accept: 'application/json', 'content-type': 'application/json', ...headers },
-    body: JSON.stringify(body),
-    signal: withTimeout(timeoutMs),
-  });
-  const responseText = await response.text().catch(() => '');
-  if (!response.ok) {
-    throw new Error(`AI provider request failed: ${response.status} ${responseText.trim().slice(0, 500)}`);
+  const timeout = createTimeoutSignal(timeoutMs);
+  try {
+    const response = await fetch(url, {
+      method: 'POST',
+      headers: { accept: 'application/json', 'content-type': 'application/json', ...headers },
+      body: JSON.stringify(body),
+      signal: timeout.signal,
+    });
+    const responseText = await response.text().catch(() => '');
+    if (!response.ok) {
+      throw new Error(`AI provider request failed: ${response.status} ${responseText.trim().slice(0, 500)}`);
+    }
+    return parseJsonLikeResponse(responseText, response.headers.get('content-type') ?? '');
+  } finally {
+    timeout.clear();
   }
-  return parseJsonLikeResponse(responseText, response.headers.get('content-type') ?? '');
 }
 
 async function callOpenAI(
