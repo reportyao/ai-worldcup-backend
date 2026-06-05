@@ -25,7 +25,13 @@ random_hex() {
 env_value() {
   local env_file="$1"
   local key="$2"
-  grep -E "^${key}=" "$env_file" 2>/dev/null | tail -n 1 | cut -d= -f2-
+  if [ ! -f "$env_file" ]; then
+    return 0
+  fi
+  awk -v key="$key" '
+    index($0, key "=") == 1 { value = substr($0, length(key) + 2) }
+    END { if (value != "") print value }
+  ' "$env_file" 2>/dev/null || true
 }
 
 has_env_value() {

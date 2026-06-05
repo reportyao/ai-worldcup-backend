@@ -13,7 +13,13 @@ random_hex() { openssl rand -hex 32 2>/dev/null || date +%s%N | sha256sum | awk 
 
 env_value() {
   local key="$1"
-  grep -E "^${key}=" .env 2>/dev/null | tail -n 1 | cut -d= -f2-
+  if [ ! -f .env ]; then
+    return 0
+  fi
+  awk -v key="$key" '
+    index($0, key "=") == 1 { value = substr($0, length(key) + 2) }
+    END { if (value != "") print value }
+  ' .env 2>/dev/null || true
 }
 
 has_env_value() {
