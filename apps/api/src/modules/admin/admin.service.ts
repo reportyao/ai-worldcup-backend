@@ -1568,7 +1568,16 @@ export class AdminService {
               homeTeam: true,
               awayTeam: true,
               competition: true,
-              predictionTasks: { orderBy: { updatedAt: 'desc' }, take: 1, select: { status: true } },
+              predictionTasks: {
+                orderBy: { updatedAt: 'desc' },
+                take: 1,
+                include: {
+                  predictions: {
+                    include: { aiModel: true },
+                    orderBy: { generatedAt: 'asc' },
+                  },
+                },
+              },
               _count: { select: { predictionTasks: true } },
             },
           },
@@ -1590,7 +1599,6 @@ export class AdminService {
             take: 1,
             include: {
               predictions: {
-                where: { isSuccess: true },
                 include: { aiModel: true },
                 orderBy: { generatedAt: 'asc' },
               },
@@ -1601,6 +1609,59 @@ export class AdminService {
         orderBy: { kickoffAt: 'desc' },
       }),
     ]);
+
+    const toPredictionComparison = (p: {
+      id: string;
+      aiModelId: string;
+      aiModel: { displayName: string; persona: ModelPersona };
+      rawOutput: string | null;
+      isSuccess: boolean;
+      errorMessage: string | null;
+      structuredOutput: Prisma.JsonValue | null;
+      winDrawLossCorrect: boolean | null;
+      handicapCorrect: boolean | null;
+      overUnderCorrect: boolean | null;
+      scoreExact: boolean | null;
+      halfFullCorrect: boolean | null;
+      goalRangeHit: boolean | null;
+      anyHit: boolean | null;
+      evaluatedAt: Date | null;
+    }) => {
+      const structured = (p.structuredOutput ?? {}) as JsonRecord;
+      const conclusion = (structured.conclusion ?? {}) as JsonRecord;
+      const likelyScores = Array.isArray(conclusion.likelyScores)
+        ? (conclusion.likelyScores as JsonRecord[])
+        : [];
+      const primaryScore = likelyScores[0] ?? null;
+      return {
+        predictionId: p.id,
+        modelId: p.aiModelId,
+        modelDisplayName: p.aiModel.displayName,
+        persona: p.aiModel.persona,
+        rawOutput: p.rawOutput ?? null,
+        isSuccess: p.isSuccess,
+        errorMessage: p.errorMessage ?? null,
+        predictedWinDrawLoss: (conclusion.winLossDraw as string | undefined) ?? null,
+        predictedHandicap: (conclusion.handicapWinLossDraw as string | undefined) ?? null,
+        predictedOverUnder: (conclusion.overUnderTrend as string | undefined) ?? null,
+        predictedScore:
+          primaryScore && typeof primaryScore.home === 'number' && typeof primaryScore.away === 'number'
+            ? `${primaryScore.home}:${primaryScore.away}`
+            : null,
+        predictedGoalsRange:
+          conclusion.goalsRange && typeof conclusion.goalsRange === 'object'
+            ? (conclusion.goalsRange as JsonRecord)
+            : null,
+        winDrawLossCorrect: p.winDrawLossCorrect,
+        handicapCorrect: p.handicapCorrect,
+        overUnderCorrect: p.overUnderCorrect,
+        scoreExact: p.scoreExact,
+        halfFullCorrect: p.halfFullCorrect,
+        goalRangeHit: p.goalRangeHit,
+        anyHit: p.anyHit,
+        evaluatedAt: p.evaluatedAt?.toISOString() ?? null,
+      };
+    };
 
     return {
       todayMatches: todayMarkets.map((m) => ({
@@ -1628,6 +1689,7 @@ export class AdminService {
               status: m.match.status,
               aiStatus: m.match.predictionTasks[0]?.status ?? 'PENDING',
               predictionCount: m.match._count.predictionTasks,
+              predictionComparisons: m.match.predictionTasks[0]?.predictions.map(toPredictionComparison) ?? [],
               homeTeam: m.match.homeTeam,
               awayTeam: m.match.awayTeam,
               competition: m.match.competition,
@@ -1637,40 +1699,7 @@ export class AdminService {
       recentFinished: recentFinished.map((m) => {
         const market = m.sportteryMarkets[0] ?? null;
         const latestTask = m.predictionTasks[0] ?? null;
-        const predictionComparisons =
-          latestTask?.predictions.map((p) => {
-            const structured = (p.structuredOutput ?? {}) as JsonRecord;
-            const conclusion = (structured.conclusion ?? {}) as JsonRecord;
-            const likelyScores = Array.isArray(conclusion.likelyScores)
-              ? (conclusion.likelyScores as JsonRecord[])
-              : [];
-            const primaryScore = likelyScores[0] ?? null;
-            return {
-              predictionId: p.id,
-              modelId: p.aiModelId,
-              modelDisplayName: p.aiModel.displayName,
-              persona: p.aiModel.persona,
-              predictedWinDrawLoss: (conclusion.winLossDraw as string | undefined) ?? null,
-              predictedHandicap: (conclusion.handicapWinLossDraw as string | undefined) ?? null,
-              predictedOverUnder: (conclusion.overUnderTrend as string | undefined) ?? null,
-              predictedScore:
-                primaryScore && typeof primaryScore.home === 'number' && typeof primaryScore.away === 'number'
-                  ? `${primaryScore.home}:${primaryScore.away}`
-                  : null,
-              predictedGoalsRange:
-                conclusion.goalsRange && typeof conclusion.goalsRange === 'object'
-                  ? (conclusion.goalsRange as JsonRecord)
-                  : null,
-              winDrawLossCorrect: p.winDrawLossCorrect,
-              handicapCorrect: p.handicapCorrect,
-              overUnderCorrect: p.overUnderCorrect,
-              scoreExact: p.scoreExact,
-              halfFullCorrect: p.halfFullCorrect,
-              goalRangeHit: p.goalRangeHit,
-              anyHit: p.anyHit,
-              evaluatedAt: p.evaluatedAt?.toISOString() ?? null,
-            };
-          }) ?? [];
+        const predictionComparisons = latestTask?.predictions.map(toPredictionComparison) ?? [];
         return {
           id: m.id,
           homeScore: m.homeScore,
