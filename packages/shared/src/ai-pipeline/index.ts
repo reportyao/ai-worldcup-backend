@@ -383,11 +383,7 @@ function buildFallbackPredictionPayload(model: AiGatewayModelConfig, rawOutput: 
   const readableSummary = rawSummary.length > 0
     ? rawSummary
     : `${model.displayName} 已返回内容，但未严格遵循结构化 JSON 格式，系统已保留原始输出供管理员复核。`;
-  const winProbability = normalizeProbabilityTriple(conclusion.winProbability) ?? {
-    home: fallbackWdl === 'HOME_WIN' ? 0.42 : 0.30,
-    draw: fallbackWdl === 'DRAW' ? 0.40 : 0.30,
-    away: fallbackWdl === 'AWAY_WIN' ? 0.42 : 0.28,
-  };
+  const winProbability = normalizeProbabilityTriple(conclusion.winProbability);
   const likelyScoresSource = Array.isArray(conclusion.likelyScores) ? conclusion.likelyScores : [];
   const likelyScores = likelyScoresSource
     .map((score) => objectValue(score))
@@ -435,18 +431,22 @@ function buildFallbackPredictionPayload(model: AiGatewayModelConfig, rawOutput: 
     risks: stringArrayValue(parsed.risks, ['模型输出未完全符合 JSON Schema，需管理员复核原始输出。']),
     conclusion: {
       winLossDraw: enumValue(conclusion.winLossDraw, VALID_WIN_LOSS_DRAW, fallbackWdl),
-      winProbability,
+      ...(winProbability ? { winProbability } : {}),
       handicapTrend: stringValue(conclusion.handicapTrend, '模型未按结构化字段单独给出让球趋势，请参考原始输出。'),
       handicapWinLossDraw: enumValue(conclusion.handicapWinLossDraw, VALID_WIN_LOSS_DRAW, fallbackWdl),
       overUnderTrend: stringValue(conclusion.overUnderTrend, '模型未按结构化字段单独给出大小球趋势，请参考原始输出。'),
       overUnderResult: enumValue(conclusion.overUnderResult, VALID_OVER_UNDER, 'EQUAL'),
       halfFullTime: enumValue(conclusion.halfFullTime, VALID_HALF_FULL_TIME, fallbackWdl === 'AWAY_WIN' ? 'DRAW_AWAY' : fallbackWdl === 'HOME_WIN' ? 'DRAW_HOME' : 'DRAW_DRAW'),
-      likelyScores: likelyScores.length > 0 ? likelyScores : [{ home: fallbackWdl === 'HOME_WIN' ? 2 : 1, away: fallbackWdl === 'AWAY_WIN' ? 2 : 1, weight: 0.25 }],
-      goalsRange: {
-        min: integerValue(goalsRange.min, 1),
-        max: Math.max(integerValue(goalsRange.max, 4), integerValue(goalsRange.min, 1)),
-        expectation: numberValue(goalsRange.expectation, 2.5, 0),
-      },
+      ...(likelyScores.length > 0 ? { likelyScores } : {}),
+      ...(Object.keys(goalsRange).length > 0
+        ? {
+            goalsRange: {
+              min: integerValue(goalsRange.min, 0),
+              max: Math.max(integerValue(goalsRange.max, 0), integerValue(goalsRange.min, 0)),
+              ...(goalsRange.expectation != null ? { expectation: numberValue(goalsRange.expectation, 0, 0) } : {}),
+            },
+          }
+        : {}),
       cornersRange: Object.keys(cornersRange).length > 0
         ? { min: integerValue(cornersRange.min, 7), max: Math.max(integerValue(cornersRange.max, 12), integerValue(cornersRange.min, 7)) }
         : { min: 7, max: 12 },

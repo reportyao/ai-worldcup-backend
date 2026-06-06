@@ -82,7 +82,7 @@ export const StructuredPredictionSchema = z.object({
       home: z.number().min(0).max(1),
       draw: z.number().min(0).max(1),
       away: z.number().min(0).max(1),
-    }),
+    }).optional(),
     handicapTrend: z.string().optional(),
     handicapWinLossDraw: z.enum(['HOME_WIN', 'DRAW', 'AWAY_WIN']).optional(),
     overUnderTrend: z.string().optional(),
@@ -100,12 +100,13 @@ export const StructuredPredictionSchema = z.object({
           weight: z.number().min(0).max(1),
         }),
       )
-      .max(5),
+      .max(5)
+      .optional(),
     goalsRange: z.object({
       min: z.number().int().min(0),
       max: z.number().int().min(0),
       expectation: z.number().min(0).optional(),
-    }),
+    }).optional(),
     cornersRange: z
       .object({
         min: z.number().int().min(0),

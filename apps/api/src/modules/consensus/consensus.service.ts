@@ -34,8 +34,8 @@ export interface ViewpointCluster {
   direction: 'HOME_WIN' | 'DRAW' | 'AWAY_WIN';
   /** 持该观点的模型列表 */
   models: string[];
-  /** 该方向的平均概率 */
-  avgProbability: number;
+  /** 该方向的平均概率；仅当至少一个模型明确给出该方向概率时存在 */
+  avgProbability: number | null;
   /** 代表性论据（从 keyVariables 和 trend 中提取） */
   keyArguments: string[];
 }
@@ -48,8 +48,8 @@ export interface ConsensusResult {
   totalModels: number;
   divergencePoints: string[];
   highlight: string;
-  /** 聚合后的平均概率 */
-  aggregatedProbability: AggregatedProbability;
+  /** 聚合后的平均概率；仅聚合模型明确给出的概率，不做伪造兜底 */
+  aggregatedProbability: AggregatedProbability | null;
   /** 聚合后的进球区间 */
   aggregatedGoalsRange: AggregatedGoalsRange | null;
   /** 按方向分组的观点集群 */
@@ -120,7 +120,7 @@ export class ConsensusService {
         totalModels: 0,
         divergencePoints: ['暂无模型完成预测'],
         highlight: '暂无模型完成预测',
-        aggregatedProbability: { home: 0.33, draw: 0.34, away: 0.33 },
+        aggregatedProbability: null,
         aggregatedGoalsRange: null,
         viewpointClusters: [],
         sharedStrengths: { home: [], away: [] },
@@ -163,13 +163,13 @@ export class ConsensusService {
       .map((o) => o.output?.conclusion?.winProbability)
       .filter((p): p is { home: number; draw: number; away: number } => !!p);
 
-    const aggregatedProbability: AggregatedProbability = probabilities.length > 0
+    const aggregatedProbability: AggregatedProbability | null = probabilities.length > 0
       ? {
           home: round3(probabilities.reduce((sum, p) => sum + p.home, 0) / probabilities.length),
           draw: round3(probabilities.reduce((sum, p) => sum + p.draw, 0) / probabilities.length),
           away: round3(probabilities.reduce((sum, p) => sum + p.away, 0) / probabilities.length),
         }
-      : { home: 0.33, draw: 0.34, away: 0.33 };
+      : null;
 
     // ─── Aggregated Goals Range ─────────────────────────────────────────────────
     const goalsRanges = outputs
@@ -215,7 +215,7 @@ export class ConsensusService {
         models: clusterMap[dir].models,
         avgProbability: clusterMap[dir].probabilities.length > 0
           ? round3(clusterMap[dir].probabilities.reduce((s, p) => s + p, 0) / clusterMap[dir].probabilities.length)
-          : 0,
+          : null,
         keyArguments: deduplicateStrings(clusterMap[dir].arguments).slice(0, 4),
       }));
 
@@ -363,22 +363,24 @@ export class ConsensusService {
     totalModels: number,
     homeTeamName: string,
     awayTeamName: string,
-    aggregatedProbability: AggregatedProbability,
+    aggregatedProbability: AggregatedProbability | null,
   ): string {
     const resultLabel = this.resultLabel(majorityResult, homeTeamName, awayTeamName);
-    const probPercent = Math.round(
-      (majorityResult === 'HOME_WIN'
-        ? aggregatedProbability.home
-        : majorityResult === 'AWAY_WIN'
-          ? aggregatedProbability.away
-          : aggregatedProbability.draw) * 100,
-    );
+    const probabilityText = aggregatedProbability
+      ? `（模型显式概率均值 ${Math.round(
+          (majorityResult === 'HOME_WIN'
+            ? aggregatedProbability.home
+            : majorityResult === 'AWAY_WIN'
+              ? aggregatedProbability.away
+              : aggregatedProbability.draw) * 100,
+        )}%）`
+      : '（模型未提供可聚合概率）';
 
     switch (level) {
       case ConsensusLevel.HIGH:
-        return `AI 共识较强：${majorityCount}/${totalModels} 模型看好${resultLabel}（综合概率 ${probPercent}%）`;
+        return `AI 共识较强：${majorityCount}/${totalModels} 模型看好${resultLabel}${probabilityText}`;
       case ConsensusLevel.MIXED:
-        return `AI 存在分歧：${majorityCount}/${totalModels} 模型倾向${resultLabel}（综合概率 ${probPercent}%），但风险不低`;
+        return `AI 存在分歧：${majorityCount}/${totalModels} 模型倾向${resultLabel}${probabilityText}，但风险不低`;
       case ConsensusLevel.STRONG_DIVERGENCE:
         return `AI 内部分歧明显：各模型观点差异较大，建议重点看风险提示`;
       default:

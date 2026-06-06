@@ -968,19 +968,22 @@ export class AdminService {
 
     const rawOutput = dto.rawOutput !== undefined ? dto.rawOutput : before.rawOutput;
     let structuredOutput: unknown = dto.structuredOutput;
-    if (structuredOutput === undefined && rawOutput) {
-      structuredOutput = this.buildStructuredPredictionFromMarkdown(rawOutput, before.aiModel);
+    if (structuredOutput === undefined) {
+      structuredOutput = rawOutput?.trim()
+        ? this.buildStructuredPredictionFromMarkdown(rawOutput, before.aiModel)
+        : null;
     }
+    const effectiveIsSuccess = dto.isSuccess ?? before.isSuccess;
 
     const updated = await this.prisma.modelPrediction.update({
       where: { id },
       data: {
-        ...(structuredOutput !== undefined ? { structuredOutput: this.toPrismaJson(structuredOutput) } : {}),
+        structuredOutput: this.toPrismaJson(structuredOutput),
         rawOutput,
         promptVersion: dto.promptVersion ?? before.promptVersion,
         promptSnapshot: dto.promptSnapshot ?? before.promptSnapshot,
-        isSuccess: dto.isSuccess,
-        errorMessage: dto.errorMessage ?? null,
+        isSuccess: effectiveIsSuccess,
+        errorMessage: dto.errorMessage !== undefined ? dto.errorMessage : before.errorMessage,
         generatedAt: new Date(),
         winDrawLossCorrect: null,
         handicapCorrect: null,
@@ -999,7 +1002,7 @@ export class AdminService {
       include: { aiModel: true },
     });
     await this.recalculatePredictionTaskStats(before.predictionTaskId);
-    const consensus = dto.isSuccess ? await this.consensusService.calculateAndSave(before.predictionTaskId) : null;
+    const consensus = await this.consensusService.calculateAndSave(before.predictionTaskId);
     if (before.predictionTask.match.status === 'FINISHED') {
       await this.recalculateFinishedMatchComparisons(before.predictionTask.matchId);
     }
@@ -2174,7 +2177,6 @@ export class AdminService {
             take: 1,
             include: {
               predictions: {
-                where: { isSuccess: true },
                 include: { aiModel: true },
                 orderBy: { generatedAt: 'asc' },
               },
@@ -2203,8 +2205,13 @@ export class AdminService {
 
         return {
           predictionId: p.id,
+          modelId: p.aiModelId,
           modelName: p.aiModel.displayName,
+          modelDisplayName: p.aiModel.displayName,
           persona: p.aiModel.persona,
+          rawOutput: p.rawOutput ?? null,
+          isSuccess: p.isSuccess,
+          errorMessage: p.errorMessage ?? null,
           predictedWinDrawLoss: (conclusion.winLossDraw as string | undefined) ?? null,
           predictedHandicap: (conclusion.handicapWinLossDraw as string | undefined) ?? null,
           predictedOverUnder: (conclusion.overUnderTrend as string | undefined) ?? null,
@@ -2237,6 +2244,8 @@ export class AdminService {
         status: m.status,
         homeScore: m.homeScore,
         awayScore: m.awayScore,
+        homeHalfScore: m.homeHalfScore,
+        awayHalfScore: m.awayHalfScore,
         handicapLine: market?.handicapLine ?? m.handicapLine,
         overUnderLine: market?.overUnderLine ?? m.overUnderLine,
         sportteryResult: market ? {

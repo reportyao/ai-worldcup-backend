@@ -32,14 +32,14 @@ export interface ParsedManualPrediction {
   risks: string[];
   conclusion: {
     winLossDraw: 'HOME_WIN' | 'DRAW' | 'AWAY_WIN';
-    winProbability: { home: number; draw: number; away: number };
+    winProbability?: { home: number; draw: number; away: number };
     handicapTrend?: string;
     handicapWinLossDraw?: 'HOME_WIN' | 'DRAW' | 'AWAY_WIN';
     overUnderTrend?: string;
     overUnderResult?: 'OVER' | 'UNDER' | 'EQUAL';
     halfFullTime?: string;
-    likelyScores: Array<{ home: number; away: number; weight: number }>;
-    goalsRange: { min: number; max: number; expectation?: number };
+    likelyScores?: Array<{ home: number; away: number; weight: number }>;
+    goalsRange?: { min: number; max: number; expectation?: number };
   };
   informationQuality: {
     completeness: 'HIGH' | 'MEDIUM' | 'LOW';
@@ -297,22 +297,10 @@ function parseLikelyScoresValue(value: string | undefined): Array<{ home: number
   return scores;
 }
 
-function inferScoresFromResult(result: 'HOME_WIN' | 'DRAW' | 'AWAY_WIN'): Array<{ home: number; away: number; weight: number }> {
-  if (result === 'HOME_WIN') return [{ home: 2, away: 1, weight: 0.4 }, { home: 1, away: 0, weight: 0.3 }, { home: 2, away: 0, weight: 0.2 }];
-  if (result === 'AWAY_WIN') return [{ home: 1, away: 2, weight: 0.4 }, { home: 0, away: 1, weight: 0.3 }, { home: 0, away: 2, weight: 0.2 }];
-  return [{ home: 1, away: 1, weight: 0.4 }, { home: 0, away: 0, weight: 0.3 }, { home: 2, away: 2, weight: 0.2 }];
-}
-
-function probabilityForResult(result: 'HOME_WIN' | 'DRAW' | 'AWAY_WIN'): { home: number; draw: number; away: number } {
-  if (result === 'HOME_WIN') return { home: 0.5, draw: 0.27, away: 0.23 };
-  if (result === 'AWAY_WIN') return { home: 0.23, draw: 0.27, away: 0.5 };
-  return { home: 0.3, draw: 0.4, away: 0.3 };
-}
-
 function deriveGoalsRange(
   scores: Array<{ home: number; away: number }>,
   overUnder: { result?: 'OVER' | 'UNDER' | 'EQUAL'; line?: number },
-): { min: number; max: number; expectation?: number } {
+): { min: number; max: number; expectation?: number } | undefined {
   if (scores.length > 0) {
     const totals = scores.map((score) => score.home + score.away);
     return {
@@ -326,7 +314,7 @@ function deriveGoalsRange(
     if (overUnder.result === 'OVER') return { min: Math.floor(overUnder.line) + 1, max: Math.floor(overUnder.line) + 4, expectation: overUnder.line + 0.75 };
     if (overUnder.result === 'EQUAL') return { min: Math.round(overUnder.line), max: Math.round(overUnder.line), expectation: overUnder.line };
   }
-  return { min: 0, max: 3, expectation: 1.8 };
+  return undefined;
 }
 
 function fallbackConclusionTextSearch(text: string): Partial<ParsedManualPrediction['conclusion']> {
@@ -352,18 +340,17 @@ function parseConclusion(text: string): ParsedManualPrediction['conclusion'] {
   const handicap = parseHandicapValue(fields.get('handicapWinLossDraw'));
   const overUnder = parseOverUnderValue(fields.get('overUnder'));
   const likelyScores = parseLikelyScoresValue(fields.get('scores'));
-  const scores = likelyScores.length > 0 ? likelyScores : inferScoresFromResult(winLossDraw);
+  const goalsRange = deriveGoalsRange(likelyScores, overUnder);
 
   return {
     winLossDraw,
-    winProbability: probabilityForResult(winLossDraw),
     ...(handicap.trend ? { handicapTrend: handicap.trend } : {}),
     ...(handicap.result ? { handicapWinLossDraw: handicap.result } : {}),
     ...(overUnder.trend ? { overUnderTrend: overUnder.trend } : {}),
     ...(overUnder.result ? { overUnderResult: overUnder.result } : {}),
     ...(parseHalfFullTimeValue(fields.get('halfFullTime')) ? { halfFullTime: parseHalfFullTimeValue(fields.get('halfFullTime')) } : {}),
-    likelyScores: scores,
-    goalsRange: deriveGoalsRange(scores, overUnder),
+    ...(likelyScores.length > 0 ? { likelyScores } : {}),
+    ...(goalsRange ? { goalsRange } : {}),
   };
 }
 
