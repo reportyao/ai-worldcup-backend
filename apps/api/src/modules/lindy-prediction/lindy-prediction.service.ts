@@ -299,8 +299,10 @@ export class LindyPredictionService {
       }
     }
 
-    // 更新 task 的 modelCount
-    const totalLindyModels = await this.prisma.modelPrediction.count({ where: { predictionTaskId: task.id } });
+    // 更新 task 的 modelCount（只统计 Lindy 模型）
+    const totalLindyModels = await this.prisma.modelPrediction.count({
+      where: { predictionTaskId: task.id, aiModelId: { in: lindyModels.map(m => m.id) } },
+    });
     await this.prisma.predictionTask.update({
       where: { id: task.id },
       data: { modelCount: totalLindyModels },
@@ -712,8 +714,15 @@ export class LindyPredictionService {
    * 更新 PredictionTask 的统计信息，并在所有 Lindy 模型完成后计算共识。
    */
   private async updateTaskStats(taskId: string) {
+    // 只统计 Lindy provider 的模型预测，避免被现有 8 个内部模型的失败记录干扰
+    const lindyModels = await this.prisma.aiModel.findMany({
+      where: { provider: LINDY_PROVIDER },
+      select: { id: true },
+    });
+    const lindyModelIds = lindyModels.map(m => m.id);
+
     const predictions = await this.prisma.modelPrediction.findMany({
-      where: { predictionTaskId: taskId },
+      where: { predictionTaskId: taskId, aiModelId: { in: lindyModelIds } },
     });
 
     const successCount = predictions.filter(p => p.isSuccess).length;
