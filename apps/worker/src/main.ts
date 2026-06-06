@@ -14,6 +14,7 @@ import { processPredictionGenerator } from './jobs/prediction-generator.job.js';
 import { processReviewGenerator } from './jobs/review-generator.job.js';
 import { processScorecardUpdate } from './jobs/scorecard-update.job.js';
 import { processSportteryAutoSync } from './jobs/sporttery-auto-sync.job.js';
+import { processLindyPrediction } from './jobs/lindy-prediction.job.js';
 import { processTranslation } from './jobs/translation.job.js';
 import { logger } from './logger.js';
 import { QueueName } from './queues.js';
@@ -272,6 +273,33 @@ async function registerSportteryAutoSyncSchedulers(): Promise<void> {
   logger.info({ queue: QueueName.SportteryAutoSync }, 'sporttery auto-sync schedulers registered');
 }
 
+/**
+ * Lindy AI 预测定时任务注册
+ *
+ * 每 5 分钟扫描一次，查找赛前约 7 小时的比赛，自动向 Lindy webhook 发送预测请求。
+ */
+async function registerLindyPredictionScheduler(): Promise<void> {
+  const queue = new Queue(QueueName.LindyPrediction, { connection: createConnection() });
+  queues.push(queue);
+  await registerRepeatableJob(
+    queue,
+    'lindy-scan-and-trigger',
+    {
+      mode: 'SCAN_AND_TRIGGER',
+      windowMinutes: Number(process.env.LINDY_PREDICTION_WINDOW_MINUTES ?? 10),
+    },
+    {
+      repeat: { pattern: process.env.LINDY_PREDICTION_CRON ?? '*/5 * * * *' },
+      jobId: 'lindy-prediction-scheduler-repeat',
+      attempts: 2,
+      backoff: { type: 'exponential', delay: 30_000 },
+      removeOnComplete: 50,
+      removeOnFail: 100,
+    },
+  );
+  logger.info({ queue: QueueName.LindyPrediction }, 'lindy prediction scheduler registered');
+}
+
 function registerWorker(
   name: QueueName,
   processor: (job: Job) => Promise<unknown>,
@@ -301,6 +329,7 @@ async function main(): Promise<void> {
   await registerFeatureComputeScheduler();
   await registerScorecardScheduler();
   await registerSportteryAutoSyncSchedulers();
+  await registerLindyPredictionScheduler();
 
   registerWorker(QueueName.PredictionGenerator, processPredictionGenerator);
   registerWorker(QueueName.DataSync, processDataSync);
@@ -310,6 +339,7 @@ async function main(): Promise<void> {
   registerWorker(QueueName.Translation, processTranslation);
   registerWorker(QueueName.FeatureCompute, processFeatureCompute);
   registerWorker(QueueName.SportteryAutoSync, processSportteryAutoSync);
+  registerWorker(QueueName.LindyPrediction, processLindyPrediction);
 
   const shutdown = async (signal: NodeJS.Signals): Promise<void> => {
     logger.info({ signal }, 'shutting down workers');

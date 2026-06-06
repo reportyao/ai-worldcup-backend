@@ -378,7 +378,7 @@ async function generatePrediction(payload: z.infer<typeof DirectPredictionPayloa
   const match = await loadMatchContext(payload.matchId);
   const featureData = await loadOrComputeFeature(match);
   const activeModels = await prisma.aiModel.findMany({
-    where: { isActive: true },
+    where: { isActive: true, provider: { not: 'lindy' } },
     orderBy: [{ sortOrder: 'asc' }, { createdAt: 'asc' }],
   });
   if (activeModels.length === 0) throw new Error('No active AI models configured');

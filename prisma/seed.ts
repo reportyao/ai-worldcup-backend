@@ -235,6 +235,34 @@ async function main() {
       description: '智谱 GLM，补充中文赛事理解和稳健结论，经中转站接入',
       config: modelGatewayConfig(0.35),
     },
+    // ─── Lindy AI 外部模型（通过 webhook 异步调用）──────────────────────────────
+    {
+      modelId: 'lindy-o3',
+      displayName: 'Lindy O3',
+      persona: 'DATA_DRIVEN' as const,
+      provider: 'lindy',
+      sortOrder: 90,
+      description: 'OpenAI o3 深度推理，通过 Lindy webhook 异步调用',
+      config: { type: 'lindy-webhook', model: 'o3' },
+    },
+    {
+      modelId: 'lindy-gpt5_5',
+      displayName: 'Lindy GPT-5.5',
+      persona: 'ATTACKING' as const,
+      provider: 'lindy',
+      sortOrder: 91,
+      description: 'GPT-5.5 分析，通过 Lindy webhook 异步调用',
+      config: { type: 'lindy-webhook', model: 'gpt5_5' },
+    },
+    {
+      modelId: 'lindy-claude',
+      displayName: 'Lindy Claude',
+      persona: 'STEADY' as const,
+      provider: 'lindy',
+      sortOrder: 92,
+      description: 'Claude 4.7 Opus Thinking，通过 Lindy webhook 异步调用',
+      config: { type: 'lindy-webhook', model: 'claude' },
+    },
   ];
   for (const m of modelData) {
     await prisma.aiModel.upsert({

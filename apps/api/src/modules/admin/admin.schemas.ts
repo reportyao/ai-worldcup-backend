@@ -300,3 +300,23 @@ export const AdminManualPredictionUploadSchema = z.object({
   })).min(1),
 });
 export type AdminManualPredictionUploadDto = z.infer<typeof AdminManualPredictionUploadSchema>;
+
+// ============================================================================
+// Lindy AI 预测 (Lindy Webhook 集成)
+// ============================================================================
+
+export const AdminLindySettingsUpdateSchema = z.object({
+  webhookUrl: optionalTrimmedString,
+  authToken: optionalTrimmedString,
+  defaultPrompt: optionalTrimmedString,
+  enabled: z.coerce.boolean().optional(),
+});
+export type AdminLindySettingsUpdateDto = z.infer<typeof AdminLindySettingsUpdateSchema>;
+
+export const AdminLindyTriggerSchema = z.object({
+  matchId: z.string().min(1),
+  model: z.enum(['o3', 'gpt5_5', 'claude']).optional(),
+  prompt: z.string().min(1).optional(),
+  version: z.enum(ALL_PREDICTION_VERSIONS as [string, ...string[]]).optional(),
+});
+export type AdminLindyTriggerDto = z.infer<typeof AdminLindyTriggerSchema>;

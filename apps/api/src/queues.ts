@@ -11,6 +11,7 @@ export const QueueName = {
   Translation: 'translation',
   FeatureCompute: 'feature-compute',
   SportteryAutoSync: 'sporttery-auto-sync',
+  LindyPrediction: 'lindy-prediction',
 } as const;
 
 export type QueueName = (typeof QueueName)[keyof typeof QueueName];

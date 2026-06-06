@@ -11,11 +11,13 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import type { Request } from 'express';
+import { PredictionVersion } from '@prisma/client';
 
 import { ZodValidationPipe } from '../../common/zod-validation.pipe.js';
 
 import { AdminAuthGuard } from './admin-auth.guard.js';
 import { AdminPublic } from './admin-auth.metadata.js';
+import { LindyPredictionService } from '../lindy-prediction/lindy-prediction.service.js';
 import {
   AdminAiModelCreateSchema,
   AdminAiModelListQuerySchema,
@@ -70,13 +72,20 @@ import {
   type AdminPromptTemplateUpdateDto,
   type AdminModelPredictionUpdateDto,
   type AdminManualPredictionUploadDto,
+  AdminLindySettingsUpdateSchema,
+  AdminLindyTriggerSchema,
+  type AdminLindySettingsUpdateDto,
+  type AdminLindyTriggerDto,
 } from './admin.schemas.js';
 import { AdminService } from './admin.service.js';
 
 @Controller('admin')
 @UseGuards(AdminAuthGuard)
 export class AdminController {
-  constructor(private readonly adminService: AdminService) {}
+  constructor(
+    private readonly adminService: AdminService,
+    private readonly lindyService: LindyPredictionService,
+  ) {}
 
 
   @AdminPublic()
@@ -443,4 +452,49 @@ export class AdminController {
     return this.adminService.updateMatchComparisonResult(matchId, dto);
   }
 
+  // ============================================================================
+  // Lindy AI 预测管理
+  // ============================================================================
+
+  @Get('lindy-prediction/settings')
+  getLindySettings() {
+    return this.lindyService.getSettingsResponse();
+  }
+
+  @Patch('lindy-prediction/settings')
+  updateLindySettings(
+    @Req() req: Request,
+    @Body(new ZodValidationPipe(AdminLindySettingsUpdateSchema)) dto: AdminLindySettingsUpdateDto,
+  ) {
+    const meta = this.adminService.getRequestMeta(req);
+    return this.lindyService.updateSettings({ ...dto, updatedBy: meta.adminEmail });
+  }
+
+  @Post('lindy-prediction/trigger')
+  triggerLindyPrediction(
+    @Body(new ZodValidationPipe(AdminLindyTriggerSchema)) dto: AdminLindyTriggerDto,
+  ) {
+    return this.lindyService.sendPredictionRequest({
+      matchId: dto.matchId,
+      model: dto.model,
+      prompt: dto.prompt,
+      version: dto.version as PredictionVersion | undefined,
+    });
+  }
+
+  @Post('lindy-prediction/scan')
+  scanAndTriggerLindy() {
+    return this.lindyService.scanAndTrigger();
+  }
+
+  @Get('lindy-prediction/tasks')
+  listLindyTasks(
+    @Query('page') page?: string,
+    @Query('pageSize') pageSize?: string,
+  ) {
+    return this.lindyService.listLindyTasks({
+      page: page ? Number(page) : 1,
+      pageSize: pageSize ? Number(pageSize) : 20,
+    });
+  }
 }
