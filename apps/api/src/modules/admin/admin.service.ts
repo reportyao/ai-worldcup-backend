@@ -58,6 +58,7 @@ import type {
   AdminModelPredictionUpdateDto,
   AdminManualPredictionUploadDto,
 } from './admin.schemas.js';
+import { LindyPredictionService } from '../lindy-prediction/lindy-prediction.service.js';
 import { parseManualPredictionMarkdown } from './manual-prediction-parser.js';
 
 interface RequestWithAdmin extends Request {
@@ -120,6 +121,7 @@ export class AdminService {
     private readonly footballDataSync: FootballDataSyncService,
     private readonly feijingAiPrediction: FeijingAiPredictionService,
     private readonly config: ConfigService<AppConfig, true>,
+    private readonly lindyService: LindyPredictionService,
   ) {}
 
   async login(dto: AdminLoginDto) {
@@ -1053,6 +1055,82 @@ export class AdminService {
     }
     await this.writeAudit(meta, 'MODEL_PREDICTION_CLEAR', 'ModelPrediction', id, before, { updated, consensus });
     return { item: updated, consensus };
+  }
+
+  /**
+   * 重新从 rawOutput 中提取结构化结论（structuredOutput）
+   * 支持两种格式：
+   * 1. JSON 格式（Lindy 结构化 payload）→ 用 LindyPredictionService.mapCallbackToStructuredPrediction
+   * 2. Markdown 格式 → 用 buildStructuredPredictionFromMarkdown
+   */
+  async reExtractConclusion(id: string, meta: RequestMeta) {
+    const mp = await this.prisma.modelPrediction.findUnique({
+      where: { id },
+      include: { aiModel: true, predictionTask: { include: { match: true } } },
+    });
+    if (!mp) throw new NotFoundException('Model prediction not found');
+    if (!mp.rawOutput?.trim()) throw new BadRequestException('该预测没有 rawOutput 内容，无法重新提取');
+
+    let structuredOutput: unknown;
+    const rawText = mp.rawOutput.trim();
+
+    // 尝试检测是否是 JSON 格式的 Lindy payload
+    if (rawText.startsWith('{') || rawText.startsWith('[')) {
+      try {
+        const parsed = JSON.parse(rawText);
+        // 是 Lindy 结构化 payload（包含 conclusion 或 analysis 字段）
+        if (parsed && typeof parsed === 'object' && (parsed.conclusion || parsed.analysis || parsed.status)) {
+          structuredOutput = this.lindyService.mapCallbackToStructuredPrediction(
+            parsed,
+            mp.aiModel.modelId,
+            mp.aiModel.displayName,
+          );
+        } else {
+          // 普通 JSON，降级为 Markdown 解析
+          structuredOutput = this.buildStructuredPredictionFromMarkdown(rawText, mp.aiModel);
+        }
+      } catch {
+        // JSON 解析失败，按 Markdown 处理
+        structuredOutput = this.buildStructuredPredictionFromMarkdown(rawText, mp.aiModel);
+      }
+    } else {
+      // Markdown 格式
+      structuredOutput = this.buildStructuredPredictionFromMarkdown(rawText, mp.aiModel);
+    }
+
+    const updated = await this.prisma.modelPrediction.update({
+      where: { id },
+      data: {
+        structuredOutput: this.toPrismaJson(structuredOutput),
+        generatedAt: new Date(),
+        // 重置评估字段，等待下次重新评估
+        winDrawLossCorrect: null,
+        handicapCorrect: null,
+        overUnderCorrect: null,
+        scoreExact: null,
+        halfFullCorrect: null,
+        goalRangeHit: null,
+        anyHit: null,
+        brierScore: null,
+        logLoss: null,
+        outcomeProbability: null,
+        actualOutcome: null,
+        evaluationVersion: null,
+        evaluatedAt: null,
+      },
+      include: { aiModel: true },
+    });
+
+    // 重新计算共识
+    const consensus = await this.consensusService.calculateAndSave(mp.predictionTaskId);
+
+    // 如果比赛已结束，重新计算对比结果
+    if (mp.predictionTask.match.status === 'FINISHED') {
+      await this.recalculateFinishedMatchComparisons(mp.predictionTask.matchId);
+    }
+
+    await this.writeAudit(meta, 'MODEL_PREDICTION_RE_EXTRACT', 'ModelPrediction', id, mp, { updated, consensus });
+    return { item: updated, consensus, structuredOutput };
   }
 
   async listPredictionTasks(query: AdminPredictionTaskQuery) {

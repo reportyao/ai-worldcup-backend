@@ -571,7 +571,7 @@ export class LindyPredictionService {
    * raw_output / response / result / answer 中。这里统一做“结构化字段优先、
    * 原文标签兜底”的解析，避免预测对照页读到空值或误读 overUnderTrend。
    */
-  private mapCallbackToStructuredPrediction(
+  public mapCallbackToStructuredPrediction(
     payload: LindyCallbackPayload,
     modelId: string,
     modelDisplayName: string,
@@ -921,9 +921,121 @@ export class LindyPredictionService {
   }
 
   private buildCallbackRawOutput(payload: LindyCallbackPayload): string {
+    // 如果有直接文本输出（Markdown格式），直接返回
     const directOutput = payload.raw_output || payload.response || payload.result || payload.answer;
     if (directOutput && directOutput.trim()) return directOutput;
-    return JSON.stringify(payload);
+
+    // 否则将结构化 payload 转换为格式化 Markdown，避免展示压缩 JSON
+    return this.buildFormattedMarkdown(payload);
+  }
+
+  /**
+   * 将 Lindy 回调 payload 转换为格式化的 Markdown 内容
+   * 分区展示：预测结论 → 比赛分析 → 关键变量 → 走势分析 → 风险提示 → 信息完整性
+   */
+  private buildFormattedMarkdown(payload: LindyCallbackPayload): string {
+    const lines: string[] = [];
+    const c = payload.conclusion || {};
+    const a = payload.analysis || {};
+
+    // ─── 预测结论 ────────────────────────────────────────────────────────────────
+    lines.push('## 🎯 预测结论');
+    lines.push('');
+
+    // 胜平负
+    if (c.win_draw_loss?.primary) {
+      const wdl = c.win_draw_loss.secondary
+        ? `${c.win_draw_loss.primary} / ${c.win_draw_loss.secondary}`
+        : c.win_draw_loss.primary;
+      lines.push(`**胜平负：** ${wdl}`);
+    }
+
+    // 让球
+    if (c.handicap?.primary) {
+      const hcp = c.handicap.secondary
+        ? `${c.handicap.primary} / ${c.handicap.secondary}`
+        : c.handicap.primary;
+      lines.push(`**让球：** ${hcp}`);
+    }
+
+    // 大小球
+    if (c.over_under?.primary) {
+      const ou = c.over_under.secondary
+        ? `${c.over_under.primary} / ${c.over_under.secondary}`
+        : c.over_under.primary;
+      lines.push(`**大小球：** ${ou}`);
+    }
+
+    // 比分
+    if (Array.isArray(c.scores) && c.scores.length > 0) {
+      lines.push(`**预测比分：** ${c.scores.join(' / ')}`);
+    }
+
+    // 半全场
+    if (Array.isArray(c.half_full) && c.half_full.length > 0) {
+      lines.push(`**半全场：** ${c.half_full.join(' / ')}`);
+    }
+
+    // 置信度 & 风险等级
+    const metaItems: string[] = [];
+    if (c.confidence) metaItems.push(`置信度：${c.confidence}`);
+    if (c.risk_level) metaItems.push(`风险等级：${c.risk_level}`);
+    if (metaItems.length > 0) lines.push(`**${metaItems.join('　')}**`);
+
+    lines.push('');
+
+    // ─── 比赛性质 ────────────────────────────────────────────────────────────────
+    if (a.match_nature) {
+      lines.push('## 🔍 比赛性质');
+      lines.push('');
+      lines.push(a.match_nature);
+      lines.push('');
+    }
+
+    // ─── 优劣势分析 ──────────────────────────────────────────────────────────────
+    if (a.strengths_weaknesses) {
+      lines.push('## 💪 优劣势分析');
+      lines.push('');
+      lines.push(a.strengths_weaknesses);
+      lines.push('');
+    }
+
+    // ─── 关键变量 ────────────────────────────────────────────────────────────────
+    if (a.key_variables) {
+      lines.push('## 🔑 关键变量');
+      lines.push('');
+      lines.push(a.key_variables);
+      lines.push('');
+    }
+
+    // ─── 比赛走势 ────────────────────────────────────────────────────────────────
+    if (a.likely_flow) {
+      lines.push('## 📈 比赛走势');
+      lines.push('');
+      lines.push(a.likely_flow);
+      lines.push('');
+    }
+
+    // ─── 风险提示 ────────────────────────────────────────────────────────────────
+    if (a.risk_warning) {
+      lines.push('## ⚠️ 风险提示');
+      lines.push('');
+      lines.push(a.risk_warning);
+      lines.push('');
+    }
+
+    // ─── 信息完整性 ──────────────────────────────────────────────────────────────
+    if (a.info_completeness) {
+      lines.push('## 📋 信息完整性');
+      lines.push('');
+      lines.push(a.info_completeness);
+      lines.push('');
+    }
+
+    const result = lines.join('\n').trim();
+    // 如果什么内容都没有，降级为 JSON（保留原始数据）
+    if (!result) return JSON.stringify(payload, null, 2);
+    return result;
   }
 
   private toJsonRecord(value: unknown): Record<string, unknown> {

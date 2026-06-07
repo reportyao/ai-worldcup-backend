@@ -329,6 +329,14 @@ export class AdminController {
     return this.adminService.clearModelPrediction(id, this.adminService.getRequestMeta(req));
   }
 
+  @Post('model-predictions/:id/re-extract')
+  reExtractConclusion(
+    @Param('id') id: string,
+    @Req() req: Request,
+  ) {
+    return this.adminService.reExtractConclusion(id, this.adminService.getRequestMeta(req));
+  }
+
   @Get('prediction-tasks')
   listPredictionTasks(
     @Query(new ZodValidationPipe(AdminPredictionTaskQuerySchema)) query: AdminPredictionTaskQuery,
