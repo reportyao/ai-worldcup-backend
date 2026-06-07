@@ -114,7 +114,10 @@ export class SportteryClient {
   private async fetchTrade500SellingMatches(saleDate: string): Promise<SportteryFootballMatch[]> {
     const enabled = (process.env.SPORTTERY_TRADE500_FALLBACK_ENABLED ?? 'true').toLowerCase() !== 'false';
     if (!enabled) return [];
-    const url = process.env.SPORTTERY_TRADE500_JCZQ_URL ?? 'https://trade.500.com/jczq/';
+    const baseUrl = process.env.SPORTTERY_TRADE500_JCZQ_URL ?? 'https://trade.500.com/jczq/';
+    // trade500 saleDate param is the SALE deadline date (processdate), not the match date.
+    // We fetch without date filter and match by data-matchdate instead.
+    const url = baseUrl;
     const timeoutMs = Number(process.env.SPORTTERY_TIMEOUT_MS ?? 15_000);
     try {
       await jitterDelay(300, 1200);
@@ -133,7 +136,9 @@ export class SportteryClient {
         this.logger.warn(`Trade500 fallback request failed: status=${response?.status}`);
         return [];
       }
-      const html = this.decodeChineseHtml(Buffer.from(await response.arrayBuffer()));
+      const buffer = Buffer.from(await response.arrayBuffer());
+      // trade500 always uses GB2312/GBK encoding
+      const html = new TextDecoder('gb18030').decode(buffer);
       return this.extractTrade500Rows(html, saleDate);
     } catch (error) {
       this.logger.warn(`Trade500 fallback failed: ${error instanceof Error ? error.message : String(error)}`);
@@ -153,16 +158,25 @@ export class SportteryClient {
     let match: RegExpExecArray | null;
     while ((match = rowRegex.exec(html))) {
       const attrs = this.parseHtmlAttributes(match[1]);
-      const processDate = attrs['data-processdate'] ?? attrs['data-saledate'] ?? saleDate;
-      if (processDate !== saleDate) continue;
-      if (attrs['data-isend'] === '1') continue;
-      const matchNo = attrs['data-matchnum'];
+      // Use data-matchdate (actual match date) for filtering, not data-processdate (sale deadline)
+      const matchDate = attrs['data-matchdate'] ?? attrs['data-processdate'] ?? attrs['data-saledate'];
+      if (matchDate && matchDate !== saleDate) continue;
+      // data-isend=1 means betting is closed, but the match may still be valid (result not yet in)
+      // Only skip if the match already has a final score result
+      const hasResult = Boolean(attrs['data-score'] || attrs['data-result'] || attrs['data-spfresult']);
+      if (attrs['data-isend'] === '1' && hasResult) continue;
+      const rawMatchNo = attrs['data-matchnum']; // e.g. "周日201"
       const homeTeamName = attrs['data-homesxname'];
       const awayTeamName = attrs['data-awaysxname'];
-      if (!matchNo || !homeTeamName || !awayTeamName) continue;
+      if (!rawMatchNo || !homeTeamName || !awayTeamName) continue;
+
+      // Extract only the digits from matchNo (e.g. "周日201" -> "201")
+      const matchNoMatch = rawMatchNo.match(/\d+/);
+      const matchNo = matchNoMatch ? matchNoMatch[0] : rawMatchNo;
+
       const kickoffAt = attrs['data-matchdate'] && attrs['data-matchtime'] ? this.normalizeDateTimeWithCst(attrs['data-matchdate'], attrs['data-matchtime']) : undefined;
       rows.push({
-        saleDate: processDate,
+        saleDate: attrs['data-matchdate'] ?? saleDate,
         matchNo,
         issueNo: attrs['data-processid'] ?? attrs['data-id'],
         leagueName: attrs['data-simpleleague'],
@@ -171,7 +185,7 @@ export class SportteryClient {
         kickoffAt,
         status: 'SCHEDULED',
         handicapLine: this.parseFiniteNumber(attrs['data-rangqiu']),
-        raw: { source: 'trade500', attrs, rowText: this.stripHtml(match[2]) },
+        raw: { source: 'trade500', attrs, rowText: this.stripHtml(match[2] ?? '') },
       });
     }
     return rows;
@@ -179,9 +193,14 @@ export class SportteryClient {
 
   private parseHtmlAttributes(input: string): Record<string, string> {
     const attrs: Record<string, string> = {};
-    const attrRegex = /([A-Za-z0-9_-]+)\s*=\s*("([^"]*)"|'([^']*)')/g;
+    // More robust regex for HTML attributes, supporting unquoted or single/double quoted values
+    const attrRegex = /([A-Za-z0-9_-]+)\s*=\s*(?:'([^']*)'|"([^"]*)"|([^\s>]+))/g;
     let match: RegExpExecArray | null;
-    while ((match = attrRegex.exec(input))) attrs[match[1].toLowerCase()] = this.decodeHtmlEntities(match[3] ?? match[4] ?? '');
+    while ((match = attrRegex.exec(input))) {
+      const key = match[1]!.toLowerCase();
+      const value = match[2] ?? match[3] ?? match[4] ?? '';
+      attrs[key] = this.decodeHtmlEntities(value);
+    }
     return attrs;
   }
 
