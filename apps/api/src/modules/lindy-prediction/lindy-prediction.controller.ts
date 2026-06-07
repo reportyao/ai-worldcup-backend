@@ -30,13 +30,17 @@ export class LindyPredictionController {
     @Query('aiModelId') aiModelId: string,
     @Body() payload: LindyCallbackPayload,
   ) {
-    this.logger.log({ taskId, matchId, aiModelId, model: payload.model, status: payload.status }, 'Lindy callback received');
+    const resolvedTaskId = taskId || payload._taskId;
+    const resolvedMatchId = matchId || payload._matchId;
+    const resolvedAiModelId = aiModelId || payload._aiModelId;
 
-    if (!taskId || !matchId || !aiModelId) {
-      return { success: false, message: 'Missing required query parameters: taskId, matchId, aiModelId' };
+    this.logger.log({ taskId: resolvedTaskId, matchId: resolvedMatchId, aiModelId: resolvedAiModelId, model: payload.model, status: payload.status }, 'Lindy callback received');
+
+    if (!resolvedTaskId || !resolvedMatchId || !resolvedAiModelId) {
+      return { success: false, message: 'Missing required tracking parameters: taskId, matchId, aiModelId' };
     }
 
-    const result = await this.lindyService.handleCallback(taskId, matchId, aiModelId, payload);
+    const result = await this.lindyService.handleCallback(resolvedTaskId, resolvedMatchId, resolvedAiModelId, payload);
     return result;
   }
 }

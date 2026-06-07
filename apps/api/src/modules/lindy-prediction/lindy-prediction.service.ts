@@ -67,6 +67,10 @@ export interface LindyCallbackPayload {
     info_completeness?: string;
   };
   error_message?: string;
+  raw_output?: string;
+  response?: string;
+  result?: string;
+  answer?: string;
   /** 内部追踪字段 */
   _taskId?: string;
   _matchId?: string;
@@ -211,7 +215,10 @@ export class LindyPredictionService {
         errorMessage: null,
       },
       update: {
-        // 如果已存在，不覆盖状态（可能已有其他模型完成）
+        trigger,
+        status: PredictionTaskStatus.RUNNING,
+        errorMessage: null,
+        publishedAt: null,
       },
     });
 
@@ -287,7 +294,9 @@ export class LindyPredictionService {
 
         if (!response.ok) {
           const body = await response.text().catch(() => '');
-          errors.push(`${resolvedModel}: HTTP ${response.status} - ${body.slice(0, 200)}`);
+          const errorMessage = `${resolvedModel}: HTTP ${response.status} - ${body.slice(0, 200)}`;
+          errors.push(errorMessage);
+          await this.markRequestDispatchFailed(task.id, aiModel.id, errorMessage);
           continue;
         }
 
@@ -295,18 +304,13 @@ export class LindyPredictionService {
         this.logger.log({ matchId: match.id, model: resolvedModel, taskId: task.id }, 'Lindy prediction request sent');
       } catch (error) {
         const msg = error instanceof Error ? error.message : String(error);
-        errors.push(`${resolvedModel}: ${msg}`);
+        const errorMessage = `${resolvedModel}: ${msg}`;
+        errors.push(errorMessage);
+        await this.markRequestDispatchFailed(task.id, aiModel.id, errorMessage);
       }
     }
 
-    // 更新 task 的 modelCount（只统计 Lindy 模型）
-    const totalLindyModels = await this.prisma.modelPrediction.count({
-      where: { predictionTaskId: task.id, aiModelId: { in: lindyModels.map(m => m.id) } },
-    });
-    await this.prisma.predictionTask.update({
-      where: { id: task.id },
-      data: { modelCount: totalLindyModels },
-    });
+    await this.updateTaskStats(task.id);
 
     return { success: requestsSent > 0, requestsSent, errors };
   }
@@ -341,15 +345,17 @@ export class LindyPredictionService {
       return { success: false, message: `AiModel not found: ${aiModelId}` };
     }
 
+    const callbackStatus = payload.status ?? (payload.error_message ? 'error' : 'success');
+
     // 处理错误回调
-    if (payload.status === 'error') {
+    if (callbackStatus === 'error') {
       await this.prisma.modelPrediction.upsert({
         where: { predictionTaskId_aiModelId: { predictionTaskId: taskId, aiModelId } },
         create: {
           predictionTaskId: taskId,
           aiModelId,
           structuredOutput: this.buildFailureOutput(aiModel.modelId, aiModel.displayName, payload.error_message || '未知错误'),
-          rawOutput: JSON.stringify(payload),
+          rawOutput: this.buildCallbackRawOutput(payload),
           promptVersion: 'lindy-webhook',
           isSuccess: false,
           errorMessage: payload.error_message || 'Lindy 分析失败',
@@ -358,7 +364,7 @@ export class LindyPredictionService {
         },
         update: {
           structuredOutput: this.buildFailureOutput(aiModel.modelId, aiModel.displayName, payload.error_message || '未知错误'),
-          rawOutput: JSON.stringify(payload),
+          rawOutput: this.buildCallbackRawOutput(payload),
           isSuccess: false,
           errorMessage: payload.error_message || 'Lindy 分析失败',
           latencyMs: Date.now() - startTime,
@@ -379,7 +385,7 @@ export class LindyPredictionService {
         predictionTaskId: taskId,
         aiModelId,
         structuredOutput: JSON.parse(JSON.stringify(structuredOutput)),
-        rawOutput: JSON.stringify(payload),
+        rawOutput: this.buildCallbackRawOutput(payload),
         promptVersion: 'lindy-webhook',
         promptSnapshot: null,
         latencyMs: null,
@@ -391,7 +397,7 @@ export class LindyPredictionService {
       },
       update: {
         structuredOutput: JSON.parse(JSON.stringify(structuredOutput)),
-        rawOutput: JSON.stringify(payload),
+        rawOutput: this.buildCallbackRawOutput(payload),
         isSuccess: true,
         errorMessage: null,
         generatedAt: new Date(),
@@ -410,10 +416,10 @@ export class LindyPredictionService {
   // ═══════════════════════════════════════════════════════════════════════════
 
   /**
-   * 扫描今日比赛，对赛前约 7 小时的比赛自动触发 Lindy 预测。
-   * 与现有 prediction-generator 的 scheduleDuePredictions 逻辑对齐。
+   * 每天北京时间14:00扫描未来24小时未开赛比赛并自动触发 Lindy 预测。
+   * 已经成功或正在等待回调的 Lindy 模型不会重复触发。
    */
-  async scanAndTrigger(windowMinutes = 10): Promise<{
+  async scanAndTrigger(_windowMinutes = 10): Promise<{
     scanned: number;
     triggered: number;
     errors: string[];
@@ -424,9 +430,8 @@ export class LindyPredictionService {
     }
 
     const now = new Date();
-    const targetMs = 7 * 60 * 60 * 1000; // 7 hours
-    const from = new Date(now.getTime() + targetMs - windowMinutes * 60 * 1000);
-    const to = new Date(now.getTime() + targetMs + windowMinutes * 60 * 1000);
+    const from = now;
+    const to = new Date(now.getTime() + 24 * 60 * 60 * 1000);
 
     // 查找在窗口内且尚未有 Lindy 预测的比赛
     const lindyModels = await this.prisma.aiModel.findMany({
@@ -450,17 +455,20 @@ export class LindyPredictionService {
     let triggered = 0;
 
     for (const match of matches) {
-      // 检查是否已有 Lindy 模型的预测
-      const existingLindyPredictions = await this.prisma.modelPrediction.findMany({
+      // 已成功或正在等待回调的模型不重复触发；失败模型允许下次扫描重试
+      const activeLindyPredictionCount = await this.prisma.modelPrediction.count({
         where: {
           predictionTask: { matchId: match.id, version: PredictionVersion.T_MINUS_7H },
           aiModelId: { in: lindyModels.map(m => m.id) },
-          isSuccess: true,
+          OR: [
+            { isSuccess: true },
+            { errorMessage: { contains: '等待 Lindy 回调' } },
+          ],
         },
       });
 
-      if (existingLindyPredictions.length >= lindyModels.length) {
-        continue; // 所有 Lindy 模型已完成
+      if (activeLindyPredictionCount >= lindyModels.length) {
+        continue; // 所有 Lindy 模型已完成或正在等待回调
       }
 
       try {
@@ -522,7 +530,34 @@ export class LindyPredictionService {
       this.prisma.predictionTask.count({ where }),
     ]);
 
-    return { items, total, page, pageSize };
+    const normalizedItems = items.map((item) => {
+      const predictions = item.predictions;
+      const successCount = predictions.filter((p) => p.isSuccess).length;
+      const failureCount = predictions.filter((p) => !p.isSuccess && !this.isWaitingForCallback(p.errorMessage)).length;
+      const pendingCount = predictions.filter((p) => !p.isSuccess && this.isWaitingForCallback(p.errorMessage)).length;
+      const status = pendingCount > 0
+        ? PredictionTaskStatus.RUNNING
+        : successCount === 0 && failureCount > 0
+          ? PredictionTaskStatus.FAILED
+          : successCount > 0 && failureCount > 0
+            ? PredictionTaskStatus.PARTIAL_SUCCESS
+            : successCount > 0
+              ? item.status
+              : item.status;
+      return {
+        ...item,
+        status,
+        modelCount: predictions.length,
+        successCount,
+        failureCount,
+        pendingCount,
+        errorMessage: failureCount > 0
+          ? predictions.filter((p) => !p.isSuccess && !this.isWaitingForCallback(p.errorMessage)).map((p) => p.errorMessage).filter(Boolean).join('\n')
+          : null,
+      };
+    });
+
+    return { items: normalizedItems, total, page, pageSize };
   }
 
   // ═══════════════════════════════════════════════════════════════════════════
@@ -531,6 +566,10 @@ export class LindyPredictionService {
 
   /**
    * 将 Lindy 回调的 conclusion/analysis 映射为标准 StructuredPrediction 格式。
+   *
+   * Lindy 实际回调偶尔不会严格按 conclusion 字段返回，而是把答案放在
+   * raw_output / response / result / answer 中。这里统一做“结构化字段优先、
+   * 原文标签兜底”的解析，避免预测对照页读到空值或误读 overUnderTrend。
    */
   private mapCallbackToStructuredPrediction(
     payload: LindyCallbackPayload,
@@ -539,17 +578,37 @@ export class LindyPredictionService {
   ) {
     const conclusion = payload.conclusion || {};
     const analysis = payload.analysis || {};
+    const rawText = this.getCallbackText(payload);
 
-    // 映射胜平负
-    const winLossDraw = this.mapWinDrawLoss(conclusion.win_draw_loss?.primary);
-    // 映射让球胜平负
-    const handicapWinLossDraw = this.mapHandicapResult(conclusion.handicap?.primary);
-    // 映射大小球
-    const overUnderResult = this.mapOverUnder(conclusion.over_under?.primary);
-    // 映射半全场
-    const halfFullTime = this.mapHalfFull(conclusion.half_full);
-    // 映射比分
-    const likelyScores = this.mapScores(conclusion.scores);
+    const winLossDrawSource = this.pickFirst(
+      conclusion.win_draw_loss?.primary,
+      conclusion.win_draw_loss?.secondary,
+      this.extractPredictionField(rawText, ['胜平负', '胜负平', '竞彩胜平负', '赛果', '赛果倾向']),
+    );
+    const handicapSource = this.pickFirst(
+      conclusion.handicap?.primary,
+      conclusion.handicap?.secondary,
+      this.extractPredictionField(rawText, ['让球胜平负', '让球胜负平', '让球', '让球盘', '让球倾向']),
+    );
+    const overUnderSource = this.pickFirst(
+      conclusion.over_under?.primary,
+      conclusion.over_under?.secondary,
+      this.extractPredictionField(rawText, ['大小球', '大小', '进球数', '总进球', '大小盘']),
+    );
+    const halfFullSource = this.pickFirst(
+      Array.isArray(conclusion.half_full) ? conclusion.half_full[0] : undefined,
+      this.extractPredictionField(rawText, ['半全场', '半场全场', '半全场推荐']),
+    );
+    const scoreSource = this.pickFirst(
+      Array.isArray(conclusion.scores) ? conclusion.scores.join('、') : undefined,
+      this.extractPredictionField(rawText, ['比分', '预测比分', '参考比分', '可能比分']),
+    );
+
+    const winLossDraw = this.mapWinDrawLoss(winLossDrawSource);
+    const handicapWinLossDraw = this.mapHandicapResult(handicapSource);
+    const overUnderResult = this.mapOverUnder(overUnderSource);
+    const halfFullTime = this.mapHalfFull(halfFullSource ? [halfFullSource] : conclusion.half_full);
+    const likelyScores = this.mapScores(scoreSource ? [scoreSource] : conclusion.scores);
 
     return {
       modelId,
@@ -570,14 +629,14 @@ export class LindyPredictionService {
       strengths: { home: [], away: [] },
       weaknesses: { home: [], away: [] },
       keyVariables: analysis.key_variables ? [analysis.key_variables] : ['暂无关键变量'],
-      trend: analysis.likely_flow || '暂无走势分析',
+      trend: analysis.likely_flow || rawText.slice(0, 500) || '暂无走势分析',
       risks: analysis.risk_warning ? [analysis.risk_warning] : [],
       conclusion: {
         winLossDraw,
         winProbability: this.estimateProbability(winLossDraw, conclusion.confidence),
-        handicapTrend: conclusion.handicap?.primary || undefined,
+        handicapTrend: handicapSource || undefined,
         handicapWinLossDraw,
-        overUnderTrend: conclusion.over_under?.primary || undefined,
+        overUnderTrend: overUnderSource || undefined,
         overUnderResult,
         halfFullTime,
         likelyScores,
@@ -593,60 +652,106 @@ export class LindyPredictionService {
     };
   }
 
+  private getCallbackText(payload: LindyCallbackPayload): string {
+    return [payload.raw_output, payload.response, payload.result, payload.answer]
+      .map((value) => (typeof value === 'string' ? value.trim() : ''))
+      .filter(Boolean)
+      .join('\n');
+  }
+
+  private pickFirst(...values: Array<string | undefined | null>): string | undefined {
+    return values.map((value) => value?.trim()).find((value): value is string => Boolean(value));
+  }
+
+  private normalizePredictionText(value?: string): string {
+    return (value || '')
+      .replace(/[，。；;｜|]/g, ' ')
+      .replace(/\s+/g, '')
+      .toLowerCase();
+  }
+
+  private extractPredictionField(text: string, labels: string[]): string | undefined {
+    if (!text.trim()) return undefined;
+    const escaped = labels.map((label) => label.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')).join('|');
+    const pattern = new RegExp(`(?:^|[\\n\\r\\t 　*#-])(?:${escaped})\\s*(?:[:：=]|推荐|倾向)?\\s*([^\\n\\r；;。]+)`, 'i');
+    const match = text.match(pattern);
+    if (!match?.[1]) return undefined;
+    return match[1]
+      .replace(/^[：:=\-—\s]+/, '')
+      .replace(/[。；;，,].*$/, '')
+      .trim();
+  }
+
   private mapWinDrawLoss(primary?: string): 'HOME_WIN' | 'DRAW' | 'AWAY_WIN' {
     if (!primary) return 'DRAW';
-    const normalized = primary.replace(/\s/g, '').toLowerCase();
-    if (normalized.includes('主胜') || normalized.includes('主赢') || normalized.includes('home')) return 'HOME_WIN';
-    if (normalized.includes('客胜') || normalized.includes('客赢') || normalized.includes('away')) return 'AWAY_WIN';
-    if (normalized.includes('平') || normalized.includes('draw')) return 'DRAW';
+    const normalized = this.normalizePredictionText(primary);
+    if (/^(平|x|draw)$/.test(normalized) || normalized.includes('平局') || normalized.includes('打平')) return 'DRAW';
+    if (/^(负|客|away|2)$/.test(normalized) || normalized.includes('客胜') || normalized.includes('客赢') || normalized.includes('客队胜') || normalized.includes('awaywin')) return 'AWAY_WIN';
+    if (/^(胜|主|home|1)$/.test(normalized) || normalized.includes('主胜') || normalized.includes('主赢') || normalized.includes('主队胜') || normalized.includes('homewin')) return 'HOME_WIN';
+    if (normalized.includes('平')) return 'DRAW';
     return 'DRAW';
   }
 
   private mapHandicapResult(primary?: string): 'HOME_WIN' | 'DRAW' | 'AWAY_WIN' | undefined {
     if (!primary) return undefined;
-    const normalized = primary.replace(/\s/g, '').toLowerCase();
-    if (normalized.includes('主') || normalized.includes('home')) return 'HOME_WIN';
-    if (normalized.includes('客') || normalized.includes('away')) return 'AWAY_WIN';
-    if (normalized.includes('平') || normalized.includes('draw')) return 'DRAW';
+    const normalized = this.normalizePredictionText(primary);
+    if (normalized.includes('让平') || normalized.includes('handicapdraw') || /^(平|draw)$/.test(normalized)) return 'DRAW';
+    if (normalized.includes('让负') || normalized.includes('客队赢盘') || normalized.includes('客赢盘') || normalized.includes('客胜') || normalized.includes('away')) return 'AWAY_WIN';
+    if (normalized.includes('让胜') || normalized.includes('主队赢盘') || normalized.includes('主赢盘') || normalized.includes('主胜') || normalized.includes('home')) return 'HOME_WIN';
+    if (normalized.includes('平')) return 'DRAW';
+    if (normalized.includes('客')) return 'AWAY_WIN';
+    if (normalized.includes('主')) return 'HOME_WIN';
     return undefined;
   }
 
   private mapOverUnder(primary?: string): 'OVER' | 'UNDER' | 'EQUAL' | undefined {
     if (!primary) return undefined;
-    const normalized = primary.replace(/\s/g, '').toLowerCase();
-    if (normalized.includes('大') || normalized.includes('over')) return 'OVER';
-    if (normalized.includes('小') || normalized.includes('under')) return 'UNDER';
+    const normalized = this.normalizePredictionText(primary);
+    if (normalized.includes('走') || normalized.includes('等于') || normalized.includes('equal') || normalized.includes('push')) return 'EQUAL';
+    if (normalized.includes('大') || normalized.includes('over') || normalized.includes('高于')) return 'OVER';
+    if (normalized.includes('小') || normalized.includes('under') || normalized.includes('低于')) return 'UNDER';
     return undefined;
   }
 
   private mapHalfFull(halfFull?: string[]): string | undefined {
     if (!halfFull || halfFull.length === 0) return undefined;
     const first = halfFull[0];
-    // 格式如 "平/主", "主/主" 等
+    const normalized = first.replace(/\s/g, '').replace(/[\\\-—>→]/g, '/');
     const mapping: Record<string, string> = {
       '主/主': 'HOME_HOME', '主/平': 'HOME_DRAW', '主/客': 'HOME_AWAY',
       '平/主': 'DRAW_HOME', '平/平': 'DRAW_DRAW', '平/客': 'DRAW_AWAY',
       '客/主': 'AWAY_HOME', '客/平': 'AWAY_DRAW', '客/客': 'AWAY_AWAY',
+      '胜/胜': 'HOME_HOME', '胜/平': 'HOME_DRAW', '胜/负': 'HOME_AWAY',
+      '平/胜': 'DRAW_HOME', '平/负': 'DRAW_AWAY',
+      '负/胜': 'AWAY_HOME', '负/平': 'AWAY_DRAW', '负/负': 'AWAY_AWAY',
+      '主主': 'HOME_HOME', '主平': 'HOME_DRAW', '主客': 'HOME_AWAY',
+      '平主': 'DRAW_HOME', '平平': 'DRAW_DRAW', '平客': 'DRAW_AWAY',
+      '客主': 'AWAY_HOME', '客平': 'AWAY_DRAW', '客客': 'AWAY_AWAY',
+      '胜胜': 'HOME_HOME', '胜平': 'HOME_DRAW', '胜负': 'HOME_AWAY',
+      '平胜': 'DRAW_HOME', '平负': 'DRAW_AWAY',
+      '负胜': 'AWAY_HOME', '负平': 'AWAY_DRAW', '负负': 'AWAY_AWAY',
     };
-    return mapping[first] || undefined;
+    return mapping[normalized] || undefined;
   }
 
   private mapScores(scores?: string[]): Array<{ home: number; away: number; weight: number }> | undefined {
     if (!scores || scores.length === 0) return undefined;
     const parsed: Array<{ home: number; away: number; weight: number }> = [];
-    const weightBase = 1 / scores.length;
+    const joined = scores.join('、');
+    const matches = joined.matchAll(/(\d{1,2})\s*[:：\-]\s*(\d{1,2})/g);
 
-    for (const score of scores.slice(0, 5)) {
-      const match = score.match(/(\d+)\s*[:\-]\s*(\d+)/);
-      if (match) {
-        parsed.push({
-          home: parseInt(match[1], 10),
-          away: parseInt(match[2], 10),
-          weight: Math.round(weightBase * 100) / 100,
-        });
-      }
+    for (const match of matches) {
+      if (parsed.length >= 5) break;
+      parsed.push({
+        home: parseInt(match[1], 10),
+        away: parseInt(match[2], 10),
+        weight: 0,
+      });
     }
-    return parsed.length > 0 ? parsed : undefined;
+
+    if (parsed.length === 0) return undefined;
+    const weight = Math.round((1 / parsed.length) * 100) / 100;
+    return parsed.map((score) => ({ ...score, weight }));
   }
 
   private estimateProbability(
@@ -726,8 +831,8 @@ export class LindyPredictionService {
     });
 
     const successCount = predictions.filter(p => p.isSuccess).length;
-    const failureCount = predictions.filter(p => !p.isSuccess && p.errorMessage !== '等待 Lindy 回调...').length;
-    const pendingCount = predictions.filter(p => !p.isSuccess && p.errorMessage === '等待 Lindy 回调...').length;
+    const failureCount = predictions.filter(p => !p.isSuccess && !this.isWaitingForCallback(p.errorMessage)).length;
+    const pendingCount = predictions.filter(p => !p.isSuccess && this.isWaitingForCallback(p.errorMessage)).length;
 
     let status: PredictionTaskStatus;
     if (pendingCount > 0) {
@@ -745,10 +850,10 @@ export class LindyPredictionService {
       data: {
         modelCount: predictions.length,
         successCount,
-        failureCount: failureCount + pendingCount,
+        failureCount,
         status,
         errorMessage: failureCount > 0
-          ? predictions.filter(p => !p.isSuccess && p.errorMessage !== '等待 Lindy 回调...').map(p => p.errorMessage).filter(Boolean).join('\n').slice(0, 2000)
+          ? predictions.filter(p => !p.isSuccess && !this.isWaitingForCallback(p.errorMessage)).map(p => p.errorMessage).filter(Boolean).join('\n').slice(0, 2000)
           : null,
       },
     });
@@ -769,6 +874,29 @@ export class LindyPredictionService {
         this.logger.warn({ taskId, error }, 'Failed to calculate consensus after Lindy callback');
       }
     }
+  }
+
+  private async markRequestDispatchFailed(taskId: string, aiModelId: string, errorMessage: string): Promise<void> {
+    await this.prisma.modelPrediction.update({
+      where: { predictionTaskId_aiModelId: { predictionTaskId: taskId, aiModelId } },
+      data: {
+        structuredOutput: Prisma.JsonNull,
+        rawOutput: null,
+        isSuccess: false,
+        errorMessage,
+        generatedAt: new Date(),
+      },
+    });
+  }
+
+  private isWaitingForCallback(errorMessage: string | null): boolean {
+    return (errorMessage ?? '').includes('等待 Lindy 回调');
+  }
+
+  private buildCallbackRawOutput(payload: LindyCallbackPayload): string {
+    const directOutput = payload.raw_output || payload.response || payload.result || payload.answer;
+    if (directOutput && directOutput.trim()) return directOutput;
+    return JSON.stringify(payload);
   }
 
   private toJsonRecord(value: unknown): Record<string, unknown> {

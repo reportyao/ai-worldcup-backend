@@ -1,8 +1,8 @@
 /**
  * Lindy AI 预测定时任务
  *
- * 定时扫描今日比赛，对赛前约 7 小时的比赛自动向 Lindy webhook 发送预测请求。
- * 与现有 prediction-generator 的 scheduleDuePredictions 逻辑对齐。
+ * 每天北京时间14:00扫描未来24小时未开赛比赛，自动向 Lindy webhook 发送预测请求。
+ * 已经成功或正在等待回调的 Lindy 模型不会重复触发。
  */
 import {
   MatchStatus,
@@ -79,9 +79,8 @@ async function scanAndTrigger(windowMinutes: number) {
   }
 
   const now = new Date();
-  const targetMs = 7 * 60 * 60 * 1000; // 7 hours before kickoff
-  const from = new Date(now.getTime() + targetMs - windowMinutes * 60 * 1000);
-  const to = new Date(now.getTime() + targetMs + windowMinutes * 60 * 1000);
+  const from = now;
+  const to = new Date(now.getTime() + 24 * 60 * 60 * 1000);
 
   // 获取活跃的 Lindy 模型
   const lindyModels = await prisma.aiModel.findMany({
@@ -109,17 +108,20 @@ async function scanAndTrigger(windowMinutes: number) {
   let triggered = 0;
 
   for (const match of matches) {
-    // 检查是否已有 Lindy 模型的成功预测
-    const existingSuccess = await prisma.modelPrediction.count({
+    // 已成功或正在等待回调的模型不重复触发；失败模型允许下次扫描重试
+    const activeLindyPredictionCount = await prisma.modelPrediction.count({
       where: {
         predictionTask: { matchId: match.id, version: PredictionVersion.T_MINUS_7H },
         aiModelId: { in: lindyModels.map(m => m.id) },
-        isSuccess: true,
+        OR: [
+          { isSuccess: true },
+          { errorMessage: { contains: '等待 Lindy 回调' } },
+        ],
       },
     });
 
-    if (existingSuccess >= lindyModels.length) {
-      continue; // 所有 Lindy 模型已完成预测
+    if (activeLindyPredictionCount >= lindyModels.length) {
+      continue; // 所有 Lindy 模型已完成或正在等待回调
     }
 
     try {
@@ -216,7 +218,12 @@ async function sendPredictionRequest(options: SendOptions) {
       failureCount: 0,
       errorMessage: null,
     },
-    update: {},
+    update: {
+      trigger,
+      status: PredictionTaskStatus.RUNNING,
+      errorMessage: null,
+      publishedAt: null,
+    },
   });
 
   const publicBaseUrl = process.env.PUBLIC_BASE_URL || 'http://localhost:3000';
@@ -284,6 +291,7 @@ async function sendPredictionRequest(options: SendOptions) {
         const body = await response.text().catch(() => '');
         const errMsg = `${modelKey}: HTTP ${response.status} - ${body.slice(0, 200)}`;
         errors.push(errMsg);
+        await markRequestDispatchFailed(task.id, aiModel.id, errMsg);
         logger.warn({ matchId: match.id, model: modelKey, status: response.status }, 'lindy-prediction: request failed');
         continue;
       }
@@ -292,19 +300,68 @@ async function sendPredictionRequest(options: SendOptions) {
       logger.info({ matchId: match.id, model: modelKey, taskId: task.id }, 'lindy-prediction: request sent');
     } catch (error) {
       const msg = error instanceof Error ? error.message : String(error);
-      errors.push(`${modelKey}: ${msg}`);
+      const errMsg = `${modelKey}: ${msg}`;
+      errors.push(errMsg);
+      await markRequestDispatchFailed(task.id, aiModel.id, errMsg);
       logger.error({ matchId: match.id, model: modelKey, error: msg }, 'lindy-prediction: request error');
     }
   }
 
-  // 更新 task 的 modelCount
-  const totalPredictions = await prisma.modelPrediction.count({ where: { predictionTaskId: task.id } });
-  await prisma.predictionTask.update({
-    where: { id: task.id },
-    data: { modelCount: totalPredictions },
-  });
+  await updateTaskStats(task.id);
 
   return { requestsSent, errors };
+}
+
+async function markRequestDispatchFailed(taskId: string, aiModelId: string, errorMessage: string): Promise<void> {
+  await prisma.modelPrediction.update({
+    where: { predictionTaskId_aiModelId: { predictionTaskId: taskId, aiModelId } },
+    data: {
+      structuredOutput: Prisma.JsonNull,
+      rawOutput: null,
+      isSuccess: false,
+      errorMessage,
+      generatedAt: new Date(),
+    },
+  });
+}
+
+async function updateTaskStats(taskId: string): Promise<void> {
+  const lindyModels = await prisma.aiModel.findMany({
+    where: { provider: LINDY_PROVIDER },
+    select: { id: true },
+  });
+  const lindyModelIds = lindyModels.map(m => m.id);
+  const predictions = await prisma.modelPrediction.findMany({
+    where: { predictionTaskId: taskId, aiModelId: { in: lindyModelIds } },
+  });
+  const successCount = predictions.filter(p => p.isSuccess).length;
+  const failureCount = predictions.filter(p => !p.isSuccess && !isWaitingForCallback(p.errorMessage)).length;
+  const pendingCount = predictions.filter(p => !p.isSuccess && isWaitingForCallback(p.errorMessage)).length;
+
+  const status = pendingCount > 0
+    ? PredictionTaskStatus.RUNNING
+    : successCount === 0
+      ? PredictionTaskStatus.FAILED
+      : failureCount === 0
+        ? PredictionTaskStatus.SUCCEEDED
+        : PredictionTaskStatus.PARTIAL_SUCCESS;
+
+  await prisma.predictionTask.update({
+    where: { id: taskId },
+    data: {
+      modelCount: predictions.length,
+      successCount,
+      failureCount,
+      status,
+      errorMessage: failureCount > 0
+        ? predictions.filter(p => !p.isSuccess && !isWaitingForCallback(p.errorMessage)).map(p => p.errorMessage).filter(Boolean).join('\n').slice(0, 2000)
+        : null,
+    },
+  });
+}
+
+function isWaitingForCallback(errorMessage: string | null): boolean {
+  return (errorMessage ?? '').includes('等待 Lindy 回调');
 }
 
 // ─── Settings Helper ─────────────────────────────────────────────────────────

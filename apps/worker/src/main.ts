@@ -62,7 +62,7 @@ function createConnection(): Redis {
 const workers: Worker[] = [];
 const queues: Queue[] = [];
 
-const SPORTTERY_SYNC_CRON_DEFAULT = '0 19,21,2,7,16 * * *';
+const SPORTTERY_SYNC_CRON_DEFAULTS = ['0 19,21,2,3,7,16 * * *', '30 2 * * *'];
 const LEGACY_SPORTTERY_DAILY_SYNC_CRON = '0 0,6,12 * * *';
 const LEGACY_SPORTTERY_RESULT_CHECK_CRON = '*/10 * * * *';
 
@@ -71,22 +71,27 @@ type CronRepeatableJobOptions = JobsOptions & {
   repeat: { pattern: string };
 };
 
-function resolveSportteryCron(envKey: string, defaultPattern = SPORTTERY_SYNC_CRON_DEFAULT): string {
+function resolveSportteryCronPatterns(envKey: string, defaultPatterns = SPORTTERY_SYNC_CRON_DEFAULTS): string[] {
   const configured = process.env[envKey]?.trim();
-  if (!configured) return defaultPattern;
+  if (!configured) return defaultPatterns;
 
   if (
     configured === LEGACY_SPORTTERY_DAILY_SYNC_CRON ||
     configured === LEGACY_SPORTTERY_RESULT_CHECK_CRON
   ) {
     logger.warn(
-      { envKey, configured, defaultPattern },
+      { envKey, configured, defaultPatterns },
       'legacy sporttery cron detected; using current default cadence instead',
     );
-    return defaultPattern;
+    return defaultPatterns;
   }
 
-  return configured;
+  const patterns = configured
+    .split(';')
+    .map((pattern) => pattern.trim())
+    .filter(Boolean);
+
+  return patterns.length > 0 ? patterns : defaultPatterns;
 }
 
 async function registerRepeatableJob(
@@ -95,19 +100,43 @@ async function registerRepeatableJob(
   data: Record<string, unknown>,
   options: CronRepeatableJobOptions,
 ): Promise<void> {
-  await removeStaleRepeatableJobs(queue, jobName, options.repeat.pattern);
+  await removeStaleRepeatableJobs(queue, jobName, [{ pattern: options.repeat.pattern, jobId: options.jobId }]);
   await queue.add(jobName, data, options);
+}
+
+async function registerRepeatableJobs(
+  queue: Queue,
+  jobName: string,
+  data: Record<string, unknown>,
+  patterns: string[],
+  baseOptions: Omit<CronRepeatableJobOptions, 'jobId' | 'repeat'> & { jobId: string },
+): Promise<void> {
+  const schedules = patterns.map((pattern, index) => ({
+    pattern,
+    jobId: `${baseOptions.jobId}-${index + 1}`,
+  }));
+  await removeStaleRepeatableJobs(queue, jobName, schedules);
+  for (const schedule of schedules) {
+    await queue.add(jobName, data, {
+      ...baseOptions,
+      repeat: { pattern: schedule.pattern },
+      jobId: schedule.jobId,
+    });
+  }
 }
 
 async function removeStaleRepeatableJobs(
   queue: Queue,
   jobName: string,
-  expectedPattern: string,
+  expectedSchedules: Array<{ pattern: string; jobId: string }>,
 ): Promise<void> {
+  const expectedKeys = new Set(expectedSchedules.map((schedule) => `${schedule.pattern}::${schedule.jobId}`));
   const repeatableJobs = await queue.getRepeatableJobs(0, -1, true);
   for (const repeatableJob of repeatableJobs) {
     if (repeatableJob.name !== jobName) continue;
-    if (repeatableJob.pattern === expectedPattern) continue;
+    const repeatJobId = repeatableJob.id ?? '';
+    const repeatKey = `${repeatableJob.pattern ?? ''}::${repeatJobId}`;
+    if (expectedKeys.has(repeatKey)) continue;
 
     const removed = await queue.removeRepeatableByKey(repeatableJob.key);
     logger.warn(
@@ -116,7 +145,8 @@ async function removeStaleRepeatableJobs(
         jobName,
         removed,
         stalePattern: repeatableJob.pattern,
-        expectedPattern,
+        staleJobId: repeatJobId,
+        expectedSchedules,
       },
       'removed stale repeatable job before registering scheduler',
     );
@@ -223,7 +253,7 @@ async function registerDataSyncSchedulers(): Promise<void> {
  * 竞彩数据自动同步定时任务注册
  *
  * 自动化闭环：
- * - DAILY_FIXTURES: 每天凌晨3:00、5:00、上午10:00、15:00、24:00（北京时间）自动同步当天+未来3天竞彩赛程，新增比赛自动入队AI预测
+ * - DAILY_FIXTURES: 每天凌晨3:00、5:00、上午10:00、10:30、11:00、15:00、24:00（北京时间）自动同步当天+未来3天竞彩赛程，新增比赛自动入队AI预测
  * - RESULT_CHECK: 同一时间点检查赛果，完赛后自动触发评分和复盘
  */
 async function registerSportteryAutoSyncSchedulers(): Promise<void> {
@@ -231,9 +261,9 @@ async function registerSportteryAutoSyncSchedulers(): Promise<void> {
   queues.push(queue);
 
   // 1. 每天定时同步竞彩赛程（当天+未来3天）
-  //    北京时间 3:00, 5:00, 10:00, 15:00, 24:00(=次日0:00)
-  //    对应 UTC: 19:00(前一天), 21:00(前一天), 2:00, 7:00, 16:00
-  await registerRepeatableJob(
+  //    北京时间 3:00, 5:00, 10:00, 10:30, 11:00, 15:00, 24:00(=次日0:00)
+  //    对应 UTC: 19:00(前一天), 21:00(前一天), 2:00, 2:30, 3:00, 7:00, 16:00
+  await registerRepeatableJobs(
     queue,
     'sporttery-daily-fixtures',
     {
@@ -241,8 +271,8 @@ async function registerSportteryAutoSyncSchedulers(): Promise<void> {
       daysAhead: Number(process.env.SPORTTERY_SYNC_DAYS_AHEAD ?? 3),
       enqueuePredictions: true,
     },
+    resolveSportteryCronPatterns('SPORTTERY_DAILY_SYNC_CRON'),
     {
-      repeat: { pattern: resolveSportteryCron('SPORTTERY_DAILY_SYNC_CRON') },
       jobId: 'sporttery-daily-fixtures-repeat',
       attempts: 3,
       backoff: { type: 'exponential', delay: 60_000 },
@@ -252,16 +282,16 @@ async function registerSportteryAutoSyncSchedulers(): Promise<void> {
   );
 
   // 2. 同一时间点检查赛果更新（与 DAILY_FIXTURES 同步）
-  //    北京时间 3:00, 5:00, 10:00, 15:00, 24:00
-  await registerRepeatableJob(
+  //    北京时间 3:00, 5:00, 10:00, 10:30, 11:00, 15:00, 24:00
+  await registerRepeatableJobs(
     queue,
     'sporttery-result-check',
     {
       mode: 'RESULT_CHECK',
       enqueuePredictions: false,
     },
+    resolveSportteryCronPatterns('SPORTTERY_RESULT_CHECK_CRON'),
     {
-      repeat: { pattern: resolveSportteryCron('SPORTTERY_RESULT_CHECK_CRON') },
       jobId: 'sporttery-result-check-repeat',
       attempts: 2,
       backoff: { type: 'exponential', delay: 30_000 },
@@ -276,7 +306,7 @@ async function registerSportteryAutoSyncSchedulers(): Promise<void> {
 /**
  * Lindy AI 预测定时任务注册
  *
- * 每 5 分钟扫描一次，查找赛前约 7 小时的比赛，自动向 Lindy webhook 发送预测请求。
+ * 每天北京时间14:00扫描一次未来24小时未开赛比赛，自动向 Lindy webhook 发送预测请求。
  */
 async function registerLindyPredictionScheduler(): Promise<void> {
   const queue = new Queue(QueueName.LindyPrediction, { connection: createConnection() });
@@ -289,7 +319,7 @@ async function registerLindyPredictionScheduler(): Promise<void> {
       windowMinutes: Number(process.env.LINDY_PREDICTION_WINDOW_MINUTES ?? 10),
     },
     {
-      repeat: { pattern: process.env.LINDY_PREDICTION_CRON ?? '*/5 * * * *' },
+      repeat: { pattern: process.env.LINDY_PREDICTION_CRON ?? '0 6 * * *' },
       jobId: 'lindy-prediction-scheduler-repeat',
       attempts: 2,
       backoff: { type: 'exponential', delay: 30_000 },

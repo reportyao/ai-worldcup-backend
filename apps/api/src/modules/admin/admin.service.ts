@@ -81,17 +81,18 @@ interface RequestMeta {
 
 type JsonRecord = Record<string, unknown>;
 
-const SPORTTERY_SYNC_CRON_DEFAULT = '0 19,21,2,7,16 * * *';
+const SPORTTERY_SYNC_CRON_DEFAULTS = ['0 19,21,2,3,7,16 * * *', '30 2 * * *'];
 const LEGACY_SPORTTERY_DAILY_SYNC_CRON = '0 0,6,12 * * *';
 const LEGACY_SPORTTERY_RESULT_CHECK_CRON = '*/10 * * * *';
 
-function resolveSportterySchedulerCron(value: string | undefined, fallback = SPORTTERY_SYNC_CRON_DEFAULT): string {
+function resolveSportterySchedulerCron(value: string | undefined, fallback = SPORTTERY_SYNC_CRON_DEFAULTS): string[] {
   const configured = value?.trim();
   if (!configured) return fallback;
   if (configured === LEGACY_SPORTTERY_DAILY_SYNC_CRON || configured === LEGACY_SPORTTERY_RESULT_CHECK_CRON) {
     return fallback;
   }
-  return configured;
+  const patterns = configured.split(';').map((pattern) => pattern.trim()).filter(Boolean);
+  return patterns.length > 0 ? patterns : fallback;
 }
 
 const COMPETITION_INCLUDE = {
@@ -1650,11 +1651,13 @@ export class AdminService {
         modelDisplayName: p.aiModel.displayName,
         persona: p.aiModel.persona,
         rawOutput: p.rawOutput ?? null,
+        structuredOutput: p.structuredOutput ?? null,
         isSuccess: p.isSuccess,
         errorMessage: p.errorMessage ?? null,
         predictedWinDrawLoss: (conclusion.winLossDraw as string | undefined) ?? null,
         predictedHandicap: (conclusion.handicapWinLossDraw as string | undefined) ?? null,
-        predictedOverUnder: (conclusion.overUnderTrend as string | undefined) ?? null,
+        predictedOverUnder: ((conclusion.overUnderResult ?? conclusion.overUnderTrend) as string | undefined) ?? null,
+        predictedHalfFull: (conclusion.halfFullTime as string | undefined) ?? null,
         predictedScore:
           primaryScore && typeof primaryScore.home === 'number' && typeof primaryScore.away === 'number'
             ? `${primaryScore.home}:${primaryScore.away}`
@@ -2210,14 +2213,20 @@ export class AdminService {
           modelDisplayName: p.aiModel.displayName,
           persona: p.aiModel.persona,
           rawOutput: p.rawOutput ?? null,
+          structuredOutput: p.structuredOutput ?? null,
           isSuccess: p.isSuccess,
           errorMessage: p.errorMessage ?? null,
           predictedWinDrawLoss: (conclusion.winLossDraw as string | undefined) ?? null,
           predictedHandicap: (conclusion.handicapWinLossDraw as string | undefined) ?? null,
-          predictedOverUnder: (conclusion.overUnderTrend as string | undefined) ?? null,
+          predictedOverUnder: ((conclusion.overUnderResult ?? conclusion.overUnderTrend) as string | undefined) ?? null,
+          predictedHalfFull: (conclusion.halfFullTime as string | undefined) ?? null,
           predictedScore:
             primaryScore && typeof primaryScore.home === 'number' && typeof primaryScore.away === 'number'
               ? `${primaryScore.home}:${primaryScore.away}`
+              : null,
+          predictedGoalsRange:
+            conclusion.goalsRange && typeof conclusion.goalsRange === 'object'
+              ? (conclusion.goalsRange as JsonRecord)
               : null,
           winDrawLossCorrect: p.winDrawLossCorrect,
           handicapCorrect: p.handicapCorrect,
