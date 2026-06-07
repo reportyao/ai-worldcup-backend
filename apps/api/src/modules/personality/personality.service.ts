@@ -305,6 +305,7 @@ export class PersonalityService {
       summary: personality.description,
       subtitle,
       strengths: this.extractKeywords(personality.traits),
+      profile: this.extractProfile(personality.traits),
       indices: personality.indices,
       defaultCta: personality.defaultCta,
       rarity: personality.rarity,
@@ -316,6 +317,17 @@ export class PersonalityService {
     const object = this.toRecord(value);
     const keywords = object?.keywords;
     return Array.isArray(keywords) ? keywords.map((item) => String(item)).filter(Boolean) : [];
+  }
+
+  private extractProfile(value: Prisma.JsonValue): Record<string, string> {
+    const object = this.toRecord(value);
+    if (!object) return {};
+    const keys = ['shareTone', 'personaBio', 'truthHit', 'blindSpot', 'socialLine', 'shareLine'];
+    return keys.reduce<Record<string, string>>((profile, key) => {
+      const item = object[key];
+      if (typeof item === 'string' && item.trim()) profile[key] = item;
+      return profile;
+    }, {});
   }
 
   private toResultPayload(result: {
@@ -341,14 +353,17 @@ export class PersonalityService {
     const baseUrl = process.env.H5_BASE_URL ?? 'https://h5.example.com';
     const summary = this.toRecord(result.resultSummary) ?? {};
     const strengths = Array.isArray(summary.strengths) ? summary.strengths : this.extractKeywords(result.personality.traits);
+    const profile = this.toRecord(summary.profile) ?? this.extractProfile(result.personality.traits);
     return {
       id: result.id,
       activityKey: result.activity.code,
       archetype: result.personality.code,
-      title: result.personality.name,
-      summary: result.personality.description,
+      title: typeof summary.title === 'string' ? summary.title : result.personality.name,
+      shortName: typeof summary.shortName === 'string' ? summary.shortName : undefined,
+      summary: typeof summary.summary === 'string' ? summary.summary : result.personality.description,
       subtitle: typeof summary.subtitle === 'string' ? summary.subtitle : undefined,
       strengths,
+      profile,
       recommendedTeams: [],
       scores: result.scoreBreakdown,
       answers: result.answers,
@@ -358,8 +373,9 @@ export class PersonalityService {
       totalCount: result.totalCountSnapshot,
       rarity: result.rarityLabelSnapshot,
       selectedSkin: result.selectedSkin,
-      defaultCta: result.personality.defaultCta,
-      themeColor: result.personality.themeColor,
+      defaultCta: this.toRecord(summary.defaultCta) ?? result.personality.defaultCta,
+      themeColor: typeof summary.themeColor === 'string' ? summary.themeColor : result.personality.themeColor,
+      indices: this.toRecord(summary.indices),
       createdAt: result.createdAt.toISOString(),
     };
   }
