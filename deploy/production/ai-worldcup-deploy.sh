@@ -13,7 +13,7 @@ ADMIN_WEB_ROOT="${ADMIN_WEB_ROOT:-/var/www/ai-worldcup-admin}"
 LOG_DIR="${LOG_DIR:-/home/ubuntu/logs}"
 BRANCH="${DEPLOY_BRANCH:-main}"
 API_PORT="${API_PORT:-3000}"
-PUBLIC_SITE_URL="${PUBLIC_SITE_URL:-http://82.157.76.140}"
+PUBLIC_SITE_URL="${PUBLIC_SITE_URL:-https://qiuduoduo.online}"
 VITE_API_BASE_URL="${VITE_API_BASE_URL:-/api}"
 
 log() { printf '[%s] %s\n' "$(date '+%Y-%m-%d %H:%M:%S')" "$*"; }
@@ -191,7 +191,7 @@ NODE_ENV=production
 API_PORT=$API_PORT
 PUBLIC_BASE_URL=$PUBLIC_SITE_URL
 H5_BASE_URL=$PUBLIC_SITE_URL
-CORS_ALLOWED_ORIGINS=$PUBLIC_SITE_URL,http://82.157.76.140:8080,http://82.157.76.140:8081,http://h5.qiuduoduo.online,http://admin.qiuduoduo.online,http://api.qiuduoduo.online
+CORS_ALLOWED_ORIGINS=$PUBLIC_SITE_URL,https://www.qiuduoduo.online,https://h5.qiuduoduo.online,https://admin.qiuduoduo.online,https://api.qiuduoduo.online,http://82.157.76.140:8080,http://82.157.76.140:8081,http://h5.qiuduoduo.online,http://admin.qiuduoduo.online,http://api.qiuduoduo.online
 DATABASE_URL=postgresql://postgres:postgres@127.0.0.1:5432/ai_worldcup?schema=public
 DIRECT_URL=postgresql://postgres:postgres@127.0.0.1:5432/ai_worldcup?schema=public
 REDIS_URL=redis://127.0.0.1:6379/0
