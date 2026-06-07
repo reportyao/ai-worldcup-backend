@@ -700,7 +700,7 @@ export class LindyPredictionService {
   private extractPredictionField(text: string, labels: string[]): string | undefined {
     if (!text.trim()) return undefined;
     const escaped = labels.map((label) => label.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')).join('|');
-    const pattern = new RegExp(`(?:^|[\\n\\r\\t 　*#-])(?:${escaped})\\s*(?:[:：=]|推荐|倾向)?\\s*([^\\n\\r；;。]+)`, 'i');
+    const pattern = new RegExp(`(?:^|[\\n\\r\\t \\u3000*#-])(?:${escaped})\\s*(?:[:：=]|推荐|倾向)?\\s*([^\\n\\r；;。]+)`, 'i');
     const match = text.match(pattern);
     if (!match?.[1]) return undefined;
     return match[1]
@@ -765,7 +765,7 @@ export class LindyPredictionService {
     if (!scores || scores.length === 0) return undefined;
     const parsed: Array<{ home: number; away: number; weight: number }> = [];
     const joined = scores.join('、');
-    const matches = joined.matchAll(/(\d{1,2})\s*[:：\-]\s*(\d{1,2})/g);
+    const matches = joined.matchAll(/(\d{1,2})\s*[:：-]\s*(\d{1,2})/g);
 
     for (const match of matches) {
       if (parsed.length >= 5) break;
