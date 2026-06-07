@@ -223,7 +223,7 @@ export class LindyPredictionService {
     });
 
     const callbackBaseUrl = this.config.get('PUBLIC_BASE_URL', { infer: true });
-    const callbackUrl = `${callbackBaseUrl}/lindy-prediction/callback`;
+    const callbackUrl = `${callbackBaseUrl}/api/lindy-prediction/callback`;
     const errors: string[] = [];
     let requestsSent = 0;
 

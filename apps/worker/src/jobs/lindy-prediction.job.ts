@@ -227,7 +227,7 @@ async function sendPredictionRequest(options: SendOptions) {
   });
 
   const publicBaseUrl = process.env.PUBLIC_BASE_URL || 'http://localhost:3000';
-  const callbackUrl = `${publicBaseUrl}/lindy-prediction/callback`;
+  const callbackUrl = `${publicBaseUrl}/api/lindy-prediction/callback`;
 
   const errors: string[] = [];
   let requestsSent = 0;
