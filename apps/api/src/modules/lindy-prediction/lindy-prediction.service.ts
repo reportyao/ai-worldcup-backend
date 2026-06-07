@@ -580,35 +580,62 @@ export class LindyPredictionService {
     const analysis = payload.analysis || {};
     const rawText = this.getCallbackText(payload);
 
-    const winLossDrawSource = this.pickFirst(
+    // 提取 primary 和 secondary 两个结果，实现多结果支持
+    const winLossDrawPrimary = this.pickFirst(
       conclusion.win_draw_loss?.primary,
-      conclusion.win_draw_loss?.secondary,
       this.extractPredictionField(rawText, ['胜平负', '胜负平', '竞彩胜平负', '赛果', '赛果倾向']),
     );
-    const handicapSource = this.pickFirst(
+    const winLossDrawSecondary = conclusion.win_draw_loss?.secondary?.trim() || undefined;
+
+    const handicapPrimary = this.pickFirst(
       conclusion.handicap?.primary,
-      conclusion.handicap?.secondary,
       this.extractPredictionField(rawText, ['让球胜平负', '让球胜负平', '让球', '让球盘', '让球倾向']),
     );
-    const overUnderSource = this.pickFirst(
+    const handicapSecondary = conclusion.handicap?.secondary?.trim() || undefined;
+
+    const overUnderPrimary = this.pickFirst(
       conclusion.over_under?.primary,
-      conclusion.over_under?.secondary,
       this.extractPredictionField(rawText, ['大小球', '大小', '进球数', '总进球', '大小盘']),
     );
-    const halfFullSource = this.pickFirst(
-      Array.isArray(conclusion.half_full) ? conclusion.half_full[0] : undefined,
-      this.extractPredictionField(rawText, ['半全场', '半场全场', '半全场推荐']),
-    );
+    const overUnderSecondary = conclusion.over_under?.secondary?.trim() || undefined;
+
+    const halfFullSources = Array.isArray(conclusion.half_full) && conclusion.half_full.length > 0
+      ? conclusion.half_full
+      : (() => {
+          const extracted = this.extractPredictionField(rawText, ['半全场', '半场全场', '半全场推荐']);
+          return extracted ? [extracted] : [];
+        })();
+
     const scoreSource = this.pickFirst(
       Array.isArray(conclusion.scores) ? conclusion.scores.join('、') : undefined,
       this.extractPredictionField(rawText, ['比分', '预测比分', '参考比分', '可能比分']),
     );
 
-    const winLossDraw = this.mapWinDrawLoss(winLossDrawSource);
-    const handicapWinLossDraw = this.mapHandicapResult(handicapSource);
-    const overUnderResult = this.mapOverUnder(overUnderSource);
-    const halfFullTime = this.mapHalfFull(halfFullSource ? [halfFullSource] : conclusion.half_full);
+    // 映射主结果
+    const winLossDrawPrimaryMapped = this.mapWinDrawLoss(winLossDrawPrimary);
+    const winLossDrawSecondaryMapped = winLossDrawSecondary ? this.mapWinDrawLoss(winLossDrawSecondary) : undefined;
+    const handicapPrimaryMapped = this.mapHandicapResult(handicapPrimary);
+    const handicapSecondaryMapped = handicapSecondary ? this.mapHandicapResult(handicapSecondary) : undefined;
+    const overUnderPrimaryMapped = this.mapOverUnder(overUnderPrimary);
+    const overUnderSecondaryMapped = overUnderSecondary ? this.mapOverUnder(overUnderSecondary) : undefined;
     const likelyScores = this.mapScores(scoreSource ? [scoreSource] : conclusion.scores);
+
+    // 构建多值数组（去重，过滤undefined）
+    const buildMultiResult = <T>(primary: T, secondary: T | undefined): T | T[] => {
+      if (secondary !== undefined && secondary !== primary) return [primary, secondary];
+      return primary;
+    };
+
+    const winLossDraw = buildMultiResult(winLossDrawPrimaryMapped, winLossDrawSecondaryMapped);
+    const handicapWinLossDraw = handicapPrimaryMapped
+      ? buildMultiResult(handicapPrimaryMapped, handicapSecondaryMapped ?? undefined)
+      : undefined;
+    const overUnderResult = overUnderPrimaryMapped
+      ? buildMultiResult(overUnderPrimaryMapped, overUnderSecondaryMapped ?? undefined)
+      : undefined;
+    // 半全场：支持多个结果
+    const halfFullMapped = halfFullSources.map((s) => this.mapHalfFull([s])).filter((v): v is string => v !== undefined);
+    const halfFullTime = halfFullMapped.length > 1 ? halfFullMapped : (halfFullMapped[0] ?? undefined);
 
     return {
       modelId,
@@ -633,10 +660,10 @@ export class LindyPredictionService {
       risks: analysis.risk_warning ? [analysis.risk_warning] : [],
       conclusion: {
         winLossDraw,
-        winProbability: this.estimateProbability(winLossDraw, conclusion.confidence),
-        handicapTrend: handicapSource || undefined,
+        winProbability: this.estimateProbability(winLossDrawPrimaryMapped, conclusion.confidence),
+        handicapTrend: handicapPrimary || undefined,
         handicapWinLossDraw,
-        overUnderTrend: overUnderSource || undefined,
+        overUnderTrend: overUnderPrimary || undefined,
         overUnderResult,
         halfFullTime,
         likelyScores,

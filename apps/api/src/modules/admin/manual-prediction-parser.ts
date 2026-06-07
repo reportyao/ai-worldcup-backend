@@ -31,13 +31,14 @@ export interface ParsedManualPrediction {
   trend: string;
   risks: string[];
   conclusion: {
-    winLossDraw: 'HOME_WIN' | 'DRAW' | 'AWAY_WIN';
+    // 支持单值或多值数组（向后兼容）
+    winLossDraw: 'HOME_WIN' | 'DRAW' | 'AWAY_WIN' | Array<'HOME_WIN' | 'DRAW' | 'AWAY_WIN'>;
     winProbability?: { home: number; draw: number; away: number };
     handicapTrend?: string;
-    handicapWinLossDraw?: 'HOME_WIN' | 'DRAW' | 'AWAY_WIN';
+    handicapWinLossDraw?: 'HOME_WIN' | 'DRAW' | 'AWAY_WIN' | Array<'HOME_WIN' | 'DRAW' | 'AWAY_WIN'>;
     overUnderTrend?: string;
-    overUnderResult?: 'OVER' | 'UNDER' | 'EQUAL';
-    halfFullTime?: string;
+    overUnderResult?: 'OVER' | 'UNDER' | 'EQUAL' | Array<'OVER' | 'UNDER' | 'EQUAL'>;
+    halfFullTime?: string | string[];
     likelyScores?: Array<{ home: number; away: number; weight: number }>;
     goalsRange?: { min: number; max: number; expectation?: number };
   };
@@ -220,14 +221,18 @@ function extractConclusionFields(text: string): Map<string, string> {
   const normalized = normalizePredictionText(text);
   for (const rawLine of normalized.split('\n')) {
     const line = rawLine.trim();
-    const match = line.match(/^[-•]\s*([^:]{2,12})\s*:\s*(.+)$/);
+    const match = line.match(/^[-•]\s*([^:]{2,20})\s*:\s*(.+)$/);
     if (!match) continue;
     const label = match[1].replace(/\s+/g, '');
     const value = match[2].trim();
     if (!value) continue;
     if (label === '胜平负') fields.set('winLossDraw', value);
     else if (label === '让球胜平负' || label === '让球') fields.set('handicapWinLossDraw', value);
-    else if (label === '比分' || label === '可能比分' || label === '首选比分') fields.set('scores', value);
+    // 支持多比分字段：如果已有比分字段，将新值追加到已有值后面
+    else if (label === '比分' || label === '可能比分' || label === '首选比分') {
+      const existing = fields.get('scores');
+      fields.set('scores', existing ? `${existing},${value}` : value);
+    }
     else if (label === '大小球' || label === '进球数') fields.set('overUnder', value);
     else if (label === '半全场') fields.set('halfFullTime', value);
   }
@@ -238,32 +243,78 @@ function isNoClearLean(value: string | undefined): boolean {
   return !value || /无明确|无法判断|不确定|待定|暂无|没有/.test(value);
 }
 
-function parseWinDrawLossValue(value: string | undefined): 'HOME_WIN' | 'DRAW' | 'AWAY_WIN' | undefined {
-  if (isNoClearLean(value)) return undefined;
-  const text = normalizePredictionText(value ?? '');
+function parseSingleWinDrawLoss(text: string): 'HOME_WIN' | 'DRAW' | 'AWAY_WIN' | undefined {
   if (/^(主胜|主队胜|胜)$/.test(text) || /主胜/.test(text)) return 'HOME_WIN';
   if (/^(平局|平|和局|打平)$/.test(text) || /平局/.test(text)) return 'DRAW';
   if (/^(客胜|客队胜|负)$/.test(text) || /客胜/.test(text)) return 'AWAY_WIN';
   return undefined;
 }
 
-function parseHandicapValue(value: string | undefined): { trend?: string; result?: 'HOME_WIN' | 'DRAW' | 'AWAY_WIN' } {
+/**
+ * 解析胜平负字段，支持多值（逗号分隔）
+ */
+function parseWinDrawLossValue(
+  value: string | undefined,
+): 'HOME_WIN' | 'DRAW' | 'AWAY_WIN' | Array<'HOME_WIN' | 'DRAW' | 'AWAY_WIN'> | undefined {
+  if (isNoClearLean(value)) return undefined;
+  const text = normalizePredictionText(value ?? '');
+  // 尝试多值解析（逗号分隔）
+  const parts = text.split(/[,/]/).map(p => p.trim()).filter(Boolean);
+  if (parts.length > 1) {
+    const results = parts.map(parseSingleWinDrawLoss).filter((v): v is 'HOME_WIN' | 'DRAW' | 'AWAY_WIN' => v !== undefined);
+    // 去重
+    const unique = [...new Set(results)];
+    if (unique.length > 1) return unique;
+    if (unique.length === 1) return unique[0];
+  }
+  return parseSingleWinDrawLoss(text);
+}
+
+function parseSingleHandicap(text: string): 'HOME_WIN' | 'DRAW' | 'AWAY_WIN' | undefined {
+  if (/让球主胜|主胜/.test(text)) return 'HOME_WIN';
+  if (/让球平|平局|\b平\b|让平/.test(text)) return 'DRAW';
+  if (/让球客胜|客队赢盘|客赢盘|客胜/.test(text)) return 'AWAY_WIN';
+  return undefined;
+}
+
+function parseHandicapValue(value: string | undefined): { trend?: string; result?: 'HOME_WIN' | 'DRAW' | 'AWAY_WIN' | Array<'HOME_WIN' | 'DRAW' | 'AWAY_WIN'> } {
   if (isNoClearLean(value)) return {};
   const text = normalizePredictionText(value ?? '');
-  if (/让球主胜|主胜/.test(text)) return { trend: '让球主胜', result: 'HOME_WIN' };
-  if (/让球平|平局|\b平\b|让平/.test(text)) return { trend: '让球平', result: 'DRAW' };
-  if (/让球客胜|客胜/.test(text)) return { trend: '让球客胜', result: 'AWAY_WIN' };
+  // 支持多值（逗号分隔）
+  const parts = text.split(/[,/]/).map(p => p.trim()).filter(Boolean);
+  if (parts.length > 1) {
+    const results = parts.map(parseSingleHandicap).filter((v): v is 'HOME_WIN' | 'DRAW' | 'AWAY_WIN' => v !== undefined);
+    const unique = [...new Set(results)];
+    if (unique.length > 1) return { trend: text, result: unique };
+    if (unique.length === 1) return { trend: text, result: unique[0] };
+  }
+  const single = parseSingleHandicap(text);
+  if (single) return { trend: text, result: single };
   return { trend: text };
 }
 
-function parseOverUnderValue(value: string | undefined): { trend?: string; result?: 'OVER' | 'UNDER' | 'EQUAL'; line?: number } {
+function parseSingleOverUnder(text: string): 'OVER' | 'UNDER' | 'EQUAL' | undefined {
+  if (/大/.test(text)) return 'OVER';
+  if (/小/.test(text)) return 'UNDER';
+  if (/走|等于|刚好|=/.test(text)) return 'EQUAL';
+  return undefined;
+}
+
+function parseOverUnderValue(value: string | undefined): { trend?: string; result?: 'OVER' | 'UNDER' | 'EQUAL' | Array<'OVER' | 'UNDER' | 'EQUAL'>; line?: number } {
   if (isNoClearLean(value)) return {};
   const text = normalizePredictionText(value ?? '');
   const lineMatch = text.match(/(\d+(?:\.\d+)?)/);
   const line = lineMatch ? Number(lineMatch[1]) : undefined;
-  if (/大/.test(text)) return { trend: line ? `大${line}球` : '大球', result: 'OVER', line };
-  if (/小/.test(text)) return { trend: line ? `小${line}球` : '小球', result: 'UNDER', line };
-  if (/走|等于|刚好|=/.test(text)) return { trend: line ? `走${line}球` : '走水', result: 'EQUAL', line };
+  // 支持多值（逗号分隔）
+  const parts = text.split(/[,/]/).map(p => p.trim()).filter(Boolean);
+  if (parts.length > 1) {
+    const results = parts.map(parseSingleOverUnder).filter((v): v is 'OVER' | 'UNDER' | 'EQUAL' => v !== undefined);
+    const unique = [...new Set(results)];
+    if (unique.length > 1) return { trend: text, result: unique, line };
+    if (unique.length === 1) return { trend: text, result: unique[0], line };
+  }
+  const single = parseSingleOverUnder(text);
+  if (single) return { trend: line ? `${single === 'OVER' ? '大' : single === 'UNDER' ? '小' : '走'}${line}球` : text, result: single, line };
   return { trend: text, line };
 }
 
@@ -299,8 +350,10 @@ function parseLikelyScoresValue(value: string | undefined): Array<{ home: number
 
 function deriveGoalsRange(
   scores: Array<{ home: number; away: number }>,
-  overUnder: { result?: 'OVER' | 'UNDER' | 'EQUAL'; line?: number },
+  overUnder: { result?: 'OVER' | 'UNDER' | 'EQUAL' | Array<'OVER' | 'UNDER' | 'EQUAL'>; line?: number },
 ): { min: number; max: number; expectation?: number } | undefined {
+  // 多值时取第一个单值用于计算范围
+  const singleResult = Array.isArray(overUnder.result) ? overUnder.result[0] : overUnder.result;
   if (scores.length > 0) {
     const totals = scores.map((score) => score.home + score.away);
     return {
@@ -310,9 +363,9 @@ function deriveGoalsRange(
     };
   }
   if (overUnder.line != null) {
-    if (overUnder.result === 'UNDER') return { min: 0, max: Math.floor(overUnder.line), expectation: Math.max(0, overUnder.line - 0.75) };
-    if (overUnder.result === 'OVER') return { min: Math.floor(overUnder.line) + 1, max: Math.floor(overUnder.line) + 4, expectation: overUnder.line + 0.75 };
-    if (overUnder.result === 'EQUAL') return { min: Math.round(overUnder.line), max: Math.round(overUnder.line), expectation: overUnder.line };
+    if (singleResult === 'UNDER') return { min: 0, max: Math.floor(overUnder.line), expectation: Math.max(0, overUnder.line - 0.75) };
+    if (singleResult === 'OVER') return { min: Math.floor(overUnder.line) + 1, max: Math.floor(overUnder.line) + 4, expectation: overUnder.line + 0.75 };
+    if (singleResult === 'EQUAL') return { min: Math.round(overUnder.line), max: Math.round(overUnder.line), expectation: overUnder.line };
   }
   return undefined;
 }
@@ -341,6 +394,12 @@ function parseConclusion(text: string): ParsedManualPrediction['conclusion'] {
   const overUnder = parseOverUnderValue(fields.get('overUnder'));
   const likelyScores = parseLikelyScoresValue(fields.get('scores'));
   const goalsRange = deriveGoalsRange(likelyScores, overUnder);
+  // 半全场支持多值（逗号分隔）
+  const halfFullRaw = fields.get('halfFullTime');
+  const halfFullValues = halfFullRaw
+    ? halfFullRaw.split(/[,，]/).map(v => parseHalfFullTimeValue(v.trim())).filter((v): v is string => v !== undefined)
+    : [];
+  const halfFullTime = halfFullValues.length > 1 ? halfFullValues : (halfFullValues[0] ?? undefined);
 
   return {
     winLossDraw,
@@ -348,7 +407,7 @@ function parseConclusion(text: string): ParsedManualPrediction['conclusion'] {
     ...(handicap.result ? { handicapWinLossDraw: handicap.result } : {}),
     ...(overUnder.trend ? { overUnderTrend: overUnder.trend } : {}),
     ...(overUnder.result ? { overUnderResult: overUnder.result } : {}),
-    ...(parseHalfFullTimeValue(fields.get('halfFullTime')) ? { halfFullTime: parseHalfFullTimeValue(fields.get('halfFullTime')) } : {}),
+    ...(halfFullTime !== undefined ? { halfFullTime } : {}),
     ...(likelyScores.length > 0 ? { likelyScores } : {}),
     ...(goalsRange ? { goalsRange } : {}),
   };

@@ -803,7 +803,10 @@ export function computeConsensusSummary(predictions: StructuredPrediction[]): Co
   if (predictions.length === 0) return null;
   const counts = predictions.reduce<Record<'HOME_WIN' | 'DRAW' | 'AWAY_WIN', number>>(
     (acc, prediction) => {
-      acc[prediction.conclusion.winLossDraw] += 1;
+      // 支持单值和多值数组：多值时取第一个值用于共识统计
+      const wdl = prediction.conclusion.winLossDraw;
+      const primaryWdl = Array.isArray(wdl) ? wdl[0] : wdl;
+      if (primaryWdl) acc[primaryWdl] += 1;
       return acc;
     },
     { HOME_WIN: 0, DRAW: 0, AWAY_WIN: 0 },

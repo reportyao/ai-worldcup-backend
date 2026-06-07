@@ -33,10 +33,11 @@ export interface ScorecardStats {
 }
 
 interface PredictionConclusion {
-  winLossDraw?: 'HOME_WIN' | 'DRAW' | 'AWAY_WIN';
-  handicapWinLossDraw?: 'HOME_WIN' | 'DRAW' | 'AWAY_WIN';
-  overUnderResult?: 'OVER' | 'UNDER' | 'EQUAL';
-  halfFullTime?: string;
+  // 支持单值或数组两种格式（向后兼容旧数据）
+  winLossDraw?: 'HOME_WIN' | 'DRAW' | 'AWAY_WIN' | Array<'HOME_WIN' | 'DRAW' | 'AWAY_WIN'>;
+  handicapWinLossDraw?: 'HOME_WIN' | 'DRAW' | 'AWAY_WIN' | Array<'HOME_WIN' | 'DRAW' | 'AWAY_WIN'>;
+  overUnderResult?: 'OVER' | 'UNDER' | 'EQUAL' | Array<'OVER' | 'UNDER' | 'EQUAL'>;
+  halfFullTime?: string | string[];
   likelyScores?: Array<{ home: number; away: number }>;
   goalsRange?: { min: number; max: number };
 }
@@ -214,16 +215,26 @@ export class ScorecardService {
       return { winDrawLossCorrect: false, handicapCorrect: false, overUnderCorrect: false, scoreExact: false, halfFullCorrect: false, goalRangeHit: false, anyHit: false };
     }
 
-    const winDrawLossCorrect = conclusion.winLossDraw === actualResult;
-    const handicapCorrect = actualHandicap != null && conclusion.handicapWinLossDraw != null
-      ? conclusion.handicapWinLossDraw === actualHandicap : false;
-    const overUnderCorrect = actualOU != null && conclusion.overUnderResult != null
-      ? conclusion.overUnderResult === actualOU : false;
+    // 支持单值和数组两种格式的多结果命中判断
+    const toStrArr = (val: unknown): string[] => {
+      if (Array.isArray(val)) return val.filter((v): v is string => typeof v === 'string');
+      if (typeof val === 'string' && val) return [val];
+      return [];
+    };
+    const wdlValues = toStrArr(conclusion.winLossDraw);
+    const handicapValues = toStrArr(conclusion.handicapWinLossDraw);
+    const ouValues = toStrArr(conclusion.overUnderResult);
+    const hfValues = toStrArr(conclusion.halfFullTime);
+    const winDrawLossCorrect = wdlValues.includes(actualResult);
+    const handicapCorrect = actualHandicap != null && handicapValues.length > 0
+      ? handicapValues.includes(actualHandicap) : false;
+    const overUnderCorrect = actualOU != null && ouValues.length > 0
+      ? ouValues.includes(actualOU) : false;
     const scoreExact = conclusion.likelyScores?.some(
       (s) => s.home === actualHomeScore && s.away === actualAwayScore,
     ) ?? false;
-    const halfFullCorrect = actualHF != null && conclusion.halfFullTime != null
-      ? conclusion.halfFullTime === actualHF : false;
+    const halfFullCorrect = actualHF != null && hfValues.length > 0
+      ? hfValues.includes(actualHF) : false;
     const totalGoals = actualHomeScore + actualAwayScore;
     const goalRangeHit = conclusion.goalsRange
       ? totalGoals >= conclusion.goalsRange.min && totalGoals <= conclusion.goalsRange.max

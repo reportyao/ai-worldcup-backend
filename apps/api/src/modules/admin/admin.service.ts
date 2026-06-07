@@ -1649,7 +1649,19 @@ export class AdminService {
       const likelyScores = Array.isArray(conclusion.likelyScores)
         ? (conclusion.likelyScores as JsonRecord[])
         : [];
-      const primaryScore = likelyScores[0] ?? null;
+      // 支持单值和数组两种格式，统一转换为数组
+      const toArr = (val: unknown): string[] => {
+        if (Array.isArray(val)) return val.filter((v): v is string => typeof v === 'string');
+        if (typeof val === 'string' && val) return [val];
+        return [];
+      };
+      const wdlArr = toArr(conclusion.winLossDraw);
+      const handicapArr = toArr(conclusion.handicapWinLossDraw);
+      const ouArr = toArr(conclusion.overUnderResult);
+      const hfArr = toArr(conclusion.halfFullTime);
+      const scoresArr = likelyScores
+        .filter((s) => typeof s.home === 'number' && typeof s.away === 'number')
+        .map((s) => `${s.home as number}:${s.away as number}`);
       return {
         predictionId: p.id,
         modelId: p.aiModelId,
@@ -1659,14 +1671,18 @@ export class AdminService {
         structuredOutput: p.structuredOutput ?? null,
         isSuccess: p.isSuccess,
         errorMessage: p.errorMessage ?? null,
-        predictedWinDrawLoss: (conclusion.winLossDraw as string | undefined) ?? null,
-        predictedHandicap: (conclusion.handicapWinLossDraw as string | undefined) ?? null,
-        predictedOverUnder: ((conclusion.overUnderResult ?? conclusion.overUnderTrend) as string | undefined) ?? null,
-        predictedHalfFull: (conclusion.halfFullTime as string | undefined) ?? null,
-        predictedScore:
-          primaryScore && typeof primaryScore.home === 'number' && typeof primaryScore.away === 'number'
-            ? `${primaryScore.home}:${primaryScore.away}`
-            : null,
+        // 单值字段（向后兼容）
+        predictedWinDrawLoss: wdlArr[0] ?? null,
+        predictedHandicap: handicapArr[0] ?? null,
+        predictedOverUnder: ouArr[0] ?? ((conclusion.overUnderTrend as string | undefined) ?? null),
+        predictedHalfFull: hfArr[0] ?? null,
+        predictedScore: scoresArr[0] ?? null,
+        // 多值数组字段（新增）
+        predictedWinDrawLossAll: wdlArr,
+        predictedHandicapAll: handicapArr,
+        predictedOverUnderAll: ouArr,
+        predictedHalfFullAll: hfArr,
+        predictedScoresAll: scoresArr,
         predictedGoalsRange:
           conclusion.goalsRange && typeof conclusion.goalsRange === 'object'
             ? (conclusion.goalsRange as JsonRecord)
@@ -1941,11 +1957,24 @@ export class AdminService {
     const actualHalfFull = this.computeHalfFullOutcome(match.homeHalfScore, match.awayHalfScore, match.homeScore, match.awayScore);
     const likelyScores = Array.isArray(conclusion.likelyScores) ? (conclusion.likelyScores as JsonRecord[]) : [];
     const goalsRange = conclusion.goalsRange && typeof conclusion.goalsRange === 'object' ? (conclusion.goalsRange as JsonRecord) : null;
-    const winDrawLossCorrect = conclusion.winLossDraw === actualOutcome;
-    const handicapCorrect = actualHandicap != null && conclusion.handicapWinLossDraw != null ? conclusion.handicapWinLossDraw === actualHandicap : false;
-    const overUnderCorrect = actualOverUnder != null && conclusion.overUnderResult != null ? conclusion.overUnderResult === actualOverUnder : false;
+    // 支持单值和数组两种格式的多结果命中判断
+    const wdlValues = Array.isArray(conclusion.winLossDraw)
+      ? (conclusion.winLossDraw as string[])
+      : (conclusion.winLossDraw ? [conclusion.winLossDraw as string] : []);
+    const handicapValues = Array.isArray(conclusion.handicapWinLossDraw)
+      ? (conclusion.handicapWinLossDraw as string[])
+      : (conclusion.handicapWinLossDraw ? [conclusion.handicapWinLossDraw as string] : []);
+    const ouValues = Array.isArray(conclusion.overUnderResult)
+      ? (conclusion.overUnderResult as string[])
+      : (conclusion.overUnderResult ? [conclusion.overUnderResult as string] : []);
+    const hfValues = Array.isArray(conclusion.halfFullTime)
+      ? (conclusion.halfFullTime as string[])
+      : (conclusion.halfFullTime ? [conclusion.halfFullTime as string] : []);
+    const winDrawLossCorrect = wdlValues.includes(actualOutcome);
+    const handicapCorrect = actualHandicap != null && handicapValues.length > 0 ? handicapValues.includes(actualHandicap) : false;
+    const overUnderCorrect = actualOverUnder != null && ouValues.length > 0 ? ouValues.includes(actualOverUnder) : false;
     const scoreExact = likelyScores.some((score) => score.home === match.homeScore && score.away === match.awayScore);
-    const halfFullCorrect = actualHalfFull != null && conclusion.halfFullTime != null ? conclusion.halfFullTime === actualHalfFull : false;
+    const halfFullCorrect = actualHalfFull != null && hfValues.length > 0 ? hfValues.includes(actualHalfFull) : false;
     const totalGoals = match.homeScore + match.awayScore;
     const goalRangeHit = goalsRange && typeof goalsRange.min === 'number' && typeof goalsRange.max === 'number'
       ? totalGoals >= goalsRange.min && totalGoals <= goalsRange.max
@@ -2211,6 +2240,19 @@ export class AdminService {
           : [];
         const primaryScore = likelyScores[0] ?? null;
 
+        // 支持单值和数组两种格式，统一转换为数组返回
+        const toArray = (val: unknown): string[] => {
+          if (Array.isArray(val)) return val.filter((v): v is string => typeof v === 'string');
+          if (typeof val === 'string' && val) return [val];
+          return [];
+        };
+        const wdlArr = toArray(conclusion.winLossDraw);
+        const handicapArr = toArray(conclusion.handicapWinLossDraw);
+        const ouArr = toArray(conclusion.overUnderResult);
+        const hfArr = toArray(conclusion.halfFullTime);
+        const scoresArr = likelyScores
+          .filter((s) => typeof s.home === 'number' && typeof s.away === 'number')
+          .map((s) => `${s.home as number}:${s.away as number}`);
         return {
           predictionId: p.id,
           modelId: p.aiModelId,
@@ -2221,14 +2263,18 @@ export class AdminService {
           structuredOutput: p.structuredOutput ?? null,
           isSuccess: p.isSuccess,
           errorMessage: p.errorMessage ?? null,
-          predictedWinDrawLoss: (conclusion.winLossDraw as string | undefined) ?? null,
-          predictedHandicap: (conclusion.handicapWinLossDraw as string | undefined) ?? null,
-          predictedOverUnder: ((conclusion.overUnderResult ?? conclusion.overUnderTrend) as string | undefined) ?? null,
-          predictedHalfFull: (conclusion.halfFullTime as string | undefined) ?? null,
-          predictedScore:
-            primaryScore && typeof primaryScore.home === 'number' && typeof primaryScore.away === 'number'
-              ? `${primaryScore.home}:${primaryScore.away}`
-              : null,
+          // 单值字段（向后兼容）：取第一个值
+          predictedWinDrawLoss: wdlArr[0] ?? null,
+          predictedHandicap: handicapArr[0] ?? null,
+          predictedOverUnder: ouArr[0] ?? ((conclusion.overUnderTrend as string | undefined) ?? null),
+          predictedHalfFull: hfArr[0] ?? null,
+          predictedScore: scoresArr[0] ?? null,
+          // 多值数组字段（新增）：包含所有可能结果
+          predictedWinDrawLossAll: wdlArr,
+          predictedHandicapAll: handicapArr,
+          predictedOverUnderAll: ouArr,
+          predictedHalfFullAll: hfArr,
+          predictedScoresAll: scoresArr,
           predictedGoalsRange:
             conclusion.goalsRange && typeof conclusion.goalsRange === 'object'
               ? (conclusion.goalsRange as JsonRecord)

@@ -77,20 +77,40 @@ export const StructuredPredictionSchema = z.object({
   trend: z.string().min(1),
   risks: z.array(z.string()).max(8),
   conclusion: z.object({
-    winLossDraw: z.enum(['HOME_WIN', 'DRAW', 'AWAY_WIN']),
+    // 胜平负：支持单值（向后兼容旧数据）或多值数组（新数据，当模型给出多个可能结果时）
+    winLossDraw: z.union([
+      z.enum(['HOME_WIN', 'DRAW', 'AWAY_WIN']),
+      z.array(z.enum(['HOME_WIN', 'DRAW', 'AWAY_WIN'])).min(1).max(3),
+    ]),
     winProbability: z.object({
       home: z.number().min(0).max(1),
       draw: z.number().min(0).max(1),
       away: z.number().min(0).max(1),
     }).optional(),
     handicapTrend: z.string().optional(),
-    handicapWinLossDraw: z.enum(['HOME_WIN', 'DRAW', 'AWAY_WIN']).optional(),
+    // 让球胜平负：支持单值或多值数组
+    handicapWinLossDraw: z.union([
+      z.enum(['HOME_WIN', 'DRAW', 'AWAY_WIN']),
+      z.array(z.enum(['HOME_WIN', 'DRAW', 'AWAY_WIN'])).min(1).max(3),
+    ]).optional(),
     overUnderTrend: z.string().optional(),
-    overUnderResult: z.enum(['OVER', 'UNDER', 'EQUAL']).optional(),
-    halfFullTime: z.enum([
-      'HOME_HOME', 'HOME_DRAW', 'HOME_AWAY',
-      'DRAW_HOME', 'DRAW_DRAW', 'DRAW_AWAY',
-      'AWAY_HOME', 'AWAY_DRAW', 'AWAY_AWAY',
+    // 大小球：支持单值或多值数组
+    overUnderResult: z.union([
+      z.enum(['OVER', 'UNDER', 'EQUAL']),
+      z.array(z.enum(['OVER', 'UNDER', 'EQUAL'])).min(1).max(3),
+    ]).optional(),
+    // 半全场：支持单值或多值数组
+    halfFullTime: z.union([
+      z.enum([
+        'HOME_HOME', 'HOME_DRAW', 'HOME_AWAY',
+        'DRAW_HOME', 'DRAW_DRAW', 'DRAW_AWAY',
+        'AWAY_HOME', 'AWAY_DRAW', 'AWAY_AWAY',
+      ]),
+      z.array(z.enum([
+        'HOME_HOME', 'HOME_DRAW', 'HOME_AWAY',
+        'DRAW_HOME', 'DRAW_DRAW', 'DRAW_AWAY',
+        'AWAY_HOME', 'AWAY_DRAW', 'AWAY_AWAY',
+      ])).min(1).max(9),
     ]).optional(),
     likelyScores: z
       .array(
