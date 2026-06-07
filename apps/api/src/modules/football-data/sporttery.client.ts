@@ -14,6 +14,26 @@ interface SportteryEndpointPayload {
   [key: string]: unknown;
 }
 
+// ─── Anti-ban: Real browser User-Agent pool ───────────────────────────────────
+const UA_POOL = [
+  'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0.0.0 Safari/537.36',
+  'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36',
+  'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:126.0) Gecko/20100101 Firefox/126.0',
+  'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.5 Safari/605.1.15',
+  'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0.0.0 Safari/537.36',
+  'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/123.0.0.0 Safari/537.36 Edg/123.0.0.0',
+  'Mozilla/5.0 (iPhone; CPU iPhone OS 17_5 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.5 Mobile/15E148 Safari/604.1',
+  'Mozilla/5.0 (Linux; Android 14; Pixel 8) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0.0.0 Mobile Safari/537.36',
+];
+
+function randomUA(): string {
+  return UA_POOL[Math.floor(Math.random() * UA_POOL.length)] ?? UA_POOL[0]!;
+}
+
+function jitterDelay(minMs: number, maxMs: number): Promise<void> {
+  return new Promise((resolve) => setTimeout(resolve, minMs + Math.random() * (maxMs - minMs)));
+}
+
 @Injectable()
 export class SportteryClient {
   private readonly logger = new Logger(SportteryClient.name);
@@ -23,19 +43,25 @@ export class SportteryClient {
   async getDailyFootballMatches(saleDate: string): Promise<SportteryFootballMatch[]> {
     const urls = this.buildCandidateUrls(saleDate);
     const errors: string[] = [];
+    const timeoutMs = Number(process.env.SPORTTERY_TIMEOUT_MS ?? 15_000);
+
     for (const url of urls) {
       try {
-        const response = await fetch(url, {
+        if (errors.length > 0) await jitterDelay(500, 2000);
+        const response = await this.fetchWithRetry(url, {
           headers: {
             accept: 'application/json,text/plain,*/*',
             referer: 'https://www.sporttery.cn/jc/zqsgkj/',
             origin: 'https://www.sporttery.cn',
-            'user-agent': 'Mozilla/5.0 AI-Worldcup-Sporttery-Sync/1.0',
+            'accept-language': 'zh-CN,zh;q=0.9,en;q=0.8',
+            'accept-encoding': 'gzip, deflate, br',
+            'cache-control': 'no-cache',
+            pragma: 'no-cache',
           },
-          signal: AbortSignal.timeout(Number(process.env.SPORTTERY_TIMEOUT_MS ?? 15_000)),
+          signal: AbortSignal.timeout(timeoutMs),
         });
-        if (!response.ok) {
-          errors.push(`${response.status} ${url}`);
+        if (!response || !response.ok) {
+          errors.push(`${response?.status ?? 'no-response'} ${url}`);
           continue;
         }
         const text = await response.text();
@@ -55,20 +81,58 @@ export class SportteryClient {
     return [];
   }
 
+  /** Fetch with retry and rotating User-Agent to bypass WAF */
+  private async fetchWithRetry(
+    url: string,
+    options: { headers: Record<string, string>; signal: AbortSignal },
+    maxRetries = 2,
+  ): Promise<Response | null> {
+    for (let attempt = 0; attempt <= maxRetries; attempt++) {
+      if (attempt > 0) {
+        await jitterDelay(1500 * attempt, 4000 * attempt);
+      }
+      try {
+        const response = await fetch(url, {
+          ...options,
+          headers: {
+            ...options.headers,
+            'user-agent': randomUA(),
+          },
+        });
+        if (response.status === 403 || response.status === 567) {
+          // WAF block, retry with different UA after longer delay
+          if (attempt < maxRetries) continue;
+        }
+        return response;
+      } catch (error) {
+        if (attempt === maxRetries) throw error;
+      }
+    }
+    return null;
+  }
+
   private async fetchTrade500SellingMatches(saleDate: string): Promise<SportteryFootballMatch[]> {
     const enabled = (process.env.SPORTTERY_TRADE500_FALLBACK_ENABLED ?? 'true').toLowerCase() !== 'false';
     if (!enabled) return [];
     const url = process.env.SPORTTERY_TRADE500_JCZQ_URL ?? 'https://trade.500.com/jczq/';
+    const timeoutMs = Number(process.env.SPORTTERY_TIMEOUT_MS ?? 15_000);
     try {
-      const response = await fetch(url, {
+      await jitterDelay(300, 1200);
+      const response = await this.fetchWithRetry(url, {
         headers: {
           accept: 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
           referer: 'https://trade.500.com/jczq/',
-          'user-agent': 'Mozilla/5.0 AI-Worldcup-Sporttery-Sync/1.0',
+          origin: 'https://trade.500.com',
+          'accept-language': 'zh-CN,zh;q=0.9,en;q=0.8',
+          'accept-encoding': 'gzip, deflate, br',
+          'cache-control': 'no-cache',
         },
-        signal: AbortSignal.timeout(Number(process.env.SPORTTERY_TIMEOUT_MS ?? 15_000)),
-      });
-      if (!response.ok) return [];
+        signal: AbortSignal.timeout(timeoutMs),
+      }, 1);
+      if (!response || !response.ok) {
+        this.logger.warn(`Trade500 fallback request failed: status=${response?.status}`);
+        return [];
+      }
       const html = this.decodeChineseHtml(Buffer.from(await response.arrayBuffer()));
       return this.extractTrade500Rows(html, saleDate);
     } catch (error) {
@@ -79,7 +143,7 @@ export class SportteryClient {
 
   private decodeChineseHtml(buffer: Buffer): string {
     const utf8 = buffer.toString('utf8');
-    if (!/�/.test(utf8) && !/charset=(gb2312|gbk|gb18030)/i.test(utf8)) return utf8;
+    if (!/\uFFFD/.test(utf8) && !/charset=(gb2312|gbk|gb18030)/i.test(utf8)) return utf8;
     return new TextDecoder('gb18030').decode(buffer);
   }
 
