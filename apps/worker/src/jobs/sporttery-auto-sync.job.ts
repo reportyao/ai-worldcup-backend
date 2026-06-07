@@ -122,6 +122,71 @@ async function fetchSportteryMatches(saleDate: string): Promise<SportteryRawMatc
   return merged;
 }
 
+// ─── Anti-ban: Random User-Agent pool ───────────────────────────────────────
+const USER_AGENTS = [
+  'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0.0.0 Safari/537.36',
+  'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36',
+  'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:126.0) Gecko/20100101 Firefox/126.0',
+  'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.5 Safari/605.1.15',
+  'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0.0.0 Safari/537.36',
+  'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/123.0.0.0 Safari/537.36 Edg/123.0.0.0',
+  'Mozilla/5.0 (iPhone; CPU iPhone OS 17_5 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.5 Mobile/15E148 Safari/604.1',
+  'Mozilla/5.0 (Linux; Android 14; Pixel 8) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0.0.0 Mobile Safari/537.36',
+];
+
+const REFERERS = [
+  'https://www.sporttery.cn/jc/zqsgkj/',
+  'https://www.sporttery.cn/jc/jsyg/index.html',
+  'https://www.sporttery.cn/',
+  'https://www.sporttery.cn/jc/zqkjgg/',
+];
+
+function randomUA(): string {
+  return USER_AGENTS[Math.floor(Math.random() * USER_AGENTS.length)];
+}
+
+function randomReferer(): string {
+  return REFERERS[Math.floor(Math.random() * REFERERS.length)];
+}
+
+/** Random jitter delay between min and max milliseconds */
+function jitterDelay(minMs = 800, maxMs = 3000): Promise<void> {
+  const delay = minMs + Math.random() * (maxMs - minMs);
+  return new Promise((resolve) => setTimeout(resolve, delay));
+}
+
+/** Fetch with retry and anti-ban headers */
+async function fetchWithRetry(
+  url: string,
+  options: { headers: Record<string, string>; signal: AbortSignal },
+  maxRetries = 2,
+): Promise<Response | null> {
+  for (let attempt = 0; attempt <= maxRetries; attempt++) {
+    if (attempt > 0) {
+      // Exponential backoff with jitter before retry
+      await jitterDelay(1500 * attempt, 4000 * attempt);
+    }
+    try {
+      const response = await fetch(url, {
+        ...options,
+        headers: {
+          ...options.headers,
+          'user-agent': randomUA(),
+          referer: randomReferer(),
+        },
+      });
+      if (response.status === 403 && attempt < maxRetries) {
+        // Likely WAF block, retry with different UA after longer delay
+        continue;
+      }
+      return response;
+    } catch (error) {
+      if (attempt === maxRetries) throw error;
+    }
+  }
+  return null;
+}
+
 async function fetchOfficialSportteryMatches(saleDate: string): Promise<SportteryRawMatch[]> {
   const configuredUrl = process.env.SPORTTERY_FOOTBALL_JC_URL;
   const encoded = encodeURIComponent(saleDate);
@@ -136,21 +201,30 @@ async function fetchOfficialSportteryMatches(saleDate: string): Promise<Sportter
       ];
 
   const errors: string[] = [];
+  const timeoutMs = Number(process.env.SPORTTERY_TIMEOUT_MS ?? 15_000);
 
   for (const url of urls) {
     try {
-      const response = await fetch(url, {
-        headers: {
-          accept: 'application/json,text/plain,*/*',
-          referer: 'https://www.sporttery.cn/jc/zqsgkj/',
-          origin: 'https://www.sporttery.cn',
-          'user-agent': 'Mozilla/5.0 AI-Worldcup-Sporttery-AutoSync/1.0',
-        },
-        signal: AbortSignal.timeout(Number(process.env.SPORTTERY_TIMEOUT_MS ?? 15_000)),
-      });
+      // Add jitter between endpoint attempts to avoid burst patterns
+      if (errors.length > 0) await jitterDelay(500, 2000);
 
-      if (!response.ok) {
-        errors.push(`${response.status} ${url}`);
+      const response = await fetchWithRetry(
+        url,
+        {
+          headers: {
+            accept: 'application/json,text/plain,*/*',
+            origin: 'https://www.sporttery.cn',
+            'accept-language': 'zh-CN,zh;q=0.9,en;q=0.8',
+            'accept-encoding': 'gzip, deflate, br',
+            'cache-control': 'no-cache',
+            pragma: 'no-cache',
+          },
+          signal: AbortSignal.timeout(timeoutMs),
+        },
+      );
+
+      if (!response || !response.ok) {
+        errors.push(`${response?.status ?? 'no-response'} ${url}`);
         continue;
       }
 
@@ -168,7 +242,7 @@ async function fetchOfficialSportteryMatches(saleDate: string): Promise<Sportter
     }
   }
 
-  logger.warn({ saleDate, errors: errors.slice(0, 3) }, 'sporttery-auto-sync: official endpoints returned no data');
+  logger.warn({ saleDate, errors: errors.slice(0, 4) }, 'sporttery-auto-sync: official endpoints returned no data');
   return [];
 }
 
@@ -177,18 +251,29 @@ async function fetchTrade500SellingMatches(saleDate: string): Promise<SportteryR
   if (!enabled) return [];
 
   const configuredUrl = process.env.SPORTTERY_TRADE500_JCZQ_URL ?? 'https://trade.500.com/jczq/';
-  try {
-    const response = await fetch(configuredUrl, {
-      headers: {
-        accept: 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
-        referer: 'https://trade.500.com/jczq/',
-        'user-agent': 'Mozilla/5.0 AI-Worldcup-Sporttery-AutoSync/1.0',
-      },
-      signal: AbortSignal.timeout(Number(process.env.SPORTTERY_TIMEOUT_MS ?? 15_000)),
-    });
+  const timeoutMs = Number(process.env.SPORTTERY_TIMEOUT_MS ?? 15_000);
 
-    if (!response.ok) {
-      logger.warn({ saleDate, status: response.status }, 'sporttery-auto-sync: trade500 fallback request failed');
+  try {
+    // Add jitter before trade500 request to avoid correlated timing with official endpoints
+    await jitterDelay(300, 1200);
+
+    const response = await fetchWithRetry(
+      configuredUrl,
+      {
+        headers: {
+          accept: 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
+          origin: 'https://trade.500.com',
+          'accept-language': 'zh-CN,zh;q=0.9',
+          'accept-encoding': 'gzip, deflate, br',
+          'cache-control': 'no-cache',
+        },
+        signal: AbortSignal.timeout(timeoutMs),
+      },
+      1, // fewer retries for fallback
+    );
+
+    if (!response || !response.ok) {
+      logger.warn({ saleDate, status: response?.status }, 'sporttery-auto-sync: trade500 fallback request failed');
       return [];
     }
 
@@ -542,8 +627,10 @@ async function syncDailyFixtures(payload: SportterySyncPayload, summary: Sportte
 // ─────────────────────────────────────────────────────────────────────────────
 
 async function checkResults(payload: SportterySyncPayload, summary: SportteryAutoSyncSummary): Promise<void> {
-  // 1. 查找最近3天内状态为 SCHEDULED 或 LIVE 的比赛对应的销售日期
-  const threeDaysAgo = new Date(Date.now() - 3 * 24 * 60 * 60 * 1000);
+  // 1. 查找最近5天内状态为 SCHEDULED 或 LIVE 的比赛对应的销售日期
+  //    扩大回溯窗口从3天到5天，确保赛程密集时不会遗漏
+  const lookbackDays = Number(process.env.SPORTTERY_RESULT_LOOKBACK_DAYS ?? 5);
+  const lookbackDate = new Date(Date.now() - lookbackDays * 24 * 60 * 60 * 1000);
   const pendingMarkets = await prisma.sportteryMatchMarket.findMany({
     where: {
       provider: 'sporttery',
@@ -552,7 +639,7 @@ async function checkResults(payload: SportterySyncPayload, summary: SportteryAut
         { status: { contains: 'LIVE' } },
         { status: { contains: '进行' } },
       ],
-      kickoffAt: { gte: threeDaysAgo, lte: new Date() },
+      kickoffAt: { gte: lookbackDate, lte: new Date() },
     },
     select: { saleDate: true },
     distinct: ['saleDate'],
@@ -560,17 +647,19 @@ async function checkResults(payload: SportterySyncPayload, summary: SportteryAut
 
   const saleDates = [...new Set(pendingMarkets.map((m) => m.saleDate))];
 
-  // 2. 始终包含今天和昨天的日期，确保跨天赛果能被拉取
+  // 2. 始终包含今天、昨天和前天的日期，确保跨天赛果能被拉取
   const today = formatDate(new Date());
   const yesterday = formatDate(new Date(Date.now() - 24 * 60 * 60 * 1000));
-  if (!saleDates.includes(today)) saleDates.push(today);
-  if (!saleDates.includes(yesterday)) saleDates.push(yesterday);
+  const dayBeforeYesterday = formatDate(new Date(Date.now() - 2 * 24 * 60 * 60 * 1000));
+  for (const d of [today, yesterday, dayBeforeYesterday]) {
+    if (!saleDates.includes(d)) saleDates.push(d);
+  }
 
-  // 3. 同时查找 match 表中仍为 SCHEDULED 状态但 kickoffAt 已过的比赛对应的 saleDate
+  // 3. 同时查找 match 表中仍为 SCHEDULED/LIVE 状态但 kickoffAt 已过的比赛对应的 saleDate
   const pendingMatches = await prisma.match.findMany({
     where: {
       status: { in: ['SCHEDULED', 'LIVE'] },
-      kickoffAt: { gte: threeDaysAgo, lte: new Date() },
+      kickoffAt: { gte: lookbackDate, lte: new Date() },
     },
     select: { matchday: true },
   });
@@ -581,6 +670,7 @@ async function checkResults(payload: SportterySyncPayload, summary: SportteryAut
   }
 
   summary.saleDates = saleDates;
+  logger.info({ saleDates, pendingMarketsCount: pendingMarkets.length, pendingMatchesCount: pendingMatches.length }, 'sporttery-auto-sync: RESULT_CHECK scanning dates');
 
   for (const saleDate of saleDates) {
     const items = await fetchSportteryMatches(saleDate);
@@ -592,6 +682,11 @@ async function checkResults(payload: SportterySyncPayload, summary: SportteryAut
       } catch (error) {
         summary.errors.push({ message: `${item.matchNo}: ${error instanceof Error ? error.message : String(error)}` });
       }
+    }
+
+    // Add jitter between date fetches to reduce burst load and avoid rate limiting
+    if (saleDates.indexOf(saleDate) < saleDates.length - 1) {
+      await jitterDelay(1000, 3000);
     }
   }
 }
@@ -820,25 +915,65 @@ async function updateMatchResult(item: SportteryRawMatch, summary: SportteryAuto
   // 跨 saleDate 匹配：体彩赛果数据的 saleDate 可能与原始入库时的 saleDate 不同
   // 例如：比赛入库时 saleDate=2026-06-03，但赛果在 saleDate=2026-06-04 的接口中返回
   if (!match) {
-    // 通过 matchNo 在近几天的 externalId 中搜索
+    // Strategy 1: 尝试相邻日期的 externalId（前后各2天）
+    const baseDate = new Date(`${item.saleDate}T00:00:00+08:00`);
+    const adjacentDates = [-2, -1, 1, 2].map((offset) => {
+      const d = new Date(baseDate.getTime() + offset * 24 * 60 * 60 * 1000);
+      return formatDate(d);
+    });
+    for (const adjDate of adjacentDates) {
+      const adjExternalId = `sporttery:football:${adjDate}:${item.matchNo}`;
+      const candidate = await prisma.match.findUnique({ where: { externalId: adjExternalId } });
+      if (candidate && candidate.status !== MatchStatus.FINISHED) {
+        match = candidate;
+        break;
+      }
+    }
+  }
+
+  // Strategy 2: 通过 matchNo 后缀在近期比赛中搜索（带队名验证）
+  if (!match) {
     const matchNoSuffix = `:${item.matchNo}`;
     const candidates = await prisma.match.findMany({
       where: {
         externalId: { endsWith: matchNoSuffix },
         status: { in: ['SCHEDULED', 'LIVE'] },
+        // 限制在近7天内的比赛，避免匹配到历史同号比赛
+        kickoffAt: { gte: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000) },
       },
+      include: { homeTeam: true, awayTeam: true },
     });
+
     if (candidates.length === 1) {
       match = candidates[0];
     } else if (candidates.length > 1) {
-      // 多个候选时，选择 kickoffAt 最接近当前时间的
-      match = candidates.sort((a, b) =>
-        Math.abs(a.kickoffAt.getTime() - Date.now()) - Math.abs(b.kickoffAt.getTime() - Date.now())
-      )[0];
+      // 多个候选时，优先通过队名精确匹配
+      const teamMatched = candidates.find((c) => {
+        const homeMatch = c.homeTeam && (
+          c.homeTeam.name === item.homeTeamName ||
+          c.homeTeam.nameZh === item.homeTeamName ||
+          c.homeTeam.shortName === item.homeTeamName
+        );
+        const awayMatch = c.awayTeam && (
+          c.awayTeam.name === item.awayTeamName ||
+          c.awayTeam.nameZh === item.awayTeamName ||
+          c.awayTeam.shortName === item.awayTeamName
+        );
+        return homeMatch && awayMatch;
+      });
+
+      if (teamMatched) {
+        match = teamMatched;
+      } else {
+        // 退而求其次：选择 kickoffAt 最接近当前时间的
+        match = candidates.sort((a, b) =>
+          Math.abs(a.kickoffAt.getTime() - Date.now()) - Math.abs(b.kickoffAt.getTime() - Date.now())
+        )[0];
+      }
     }
   }
 
-  // 还是找不到，尝试通过 sportteryMatchMarket 的 matchId 关联
+  // Strategy 3: 通过 sportteryMatchMarket 的 matchId 关联
   if (!match) {
     const market = await prisma.sportteryMatchMarket.findFirst({
       where: {
@@ -853,7 +988,14 @@ async function updateMatchResult(item: SportteryRawMatch, summary: SportteryAuto
     }
   }
 
-  if (!match) return;
+  if (!match) {
+    // Log unmatched result for debugging
+    logger.debug(
+      { saleDate: item.saleDate, matchNo: item.matchNo, homeTeam: item.homeTeamName, awayTeam: item.awayTeamName },
+      'sporttery-auto-sync: updateMatchResult could not find matching match record',
+    );
+    return;
+  }
 
   const newStatus = mapSportteryStatus(item);
   const wasFinished = match.status === MatchStatus.FINISHED;
@@ -884,9 +1026,17 @@ async function updateMatchResult(item: SportteryRawMatch, summary: SportteryAuto
     },
   });
 
-  // 更新 SportteryMatchMarket
+  // 更新 SportteryMatchMarket（同时更新当前 saleDate 和可能的原始 saleDate）
   await prisma.sportteryMatchMarket.updateMany({
-    where: { provider: 'sporttery', saleDate: item.saleDate, matchNo: item.matchNo },
+    where: {
+      provider: 'sporttery',
+      matchNo: item.matchNo,
+      // 更新所有关联该 matchNo 的 market 记录，而非仅当前 saleDate
+      OR: [
+        { saleDate: item.saleDate },
+        { matchId: match.id },
+      ],
+    },
     data: {
       status: item.status ?? newStatus,
       winDrawLoss: item.winDrawLoss ?? null,

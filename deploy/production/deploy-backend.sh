@@ -45,7 +45,9 @@ set_env_value() {
 
 ensure_sporttery_cron_value() {
   local key="$1"
-  local desired="0 19,21,2,7,16 * * *"
+  # 北京时间 03:00, 05:00, 10:00, 10:30, 11:00, 15:00, 24:00
+  # 对应 UTC: 19, 21, 2, 2:30, 3, 7, 16
+  local desired="0 19,21,2,3,7,16 * * *;30 2,3 * * *"
   local current
   current="$(env_value "$key" | xargs)"
 
@@ -55,7 +57,8 @@ ensure_sporttery_cron_value() {
     return
   fi
 
-  if [ "$current" = "0 0,6,12 * * *" ] || [ "$current" = "*/10 * * * *" ]; then
+  # Migrate any legacy single-pattern cron to the new multi-pattern cadence
+  if [ "$current" = "0 0,6,12 * * *" ] || [ "$current" = "*/10 * * * *" ] || [ "$current" = "0 19,21,2,7,16 * * *" ]; then
     set_env_value "$key" "$desired"
     log "Migrated legacy $key=$current to $desired in existing .env."
   fi

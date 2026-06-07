@@ -62,7 +62,7 @@ function createConnection(): Redis {
 const workers: Worker[] = [];
 const queues: Queue[] = [];
 
-const SPORTTERY_SYNC_CRON_DEFAULTS = ['0 19,21,2,3,7,16 * * *', '30 2 * * *'];
+const SPORTTERY_SYNC_CRON_DEFAULTS = ['0 19,21,2,3,7,16 * * *', '30 2,3 * * *'];
 const LEGACY_SPORTTERY_DAILY_SYNC_CRON = '0 0,6,12 * * *';
 const LEGACY_SPORTTERY_RESULT_CHECK_CRON = '*/10 * * * *';
 
@@ -71,13 +71,16 @@ type CronRepeatableJobOptions = JobsOptions & {
   repeat: { pattern: string };
 };
 
+const LEGACY_SPORTTERY_SINGLE_CRON = '0 19,21,2,7,16 * * *';
+
 function resolveSportteryCronPatterns(envKey: string, defaultPatterns = SPORTTERY_SYNC_CRON_DEFAULTS): string[] {
   const configured = process.env[envKey]?.trim();
   if (!configured) return defaultPatterns;
 
   if (
     configured === LEGACY_SPORTTERY_DAILY_SYNC_CRON ||
-    configured === LEGACY_SPORTTERY_RESULT_CHECK_CRON
+    configured === LEGACY_SPORTTERY_RESULT_CHECK_CRON ||
+    configured === LEGACY_SPORTTERY_SINGLE_CRON
   ) {
     logger.warn(
       { envKey, configured, defaultPatterns },
