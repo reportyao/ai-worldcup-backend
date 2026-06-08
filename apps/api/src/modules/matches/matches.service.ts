@@ -266,10 +266,10 @@ export class MatchesService {
     const consensus = this.buildConsensus(match.predictionTasks);
     const safeConsensus = access.canViewFullModels
       ? consensus
-      : {
+        : {
           status: consensus.status,
-          title: consensus.status === 'ready' || consensus.status === 'reviewed' ? 'AI 共识已发布' : consensus.title,
-          highlight: '已展示参与模型近期战绩，完整预测可在获取后查看。',
+          title: consensus.status === 'generating' ? consensus.title : '模型近期战绩',
+          highlight: '当前展示参与模型最近已复盘预测数据。',
           modelCount: consensus.modelCount,
           successCount: consensus.successCount,
           level: consensus.level,
