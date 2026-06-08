@@ -67,14 +67,19 @@ export interface LindyCallbackPayload {
     info_completeness?: string;
   };
   error_message?: string;
+  /** Lindy AI 生成的完整 Markdown 格式分析报告 */
   raw_output?: string;
   response?: string;
   result?: string;
   answer?: string;
+  /** Perplexity 搜索关键词记录 */
+  search_queries?: string[];
   /** 内部追踪字段 */
   _taskId?: string;
   _matchId?: string;
   _aiModelId?: string;
+  /** 允许任意额外字段透传 */
+  [key: string]: unknown;
 }
 
 interface LindyRequestPayload {
@@ -382,13 +387,20 @@ export class LindyPredictionService {
     // 成功回调 - 映射为 StructuredPrediction
     const structuredOutput = this.mapCallbackToStructuredPrediction(payload, aiModel.modelId, aiModel.displayName);
 
+    // 将 search_queries 保存到 structuredOutput 中以便审计和展示
+    if (Array.isArray(payload.search_queries) && payload.search_queries.length > 0) {
+      (structuredOutput as Record<string, unknown>).searchQueries = payload.search_queries;
+    }
+
+    const rawOutput = this.buildCallbackRawOutput(payload);
+
     await this.prisma.modelPrediction.upsert({
       where: { predictionTaskId_aiModelId: { predictionTaskId: taskId, aiModelId } },
       create: {
         predictionTaskId: taskId,
         aiModelId,
         structuredOutput: JSON.parse(JSON.stringify(structuredOutput)),
-        rawOutput: this.buildCallbackRawOutput(payload),
+        rawOutput,
         promptVersion: 'lindy-webhook',
         promptSnapshot: null,
         latencyMs: null,
@@ -400,7 +412,7 @@ export class LindyPredictionService {
       },
       update: {
         structuredOutput: JSON.parse(JSON.stringify(structuredOutput)),
-        rawOutput: this.buildCallbackRawOutput(payload),
+        rawOutput,
         isSuccess: true,
         errorMessage: null,
         generatedAt: new Date(),
@@ -410,7 +422,14 @@ export class LindyPredictionService {
     // 更新 task 统计并尝试计算共识
     await this.updateTaskStats(taskId);
 
-    this.logger.log({ taskId, aiModelId, model: payload.model }, 'Lindy callback: prediction saved');
+    this.logger.log({
+      taskId,
+      aiModelId,
+      model: payload.model,
+      hasRawOutput: Boolean(payload.raw_output),
+      rawOutputLength: payload.raw_output?.length || 0,
+      searchQueries: payload.search_queries || [],
+    }, 'Lindy callback: prediction saved');
     return { success: true, message: 'Prediction saved successfully' };
   }
 
@@ -924,12 +943,26 @@ export class LindyPredictionService {
   }
 
   private buildCallbackRawOutput(payload: LindyCallbackPayload): string {
-    // 如果有直接文本输出（Markdown格式），直接返回
+    // 如果有直接文本输出（Markdown格式），直接使用
     const directOutput = payload.raw_output || payload.response || payload.result || payload.answer;
-    if (directOutput && directOutput.trim()) return directOutput;
+    let content = '';
 
-    // 否则将结构化 payload 转换为格式化 Markdown，避免展示压缩 JSON
-    return this.buildFormattedMarkdown(payload);
+    if (directOutput && directOutput.trim()) {
+      content = directOutput.trim();
+    } else {
+      // 否则将结构化 payload 转换为格式化 Markdown，避免展示压缩 JSON
+      content = this.buildFormattedMarkdown(payload);
+    }
+
+    // 如果有 search_queries，在末尾附加搜索关键词记录
+    if (Array.isArray(payload.search_queries) && payload.search_queries.length > 0) {
+      content += '\n\n---\n\n## 🔍 搜索关键词\n\n';
+      payload.search_queries.forEach((q, i) => {
+        content += `${i + 1}. ${q}\n`;
+      });
+    }
+
+    return content;
   }
 
   /**
