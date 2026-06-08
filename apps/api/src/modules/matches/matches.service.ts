@@ -787,17 +787,18 @@ export class MatchesService {
         const likelyScores = Array.isArray(conclusion.likelyScores)
           ? (conclusion.likelyScores as Array<Record<string, unknown>>)
           : [];
-        const primaryScore = likelyScores[0] ?? null;
+        const predictedScores = likelyScores
+          .filter((score) => typeof score.home === 'number' && typeof score.away === 'number')
+          .map((score) => `${score.home}:${score.away}`);
         return {
           modelName: p.aiModel.displayName,
           persona: p.aiModel.persona,
           predictedWinDrawLoss: (conclusion.winLossDraw as string | undefined) ?? null,
           predictedHandicap: (conclusion.handicapWinLossDraw as string | undefined) ?? null,
           predictedOverUnder: (conclusion.overUnderTrend as string | undefined) ?? null,
-          predictedScore:
-            primaryScore && typeof primaryScore.home === 'number' && typeof primaryScore.away === 'number'
-              ? `${primaryScore.home}:${primaryScore.away}`
-              : null,
+          // “比分命中”按 likelyScores 中任一候选比分命中计算，因此列表也展示全部候选比分，避免只显示首选比分造成误解。
+          predictedScore: predictedScores.length > 0 ? predictedScores.join(' / ') : null,
+          predictedScores,
           winDrawLossCorrect: p.winDrawLossCorrect,
           handicapCorrect: p.handicapCorrect,
           overUnderCorrect: p.overUnderCorrect,
