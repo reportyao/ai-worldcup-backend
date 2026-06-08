@@ -62,9 +62,10 @@ function createConnection(): Redis {
 const workers: Worker[] = [];
 const queues: Queue[] = [];
 
-const SPORTTERY_SYNC_CRON_DEFAULTS = ['0 19,21,2,3,7,16 * * *', '30 2,3 * * *'];
+const SPORTTERY_SYNC_CRON_DEFAULTS = ['0 19,21,2,3,7,16 * * *', '10,20,30 2 * * *'];
 const LEGACY_SPORTTERY_DAILY_SYNC_CRON = '0 0,6,12 * * *';
 const LEGACY_SPORTTERY_RESULT_CHECK_CRON = '*/10 * * * *';
+const LEGACY_SPORTTERY_TEN_THIRTY_CRON = '0 19,21,2,3,7,16 * * *;30 2,3 * * *';
 
 type CronRepeatableJobOptions = JobsOptions & {
   jobId: string;
@@ -80,7 +81,8 @@ function resolveSportteryCronPatterns(envKey: string, defaultPatterns = SPORTTER
   if (
     configured === LEGACY_SPORTTERY_DAILY_SYNC_CRON ||
     configured === LEGACY_SPORTTERY_RESULT_CHECK_CRON ||
-    configured === LEGACY_SPORTTERY_SINGLE_CRON
+    configured === LEGACY_SPORTTERY_SINGLE_CRON ||
+    configured === LEGACY_SPORTTERY_TEN_THIRTY_CRON
   ) {
     logger.warn(
       { envKey, configured, defaultPatterns },
@@ -256,7 +258,7 @@ async function registerDataSyncSchedulers(): Promise<void> {
  * 竞彩数据自动同步定时任务注册
  *
  * 自动化闭环：
- * - DAILY_FIXTURES: 每天凌晨3:00、5:00、上午10:00、10:30、11:00、15:00、24:00（北京时间）自动同步当天+未来3天竞彩赛程，新增比赛自动入队AI预测
+ * - DAILY_FIXTURES: 每天凌晨3:00、5:00、上午10:00、10:10、10:20、10:30、11:00、15:00、24:00（北京时间）自动同步当天+未来3天竞彩赛程，新增比赛自动入队AI预测
  * - RESULT_CHECK: 同一时间点检查赛果，完赛后自动触发评分和复盘
  */
 async function registerSportteryAutoSyncSchedulers(): Promise<void> {
@@ -264,8 +266,8 @@ async function registerSportteryAutoSyncSchedulers(): Promise<void> {
   queues.push(queue);
 
   // 1. 每天定时同步竞彩赛程（当天+未来3天）
-  //    北京时间 3:00, 5:00, 10:00, 10:30, 11:00, 15:00, 24:00(=次日0:00)
-  //    对应 UTC: 19:00(前一天), 21:00(前一天), 2:00, 2:30, 3:00, 7:00, 16:00
+  //    北京时间 3:00, 5:00, 10:00, 10:10, 10:20, 10:30, 11:00, 15:00, 24:00(=次日0:00)
+  //    对应 UTC: 19:00(前一天), 21:00(前一天), 2:00, 2:10, 2:20, 2:30, 3:00, 7:00, 16:00
   await registerRepeatableJobs(
     queue,
     'sporttery-daily-fixtures',
@@ -285,7 +287,7 @@ async function registerSportteryAutoSyncSchedulers(): Promise<void> {
   );
 
   // 2. 同一时间点检查赛果更新（与 DAILY_FIXTURES 同步）
-  //    北京时间 3:00, 5:00, 10:00, 10:30, 11:00, 15:00, 24:00
+  //    北京时间 3:00, 5:00, 10:00, 10:10, 10:20, 10:30, 11:00, 15:00, 24:00
   await registerRepeatableJobs(
     queue,
     'sporttery-result-check',

@@ -82,10 +82,11 @@ interface RequestMeta {
 
 type JsonRecord = Record<string, unknown>;
 
-const SPORTTERY_SYNC_CRON_DEFAULTS = ['0 19,21,2,3,7,16 * * *', '30 2,3 * * *'];
+const SPORTTERY_SYNC_CRON_DEFAULTS = ['0 19,21,2,3,7,16 * * *', '10,20,30 2 * * *'];
 const LEGACY_SPORTTERY_DAILY_SYNC_CRON = '0 0,6,12 * * *';
 const LEGACY_SPORTTERY_RESULT_CHECK_CRON = '*/10 * * * *';
 const LEGACY_SPORTTERY_SINGLE_CRON = '0 19,21,2,7,16 * * *';
+const LEGACY_SPORTTERY_TEN_THIRTY_CRON = '0 19,21,2,3,7,16 * * *;30 2,3 * * *';
 
 function resolveSportterySchedulerCron(value: string | undefined, fallback = SPORTTERY_SYNC_CRON_DEFAULTS): string[] {
   const configured = value?.trim();
@@ -93,7 +94,8 @@ function resolveSportterySchedulerCron(value: string | undefined, fallback = SPO
   if (
     configured === LEGACY_SPORTTERY_DAILY_SYNC_CRON ||
     configured === LEGACY_SPORTTERY_RESULT_CHECK_CRON ||
-    configured === LEGACY_SPORTTERY_SINGLE_CRON
+    configured === LEGACY_SPORTTERY_SINGLE_CRON ||
+    configured === LEGACY_SPORTTERY_TEN_THIRTY_CRON
   ) {
     return fallback;
   }
