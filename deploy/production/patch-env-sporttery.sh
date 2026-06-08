@@ -35,9 +35,9 @@ get_env_value() {
 
 ensure_sporttery_cron_value() {
   local key="$1"
+  # 生产服务器使用 Asia/Shanghai 本地时区；Cron 直接按北京时间配置。
   # 北京时间 03:00, 05:00, 10:00, 10:10, 10:20, 10:30, 11:00, 15:00, 24:00
-  # 对应 UTC: 19, 21, 2, 2:10, 2:20, 2:30, 3, 7, 16
-  local desired="0 19,21,2,3,7,16 * * *;10,20,30 2 * * *"
+  local desired="0 0,3,5,10,11,15 * * *;10,20,30 10 * * *"
   local current
   current="$(get_env_value "$key")"
 
@@ -47,7 +47,7 @@ ensure_sporttery_cron_value() {
   fi
 
   # Migrate any legacy single-pattern cron to the new multi-pattern cadence
-  if [ "$current" = "0 0,6,12 * * *" ] || [ "$current" = "*/10 * * * *" ] || [ "$current" = "0 19,21,2,7,16 * * *" ] || [ "$current" = "0 19,21,2,3,7,16 * * *;30 2,3 * * *" ]; then
+  if [ "$current" = "0 0,6,12 * * *" ] || [ "$current" = "*/10 * * * *" ] || [ "$current" = "0 19,21,2,7,16 * * *" ] || [ "$current" = "0 19,21,2,3,7,16 * * *;30 2,3 * * *" ] || [ "$current" = "0 19,21,2,3,7,16 * * *;10,20,30 2 * * *" ]; then
     set_env_value "$key" "$desired"
   fi
 }

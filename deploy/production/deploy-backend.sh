@@ -45,9 +45,9 @@ set_env_value() {
 
 ensure_sporttery_cron_value() {
   local key="$1"
+  # 生产服务器使用 Asia/Shanghai 本地时区；Cron 直接按北京时间配置。
   # 北京时间 03:00, 05:00, 10:00, 10:10, 10:20, 10:30, 11:00, 15:00, 24:00
-  # 对应 UTC: 19, 21, 2, 2:10, 2:20, 2:30, 3, 7, 16
-  local desired="0 19,21,2,3,7,16 * * *;10,20,30 2 * * *"
+  local desired="0 0,3,5,10,11,15 * * *;10,20,30 10 * * *"
   local current
   current="$(env_value "$key" | xargs)"
 
@@ -58,7 +58,7 @@ ensure_sporttery_cron_value() {
   fi
 
   # Migrate any legacy single-pattern cron to the new multi-pattern cadence
-  if [ "$current" = "0 0,6,12 * * *" ] || [ "$current" = "*/10 * * * *" ] || [ "$current" = "0 19,21,2,7,16 * * *" ] || [ "$current" = "0 19,21,2,3,7,16 * * *;30 2,3 * * *" ]; then
+  if [ "$current" = "0 0,6,12 * * *" ] || [ "$current" = "*/10 * * * *" ] || [ "$current" = "0 19,21,2,7,16 * * *" ] || [ "$current" = "0 19,21,2,3,7,16 * * *;30 2,3 * * *" ] || [ "$current" = "0 19,21,2,3,7,16 * * *;10,20,30 2 * * *" ]; then
     set_env_value "$key" "$desired"
     log "Migrated legacy $key=$current to $desired in existing .env."
   fi
@@ -100,7 +100,7 @@ ensure_production_env() {
     log "Set AI_ALLOW_MOCK=false in existing production .env."
   fi
 
-  # 竞彩自动同步环境变量。Cron 使用服务器 UTC 时区，对应北京时间 03:00、05:00、10:00、10:10、10:20、10:30、11:00、15:00、24:00。
+  # 竞彩自动同步环境变量。生产服务器使用 Asia/Shanghai 本地时区，Cron 直接对应北京时间 03:00、05:00、10:00、10:10、10:20、10:30、11:00、15:00、24:00。
   ensure_sporttery_cron_value SPORTTERY_DAILY_SYNC_CRON
   ensure_sporttery_cron_value SPORTTERY_RESULT_CHECK_CRON
   if ! has_env_value SPORTTERY_SYNC_DAYS_AHEAD; then
@@ -153,8 +153,8 @@ API_FOOTBALL_LEAGUE_IDS=
 DATA_REFRESH_CRON_FIXTURES=0 */6 * * *
 DATA_REFRESH_CRON_LIVE=*/2 * * * *
 PREDICTION_SCHEDULER_WINDOW_MINUTES=10
-SPORTTERY_DAILY_SYNC_CRON=0 19,21,2,3,7,16 * * *;10,20,30 2 * * *
-SPORTTERY_RESULT_CHECK_CRON=0 19,21,2,3,7,16 * * *;10,20,30 2 * * *
+SPORTTERY_DAILY_SYNC_CRON=0 0,3,5,10,11,15 * * *;10,20,30 10 * * *
+SPORTTERY_RESULT_CHECK_CRON=0 0,3,5,10,11,15 * * *;10,20,30 10 * * *
 SPORTTERY_SYNC_DAYS_AHEAD=3
 SPORTTERY_AUTO_ENQUEUE_PREDICTIONS=true
 WECHAT_MP_APPID=

@@ -62,10 +62,11 @@ function createConnection(): Redis {
 const workers: Worker[] = [];
 const queues: Queue[] = [];
 
-const SPORTTERY_SYNC_CRON_DEFAULTS = ['0 19,21,2,3,7,16 * * *', '10,20,30 2 * * *'];
+const SPORTTERY_SYNC_CRON_DEFAULTS = ['0 0,3,5,10,11,15 * * *', '10,20,30 10 * * *'];
 const LEGACY_SPORTTERY_DAILY_SYNC_CRON = '0 0,6,12 * * *';
 const LEGACY_SPORTTERY_RESULT_CHECK_CRON = '*/10 * * * *';
 const LEGACY_SPORTTERY_TEN_THIRTY_CRON = '0 19,21,2,3,7,16 * * *;30 2,3 * * *';
+const LEGACY_SPORTTERY_TEN_TEN_TWENTY_THIRTY_UTC_MAPPED_CRON = '0 19,21,2,3,7,16 * * *;10,20,30 2 * * *';
 
 type CronRepeatableJobOptions = JobsOptions & {
   jobId: string;
@@ -82,7 +83,8 @@ function resolveSportteryCronPatterns(envKey: string, defaultPatterns = SPORTTER
     configured === LEGACY_SPORTTERY_DAILY_SYNC_CRON ||
     configured === LEGACY_SPORTTERY_RESULT_CHECK_CRON ||
     configured === LEGACY_SPORTTERY_SINGLE_CRON ||
-    configured === LEGACY_SPORTTERY_TEN_THIRTY_CRON
+    configured === LEGACY_SPORTTERY_TEN_THIRTY_CRON ||
+    configured === LEGACY_SPORTTERY_TEN_TEN_TWENTY_THIRTY_UTC_MAPPED_CRON
   ) {
     logger.warn(
       { envKey, configured, defaultPatterns },
@@ -267,7 +269,7 @@ async function registerSportteryAutoSyncSchedulers(): Promise<void> {
 
   // 1. 每天定时同步竞彩赛程（当天+未来3天）
   //    北京时间 3:00, 5:00, 10:00, 10:10, 10:20, 10:30, 11:00, 15:00, 24:00(=次日0:00)
-  //    对应 UTC: 19:00(前一天), 21:00(前一天), 2:00, 2:10, 2:20, 2:30, 3:00, 7:00, 16:00
+  //    当前生产服务器使用 Asia/Shanghai 本地时区，因此 cron 直接按北京时间配置。
   await registerRepeatableJobs(
     queue,
     'sporttery-daily-fixtures',
