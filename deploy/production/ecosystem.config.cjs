@@ -4,8 +4,9 @@ module.exports = {
       name: 'ai-worldcup-api',
       cwd: '/home/ubuntu/apps/ai-worldcup-backend',
       script: 'apps/api/dist/src/main.js',
-      exec_mode: 'fork',
-      instances: 1,
+      exec_mode: 'cluster',
+      instances: 2,
+      kill_timeout: 10000,
       env: {
         NODE_ENV: 'production',
       },
