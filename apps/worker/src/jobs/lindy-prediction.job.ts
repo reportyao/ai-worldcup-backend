@@ -272,8 +272,9 @@ async function sendPredictionRequest(options: SendOptions) {
       home_team: homeTeamName,
       away_team: awayTeamName,
       model: modelKey,
-      prompt: `${prompt}\n\n比赛: ${homeTeamName} vs ${awayTeamName}\n赛事: ${match.competition.name}`,
+      prompt: `${prompt}\n\n比赛: ${homeTeamName} vs ${awayTeamName}\n赛事: ${match.competition.name}\n\n【重要输出要求】请在回调的 raw_output 字段中返回完整的 Markdown 格式分析报告（包含标题、表格、分段分析、结论等完整内容），同时保留 conclusion 和 analysis 结构化字段。raw_output 应包含你生成的完整赛前深度分析报告原文。`,
       callbackUrl: `${callbackUrl}?taskId=${task.id}&matchId=${match.id}&aiModelId=${aiModel.id}`,
+      output_format: 'markdown_full_report',
     };
 
     try {
