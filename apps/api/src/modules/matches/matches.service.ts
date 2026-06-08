@@ -269,7 +269,7 @@ export class MatchesService {
       : {
           status: consensus.status,
           title: consensus.status === 'ready' || consensus.status === 'reviewed' ? 'AI 共识已发布' : consensus.title,
-          highlight: '完整预测方向、比分区间与风险提示解锁后查看。',
+          highlight: '已展示参与模型近期战绩，完整预测可在获取后查看。',
           modelCount: consensus.modelCount,
           successCount: consensus.successCount,
           level: consensus.level,
@@ -860,8 +860,27 @@ export class MatchesService {
     const summary = task.consensusSummary as Record<string, unknown> | null;
     const sharedKeyVariables = Array.isArray(summary?.sharedKeyVariables) ? summary.sharedKeyVariables : [];
 
-    // 查询各模型战绩（OVERALL scope）
-    const modelIds = task.predictions.map((p) => p.aiModel.id);
+    // 直接查询每个模型最近 20 条已评估预测，确保未解锁态展示的是“近 x 中 x”的近期口径。
+    const modelIds = Array.from(new Set(task.predictions.map((p) => p.aiModel.id)));
+    const recentPredictionsByModel = new Map<string, Array<{ anyHit: boolean | null }>>();
+    await Promise.all(
+      modelIds.map(async (aiModelId) => {
+        const recentPredictions = await this.prisma.modelPrediction.findMany({
+          where: {
+            aiModelId,
+            isSuccess: true,
+            evaluatedAt: { not: null },
+            anyHit: { not: null },
+          },
+          select: { anyHit: true },
+          orderBy: { evaluatedAt: 'desc' },
+          take: 20,
+        });
+        recentPredictionsByModel.set(aiModelId, recentPredictions);
+      }),
+    );
+
+    // 查询聚合战绩作为兜底：用于尚未积累最近预测记录或历史数据未完整评估的模型。
     const scorecards = modelIds.length > 0
       ? await this.prisma.modelScorecard.findMany({
           where: { aiModelId: { in: modelIds }, scopeType: 'OVERALL', scopeId: '' },
@@ -869,7 +888,7 @@ export class MatchesService {
       : [];
     const scorecardMap = new Map(scorecards.map((s) => [s.aiModelId, s]));
 
-    // 计算连红数：从 recentForm 末尾往前数连续 R 的数量
+    // 计算连红数：从 recentForm 末尾往前数连续 R 的数量。
     const calcStreak = (form: string | null): number => {
       if (!form) return 0;
       let count = 0;
@@ -881,15 +900,41 @@ export class MatchesService {
     };
 
     const modelStats = task.predictions.map((prediction) => {
+      const recentPredictions = recentPredictionsByModel.get(prediction.aiModel.id) ?? [];
+      const recentForm = recentPredictions
+        .slice()
+        .reverse()
+        .map((item) => (item.anyHit ? 'R' : 'M'))
+        .join('');
+
+      if (recentPredictions.length > 0) {
+        const anyHit = recentPredictions.filter((item) => item.anyHit).length;
+        return {
+          displayName: prediction.aiModel.displayName,
+          description: prediction.aiModel.description ?? null,
+          totalMatches: recentPredictions.length,
+          anyHit,
+          hitRate: anyHit / recentPredictions.length,
+          recentForm,
+          streak: calcStreak(recentForm),
+        };
+      }
+
       const sc = scorecardMap.get(prediction.aiModel.id);
+      const fallbackForm = sc?.recentForm ?? '';
+      const fallbackTotal = fallbackForm.length || Math.min(sc?.totalMatches ?? 0, 20);
+      const fallbackAnyHit = fallbackForm
+        ? fallbackForm.split('').filter((item) => item === 'R').length
+        : Math.min(sc?.anyHit ?? 0, fallbackTotal);
+
       return {
         displayName: prediction.aiModel.displayName,
         description: prediction.aiModel.description ?? null,
-        totalMatches: sc?.totalMatches ?? 0,
-        anyHit: sc?.anyHit ?? 0,
-        hitRate: sc?.hitRate ?? 0,
-        recentForm: sc?.recentForm ?? '',
-        streak: calcStreak(sc?.recentForm ?? null),
+        totalMatches: fallbackTotal,
+        anyHit: fallbackAnyHit,
+        hitRate: fallbackTotal > 0 ? fallbackAnyHit / fallbackTotal : 0,
+        recentForm: fallbackForm,
+        streak: calcStreak(fallbackForm || null),
       };
     });
 
