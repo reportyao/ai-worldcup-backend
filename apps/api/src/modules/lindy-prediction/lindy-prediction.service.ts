@@ -112,8 +112,8 @@ export class LindyPredictionService {
     const record = await this.prisma.activityConfig.findUnique({ where: { key: LINDY_SETTINGS_KEY } });
     const config = this.toJsonRecord(record?.config);
     return {
-      webhookUrl: this.str(config.webhookUrl) || process.env.LINDY_WEBHOOK_URL || 'https://public.lindy.ai/api/v1/webhooks/lindy/95a33b13-3f97-4ae8-9917-1b23975c1046',
-      authToken: this.str(config.authToken) || process.env.LINDY_AUTH_TOKEN || '5a894750d5ddd716c5a855bc88b4b8dfc5ec186c7cf817cecca698e822fded1f',
+      webhookUrl: this.str(config.webhookUrl) || process.env.LINDY_PREDICTION_WEBHOOK_URL || process.env.LINDY_WEBHOOK_URL || 'https://public.lindy.ai/api/v1/webhooks/lindy/95a33b13-3f97-4ae8-9917-1b23975c1046',
+      authToken: this.str(config.authToken) || process.env.LINDY_PREDICTION_TOKEN || process.env.LINDY_AUTH_TOKEN || '5a894750d5ddd716c5a855bc88b4b8dfc5ec186c7cf817cecca698e822fded1f',
       defaultPrompt: this.str(config.defaultPrompt) || process.env.LINDY_DEFAULT_PROMPT || '请综合分析双方近期状态、伤病情况、历史交锋、主客场优势，给出详细预测分析。',
       enabled: config.enabled === true || config.enabled === 'true' || (config.enabled === undefined && true),
       updatedAt: this.str(config.updatedAt),
@@ -283,7 +283,7 @@ export class LindyPredictionService {
       const payload: LindyRequestPayload = {
         home_team: homeTeamName,
         away_team: awayTeamName,
-        model: resolvedModel,
+        model: modelId, // 使用映射后的模型 ID (如 lindy-o3) 而非简写 (o3)
         prompt: `${prompt}\n\n比赛: ${homeTeamName} vs ${awayTeamName}\n赛事: ${match.competition.name}\n\n【重要输出要求】请在回调的 raw_output 字段中返回完整的 Markdown 格式分析报告（包含标题、表格、分段分析、结论等完整内容），同时保留 conclusion 和 analysis 结构化字段。raw_output 应包含你生成的完整赛前深度分析报告原文。`,
         callbackUrl: `${callbackUrl}?taskId=${task.id}&matchId=${match.id}&aiModelId=${aiModel.id}`,
         output_format: 'markdown_full_report',
@@ -309,7 +309,17 @@ export class LindyPredictionService {
         }
 
         requestsSent++;
-        this.logger.log({ matchId: match.id, model: resolvedModel, taskId: task.id }, 'Lindy prediction request sent');
+        this.logger.log(
+          {
+            matchId: match.id,
+            model: resolvedModel,
+            modelId,
+            taskId: task.id,
+            webhookUrl: settings.webhookUrl,
+            callbackUrl: payload.callbackUrl,
+          },
+          'Lindy prediction request sent',
+        );
       } catch (error) {
         const msg = error instanceof Error ? error.message : String(error);
         const errorMessage = `${resolvedModel}: ${msg}`;
