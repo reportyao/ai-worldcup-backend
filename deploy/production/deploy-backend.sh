@@ -64,6 +64,25 @@ ensure_sporttery_cron_value() {
   fi
 }
 
+ensure_lindy_prediction_env() {
+  local current
+  current="$(env_value LINDY_PREDICTION_CRON | xargs)"
+  if [ -z "$current" ] || [ "$current" = "0 6 * * *" ]; then
+    set_env_value LINDY_PREDICTION_CRON "0 14 * * *"
+    log "Backfilled LINDY_PREDICTION_CRON=0 14 * * * in existing .env."
+  fi
+
+  if ! has_env_value LINDY_PREDICTION_TZ; then
+    set_env_value LINDY_PREDICTION_TZ "Asia/Shanghai"
+    log "Backfilled LINDY_PREDICTION_TZ=Asia/Shanghai in existing .env."
+  fi
+
+  if ! has_env_value LINDY_PREDICTION_WINDOW_MINUTES; then
+    set_env_value LINDY_PREDICTION_WINDOW_MINUTES "10"
+    log "Backfilled LINDY_PREDICTION_WINDOW_MINUTES=10 in existing .env."
+  fi
+}
+
 ensure_production_env() {
   if [ ! -f .env ]; then
     return
@@ -111,6 +130,9 @@ ensure_production_env() {
     set_env_value SPORTTERY_AUTO_ENQUEUE_PREDICTIONS "true"
     log "Backfilled SPORTTERY_AUTO_ENQUEUE_PREDICTIONS in existing .env."
   fi
+
+  # Lindy 自动预测：每天北京时间 14:00 扫描未来 24 小时未开赛比赛。
+  ensure_lindy_prediction_env
 }
 
 cd "$APP_DIR"
@@ -157,6 +179,9 @@ SPORTTERY_DAILY_SYNC_CRON=0 0,3,5,10,11,15 * * *;10,20,30 10 * * *
 SPORTTERY_RESULT_CHECK_CRON=0 0,3,5,10,11,15 * * *;10,20,30 10 * * *
 SPORTTERY_SYNC_DAYS_AHEAD=3
 SPORTTERY_AUTO_ENQUEUE_PREDICTIONS=true
+LINDY_PREDICTION_CRON=0 14 * * *
+LINDY_PREDICTION_TZ=Asia/Shanghai
+LINDY_PREDICTION_WINDOW_MINUTES=10
 WECHAT_MP_APPID=
 WECHAT_MP_SECRET=
 WECHAT_MP_TOKEN=

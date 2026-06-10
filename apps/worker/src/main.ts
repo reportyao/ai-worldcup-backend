@@ -2,7 +2,6 @@ import * as dotenv from 'dotenv';
 import * as path from 'path';
 dotenv.config({ path: path.resolve(process.cwd(), '../../.env') });
 
-
 import type { Job, JobsOptions } from 'bullmq';
 import { Queue, Worker } from 'bullmq';
 import { Redis } from 'ioredis';
@@ -66,16 +65,30 @@ const SPORTTERY_SYNC_CRON_DEFAULTS = ['0 0,3,5,10,11,15 * * *', '10,20,30 10 * *
 const LEGACY_SPORTTERY_DAILY_SYNC_CRON = '0 0,6,12 * * *';
 const LEGACY_SPORTTERY_RESULT_CHECK_CRON = '*/10 * * * *';
 const LEGACY_SPORTTERY_TEN_THIRTY_CRON = '0 19,21,2,3,7,16 * * *;30 2,3 * * *';
-const LEGACY_SPORTTERY_TEN_TEN_TWENTY_THIRTY_UTC_MAPPED_CRON = '0 19,21,2,3,7,16 * * *;10,20,30 2 * * *';
+const LEGACY_SPORTTERY_TEN_TEN_TWENTY_THIRTY_UTC_MAPPED_CRON =
+  '0 19,21,2,3,7,16 * * *;10,20,30 2 * * *';
 
 type CronRepeatableJobOptions = JobsOptions & {
   jobId: string;
-  repeat: { pattern: string };
+  repeat: { pattern: string; tz?: string };
 };
 
 const LEGACY_SPORTTERY_SINGLE_CRON = '0 19,21,2,7,16 * * *';
+const LINDY_PREDICTION_CRON_DEFAULT = '0 14 * * *';
+const LINDY_PREDICTION_TIMEZONE_DEFAULT = 'Asia/Shanghai';
+const LEGACY_LINDY_PREDICTION_UTC_MAPPED_CRON = '0 6 * * *';
 
-function resolveSportteryCronPatterns(envKey: string, defaultPatterns = SPORTTERY_SYNC_CRON_DEFAULTS): string[] {
+function resolveSchedulerTimezone(envKey: string): string {
+  return (
+    (process.env[envKey] ?? process.env.TZ ?? LINDY_PREDICTION_TIMEZONE_DEFAULT).trim() ||
+    LINDY_PREDICTION_TIMEZONE_DEFAULT
+  );
+}
+
+function resolveSportteryCronPatterns(
+  envKey: string,
+  defaultPatterns = SPORTTERY_SYNC_CRON_DEFAULTS,
+): string[] {
   const configured = process.env[envKey]?.trim();
   if (!configured) return defaultPatterns;
 
@@ -101,13 +114,30 @@ function resolveSportteryCronPatterns(envKey: string, defaultPatterns = SPORTTER
   return patterns.length > 0 ? patterns : defaultPatterns;
 }
 
+function resolveLindyPredictionCronPattern(): string {
+  const configured = process.env.LINDY_PREDICTION_CRON?.trim();
+  if (!configured) return LINDY_PREDICTION_CRON_DEFAULT;
+
+  if (configured === LEGACY_LINDY_PREDICTION_UTC_MAPPED_CRON) {
+    logger.warn(
+      { configured, defaultPattern: LINDY_PREDICTION_CRON_DEFAULT },
+      'legacy lindy cron detected; using Beijing 14:00 default instead',
+    );
+    return LINDY_PREDICTION_CRON_DEFAULT;
+  }
+
+  return configured;
+}
+
 async function registerRepeatableJob(
   queue: Queue,
   jobName: string,
   data: Record<string, unknown>,
   options: CronRepeatableJobOptions,
 ): Promise<void> {
-  await removeStaleRepeatableJobs(queue, jobName, [{ pattern: options.repeat.pattern, jobId: options.jobId }]);
+  await removeStaleRepeatableJobs(queue, jobName, [
+    { pattern: options.repeat.pattern, jobId: options.jobId },
+  ]);
   await queue.add(jobName, data, options);
 }
 
@@ -137,7 +167,9 @@ async function removeStaleRepeatableJobs(
   jobName: string,
   expectedSchedules: Array<{ pattern: string; jobId: string }>,
 ): Promise<void> {
-  const expectedKeys = new Set(expectedSchedules.map((schedule) => `${schedule.pattern}::${schedule.jobId}`));
+  const expectedKeys = new Set(
+    expectedSchedules.map((schedule) => `${schedule.pattern}::${schedule.jobId}`),
+  );
   const repeatableJobs = await queue.getRepeatableJobs(0, -1, true);
   for (const repeatableJob of repeatableJobs) {
     if (repeatableJob.name !== jobName) continue;
@@ -318,6 +350,8 @@ async function registerSportteryAutoSyncSchedulers(): Promise<void> {
 async function registerLindyPredictionScheduler(): Promise<void> {
   const queue = new Queue(QueueName.LindyPrediction, { connection: createConnection() });
   queues.push(queue);
+  const pattern = resolveLindyPredictionCronPattern();
+  const timezone = resolveSchedulerTimezone('LINDY_PREDICTION_TZ');
   await registerRepeatableJob(
     queue,
     'lindy-scan-and-trigger',
@@ -326,7 +360,7 @@ async function registerLindyPredictionScheduler(): Promise<void> {
       windowMinutes: Number(process.env.LINDY_PREDICTION_WINDOW_MINUTES ?? 10),
     },
     {
-      repeat: { pattern: process.env.LINDY_PREDICTION_CRON ?? '0 6 * * *' },
+      repeat: { pattern, tz: timezone },
       jobId: 'lindy-prediction-scheduler-repeat',
       attempts: 2,
       backoff: { type: 'exponential', delay: 30_000 },
@@ -334,27 +368,22 @@ async function registerLindyPredictionScheduler(): Promise<void> {
       removeOnFail: 100,
     },
   );
-  logger.info({ queue: QueueName.LindyPrediction }, 'lindy prediction scheduler registered');
+  logger.info(
+    { queue: QueueName.LindyPrediction, pattern, timezone },
+    'lindy prediction scheduler registered',
+  );
 }
 
-function registerWorker(
-  name: QueueName,
-  processor: (job: Job) => Promise<unknown>,
-): void {
+function registerWorker(name: QueueName, processor: (job: Job) => Promise<unknown>): void {
   const w = new Worker(name, processor, {
     connection: createConnection(),
     concurrency: 2,
   });
   w.on('ready', () => logger.info({ queue: name }, 'worker ready'));
   w.on('failed', (job, err) =>
-    logger.error(
-      { queue: name, jobId: job?.id, err: err.message },
-      'job failed',
-    ),
+    logger.error({ queue: name, jobId: job?.id, err: err.message }, 'job failed'),
   );
-  w.on('completed', (job) =>
-    logger.info({ queue: name, jobId: job.id }, 'job completed'),
-  );
+  w.on('completed', (job) => logger.info({ queue: name, jobId: job.id }, 'job completed'));
   workers.push(w);
 }
 

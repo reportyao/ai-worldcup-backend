@@ -93,6 +93,21 @@ ensure_production_env() {
     set_env_value "$env_file" AI_ALLOW_MOCK false
     log "Set backend AI_ALLOW_MOCK=false in existing production .env."
   fi
+
+  local lindy_cron
+  lindy_cron="$(env_value "$env_file" LINDY_PREDICTION_CRON | xargs)"
+  if [ -z "$lindy_cron" ] || [ "$lindy_cron" = "0 6 * * *" ]; then
+    set_env_value "$env_file" LINDY_PREDICTION_CRON "0 14 * * *"
+    log "Backfilled backend LINDY_PREDICTION_CRON=0 14 * * * in existing .env."
+  fi
+  if ! has_env_value "$env_file" LINDY_PREDICTION_TZ; then
+    set_env_value "$env_file" LINDY_PREDICTION_TZ "Asia/Shanghai"
+    log "Backfilled backend LINDY_PREDICTION_TZ=Asia/Shanghai in existing .env."
+  fi
+  if ! has_env_value "$env_file" LINDY_PREDICTION_WINDOW_MINUTES; then
+    set_env_value "$env_file" LINDY_PREDICTION_WINDOW_MINUTES "10"
+    log "Backfilled backend LINDY_PREDICTION_WINDOW_MINUTES=10 in existing .env."
+  fi
 }
 
 ensure_command() {
@@ -218,6 +233,9 @@ API_FOOTBALL_LEAGUE_IDS=
 DATA_REFRESH_CRON_FIXTURES=0 */6 * * *
 DATA_REFRESH_CRON_LIVE=*/2 * * * *
 PREDICTION_SCHEDULER_WINDOW_MINUTES=10
+LINDY_PREDICTION_CRON=0 14 * * *
+LINDY_PREDICTION_TZ=Asia/Shanghai
+LINDY_PREDICTION_WINDOW_MINUTES=10
 WECHAT_MP_APPID=
 WECHAT_MP_SECRET=
 WECHAT_MP_TOKEN=
