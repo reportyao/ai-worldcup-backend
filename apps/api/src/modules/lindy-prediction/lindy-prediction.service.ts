@@ -27,7 +27,7 @@ export const LINDY_PROVIDER = 'lindy';
 export const LINDY_MODEL_MAP: Record<string, string> = {
   o3: 'lindy-o3',
   gpt5_5: 'lindy-gpt5_5',
-  claude: 'lindy-claude',
+  claude: 'Lindy Claude',
   deepseek_v4_pro: 'lindy-deepseek_v4_pro',
 };
 
