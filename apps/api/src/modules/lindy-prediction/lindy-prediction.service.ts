@@ -464,7 +464,7 @@ export class LindyPredictionService {
 
     const now = new Date();
     const from = now;
-    const to = new Date(now.getTime() + 24 * 60 * 60 * 1000);
+    const to = new Date(now.getTime() + 48 * 60 * 60 * 1000);
 
     // 查找在窗口内且尚未有 Lindy 预测的比赛
     const lindyModels = await this.prisma.aiModel.findMany({
